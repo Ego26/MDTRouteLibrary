@@ -6,7 +6,15 @@ max_line_length = 120
 codes = true
 self = false
 
-exclude_files = { ".release/", "node_modules/" }
+-- Fremder Quelltext und Erzeugtes. .mdt ist der MDT-Klon, den die CI zum
+-- Bauen braucht: 106 Dateien, 72000 Zeilen, die nach fremden Regeln
+-- geschrieben sind. Ohne diesen Ausschluss prueft "luacheck ." sie mit.
+exclude_files = {
+    ".mdt/**", ".mdt",
+    "intern/**", "intern",
+    ".release/**", ".release",
+    "node_modules/**", "node_modules",
+}
 
 ignore = {
     "212/self",   -- unbenutztes self in Methoden
