@@ -38,7 +38,7 @@ ns.RegisterLocale("enUS", {
     ["DETAIL_TIMER"]        = "Timer",
     ["DETAIL_BEST"]         = "your season best",
     ["DETAIL_NO_RUN"]       = "no run this season",
-    ["DETAIL_CONSENSUS"]    = "Most common pulls (across %d routes)",
+    ["DETAIL_CONSENSUS"]    = "How often an add is taken (across %d routes)",
     ["DELETE_PARTIAL"]      = "%d routes could not be deleted - the list changed. Try again.",
     ["SPELL_INTERRUPTIBLE"] = "Interruptible",
     ["SPELL_MAGIC"]         = "Magic",

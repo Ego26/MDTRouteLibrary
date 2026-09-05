@@ -1291,6 +1291,17 @@ local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
     row.index:SetText("")
     row.bar:Hide()
 
+    -- In der Dungeonuebersicht steht links noch "3/3" - dort faengt das
+    -- Gegnerbild spaeter an. In der Routenansicht ist die Spalte leer.
+    local left = hideAmount and 38 or 16
+    local textX = left + PORTRAIT_SIZE + 4
+
+    row.portrait:ClearAllPoints()
+    row.portrait:SetPoint("TOPLEFT", row, "TOPLEFT", left, -1)
+    row.text:ClearAllPoints()
+    row.text:SetPoint("TOPLEFT", row, "TOPLEFT", textX, -2)
+    row.text:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
+
     if npc and npc.displayId then
         SetPortraitTextureFromCreatureDisplayID(row.portrait, npc.displayId)
         row.portrait:Show()
@@ -1336,7 +1347,7 @@ local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
             if not marked then icon.dispel:Hide() end
 
             icon:ClearAllPoints()
-            icon:SetPoint("TOPLEFT", row, "TOPLEFT", 38 + (shown - 1) * (SPELL_ICON + 3), -height)
+            icon:SetPoint("TOPLEFT", row, "TOPLEFT", textX + (shown - 1) * (SPELL_ICON + 3), -height)
             icon:Show()
         else
             icon:Hide()
@@ -1621,6 +1632,9 @@ local function updateDetail(route)
         for _, icon in ipairs(header.icons) do icon:Hide() end
 
         header.portrait:Hide()
+        header.text:ClearAllPoints()
+        header.text:SetPoint("TOPLEFT", header, "TOPLEFT", 38, -2)
+        header.text:SetPoint("RIGHT", header.percent, "LEFT", -6, 0)
         header.index:SetText((T:Hex("textSecondary") .. "%d|r"):format(i))
         header.text:SetText(("%s%s%s|r"):format(
             pull.boss and T:Hex("accent") or T:Hex("textSecondary"),
@@ -1786,6 +1800,15 @@ function updateDungeonDetail(dungeon)
         local share = routeCount > 0 and (entry.count / routeCount * 100) or 0
         local colour = share >= 99 and T:Hex("success") or share >= 50 and T:Hex("warning") or T:Hex("textMuted")
         row.index:SetText(("%s%d/%d|r"):format(colour, entry.count, routeCount))
+
+        -- Rechts nicht die Gegnerkraft eines einzelnen Mobs - die sagt beim
+        -- Ueberblick nichts. Was zaehlt, ist sein Anteil am Soll: daran sieht
+        -- man, ob es weh tut, ihn auszulassen.
+        local weight = (dungeon.totalCount or 0) > 0
+            and (entry.forces or 0) / dungeon.totalCount * 100 or nil
+        row.percent:SetText(weight
+            and (T:Hex("textMuted") .. "%.1f %%|r"):format(weight)
+            or "")
 
         row:SetHeight(height)
         row:Show()

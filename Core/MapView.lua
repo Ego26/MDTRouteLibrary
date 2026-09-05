@@ -101,6 +101,13 @@ local function endDrag()
     if panel then panel.viewport.dragging = false end
 end
 
+---Laeuft waehrend des Ziehens mit: laesst man die Taste ausserhalb des
+---Sichtfensters los, bekommt dessen OnMouseUp das nicht mit - die Karte klebte
+---sonst am Zeiger, bis man wieder hineinfaehrt.
+local function dragStillHeld()
+    return IsMouseButtonDown("LeftButton")
+end
+
 --------------------------------------------------------------------------
 -- Vorrat
 --------------------------------------------------------------------------
@@ -555,6 +562,10 @@ local function ensurePanel()
     viewport:SetScript("OnHide", function(self) self.dragging = false end)
     viewport:SetScript("OnUpdate", function(self)
         if not self.dragging then return end
+        if not dragStillHeld() then
+            self.dragging = false
+            return
+        end
         local scale = self:GetEffectiveScale()
         local x, y = GetCursorPosition()
         x, y = x / scale, y / scale
@@ -575,6 +586,11 @@ local function ensurePanel()
     -- oder auf der Zeile ist, aus der sie kam - sonst waere sie nicht
     -- bedienbar, sie verschwaende beim Hineinfahren.
     p:SetScript("OnUpdate", function(self)
+        -- Waehrend des Ziehens bleibt sie offen. Wer die Karte schiebt, faehrt
+        -- mit gedrueckter Taste zwangslaeufig ueber den Rand hinaus, und dort
+        -- ginge sie ihm sonst unter der Hand zu.
+        if self.viewport.dragging then return end
+
         local owner = self.owner
         if owner and owner:IsVisible() and (owner:IsMouseOver() or self:IsMouseOver()) then return end
         self:Hide()

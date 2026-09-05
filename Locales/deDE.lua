@@ -38,7 +38,7 @@ ns.RegisterLocale("deDE", {
     ["DETAIL_TIMER"]        = "Zeitlimit",
     ["DETAIL_BEST"]         = "deine Saison-Bestleistung",
     ["DETAIL_NO_RUN"]       = "noch kein Lauf diese Saison",
-    ["DETAIL_CONSENSUS"]    = "Häufigste Pulls (über %d Routen)",
+    ["DETAIL_CONSENSUS"]    = "Wie oft ein Add mitgenommen wird (über %d Routen)",
     ["DELETE_PARTIAL"]      = "%d Routen ließen sich nicht löschen – die Liste hat sich verändert. Bitte erneut versuchen.",
     ["SPELL_INTERRUPTIBLE"] = "Unterbrechbar",
     ["SPELL_MAGIC"]         = "Magie",
