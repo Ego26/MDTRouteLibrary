@@ -10,6 +10,13 @@ move-folders:
 # und vermeidet Versionskonflikte mit MDT, das eigene Libs mitbringt.
 externals: {}
 
+# Ohne diese Angabe baut der Packager die Release-Notes aus den
+# Commit-Texten zusammen - inklusive aller Rumpfzeilen. Was bei CurseForge
+# steht, soll hier stehen und nicht aus der Versionsgeschichte fallen.
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
 # Nicht ins Release-Paket
 ignore:
   - branding
@@ -22,4 +29,3 @@ ignore:
   - .gitignore
   - .pkgmeta
   - README.md
-  - CHANGELOG.md

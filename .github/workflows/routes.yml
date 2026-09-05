@@ -155,23 +155,24 @@ jobs:
             exit $code
           fi
 
-      # Ausdruecklich nur unsere Ordner. Ein "luacheck ." wuerde den
-      # MDT-Klon aus .mdt mitpruefen - 72000 Zeilen fremder Quelltext nach
-      # fremden Regeln, das schlaegt zwangslaeufig fehl. Der Ausschluss
-      # steht zwar auch in .luacheckrc, aber hier kann ihn keine
-      # Glob-Feinheit aushebeln.
+      # Die vollstaendige Pruefung liegt in lint.yml und laeuft bei jedem
+      # Push, der Lua anfasst. Hier bleibt nur der Torwaechter fuer das
+      # *erzeugte* Datenaddon: generate-lua.mjs schreibt Lua, das nie ein
+      # Mensch gesehen hat, und ein Syntaxfehler darin macht das Paket fuer
+      # jeden Nutzer unlesbar.
       #
-      # Kommt ein neuer Ordner mit Lua dazu, gehoert er in diese Zeile.
-      - name: Lua prüfen
+      # luac -p uebersetzt nur und wirft das Ergebnis weg. Das kostet Sekunden,
+      # weil nur lua5.1 noetig ist - luacheck zu bauen dauert eine Minute.
+      - name: Erzeugtes Lua auf Syntax prüfen
         if: steps.build.outputs.changed == 'true'
         run: |
-          # liblua5.1-0-dev ist Pflicht: luarocks uebersetzt luafilesystem
-          # aus C-Quelltext und braucht dafuer die Lua-Header.
           sudo apt-get update -qq
-          sudo apt-get install -y -qq lua5.1 liblua5.1-0-dev luarocks
-          sudo luarocks install luacheck
-          luacheck --version
-          luacheck Core Locales MDTRouteLibrary_Data
+          sudo apt-get install -y -qq lua5.1
+          for f in MDTRouteLibrary_Data/*.lua MDTRouteLibrary_Data/Routes/*.lua; do
+            [ -e "$f" ] || continue
+            luac5.1 -p "$f" || exit 1
+          done
+          echo "Erzeugtes Lua ist syntaktisch gültig."
 
       - name: Version bestimmen
         if: steps.build.outputs.changed == 'true'

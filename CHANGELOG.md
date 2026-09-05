@@ -1,6 +1,6 @@
 # Changelog
 
-## Unveröffentlicht
+## 2026.09.05 – erste Veröffentlichung
 
 Erstes Grundgerüst. Gebaut und geprüft gegen MDT 6.2.13 (Interface 120100).
 
