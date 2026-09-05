@@ -700,6 +700,12 @@ local function restoreDeleted()
     return restored
 end
 
+-- Einen eigenen Dialog in StaticPopupDialogs einzutragen ist der
+-- vorgesehene Weg in WoW. luacheck haelt die Felder eines Globals
+-- trotzdem fuer schreibgeschuetzt (W122) - hier ist das Eintragen aber
+-- genau der Zweck. Eng begrenzt statt in der Konfiguration abgeschaltet,
+-- damit ein echter Fall woanders weiter auffaellt.
+-- luacheck: push ignore 122
 StaticPopupDialogs["MDTRL_DELETE"] = {
     text = "%d Route(n) aus MDT loeschen? Das laesst sich nicht rueckgaengig machen.",
     button1 = YES,
@@ -720,6 +726,7 @@ StaticPopupDialogs["MDTRL_DELETE"] = {
     hideOnEscape = true,
     preferredIndex = 3,
 }
+-- luacheck: pop
 
 --------------------------------------------------------------------------
 -- Abgleich mit MDT
