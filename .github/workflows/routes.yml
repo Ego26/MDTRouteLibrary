@@ -1,14 +1,26 @@
-name: Tägliches Routen-Update
+name: Routen-Update
 
-# Einmal am Tag bauen, aber nur veroeffentlichen, wenn sich der Inhalt wirklich
-# geaendert hat. tools/build.mjs meldet das ueber den Exitcode:
-#   0 = geaendert, 9 = unveraendert.
+# Veroeffentlicht wird nur, wenn sich der Inhalt wirklich geaendert hat.
+# tools/build.mjs meldet das ueber den Exitcode: 0 = geaendert, 9 = unveraendert.
 # Damit sieht der Nutzer in CurseForge nur dann ein Update, wenn auch neue
 # Routen drinstecken.
+#
+# Zwei Ausloeser mit unterschiedlichem Zweck:
+#
+#   * Das Label "approved" an einer Einreichung startet den Lauf sofort. Eine
+#     freigegebene Route ist damit innerhalb von Minuten im Paket. Das kostet
+#     nur GitHub-Minuten und beruehrt keystone.guru gar nicht.
+#
+#   * Der taegliche Lauf holt zusaetzlich die Routen von keystone.guru. Der
+#     bleibt bewusst bei einmal am Tag: die Routen dort aendern sich nicht
+#     schneller, und haeufigeres Abfragen waere Last auf fremden Servern ohne
+#     Gegenwert.
 
 on:
   schedule:
     - cron: '0 5 * * *' # täglich 05:00 UTC
+  issues:
+    types: [labeled]
   workflow_dispatch:
     inputs:
       force:
@@ -26,6 +38,9 @@ permissions:
 
 jobs:
   build:
+    # Auf ein Label reagieren wir nur, wenn es tatsaechlich "approved" ist -
+    # sonst liefe der Workflow bei jedem beliebigen Label mit.
+    if: github.event_name != 'issues' || github.event.label.name == 'approved'
     runs-on: ubuntu-latest
     # Secrets lassen sich in einem step-level "if" nicht direkt abfragen,
     # deshalb hier einmal in die Job-Umgebung heben.
@@ -55,10 +70,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes
 
-      # Laeuft nur mit Schluessel UND vorliegender Freigabe zur Weiterverteilung.
-      # Siehe docs/02-Datenquellen.md.
+      # Laeuft nur mit Schluessel UND vorliegender Freigabe zur Weiterverteilung
+      # (siehe docs/02-Datenquellen.md) - und nur beim taeglichen Lauf. Eine
+      # freigegebene Einreichung braucht keine frischen keystone.guru-Daten,
+      # und wir haben dort einen Abruf pro Tag zugesagt.
       - name: Routen von keystone.guru holen
-        if: env.KEYSTONE_API_KEY != ''
+        if: env.KEYSTONE_API_KEY != '' && github.event_name != 'issues'
         run: node tools/keystone-sync.mjs --out data/cache
 
       - name: Datenaddon bauen
