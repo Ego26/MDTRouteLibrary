@@ -47,9 +47,13 @@ read_globals = {
     "RAID_CLASS_COLORS", "LOCALIZED_CLASS_NAMES_MALE",
     "GetClassInfo", "GetClassColor", "WrapTextInColorCode",
     "StaticPopupDialogs", "StaticPopup_Show", "GameTooltip",
+    "SetPortraitTextureFromCreatureDisplayID",
+
+    -- Maus: die Kartenansicht zieht und zoomt selbst.
+    "GetCursorPosition", "IsMouseButtonDown",
 
     -- Namensraeume
-    "C_AddOns", "C_Timer", "C_EncodingUtil", "C_Map", "C_ChallengeMode",
+    "C_AddOns", "C_Timer", "C_EncodingUtil", "C_Map", "C_ChallengeMode", "C_Spell",
     "Enum", "Settings", "Mixin", "CreateFromMixins", "C_MythicPlus",
 
     -- MDT (oeffentliche Schnittstelle, siehe docs/01-Architektur.md)

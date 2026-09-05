@@ -165,8 +165,12 @@ jobs:
       - name: Lua prüfen
         if: steps.build.outputs.changed == 'true'
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1 luarocks
+          # liblua5.1-0-dev ist Pflicht: luarocks uebersetzt luafilesystem
+          # aus C-Quelltext und braucht dafuer die Lua-Header.
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1 liblua5.1-0-dev luarocks
           sudo luarocks install luacheck
+          luacheck --version
           luacheck Core Locales MDTRouteLibrary_Data
 
       - name: Version bestimmen
