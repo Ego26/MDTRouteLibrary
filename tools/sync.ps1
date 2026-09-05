@@ -15,21 +15,45 @@
 .PARAMETER Watch
     Beobachtet das Repo und synchronisiert bei jeder Aenderung automatisch.
 
+.PARAMETER Mock
+    Baut vorher das Datenaddon aus den Testdaten in data/mock neu.
+
+    Ohne das spiegelt der Sync den Repo-Stand, und der ist absichtlich leer:
+    ausgeliefert werden nur echte Routen. Wer im Spiel etwas sehen will,
+    braucht diesen Schalter.
+
 .EXAMPLE
     .\tools\sync.ps1
+    .\tools\sync.ps1 -Mock
     .\tools\sync.ps1 -Watch
 #>
 
 [CmdletBinding()]
 param(
     [string]$WowPath = "C:\Spiele\World of Warcraft\_retail_",
-    [switch]$Watch
+    [switch]$Watch,
+    [switch]$Mock
 )
 
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $AddOns   = Join-Path $WowPath "Interface\AddOns"
+
+if ($Mock) {
+    $mdt = Join-Path $AddOns "MythicDungeonTools"
+    if (-not (Test-Path $mdt)) {
+        Write-Error "MDT nicht gefunden: $mdt"
+        exit 1
+    }
+
+    Copy-Item (Join-Path $RepoRoot "data\mock\ks-*.json") (Join-Path $RepoRoot "data\cache") -Force
+    & node (Join-Path $RepoRoot "tools\build.mjs") --mdt $mdt --season "Midnight Season 2" --force | Out-Null
+    Remove-Item (Join-Path $RepoRoot "data\cache\ks-*.json") -Force -ErrorAction SilentlyContinue
+
+    Write-Host "Testdaten gebaut. Das Repo zeigt jetzt Aenderungen im Datenaddon," -ForegroundColor Yellow
+    Write-Host "die nicht committet werden sollen." -ForegroundColor Yellow
+}
 
 if (-not (Test-Path $AddOns)) {
     Write-Error "AddOns-Ordner nicht gefunden: $AddOns"

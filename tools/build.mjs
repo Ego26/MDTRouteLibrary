@@ -20,7 +20,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { readDungeons, buildLookup } from './mdt-dungeons.mjs'
+import { readDungeons, buildLookup, readSeasons } from './mdt-dungeons.mjs'
 import { convertRoute, validateRoute } from './keystone-convert.mjs'
 import { buildDataAddon, writeDataAddon } from './generate-lua.mjs'
 
@@ -149,6 +149,18 @@ async function main() {
   const lookup = buildLookup(dungeons)
   console.log(`   MDT ${mdtVersion ?? '?'}, ${dungeons.length} Dungeons`)
 
+  // Die Dungeons der laufenden Season kommen immer mit, auch wenn es zu ihnen
+  // noch keine Routen gibt. Sonst waere das Addon ohne Community-Routen leer -
+  // ohne Dungeonleiste, ohne eigene Routen aus MDT, ohne Uebersicht.
+  const seasons = readSeasons(args.mdt)
+  const season = seasons.find((entry) => entry.name === args.season) ?? seasons[0]
+  const seasonDungeons = season
+    ? season.dungeonIndices
+        .map((index) => dungeons.find((entry) => entry.mdtIndex === index))
+        .filter(Boolean)
+    : []
+  console.log(`   Season "${season?.name ?? '?'}": ${seasonDungeons.length} Dungeons`)
+
   console.log('2) Routen aus data/routes/ laden')
   const routes = readRouteFiles(join(ROOT, 'data', 'routes'))
   console.log(`   ${routes.length} Routen`)
@@ -183,6 +195,25 @@ async function main() {
   const accepted = []
   const usedDungeons = new Map()
 
+  /** Legt den Eintrag fuer einen Dungeon an, falls es ihn noch nicht gibt. */
+  const ensureDungeon = (dungeon) => {
+    let meta = usedDungeons.get(dungeon.challengeModeId)
+    if (!meta) {
+      meta = {
+        challengeModeId: dungeon.challengeModeId,
+        englishName: dungeon.englishName,
+        shortName: dungeon.shortName,
+        mdtDungeonIdx: dungeon.mdtIndex,
+        totalCount: dungeon.totalCount,
+        _npcs: new Set(),
+      }
+      usedDungeons.set(dungeon.challengeModeId, meta)
+    }
+    return meta
+  }
+
+  for (const dungeon of seasonDungeons) ensureDungeon(dungeon)
+
   for (const route of routes) {
     const issues = checkRoute(route, lookup)
     const fatal = issues.filter((i) => !i.includes('korrigiert'))
@@ -196,19 +227,7 @@ async function main() {
       lookup.byName.get((route.dungeonEnglishName ?? '').toLowerCase())
 
     if (dungeon) {
-      let meta = usedDungeons.get(dungeon.challengeModeId)
-      if (!meta) {
-        meta = {
-          challengeModeId: dungeon.challengeModeId,
-          englishName: dungeon.englishName,
-          shortName: dungeon.shortName,
-          mdtDungeonIdx: dungeon.mdtIndex,
-          totalCount: dungeon.totalCount,
-          _npcs: new Set(),
-        }
-        usedDungeons.set(dungeon.challengeModeId, meta)
-      }
-      enrichRoute(route, dungeon, meta._npcs)
+      enrichRoute(route, dungeon, ensureDungeon(dungeon)._npcs)
     }
 
     accepted.push(route)
