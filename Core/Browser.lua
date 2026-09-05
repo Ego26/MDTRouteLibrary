@@ -1207,6 +1207,16 @@ local function acquirePullRow(index)
 
     row:SetScript("OnEnter", function(self)
         self.highlight:Show()
+
+        -- Erst dafuer sorgen, dass die Karte dieselbe Route zeigt wie diese
+        -- Liste. Sonst hebt man einen Pull in einer fremden Route hervor -
+        -- naemlich in der, ueber die der Zeiger auf dem Weg hierher zuletzt
+        -- gelaufen ist.
+        if self.pullIndex then
+            local route = selectedId and displayById[selectedId]
+            if route then ns.MapView.ShowBeside(ui.detail.frame, route) end
+        end
+
         -- Auch die Ueberschriftszeile eines Pulls hebt ihn auf der Karte
         -- hervor - dort steht die Nummer, die man sucht.
         ns.MapView.HighlightPull(self.pullIndex)

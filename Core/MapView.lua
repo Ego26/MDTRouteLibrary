@@ -795,18 +795,40 @@ end
 ---Haengt die Karte an eine Zeile. Rechtsbuendig zur Zeile, also innerhalb von
 ---MDTs Fenster: rechts daneben liegen die Addons des Nutzers.
 ---@param owner table
-local function anchor(owner)
-    panel.owner = owner
-    panel:ClearAllPoints()
-    panel:SetPoint("TOPRIGHT", owner, "TOPRIGHT", -4, 8)
-
-    -- Nach unten darf sie nicht aus dem Bild laufen.
+local function clampBottom()
     local bottom = panel:GetBottom()
     if bottom and bottom < 8 then
         local point, relTo, relPoint, x, y = panel:GetPoint(1)
         panel:ClearAllPoints()
         panel:SetPoint(point, relTo, relPoint, x, y - bottom + 8)
     end
+end
+
+local function anchor(owner)
+    panel.owner = owner
+    panel:ClearAllPoints()
+    panel:SetPoint("TOPRIGHT", owner, "TOPRIGHT", -4, 8)
+    clampBottom()
+end
+
+---Baut die Karte fuer eine Route auf, falls dort nicht schon dieselbe steht.
+---@param newRoute table
+---@return boolean ok
+local function prepare(newRoute)
+    if panel:IsShown() and route == newRoute then return true end
+
+    route = newRoute
+    if not build() then
+        route = nil
+        return false
+    end
+
+    panel.zoom, panel.ox, panel.oy = ZOOM_MIN, 0, 0
+    panel.highlighted = nil
+    panel.zoomLabel:SetText("100 %")
+    layoutCanvas()
+    pan(0, 0)
+    return true
 end
 
 ---Meldet einen Rahmen an, ueber dem die Karte offen bleibt.
@@ -837,6 +859,34 @@ function MV.Cancel()
     end
 end
 
+---Zeigt die Karte sofort links neben einem Rahmen.
+---
+---Fuer die Pull-Liste in der Detailspalte. Die zeigt immer die *gewaehlte*
+---Route, die Karte folgte bisher dem Zeiger - wer auf dem Weg nach rechts
+---eine andere Zeile streifte, hob dann Pulls in einer Karte hervor, die eine
+---ganz andere Route zeigte. Hier gilt deshalb die Auswahl, nicht der Weg
+---dorthin. Und ohne Verweilzeit: gewartet hat man schon.
+---@param frame table Rahmen, links neben dem die Karte sitzt
+---@param newRoute table|nil
+function MV.ShowBeside(frame, newRoute)
+    MV.Cancel()
+    if not frame or not newRoute then return end
+
+    ensurePanel()
+    if not prepare(newRoute) then
+        panel:Hide()
+        return
+    end
+
+    panel.owner = frame
+    panel:ClearAllPoints()
+    panel:SetPoint("TOPRIGHT", frame, "TOPLEFT", -8, 0)
+    clampBottom()
+
+    panel.grace = 0
+    panel:Show()
+end
+
 ---Fordert die Karte fuer eine Route an.
 ---@param owner table Zeile, an der die Karte haengt
 ---@param newRoute table|nil
@@ -856,19 +906,10 @@ function MV.Request(owner, newRoute)
         if not owner:IsVisible() or not owner:IsMouseOver() then return end
 
         ensurePanel()
-        route = newRoute
-
-        if not build() then
-            route = nil
+        if not prepare(newRoute) then
             panel:Hide()
             return
         end
-
-        panel.zoom, panel.ox, panel.oy = ZOOM_MIN, 0, 0
-        panel.highlighted = nil
-        panel.zoomLabel:SetText("100 %")
-        layoutCanvas()
-        pan(0, 0)
 
         anchor(owner)
         panel.grace = 0
