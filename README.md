@@ -107,6 +107,11 @@ selbst. Geprüft wird:
 Fällt eine Einreichung durch, bleibt ihr Issue offen und bekommt einen
 Kommentar mit den Mängeln. Jede Änderung am Issue startet die Prüfung neu.
 
+Das planmäßige Veröffentlichen lässt sich anhalten: Repository-Variable
+`PUBLISH_PAUSED` auf `true`. Einreichungen werden weiter angenommen, nur
+hochgeladen wird nichts mehr, bis die Variable wieder weg ist. Von Hand
+auslösen geht auch dann.
+
 **Bis sie im Spiel ankommt, dauert es etwas länger.** Addons dürfen nicht ins
 Netz, die Routen stecken also fest im Paket. Alle sechs Stunden bündelt ein
 Lauf alles Neue, baut das Datenaddon und lädt es zu CurseForge – ab dann kommt

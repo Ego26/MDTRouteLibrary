@@ -58,11 +58,18 @@ permissions:
 
 jobs:
   build:
-    # Nur echte Einreichungen, und gesperrte gar nicht erst anfassen.
+    # Zwei Bedingungen:
+    #
+    #   * Die Repository-Variable PUBLISH_PAUSED auf "true" haelt die
+    #     planmaessigen Laeufe an - etwa solange CurseForge eine Datei noch
+    #     prueft und keine zweite danebenliegen soll. Einreichungen laufen
+    #     weiter, und "Run workflow" von Hand geht auch dann.
+    #   * Von Issues nur echte Einreichungen, gesperrte gar nicht erst.
     if: >-
-      github.event_name != 'issues' ||
-      (contains(github.event.issue.labels.*.name, 'route-submission') &&
-       !contains(github.event.issue.labels.*.name, 'blocked'))
+      (github.event_name != 'schedule' || vars.PUBLISH_PAUSED != 'true') &&
+      (github.event_name != 'issues' ||
+       (contains(github.event.issue.labels.*.name, 'route-submission') &&
+        !contains(github.event.issue.labels.*.name, 'blocked')))
     runs-on: ubuntu-latest
     # Secrets lassen sich in einem step-level "if" nicht direkt abfragen,
     # deshalb hier einmal in die Job-Umgebung heben.
