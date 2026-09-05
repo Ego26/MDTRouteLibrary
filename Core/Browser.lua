@@ -337,23 +337,6 @@ end
 -- Aktionen
 --------------------------------------------------------------------------
 
----Sucht in MDTs Preset-Liste den Eintrag zu einer Route.
----@param db table
----@param dungeonIdx number
----@param routeId string
----@return number|nil
-local function findPresetIndex(db, dungeonIdx, routeId)
-    local list = db.presets and db.presets[dungeonIdx]
-    if type(list) ~= "table" then return nil end
-
-    for i, preset in ipairs(list) do
-        if type(preset) == "table" and preset.mdtrl and preset.mdtrl.id == routeId then
-            return i
-        end
-    end
-    return nil
-end
-
 ---Wechselt MDT auf den Dungeon einer Route und waehlt sie aus.
 ---
 ---MDT haengt den Dungeonindex als Feld an seine global benannten
@@ -518,18 +501,6 @@ end
 -- Eigene Routen loeschen
 --------------------------------------------------------------------------
 
----Alle gerade angezeigten Routen, die sich loeschen lassen.
----MDTs "Default" auf Index 1 gehoert nicht dazu - das laesst auch MDT nicht zu.
----@return table Liste von Routen
-local function deletableRoutes()
-    local list = {}
-    for _, route in pairs(displayById) do
-        local _, presetIdx = savedPreset(route)
-        if presetIdx and presetIdx > 1 then list[#list + 1] = route end
-    end
-    return list
-end
-
 ---Wo liegt diese Route in MDT - egal ob eigene oder gespeicherte Kopie?
 ---@param route table
 ---@return number|nil dungeonIdx, number|nil presetIdx, string|nil title
@@ -610,14 +581,14 @@ local function refreshMDT(dungeonIdx)
     local list = db.presets and db.presets[dungeonIdx]
     if type(list) ~= "table" then return false end
 
-    local entries = {}
+    local labels = {}
     for index, preset in pairs(list) do
         if type(preset) == "table" then
-            entries[index] = presetDropdownText(preset)
+            labels[index] = presetDropdownText(preset)
         end
     end
 
-    dropdown:SetList(entries)
+    dropdown:SetList(labels)
     dropdown:SetValue((db.currentPreset and db.currentPreset[dungeonIdx]) or 1)
     if dropdown.ClearFocus then dropdown:ClearFocus() end
 
@@ -799,10 +770,6 @@ end
 local function rebuildEntries()
     wipe(entries)
     wipe(displayById)
-
-    local needle = filterText:lower()
-    local byDungeon = {}
-    local order = {}
 
     -- Eigene Presets immer einlesen: auch im Community-Modus muss die Liste
     -- wissen, welche Route bereits in MDT liegt.
@@ -1725,9 +1692,9 @@ local function updateDetail(route)
         header.pullIndex = i
         for _, icon in ipairs(header.icons) do icon:Hide() end
 
-        local key = (selectedId or "") .. ":" .. i
-        local folded = collapsedPulls[key] or false
-        header.collapseKey = key
+        local pullKey = (selectedId or "") .. ":" .. i
+        local folded = collapsedPulls[pullKey] or false
+        header.collapseKey = pullKey
 
         header.portrait:Hide()
         header.band:Show()
@@ -2597,7 +2564,7 @@ local function buildList(parent)
     search:SetSize(200, 22)
     search:SetPoint("TOPRIGHT", root, "TOPRIGHT", -(PADDING + DETAIL_EXTRA), -PADDING)
     search:SetAutoFocus(false)
-    search:SetScript("OnTextChanged", function(self, userInput)
+    search:SetScript("OnTextChanged", function(self, _userInput)
         -- Ohne diesen Aufruf blendet die SearchBoxTemplate ihren Platzhalter
         -- nicht aus und "Suchen" liegt ueber dem eingegebenen Text.
         SearchBoxTemplate_OnTextChanged(self)
@@ -2900,7 +2867,7 @@ local function buildList(parent)
             return
         end
 
-        local idx, slot, err = ns.MDT.PutPreset(route, true)
+        local idx, _, err = ns.MDT.PutPreset(route, true)
         if not idx then
             ns.Warn(err or "unbekannter Fehler")
             return

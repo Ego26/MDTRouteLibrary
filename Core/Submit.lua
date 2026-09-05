@@ -63,15 +63,15 @@ local function normalizePulls(pulls)
         local pull = pulls[key]
         if type(pull) == "table" then
             local enemies = {}
-            for key, clones in pairs(pull) do
-                if type(key) == "number" and type(clones) == "table" then
+            for enemyIdx, clones in pairs(pull) do
+                if type(enemyIdx) == "number" and type(clones) == "table" then
                     local list = {}
                     for _, cloneIdx in ipairs(clones) do
                         list[#list + 1] = cloneIdx
                     end
                     if #list > 0 then
                         table.sort(list)
-                        enemies[#enemies + 1] = { enemy = key, clones = list }
+                        enemies[#enemies + 1] = { enemy = enemyIdx, clones = list }
                         total = total + #list
                     end
                 end

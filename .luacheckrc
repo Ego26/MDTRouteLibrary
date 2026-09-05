@@ -46,7 +46,10 @@ read_globals = {
     "SearchBoxTemplate_OnTextChanged", "YES", "NO",
     "RAID_CLASS_COLORS", "LOCALIZED_CLASS_NAMES_MALE",
     "GetClassInfo", "GetClassColor", "WrapTextInColorCode",
-    "StaticPopupDialogs", "StaticPopup_Show", "GameTooltip",
+    "StaticPopup_Show", "GameTooltip",
+    -- Wir haengen einen eigenen Dialog ein. Ohne die Punktschreibweise haelt
+    -- luacheck die Felder eines Globals fuer schreibgeschuetzt (W122).
+    "StaticPopupDialogs", "StaticPopupDialogs.MDTRL_DELETE",
     "SetPortraitTextureFromCreatureDisplayID",
 
     -- Maus: die Kartenansicht zieht und zoomt selbst.

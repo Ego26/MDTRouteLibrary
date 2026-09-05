@@ -99,8 +99,8 @@ function ns.CountForces(challengeModeId, pulls)
     -- (oder einen Eintrag auf Index 0), und dann zaehlten wir nur den Anfang.
     for key, pull in pairs(pulls) do
         if type(key) == "number" and type(pull) == "table" then
-            for key, clones in pairs(pull) do
-                local enemy = type(key) == "number" and enemies[key]
+            for enemyIdx, clones in pairs(pull) do
+                local enemy = type(enemyIdx) == "number" and enemies[enemyIdx]
                 if enemy and type(clones) == "table" then
                     total = total + (enemy.count or 0) * #clones
                 end
@@ -136,15 +136,15 @@ function ns.BuildOwnPulls(challengeModeId, pulls)
         if type(pull) == "table" then
             local list, forces, boss = {}, 0, false
 
-            for key, clones in pairs(pull) do
-                local enemy = type(key) == "number" and enemies and enemies[key]
+            for enemyIdx, clones in pairs(pull) do
+                local enemy = type(enemyIdx) == "number" and enemies and enemies[enemyIdx]
                 if enemy and type(clones) == "table" and #clones > 0 then
                     local copy = {}
                     for k, cloneIdx in ipairs(clones) do copy[k] = cloneIdx end
                     table.sort(copy)
 
                     forces = forces + (enemy.count or 0) * #copy
-                    list[#list + 1] = { enemy = key, npc = enemy.npc, clones = copy }
+                    list[#list + 1] = { enemy = enemyIdx, npc = enemy.npc, clones = copy }
 
                     local npc = ns.GetNpc(challengeModeId, enemy.npc)
                     if npc and npc.isBoss then boss = true end

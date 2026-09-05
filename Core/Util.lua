@@ -24,14 +24,19 @@ end
 -- auch dann funktionieren, wenn Blizzard die Signatur aendert, und die Ausgabe
 -- muss deterministisch sein, damit sich Blobs vergleichen lassen.
 
+-- Links steht das Zeichen selbst, rechts die zwei Zeichen, die JSON dafuer
+-- verlangt. "\\n" ist also Backslash plus n, nicht der Zeilenumbruch.
 local escapes = {
-    ['"'] = '\\"', ["\\"] = "\\\\", ["\b"] = "\b",
-    ["\f"] = "\f", ["\n"] = "\n", ["\r"] = "\r", ["\t"] = "\t",
+    ['"'] = '\\"', ["\\"] = "\\\\", ["\b"] = "\\b",
+    ["\f"] = "\\f", ["\n"] = "\\n", ["\r"] = "\\r", ["\t"] = "\\t",
 }
 
 local function escapeString(s)
-    return (s:gsub('[%c"\]', function(c)
-        return escapes[c] or ("\u%04x"):format(c:byte())
+    -- Das Muster muss den Backslash selbst enthalten, sonst bleibt er
+    -- unescapt im JSON stehen. In Lua-Mustern ist "\" nichts Besonderes,
+    -- der doppelte hier ist nur die Schreibweise im Quelltext.
+    return (s:gsub('[%c"\\]', function(c)
+        return escapes[c] or ("\\u%04x"):format(c:byte())
     end))
 end
 
