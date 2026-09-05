@@ -63,8 +63,6 @@ ns.RegisterLocale("enUS", {
     ["SAVED_TO_MDT"]        = "\"%s\" saved as your own preset in MDT.",
     ["CLEANED_UP"]          = "%d preview presets removed from MDT.",
     ["PREVIEW_PREFIX"]      = "[Preview]",
-    ["MAP_START"]           = "Start",
-    ["MAP_END"]             = "End",
     ["MAP_FLOOR"]           = "Floor: %s",
     ["TILE_PERCENT"]        = "Share",
     ["TILE_BEST"]           = "Best",

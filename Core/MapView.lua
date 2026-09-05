@@ -80,18 +80,54 @@ local keepOpen = {} -- Rahmen, ueber denen die Karte offen bleibt
 -- Farben
 --------------------------------------------------------------------------
 
----Farbe eines Pulls nach seiner Position in der Route: Gruen am Anfang,
----Gold in der Mitte, Rot am Ende. Damit sieht man die Laufrichtung, ohne
----eine einzige Zahl lesen zu muessen.
----@param t number 0 = erster Pull, 1 = letzter
+-- MDTs Palette "High Contrast" (Modules/Pulls.lua, colorPaletteValues[4]).
+-- Es ist die, die MDT ab Werk benutzt, und sie wird genauso durchgezaehlt:
+-- Pull 12 bekommt wieder die Farbe von Pull 1. Ein Verlauf ueber die ganze
+-- Route sieht zwar huebsch aus, aber zwei benachbarte Pulls unterscheiden
+-- sich darin kaum - und genau die will man trennen.
+local PALETTE = {
+    { 1.0000, 0.2446, 1.0000 },
+    { 0.2446, 1.0000, 0.6223 },
+    { 1.0000, 0.2446, 0.2446 },
+    { 0.2446, 0.6223, 1.0000 },
+    { 1.0000, 0.9874, 0.2446 },
+    { 0.2446, 1.0000, 0.2446 },
+    { 1.0000, 0.2446, 0.6223 },
+    { 0.2446, 1.0000, 1.0000 },
+    { 1.0000, 0.6097, 0.2446 },
+    { 0.2446, 0.2446, 1.0000 },
+    { 0.6349, 1.0000, 0.2446 },
+}
+
+---Wandelt MDTs Farbschreibweise ("228b22") in Anteile um.
+---@param hex string|nil
+---@return number|nil r, number|nil g, number|nil b
+local function hexColor(hex)
+    if type(hex) ~= "string" then return nil end
+    hex = hex:gsub("^#", "")
+    if #hex ~= 6 then return nil end
+
+    local r = tonumber(hex:sub(1, 2), 16)
+    local g = tonumber(hex:sub(3, 4), 16)
+    local b = tonumber(hex:sub(5, 6), 16)
+    if not r or not g or not b then return nil end
+    return r / 255, g / 255, b / 255
+end
+
+---Farbe eines Pulls.
+---
+---Bringt die Route eigene Farben mit - eigene MDT-Presets tun das -, gelten
+---die: dann sieht die Karte hier genauso aus wie in MDT, auch wenn jemand
+---dort von Hand gefaerbt hat. Sonst MDTs Palette.
+---@param index number Pullnummer
+---@param pull table|nil
 ---@return number r, number g, number b
-local function pullColor(t)
-    if t < 0.5 then
-        local k = t * 2
-        return 0.25 + 0.75 * k, 0.80 + 0.05 * k, 0.30 - 0.10 * k
-    end
-    local k = (t - 0.5) * 2
-    return 1.0, 0.85 - 0.55 * k, 0.20 + 0.05 * k
+local function pullColor(index, pull)
+    local r, g, b = hexColor(pull and pull.color)
+    if r then return r, g, b end
+
+    local colour = PALETTE[(index - 1) % #PALETTE + 1]
+    return colour[1], colour[2], colour[3]
 end
 
 --------------------------------------------------------------------------
@@ -451,10 +487,11 @@ local function build()
 
     -- Zuordnung Gegner/Klon -> Pull. Was nicht darin steht, gehoert nicht zur
     -- Route und wird blass gezeigt.
-    local pullOf, counts = {}, {}
+    local pullOf, counts, colours = {}, {}, {}
     local total = #route.pulls
 
     for i, pull in ipairs(route.pulls) do
+        colours[i] = { pullColor(i, pull) }
         for _, entry in ipairs(pull.enemies or {}) do
             local enemy = enemies[entry.enemy]
             local pos = enemy and enemy.pos
@@ -507,8 +544,7 @@ local function build()
                 blip.pull = pull
 
                 if pull then
-                    local t = total > 1 and (pull - 1) / (total - 1) or 0
-                    local r, g, b = pullColor(t)
+                    local r, g, b = unpack(colours[pull])
                     blip.ring:SetVertexColor(r, g, b, 1)
                     blip.portrait:SetVertexColor(1, 1, 1, 1)
                     blip:SetAlpha(1)
@@ -558,11 +594,9 @@ local function build()
 
     panel.title:SetText(T:Hex("textPrimary") .. (route.title or route.id) .. "|r")
 
-    -- Legende zur Farbfolge. Der Pfeil braucht keine Uebersetzung.
-    local footer = ("%s%s|r → %s%s|r%s  ·  %d %s"):format(
-        T:Hex("success"), ns.L["MAP_START"],
-        T:Hex("danger"), ns.L["MAP_END"],
-        T:Hex("textMuted"), total, ns.L["COL_PULLS"])
+    -- Die Farbe sagt jetzt nur noch, was zusammengehoert - die Reihenfolge
+    -- steht in den Nummern. Also braucht es auch keine Farblegende mehr.
+    local footer = ("%s%d %s"):format(T:Hex("textMuted"), total, ns.L["COL_PULLS"])
 
     if levels > 1 then
         local map = dungeon.maps[sublevel]

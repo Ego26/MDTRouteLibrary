@@ -63,8 +63,6 @@ ns.RegisterLocale("deDE", {
     ["SAVED_TO_MDT"]        = "„%s“ als eigenes Preset in MDT gespeichert.",
     ["CLEANED_UP"]          = "%d Vorschau-Presets aus MDT entfernt.",
     ["PREVIEW_PREFIX"]      = "[Vorschau]",
-    ["MAP_START"]           = "Start",
-    ["MAP_END"]             = "Ende",
     ["MAP_FLOOR"]           = "Ebene: %s",
     ["TILE_PERCENT"]        = "Anteil",
     ["TILE_BEST"]           = "Beste",
