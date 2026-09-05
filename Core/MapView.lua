@@ -48,6 +48,14 @@ local FOOT_H  = 22
 local BLIP_SIZE = 15
 local LABEL_GAP = 22
 
+-- Umriss um einen Pull. Der Abstand ist der halbe Blip plus etwas Luft,
+-- damit die Linie nicht auf den Bildern klebt. RING_STEPS bestimmt, wie rund
+-- die Ecken werden: jeder Gegner steuert so viele Punkte bei, aus denen die
+-- Huelle gebildet wird. Sechs reichen - mehr Punkte heisst mehr Linien.
+local HULL_PAD   = BLIP_SIZE / 2 + 5
+local HULL_ALPHA = 0.85
+local RING_STEPS = 6
+
 -- Blasse Darstellung fuer Gegner, die nicht zur Route gehoeren.
 local DIM_ALPHA  = 0.5
 local MUTE_ALPHA = 0.3
@@ -78,6 +86,53 @@ local function pullColor(t)
     end
     local k = (t - 0.5) * 2
     return 1.0, 0.85 - 0.55 * k, 0.20 + 0.05 * k
+end
+
+--------------------------------------------------------------------------
+-- Geometrie
+--------------------------------------------------------------------------
+
+---Konvexe Huelle einer Punktmenge (Andrew's monotone chain).
+---
+---Damit umfasst ein Pull seine Gegner, statt sie nur einzufaerben. Zwei
+---nebeneinanderliegende Pulls sehen sonst gleich aus, sobald ihre Farben
+---nah beieinander liegen - und bei vierzig Pulls tun sie das immer.
+---@param points table Liste aus { x, y }
+---@return table Ecken im Umlaufsinn
+local function convexHull(points)
+    local n = #points
+    if n < 3 then return points end
+
+    table.sort(points, function(a, b)
+        if a[1] ~= b[1] then return a[1] < b[1] end
+        return a[2] < b[2]
+    end)
+
+    local function cross(o, a, b)
+        return (a[1] - o[1]) * (b[2] - o[2]) - (a[2] - o[2]) * (b[1] - o[1])
+    end
+
+    local lower = {}
+    for i = 1, n do
+        while #lower >= 2 and cross(lower[#lower - 1], lower[#lower], points[i]) <= 0 do
+            lower[#lower] = nil
+        end
+        lower[#lower + 1] = points[i]
+    end
+
+    local upper = {}
+    for i = n, 1, -1 do
+        while #upper >= 2 and cross(upper[#upper - 1], upper[#upper], points[i]) <= 0 do
+            upper[#upper] = nil
+        end
+        upper[#upper + 1] = points[i]
+    end
+
+    -- Erster und letzter Punkt stehen in beiden Haelften.
+    lower[#lower] = nil
+    upper[#upper] = nil
+    for _, point in ipairs(upper) do lower[#lower + 1] = point end
+    return lower
 end
 
 --------------------------------------------------------------------------
@@ -237,20 +292,46 @@ local function layoutCanvas()
         blip:SetPoint("CENTER", panel.canvas, "TOPLEFT", blip.mapX * s, blip.mapY * s)
     end
 
-    local placed, labelIndex, linkIndex = {}, 0, 0
-    local prevX, prevY
+    -- Umrisse. Sie werden hier gerechnet und nicht einmalig beim Aufbau: der
+    -- Abstand zur Linie ist ein Bildschirmmass, kein Kartenmass - beim Zoomen
+    -- bleiben die Gegnerbilder gleich gross, also muss die Huelle mitwandern.
+    local linkIndex = 0
+    for _, group in ipairs(panel.groups) do
+        local candidates = {}
+        for _, point in ipairs(group.points) do
+            local px, py = point[1] * s, point[2] * s
+            -- Jeder Gegner steuert einen Kranz von Punkten bei. Dadurch
+            -- umschliesst die Huelle auch einen einzelnen Gegner sauber,
+            -- statt zu einem Punkt zu entarten.
+            for step = 1, RING_STEPS do
+                local angle = (step - 1) * (2 * math.pi / RING_STEPS)
+                candidates[#candidates + 1] = {
+                    px + math.cos(angle) * HULL_PAD,
+                    py + math.sin(angle) * HULL_PAD,
+                }
+            end
+        end
+
+        local hull = convexHull(candidates)
+        for i = 1, #hull do
+            local a = hull[i]
+            local b = hull[i % #hull + 1]
+            linkIndex = linkIndex + 1
+            local link = acquireLink(linkIndex)
+            link:SetColorTexture(group.r, group.g, group.b, 1)
+            link:SetAlpha(HULL_ALPHA)
+            link.pull = group.pull
+            link:SetStartPoint("TOPLEFT", panel.canvas, a[1], a[2])
+            link:SetEndPoint("TOPLEFT", panel.canvas, b[1], b[2])
+            link:Show()
+        end
+    end
+    panel.linkCount = linkIndex
+
+    local placed, labelIndex = {}, 0
 
     for k, centre in ipairs(panel.centres) do
         local index, cx, cy = centre[1], centre[2] * s, centre[3] * s
-
-        if prevX then
-            linkIndex = linkIndex + 1
-            local link = acquireLink(linkIndex)
-            link:SetStartPoint("TOPLEFT", panel.canvas, prevX, prevY)
-            link:SetEndPoint("TOPLEFT", panel.canvas, cx, cy)
-            link:Show()
-        end
-        prevX, prevY = cx, cy
 
         -- Bei vierzig Pulls passen nicht alle Nummern nebeneinander. Erste und
         -- letzte stehen immer, der Rest nur mit genug Abstand - beim
@@ -396,7 +477,7 @@ local function build()
     -- Blips fuer alle Gegner des Dungeons, nicht nur die der Route. Erst
     -- daran sieht man, was eine Route auslaesst - beim Vergleich zweier
     -- Routen ist genau das die interessante Frage.
-    local index, sums = 0, {}
+    local index, sums, groupPoints = 0, {}, {}
     local baseLevel = panel.canvas:GetFrameLevel()
 
     for enemyIdx, enemy in pairs(enemies) do
@@ -431,10 +512,13 @@ local function build()
                     if not sum then
                         sum = { 0, 0, 0, r, g, b }
                         sums[pull] = sum
+                        groupPoints[pull] = {}
                     end
                     sum[1] = sum[1] + p[1]
                     sum[2] = sum[2] + p[2]
                     sum[3] = sum[3] + 1
+                    local points = groupPoints[pull]
+                    points[#points + 1] = { p[1], p[2] }
                 else
                     blip.ring:SetVertexColor(0.35, 0.35, 0.35, 1)
                     blip.portrait:SetVertexColor(0.45, 0.45, 0.45, 1)
@@ -455,11 +539,14 @@ local function build()
     -- Gegner auf dieser Ebene fallen heraus, und genau deshalb ist die Liste
     -- dicht - eine Luecke haette #centres unbrauchbar gemacht.
     wipe(panel.centres)
+    wipe(panel.groups)
     for i = 1, total do
         local sum = sums[i]
         if sum and sum[3] > 0 then
             panel.centres[#panel.centres + 1] =
                 { i, sum[1] / sum[3], sum[2] / sum[3], sum[4], sum[5], sum[6] }
+            panel.groups[#panel.groups + 1] =
+                { pull = i, r = sum[4], g = sum[5], b = sum[6], points = groupPoints[i] }
         end
     end
 
@@ -502,8 +589,8 @@ local function ensurePanel()
     p:Hide()
 
     p.zoom, p.ox, p.oy = ZOOM_MIN, 0, 0
-    p.blips, p.labels, p.links, p.centres = {}, {}, {}, {}
-    p.blipCount = 0
+    p.blips, p.labels, p.links, p.centres, p.groups = {}, {}, {}, {}, {}
+    p.blipCount, p.linkCount = 0, 0
 
     -- Frueh setzen: die Anordnungsfunktionen greifen darauf zu.
     panel = p
@@ -626,6 +713,20 @@ function MV.HighlightPull(index)
         else
             blip:SetAlpha(base * MUTE_ALPHA)
             blip.glow:Hide()
+        end
+    end
+
+    -- Die Umrisse gehen denselben Weg: der gemeinte Pull tritt hervor, die
+    -- uebrigen zuruck. Sonst bliebe ein Gewirr aus Linien ueber dem, was man
+    -- gerade ansieht.
+    for i = 1, panel.linkCount do
+        local link = panel.links[i]
+        if index == nil then
+            link:SetAlpha(HULL_ALPHA)
+        elseif link.pull == index then
+            link:SetAlpha(1)
+        else
+            link:SetAlpha(HULL_ALPHA * 0.2)
         end
     end
 end
