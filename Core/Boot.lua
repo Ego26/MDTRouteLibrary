@@ -57,6 +57,8 @@ frame:SetScript("OnEvent", function(self, event)
     -- es die SavedVariable noch nicht.
     MDTRouteLibraryDB = MDTRouteLibraryDB or {}
     MDTRouteLibraryDB.favourites = MDTRouteLibraryDB.favourites or {}
+    -- Eigene Laufzeiten, je Dungeon. Siehe Core/Runs.lua.
+    MDTRouteLibraryDB.runs = MDTRouteLibraryDB.runs or {}
 
     if not ns.MDT.IsInstalled() then
         -- Ohne MDT ist das Addon nutzlos, aber kein Grund fuer Laerm beim

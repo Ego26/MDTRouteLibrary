@@ -54,6 +54,7 @@ local COL_PERCENT = 62
 local COL_FORCES  = 76
 local COL_PULLS   = 54
 local COL_LEVEL   = 62  -- "+10-18" braucht mehr Platz als "+10"
+local COL_TIME    = 64  -- deine beste Zeit auf dieser Route
 
 local pluginAPI
 local ui           -- gebaute Oberflaeche
@@ -483,6 +484,9 @@ local function collectOwnRoutes()
                         own = true,
                         mdtPresetIdx = presetIdx,
                         mdtDungeonIdx = idx,
+                        -- MDT vergibt UIDs erst beim Teilen. Fehlt sie, muss
+                        -- der Name als Schluessel herhalten - siehe Runs.lua.
+                        mdtUid = type(preset.uid) == "string" and preset.uid or nil,
                         source = "MDT",
                         -- Aus welcher Community-Route stammt diese Kopie?
                         originId = type(preset.mdtrlOrigin) == "string"
@@ -1113,8 +1117,15 @@ local function acquireRow(index)
     row.level:SetJustifyH("RIGHT")
     row.level:SetWidth(COL_LEVEL)
 
+    -- Deine beste Zeit auf dieser Route. Leer, solange du sie nicht gelaufen
+    -- bist - und genau das ist die Aussage.
+    row.time = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.time:SetPoint("RIGHT", row.level, "LEFT", -6, 0)
+    row.time:SetJustifyH("RIGHT")
+    row.time:SetWidth(COL_TIME)
+
     -- Bleibt als Anker fuer Titel und Meta erhalten.
-    row.stats = row.level
+    row.stats = row.time
 
     -- Lange Titel duerfen nicht in die Zahlenspalten laufen.
     row.title:SetPoint("RIGHT", row.stats, "LEFT", -10, 0)
@@ -1604,6 +1615,7 @@ local function updateDetail(route)
         d.title:SetText("")
         d.author:SetText("")
         d.affixes:SetText("")
+        d.runs:SetText("")
         d.section:SetText("")
         for _, tile in ipairs(d.tiles) do
             tile.value:SetText("")
@@ -1635,6 +1647,22 @@ local function updateDetail(route)
 
     local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
+
+    -- Was du selbst mit dieser Route erreicht hast.
+    local key = ns.Runs.KeyFor(route)
+    local best = ns.Runs.Best(route.challengeModeId, key)
+    if best then
+        local runs = #ns.Runs.ForRoute(route.challengeModeId, key)
+        d.runs:SetText(("%s %s%s|r %s+%d · %s|r"):format(
+            ns.L["DETAIL_YOUR_BEST"],
+            best.onTime and T:Hex("success") or T:Hex("warning"),
+            ns.Runs.FormatTime(best.time),
+            T:Hex("textMuted"), best.level,
+            ns.L["DETAIL_RUN_COUNT"]:format(runs)))
+    else
+        d.runs:SetText(T:Text("textMuted", ns.L["DETAIL_NO_RUNS"]))
+    end
+
     d.section:SetText(ns.L["DETAIL_SECTION_PULLS"]:upper())
 
     -- Pull-Liste: Ueberschrift je Pull, darunter die Gegner einzeln mit ihren
@@ -1820,14 +1848,78 @@ function updateDungeonDetail(dungeon)
     setTile(4, tostring(routeCount), ns.L["TILE_ROUTES"])
 
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
-    d.section:SetText(ns.L["DETAIL_SECTION_ADDS"]:upper())
+    d.runs:SetText("")
+    d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
 
-    local y = 0
-    for i, entry in ipairs(list) do
-        local row = acquirePullRow(i)
+    local y, rowIndex = 0, 0
+
+    ---Setzt eine Zeile an die naechste freie Stelle.
+    local function place(row, height)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", d.content, "TOPLEFT", 0, -y)
         row:SetPoint("TOPRIGHT", d.content, "TOPRIGHT", 0, -y)
+        row:SetHeight(height)
+        row:Show()
+        y = y + height
+    end
+
+    ---Bandzeile als Ueberschrift eines Blocks.
+    local function band(text, count)
+        rowIndex = rowIndex + 1
+        local row = acquirePullRow(rowIndex)
+        row.npcId, row.pullIndex, row.collapseKey = nil, nil, nil
+        row.portrait:Hide()
+        for _, icon in ipairs(row.icons) do icon:Hide() end
+        row.band:Show()
+        row.index:SetText("")
+        row.percent:SetText("")
+        row.text:ClearAllPoints()
+        row.text:SetPoint("TOPLEFT", row, "TOPLEFT", 8, -2)
+        row.text:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
+        row.text:SetText(("%s%s|r  %s(%d)|r"):format(
+            T:Hex("textSecondary"), text, T:Hex("textMuted"), count))
+        place(row, PULLROW_HEIGHT + 5)
+    end
+
+    -- Deine Rangliste zuerst: die beantwortet die Frage, mit welcher Route du
+    -- tatsaechlich am schnellsten warst. Erst danach die Gegner.
+    local ranking = ns.Runs.Ranking(cmId)
+    if #ranking > 0 then
+        band(ns.L["DETAIL_YOUR_TIMES"], #ranking)
+
+        for rank, entry in ipairs(ranking) do
+            rowIndex = rowIndex + 1
+            local row = acquirePullRow(rowIndex)
+            row.npcId, row.pullIndex, row.collapseKey = nil, nil, nil
+            row.portrait:Hide()
+            row.band:Hide()
+            for _, icon in ipairs(row.icons) do icon:Hide() end
+
+            row.index:SetText((T:Hex("textMuted") .. "%d.|r"):format(rank))
+            row.text:ClearAllPoints()
+            row.text:SetPoint("TOPLEFT", row, "TOPLEFT", 38, -2)
+            row.text:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
+
+            local known = entry.key and ns.routeById[entry.key]
+            row.text:SetText(("%s%s|r %s+%d · %s|r"):format(
+                T:Hex("textPrimary"),
+                (known and known.title) or entry.label or ns.L["RUN_UNKNOWN_ROUTE"],
+                T:Hex("textMuted"), entry.best.level,
+                ns.L["DETAIL_RUN_COUNT"]:format(entry.count)))
+
+            row.percent:SetText(("%s%s|r"):format(
+                entry.best.onTime and T:Hex("success") or T:Hex("warning"),
+                ns.Runs.FormatTime(entry.best.time)))
+
+            place(row, PULLROW_HEIGHT + 4)
+        end
+
+        band(ns.L["DETAIL_SECTION_ADDS"], #list)
+    end
+
+    for _, entry in ipairs(list) do
+        rowIndex = rowIndex + 1
+        local row = acquirePullRow(rowIndex)
 
         -- Dieselbe Darstellung wie in der Routenansicht: Zauber am Gegner und
         -- Modellvorschau beim Ueberfahren. Nur die linke Spalte ist anders.
@@ -1848,12 +1940,10 @@ function updateDungeonDetail(dungeon)
             and (T:Hex("textMuted") .. "%.1f %%|r"):format(weight)
             or "")
 
-        row:SetHeight(height)
-        row:Show()
-        y = y + height
+        place(row, height)
     end
 
-    for i = #list + 1, #d.pullRows do d.pullRows[i]:Hide() end
+    for i = rowIndex + 1, #d.pullRows do d.pullRows[i]:Hide() end
     d.content:SetHeight(math.max(y, 1))
 end
 
@@ -1973,6 +2063,7 @@ function B.Refresh()
             row.title:SetText("")
             row.meta:SetText("")
             row.level:SetText("")
+            row.time:SetText("")
             row.pulls:SetText("")
             row.forces:SetText("")
             row.percent:SetText("")
@@ -2051,6 +2142,7 @@ function B.Refresh()
             end
             row.meta:SetText("")
             row.level:SetText("")
+            row.time:SetText("")
             row.pulls:SetText("")
             row.forces:SetText("")
             row.percent:SetText("")
@@ -2123,6 +2215,14 @@ function B.Refresh()
                 row.fav.texture:SetVertexColor(0.65, 0.65, 0.65, 0.55)
             end
             row.percent:SetText(percentText(route))
+
+            -- Beste eigene Zeit. Gruen, wenn der Lauf in der Zeit war.
+            local best = ns.Runs.Best(route.challengeModeId, ns.Runs.KeyFor(route))
+            row.time:SetText(best
+                and ("%s%s|r"):format(
+                    best.onTime and T:Hex("success") or T:Hex("textSecondary"),
+                    ns.Runs.FormatTime(best.time))
+                or "")
 
             local isSelected = route.id == selectedId
             row.selected:SetShown(isSelected)
@@ -2298,8 +2398,14 @@ local function buildDetail(parent)
     d.affixes:SetWordWrap(true)
 
     ---------------------------------------------------------- Abschnitt
+    d.runs = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    d.runs:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", 0, -4)
+    d.runs:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+    d.runs:SetJustifyH("LEFT")
+    d.runs:SetWordWrap(false)
+
     d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    d.section:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", -2, -10)
+    d.section:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", -2, -10)
     d.section:SetTextColor(T:Color("textMuted"))
 
     local divider = T:Divider(root)
@@ -2660,8 +2766,10 @@ local function buildList(parent)
         ns.L["COL_FORCES_TIP_TITLE"], ns.L["COL_FORCES_TIP"])
     local hPulls = headLabel(ns.L["COL_PULLS"], COL_PULLS, hForces,
         ns.L["COL_PULLS_TIP_TITLE"], ns.L["COL_PULLS_TIP"])
-    headLabel(ns.L["COL_LEVEL"], COL_LEVEL, hPulls,
+    local hLevel = headLabel(ns.L["COL_LEVEL"], COL_LEVEL, hPulls,
         ns.L["COL_LEVEL_TIP_TITLE"], ns.L["COL_LEVEL_TIP"])
+    headLabel(ns.L["COL_TIME"], COL_TIME, hLevel,
+        ns.L["COL_TIME_TIP_TITLE"], ns.L["COL_TIME_TIP"])
 
     local routeBox = CreateFrame("Frame", nil, head)
     routeBox:SetPoint("LEFT", head, "LEFT", 12, 0)
