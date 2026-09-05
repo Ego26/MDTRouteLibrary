@@ -95,7 +95,20 @@ veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Route
 
 Routen einreichen: `/routes submit` im Spiel, dann
 [eine Einreichung anlegen](../../issues/new?template=route-submission.yml).
-Jede Route wird vor der Aufnahme geprüft.
+
+Es wartet niemand auf eine Freigabe – die Einreichung wird automatisch
+geprüft und ist bei bestandener Prüfung in Minuten im Paket. Geprüft wird:
+
+| | |
+|---|---|
+| Einreichungs-Code | lässt sich dekodieren, Dungeon und jeder Gegner existieren in MDT |
+| Gegnerkräfte | **mindestens 100 %** – darunter lässt sich der Schlüssel nicht abschließen |
+| Dungeon | gehört zur laufenden Season |
+| Name, Stufenbereich, Art | vorhanden und plausibel, unsichtbare Zeichen fliegen raus |
+| Rechte | die Zusage im Formular ist gesetzt |
+
+Fällt eine Einreichung durch, bleibt ihr Issue offen und bekommt einen
+Kommentar mit den Mängeln. Jede Änderung am Issue startet die Prüfung neu.
 
 ## Lizenz
 

@@ -20,7 +20,11 @@ on:
   schedule:
     - cron: '0 5 * * *' # täglich 05:00 UTC
   issues:
-    types: [labeled]
+    # Beim Anlegen und bei jeder Aenderung neu pruefen - so bessert der
+    # Einreichende selbst nach, ohne dass jemand ein Label setzen muss.
+    # labeled/unlabeled deckt ab, dass "blocked" gesetzt oder wieder
+    # entfernt wird.
+    types: [opened, edited, labeled, unlabeled]
   workflow_dispatch:
     inputs:
       force:
@@ -38,9 +42,11 @@ permissions:
 
 jobs:
   build:
-    # Auf ein Label reagieren wir nur, wenn es tatsaechlich "approved" ist -
-    # sonst liefe der Workflow bei jedem beliebigen Label mit.
-    if: github.event_name != 'issues' || github.event.label.name == 'approved'
+    # Nur echte Einreichungen, und gesperrte gar nicht erst anfassen.
+    if: >-
+      github.event_name != 'issues' ||
+      (contains(github.event.issue.labels.*.name, 'route-submission') &&
+       !contains(github.event.issue.labels.*.name, 'blocked'))
     runs-on: ubuntu-latest
     # Secrets lassen sich in einem step-level "if" nicht direkt abfragen,
     # deshalb hier einmal in die Job-Umgebung heben.
@@ -65,15 +71,17 @@ jobs:
           path: .mdt
           ref: master
 
-      - name: Freigegebene Einreichungen einsammeln
+      # Ersetzt die manuelle Freigabe: tools/validate-submission.mjs
+      # entscheidet, was aufgenommen wird. Faellt eine Einreichung durch,
+      # bleibt ihr Issue offen und bekommt die Maengelliste als Kommentar.
+      - name: Einreichungen prüfen und aufnehmen
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes
+        run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes --season "${{ vars.SEASON || 'current' }}"
 
-      # Laeuft nur mit Schluessel UND vorliegender Freigabe zur Weiterverteilung
-      # - und nur beim taeglichen Lauf. Eine
-      # freigegebene Einreichung braucht keine frischen keystone.guru-Daten,
-      # und wir haben dort einen Abruf pro Tag zugesagt.
+      # Laeuft nur mit Schluessel und nur beim taeglichen Lauf: eine
+      # Einreichung braucht keine frischen keystone.guru-Daten, und
+      # haeufigeres Abfragen waere Last auf fremden Servern ohne Gegenwert.
       - name: Routen von keystone.guru holen
         if: env.KEYSTONE_API_KEY != '' && github.event_name != 'issues'
         run: node tools/keystone-sync.mjs --out data/cache
