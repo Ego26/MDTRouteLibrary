@@ -248,8 +248,14 @@ end
 local function pan(ox, oy)
     local cw, ch = panel.canvas:GetWidth(), panel.canvas:GetHeight()
 
+    -- SetPoint zaehlt y nach oben. Die Karte haengt mit ihrer linken oberen
+    -- Ecke an der linken oberen Ecke des Sichtfensters:
+    --   ox geht von 0 (linker Rand) bis VIEW_W - cw (rechter Rand), also nach
+    --   links ins Negative.
+    --   oy geht von 0 (oberer Rand) bis ch - VIEW_H (unterer Rand), also nach
+    --   oben ins Positive.
     panel.ox = math.max(math.min(ox or panel.ox, 0), math.min(0, VIEW_W - cw))
-    panel.oy = math.min(math.max(oy or panel.oy, math.min(0, VIEW_H - ch)), 0)
+    panel.oy = math.min(math.max(oy or panel.oy, 0), math.max(0, ch - VIEW_H))
 
     panel.canvas:ClearAllPoints()
     panel.canvas:SetPoint("TOPLEFT", panel.viewport, "TOPLEFT", panel.ox, panel.oy)
@@ -274,14 +280,16 @@ local function zoomBy(delta)
         py = panel.viewport:GetTop() - my / scale
     end
 
-    local fx = cw > 0 and (-panel.ox + px) / cw or 0.5
-    local fy = ch > 0 and (-panel.oy + py) / ch or 0.5
+    -- Welcher Punkt der Karte liegt unter dem Zeiger? Waagerecht px - ox,
+    -- senkrecht py + oy - siehe die Vorzeichen in pan().
+    local fx = cw > 0 and (px - panel.ox) / cw or 0.5
+    local fy = ch > 0 and (py + panel.oy) / ch or 0.5
 
     panel.zoom = target
     layoutCanvas()
 
     local nw, nh = panel.canvas:GetWidth(), panel.canvas:GetHeight()
-    pan(-(fx * nw - px), -(fy * nh - py))
+    pan(px - fx * nw, fy * nh - py)
     panel.zoomLabel:SetText(("%.0f %%"):format(panel.zoom * 100))
 end
 
