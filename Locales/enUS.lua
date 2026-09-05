@@ -72,6 +72,8 @@ ns.RegisterLocale("enUS", {
     ["TILE_ROUTES"]         = "Routes",
     ["DETAIL_AFFIXES"]      = "Affixes: %s",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
+    ["DETAIL_FOLD_ALL"]     = "Collapse all",
+    ["DETAIL_UNFOLD_ALL"]   = "Expand all",
     ["DETAIL_SECTION_ADDS"] = "Adds",
     ["SHEET_BACK"]          = "Back",
     ["SHEET_SPELLS"]        = "Spells",

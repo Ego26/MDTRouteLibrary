@@ -1617,6 +1617,7 @@ local function updateDetail(route)
         d.affixes:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
+        d.foldAll:Hide()
         for _, tile in ipairs(d.tiles) do
             tile.value:SetText("")
             tile.caption:SetText("")
@@ -1664,6 +1665,16 @@ local function updateDetail(route)
     end
 
     d.section:SetText(ns.L["DETAIL_SECTION_PULLS"]:upper())
+
+    local anyOpen = false
+    for i = 1, #route.pulls do
+        if not collapsedPulls[route.id .. ":" .. i] then
+            anyOpen = true
+            break
+        end
+    end
+    d.foldAll:SetText(anyOpen and ns.L["DETAIL_FOLD_ALL"] or ns.L["DETAIL_UNFOLD_ALL"])
+    d.foldAll:Show()
 
     -- Pull-Liste: Ueberschrift je Pull, darunter die Gegner einzeln mit ihren
     -- Zaubern. Eine Sammelzeile pro Pull war zu gedraengt, und die Zauber
@@ -1850,6 +1861,7 @@ function updateDungeonDetail(dungeon)
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
     d.runs:SetText("")
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
+    d.foldAll:Hide()
 
     local y, rowIndex = 0, 0
 
@@ -2411,6 +2423,31 @@ local function buildDetail(parent)
     local divider = T:Divider(root)
     divider:SetPoint("TOPLEFT", d.section, "BOTTOMLEFT", 0, -4)
     divider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+
+    -- Alles auf oder alles zu. Bei vierzig Pulls einzeln zu klicken waere
+    -- Arbeit, die niemand machen will.
+    d.foldAll = T:Button(root, ns.L["DETAIL_FOLD_ALL"], 124)
+    d.foldAll:SetHeight(18)
+    d.foldAll:SetPoint("BOTTOMRIGHT", divider, "TOPRIGHT", 0, 3)
+    d.foldAll:SetScript("OnClick", function()
+        local route = selectedId and displayById[selectedId]
+        if not route or not route.pulls then return end
+
+        -- Ist noch irgendein Pull offen, klappt der Knopf zu. Erst wenn alle
+        -- zu sind, klappt er wieder auf.
+        local anyOpen = false
+        for i = 1, #route.pulls do
+            if not collapsedPulls[selectedId .. ":" .. i] then
+                anyOpen = true
+                break
+            end
+        end
+
+        for i = 1, #route.pulls do
+            collapsedPulls[selectedId .. ":" .. i] = anyOpen or nil
+        end
+        B.Refresh()
+    end)
 
     local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 0, -6)

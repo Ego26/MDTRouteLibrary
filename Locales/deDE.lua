@@ -72,6 +72,8 @@ ns.RegisterLocale("deDE", {
     ["TILE_ROUTES"]         = "Routen",
     ["DETAIL_AFFIXES"]      = "Affixe: %s",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
+    ["DETAIL_FOLD_ALL"]     = "Alle einklappen",
+    ["DETAIL_UNFOLD_ALL"]   = "Alle ausklappen",
     ["DETAIL_SECTION_ADDS"] = "Adds",
     ["SHEET_BACK"]          = "Zurück",
     ["SHEET_SPELLS"]        = "Zauber",
