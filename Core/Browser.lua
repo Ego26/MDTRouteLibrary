@@ -73,6 +73,7 @@ local collapsed = {}
 
 -- Wie viele Routen je Abschnitt auf eine Seite passen.
 local PAGE_SIZE = 10
+local PAGER_HEIGHT = 28
 
 -- Aktuelle Seite je Abschnitt.
 local pages = {}
@@ -877,8 +878,6 @@ local function rebuildEntries()
             key = sectionKey,
             text = label,
             count = #list,
-            page = page,
-            pageCount = pageCount,
             collapsed = collapsed[sectionKey] or false,
         }
         if collapsed[sectionKey] then return end
@@ -917,6 +916,20 @@ local function rebuildEntries()
                     entries[#entries + 1] = { route = route }
                 end
             end
+        end
+
+        -- Blaetterung unter die Ergebnisse, nicht in die Ueberschrift: dort
+        -- sucht man sie, wenn man am Ende der Liste angekommen ist.
+        if pageCount > 1 then
+            entries[#entries + 1] = {
+                pager = true,
+                key = sectionKey,
+                page = page,
+                pageCount = pageCount,
+                first = first,
+                last = last,
+                total = #list,
+            }
         end
     end
 
@@ -1001,8 +1014,8 @@ local function acquireRow(index)
     row.prev:SetPoint("RIGHT", row, "RIGHT", -34, 0)
     row.prev:SetScript("OnClick", function(self)
         local parent = self:GetParent()
-        if not parent.groupKey then return end
-        pages[parent.groupKey] = math.max(1, (pages[parent.groupKey] or 1) - 1)
+        if not parent.pageKey then return end
+        pages[parent.pageKey] = math.max(1, (pages[parent.pageKey] or 1) - 1)
         B.Refresh()
     end)
     row.prev:Hide()
@@ -1012,8 +1025,8 @@ local function acquireRow(index)
     row.next:SetPoint("RIGHT", row, "RIGHT", -8, 0)
     row.next:SetScript("OnClick", function(self)
         local parent = self:GetParent()
-        if not parent.groupKey then return end
-        pages[parent.groupKey] = (pages[parent.groupKey] or 1) + 1
+        if not parent.pageKey then return end
+        pages[parent.pageKey] = (pages[parent.pageKey] or 1) + 1
         B.Refresh()
     end)
     row.next:Hide()
@@ -1612,7 +1625,48 @@ function B.Refresh()
         row:SetPoint("TOPLEFT", ui.content, "TOPLEFT", 0, -y)
         row:SetPoint("TOPRIGHT", ui.content, "TOPRIGHT", 0, -y)
 
-        if entry.header or entry.section then
+        if entry.pager then
+            row.isHeader = true
+            row.routeId, row.route, row.groupKey = nil, nil, nil
+            row:SetHeight(PAGER_HEIGHT)
+            row:EnableMouse(false)
+
+            row.band:Hide()
+            row.bandAccent:Hide()
+            row.check:Hide()
+            row.warn:Hide()
+            row.fav:Hide()
+            row.highlight:Hide()
+            row.selected:Hide()
+            row.title:SetText("")
+            row.meta:SetText("")
+            row.level:SetText("")
+            row.pulls:SetText("")
+            row.forces:SetText("")
+            row.percent:SetText("")
+
+            row.pageKey = entry.key
+
+            row.pageLabel:ClearAllPoints()
+            row.pageLabel:SetPoint("CENTER", row, "CENTER", 0, 0)
+            row.pageLabel:SetText(("%s   %s"):format(
+                ns.L["PAGE"]:format(entry.page, entry.pageCount),
+                ns.L["PAGE_RANGE"]:format(entry.first, entry.last, entry.total)))
+
+            row.prev:ClearAllPoints()
+            row.prev:SetPoint("RIGHT", row.pageLabel, "LEFT", -10, 0)
+            row.next:ClearAllPoints()
+            row.next:SetPoint("LEFT", row.pageLabel, "RIGHT", 10, 0)
+
+            row.pageLabel:Show()
+            row.prev:Show()
+            row.next:Show()
+            row.prev:SetEnabled(entry.page > 1)
+            row.next:SetEnabled(entry.page < entry.pageCount)
+
+            row:Show()
+            y = y + PAGER_HEIGHT
+        elseif entry.header or entry.section then
             row.isHeader = true
             row.routeId  = nil
             row.route    = nil
@@ -1625,18 +1679,9 @@ function B.Refresh()
             row.band:SetShown(entry.section == true)
             row.bandAccent:SetShown(entry.section == true)
 
-            -- Blaettern gibt es nur bei Abschnitten und nur, wenn es mehr als
-            -- eine Seite gibt.
-            local paged = entry.section and (entry.pageCount or 1) > 1
-            row.pageLabel:SetShown(paged == true)
-            row.prev:SetShown(paged == true)
-            row.next:SetShown(paged == true)
-
-            if paged then
-                row.pageLabel:SetText(ns.L["PAGE"]:format(entry.page, entry.pageCount))
-                row.prev:SetEnabled(entry.page > 1)
-                row.next:SetEnabled(entry.page < entry.pageCount)
-            end
+            row.pageLabel:Hide()
+            row.prev:Hide()
+            row.next:Hide()
 
             local arrow = T:Text("accent", entry.collapsed and "+" or "-")
 

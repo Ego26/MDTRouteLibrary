@@ -94,6 +94,7 @@ ns.RegisterLocale("deDE", {
     ["UNDO_DONE"]           = "%d Routen wiederhergestellt.",
     ["DELETE_UNDO_HINT"]    = "Falsche erwischt? „Rückgängig“ unten – gilt bis zum nächsten /reload.",
     ["PAGE"]                = "Seite %d/%d",
+    ["PAGE_RANGE"]          = "(%d–%d von %d)",
     ["HELP_HEADER"]         = "MDTRouteLibrary-Befehle:",
     ["HELP_OPEN"]           = "/routes – Routen-Browser öffnen",
     ["HELP_LIST"]           = "/routes list – installierte Routen anzeigen",

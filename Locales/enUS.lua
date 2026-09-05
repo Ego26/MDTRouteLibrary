@@ -94,6 +94,7 @@ ns.RegisterLocale("enUS", {
     ["UNDO_DONE"]           = "%d routes restored.",
     ["DELETE_UNDO_HINT"]    = "Wrong ones? Use Undo in the footer - it works until the next reload.",
     ["PAGE"]                = "Page %d/%d",
+    ["PAGE_RANGE"]          = "(%d-%d of %d)",
     ["HELP_HEADER"]         = "MDTRouteLibrary commands:",
     ["HELP_OPEN"]           = "/routes - open the route browser",
     ["HELP_LIST"]           = "/routes list - show installed routes",
