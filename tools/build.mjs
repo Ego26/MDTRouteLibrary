@@ -76,8 +76,11 @@ function checkRoute(route, lookup) {
       if (entry.npc != null && enemy.id !== entry.npc) {
         issues.push(`Gegner ${entry.enemy} ist NPC ${enemy.id}, Route erwartet ${entry.npc}`)
       }
+      // Gegen die echten Schluessel pruefen, nicht gegen 1..Anzahl: MDTs
+      // Klontabellen haben Luecken.
+      const keys = new Set(enemy.cloneKeys ?? [])
       for (const clone of entry.clones ?? []) {
-        if (clone < 1 || clone > enemy.clones) issues.push(`Klon ${entry.enemy}/${clone} unbekannt`)
+        if (!keys.has(clone)) issues.push(`Klon ${entry.enemy}/${clone} unbekannt`)
       }
     }
   }
@@ -265,10 +268,35 @@ async function main() {
     const enemies = {}
     for (const enemy of dungeon.enemies) {
       if (enemy.id == null) continue
-      enemies[enemy.index] = { npc: enemy.id, count: enemy.count, clones: enemy.clones }
+      // pos: Klonschluessel -> { x, y, Unterebene }. Damit zeichnet die
+      // Kartenvorschau eine Route, ohne MDTs Karte zu oeffnen. Die Zahlen
+      // liegen in MDTs eigenem Kartenraum (840 x 555).
+      const pos = {}
+      for (const [key, clone] of Object.entries(enemy.clonePos ?? {})) {
+        pos[key] = [clone.x, clone.y, clone.sublevel]
+      }
+      enemies[enemy.index] = {
+        npc: enemy.id,
+        count: enemy.count,
+        clones: enemy.clones,
+        pos: Object.keys(pos).length > 0 ? pos : undefined,
+      }
     }
 
-    return { ...meta, npcs: names, enemies }
+    // Kachelpfade der Dungeonkarte. Die Vorschau zeigt damit MDTs eigene
+    // Grafiken - eigene Karten mitzuliefern waere ein Vielfaches der
+    // Paketgroesse, und aktuell waeren sie sowieso dieselben.
+    const maps = {}
+    for (const [sublevel, map] of Object.entries(dungeon.maps ?? {})) {
+      maps[sublevel] = { path: map.path, name: map.name ?? undefined }
+    }
+
+    return {
+      ...meta,
+      npcs: names,
+      enemies,
+      maps: Object.keys(maps).length > 0 ? maps : undefined,
+    }
   }).sort((a, b) => a.englishName.localeCompare(b.englishName))
 
   console.log('5) Lua erzeugen')

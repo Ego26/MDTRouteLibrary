@@ -35,6 +35,7 @@ export function parseDungeonFile(file) {
     englishName: null,
     challengeModeId: null,
     totalCount: null,
+    maps: {},
     enemies: [],
   }
 
@@ -51,6 +52,36 @@ export function parseDungeonFile(file) {
   const total = findTables(src, /MDT\.dungeonTotalCount\[dungeonIndex\]\s*=\s*\{/g)[0]
   if (total && typeof total.value.normal === 'number') dungeon.totalCount = total.value.normal
 
+  // Kartenkacheln je Unterebene. MDT setzt den Pfad aus Literalen und der
+  // Variablen addonName zusammen - der Tabellenparser wuerde die Verkettung
+  // nicht ausrechnen, deshalb hier ein Ausdruck. In der Quelle steht:
+  //   [1] = { customTextures = 'Interface\\AddOns\\'..addonName..'\\Midnight\\Textures\\AltarOfFangs' }
+  const mapsBlock = /MDT\.dungeonMaps\[dungeonIndex\]\s*=\s*\{([\s\S]*?)\n\}/.exec(src)
+  if (mapsBlock) {
+    const re =
+      /\[(\d+)\]\s*=\s*\{\s*customTextures\s*=\s*'Interface\\\\AddOns\\\\'\s*\.\.\s*addonName\s*\.\.\s*'([^']*)'/g
+    let m
+    while ((m = re.exec(mapsBlock[1])) !== null) {
+      const sublevel = Number(m[1])
+      if (sublevel < 1) continue
+      // Im Lua-Literal steht jeder Backslash doppelt.
+      const suffix = m[2].replace(/\\\\/g, '\\')
+      dungeon.maps[sublevel] = { path: 'Interface\\AddOns\\MythicDungeonTools' + suffix }
+    }
+  }
+
+  // Namen der Unterebenen. Stehen als Lokalisierungsschluessel da, aufgeloest
+  // wird in readDungeons - genau wie beim Kurznamen.
+  const subBlock = /MDT\.dungeonSubLevels\[dungeonIndex\]\s*=\s*\{([\s\S]*?)\n\}/.exec(src)
+  if (subBlock) {
+    const re = /\[(\d+)\]\s*=\s*L\["([^"]+)"\]/g
+    let m
+    while ((m = re.exec(subBlock[1])) !== null) {
+      const entry = dungeon.maps[Number(m[1])]
+      if (entry) entry.nameKey = m[2]
+    }
+  }
+
   // MDT.dungeonEnemies[dungeonIndex] = { [1] = { ... }, ... }
   const enemiesStart = src.indexOf('MDT.dungeonEnemies[dungeonIndex]')
   if (enemiesStart !== -1) {
@@ -58,6 +89,30 @@ export function parseDungeonFile(file) {
     const { value } = parseTableAt(src, brace)
     for (const [key, enemy] of Object.entries(value)) {
       if (!enemy || typeof enemy !== 'object') continue
+      // Klonpositionen: MDT setzt seine Blips auf (x * scale, y * scale)
+      // relativ zur linken oberen Ecke der 840 x 555 grossen Karte. Genau
+      // diese Zahlen braucht die Kartenvorschau. Gerundet, weil ein Zehntel
+      // Kartenpunkt in einer 360 Pixel breiten Vorschau nicht darstellbar ist
+      // und das Datenpaket sonst ohne Gegenwert waechst.
+      const clonePos = {}
+      if (enemy.clones && typeof enemy.clones === 'object') {
+        for (const [key, clone] of Object.entries(enemy.clones)) {
+          const index = Number(key)
+          if (!Number.isFinite(index) || !clone || typeof clone !== 'object') continue
+          if (typeof clone.x !== 'number' || typeof clone.y !== 'number') continue
+          clonePos[index] = {
+            x: Math.round(clone.x),
+            y: Math.round(clone.y),
+            sublevel: typeof clone.sublevel === 'number' ? clone.sublevel : 1,
+          }
+        }
+      }
+      // Die Schluessel in aufsteigender Ordnung. keystone.guru zaehlt Klone
+      // fortlaufend durch; erst diese Liste uebersetzt "der dritte Klon" in
+      // den Schluessel, den MDT tatsaechlich erwartet.
+      const cloneKeys = Object.keys(clonePos)
+        .map(Number)
+        .sort((a, b) => a - b)
       const clones = enemy.clones && typeof enemy.clones === 'object' ? Object.keys(enemy.clones).length : 0
       dungeon.enemies.push({
         index: Number(key),
@@ -65,6 +120,8 @@ export function parseDungeonFile(file) {
         name: enemy.name ?? null,
         count: enemy.count ?? 0,
         clones,
+        cloneKeys,
+        clonePos,
         isBoss: enemy.isBoss === true,
         // Fuer die Vorschau beim Ueberfahren: displayId speist das 3D-Modell,
         // der Rest fuellt die Infozeilen - dieselben Angaben, die MDT zeigt.
@@ -137,6 +194,10 @@ export function readDungeons(mdtPath) {
           const key = dungeon.shortNameKey
           dungeon.shortName = (key && shortNames[key]) || dungeon.englishName.slice(0, 4).toUpperCase()
           delete dungeon.shortNameKey
+          for (const map of Object.values(dungeon.maps)) {
+            if (map.nameKey) map.name = shortNames[map.nameKey] ?? null
+            delete map.nameKey
+          }
           dungeons.push(dungeon)
         }
       } catch (err) {

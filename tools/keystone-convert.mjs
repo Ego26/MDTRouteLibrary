@@ -52,7 +52,7 @@ function resolveEnemy(pullEnemy, byNpc, dungeon, interpretation) {
     const entry = dungeon.enemies.find((e) => e.index === mdtIndex)
     if (!entry) return null
     // Ohne Klonangabe bleibt nur der erste Klon - bewusst verlustbehaftet.
-    return { enemy: entry.index, clone: 1, forces: entry.count }
+    return { enemy: entry.index, clone: entry.cloneKeys?.[0] ?? 1, forces: entry.count }
   }
 
   const candidates = byNpc.get(npcId)
@@ -63,7 +63,11 @@ function resolveEnemy(pullEnemy, byNpc, dungeon, interpretation) {
   let remaining = mdtIndex
   for (const entry of candidates) {
     if (remaining <= entry.clones) {
-      return { enemy: entry.index, clone: remaining, forces: entry.count }
+      // MDT spricht Klone ueber ihren Tabellenschluessel an, und der ist nicht
+      // fortlaufend. Der fortlaufende Zaehler von keystone.guru muss deshalb
+      // erst uebersetzt werden, sonst zeigt der Import ins Leere.
+      const clone = entry.cloneKeys?.[remaining - 1] ?? remaining
+      return { enemy: entry.index, clone, forces: entry.count }
     }
     remaining -= entry.clones
   }

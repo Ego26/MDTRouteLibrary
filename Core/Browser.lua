@@ -978,10 +978,16 @@ local function acquireRow(index)
     row.selected:Hide()
 
     row:SetScript("OnEnter", function(self)
-        if not self.isHeader then self.highlight:Show() end
+        if self.isHeader then return end
+        self.highlight:Show()
+        -- Kartenvorschau: zeigt den Verlauf, bevor man die Route ueberhaupt
+        -- anfasst. Geht bewusst verzoegert auf, siehe Core/MapPreview.lua.
+        ns.MapPreview.Request(self, self.route)
     end)
     row:SetScript("OnLeave", function(self)
-        if not self.isHeader and self.routeId ~= selectedId then self.highlight:Hide() end
+        if self.isHeader then return end
+        if self.routeId ~= selectedId then self.highlight:Hide() end
+        ns.MapPreview.Hide()
     end)
 
     -- Auswahlkaestchen: nur bei eigenen Routen sichtbar.
@@ -1611,6 +1617,10 @@ end
 ---Zeichnet Liste, Leiste und Details neu.
 function B.Refresh()
     if not ui then return end
+
+    -- Die Zeilen werden gleich neu belegt; eine offene Kartenvorschau zeigte
+    -- danach die Route der vorigen Belegung.
+    ns.MapPreview.Hide()
 
     for _, tab in ipairs(ui.tabs) do
         tab:SetActive(tab.mode == filterMode)
