@@ -46,7 +46,7 @@ Drumherum:
 | `tools/`      | Node-Skripte für Build und Pipeline.                    |
 | `data/routes` | Normalisierte Routen als JSON – die eigentliche Quelle.  |
 | `data/mock`   | Testdaten, damit der Build ohne API-Schlüssel läuft.     |
-| `docs/`       | Architektur und Entscheidungen.                          |
+| `docs/`       | Architektur, Datenquellen, Veröffentlichung.             |
 
 ## Befehle im Spiel
 
@@ -88,6 +88,15 @@ Ins Spiel kopieren:
 `tools/build.mjs` sagt über den Exitcode, ob sich etwas geändert hat:
 `0` = neuer Inhalt, `9` = unverändert, `1` = Fehler. Die tägliche GitHub Action
 veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Routen.
+
+## Weiterführend
+
+| Dokument | Inhalt |
+|---|---|
+| [docs/01-Architektur.md](docs/01-Architektur.md) | Wie die MDT-Anbindung funktioniert und warum so |
+| [docs/02-Datenquellen.md](docs/02-Datenquellen.md) | Woher Routen kommen sollen, und was rechtlich gilt |
+| [docs/03-Anfrage-keystone-guru.md](docs/03-Anfrage-keystone-guru.md) | Entwurf der Anfrage an Raider.IO |
+| [docs/04-Veroeffentlichen.md](docs/04-Veroeffentlichen.md) | Secrets, Projekt-IDs, erster Release |
 
 ## Mitmachen
 
