@@ -118,8 +118,10 @@ jobs:
           git tag "${{ steps.version.outputs.tag }}"
           git push --follow-tags
 
-      # Der BigWigs-Packager ist der De-facto-Standard fuer WoW-Addons und
-      # bedient CurseForge, Wago und WoWInterface in einem Schritt.
+      # Der BigWigs-Packager ist der De-facto-Standard fuer WoW-Addons.
+      # Er koennte auch Wago und WoWInterface bedienen; wir laden bewusst nur
+      # zu CurseForge hoch. Ein weiterer Kanal waere eine Zeile mehr hier plus
+      # das passende Secret.
       - name: Veröffentlichen
         if: steps.build.outputs.changed == 'true'
         uses: BigWigsMods/packager@master
@@ -127,7 +129,6 @@ jobs:
           # Der Packager liest feste Variablennamen. Die Secrets duerfen anders
           # heissen, sie werden hier zugeordnet.
           CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
-          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Zusammenfassung

@@ -99,7 +99,7 @@ function Invoke-Sync {
 
     Sync-Addon -Source $RepoRoot `
                -Target (Join-Path $AddOns "MDTRouteLibrary") `
-               -ExcludeDirs  @(".git", ".github", ".release", ".vscode", "docs", "tools", "data", "assets", "node_modules", "MDTRouteLibrary_Data") `
+               -ExcludeDirs  @(".git", ".github", ".release", ".vscode", "docs", "tools", "data", "assets", "branding", "node_modules", "MDTRouteLibrary_Data") `
                -ExcludeFiles @("*.md", "*.ps1", "*.mjs", ".gitignore", ".gitattributes", ".pkgmeta", ".luacheckrc", ".editorconfig")
 
     $dataSource = Join-Path $RepoRoot "MDTRouteLibrary_Data"

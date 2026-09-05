@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
-    Wandelt PNG-Vorlagen aus assets/ in TGA-Texturen unter Media/Textures um.
+    Wandelt die Markengrafik aus branding/png in TGA-Texturen unter
+    Media/Textures um.
 
 .DESCRIPTION
     WoW laedt weder PNG noch JPEG. Zulaessig sind BLP (Blizzards eigenes
@@ -31,7 +32,7 @@ $ErrorActionPreference = "Stop"
 Add-Type -AssemblyName System.Drawing
 
 $RepoRoot  = Split-Path -Parent $PSScriptRoot
-$AssetsDir = Join-Path $RepoRoot "assets"
+$AssetsDir = Join-Path $RepoRoot "branding\png"
 $OutDir    = Join-Path $RepoRoot "Media\Textures"
 
 if (-not (Test-Path $OutDir)) {
@@ -40,8 +41,8 @@ if (-not (Test-Path $OutDir)) {
 
 # Quelle -> Zielname und Kantenlaenge (Zweierpotenz!)
 $jobs = @(
-    @{ Source = "logo.png"; Target = "logo-small"; Size = 32  }
-    @{ Source = "logo.png"; Target = "logo";       Size = 128 }
+    @{ Source = "logo-256.png"; Target = "logo-small"; Size = 32  }
+    @{ Source = "logo-256.png"; Target = "logo";       Size = 128 }
 )
 
 function Write-Tga {

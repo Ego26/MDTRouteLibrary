@@ -22,10 +22,11 @@ local SECTION_KEY = "mdtRouteLibrary"
 
 local T = ns.Theme
 
--- Eigene Kunst gibt es noch nicht; ein Blizzard-Icon tut es fuers Erste.
--- texCoords schneiden den Standardrahmen der Icons weg.
-local ICON        = "Interface\\Icons\\INV_Misc_Map02"
-local ICON_COORDS = { 0.08, 0.92, 0.08, 0.92 }
+-- Eigenes Emblem. Die kleine Fassung ist auf 32 Pixel gerechnet, weil WoW
+-- ohne Mipmaps filtert und eine 128er-Grafik auf Leistengroesse rauschen
+-- wuerde. Erzeugt von tools/convert-textures.ps1 aus branding/png.
+local ICON        = "Interface\\AddOns\\MDTRouteLibrary\\Media\\Textures\\logo-small"
+local ICON_COORDS = { 0, 1, 0, 1 }
 
 local ROW_HEIGHT     = 34
 local HEADER_HEIGHT  = 24
@@ -36,7 +37,7 @@ local DUNGEON_BUTTON = 42
 
 -- Spaltenbreiten der Routenliste. Kopfzeile und Zeilen richten sich beide
 -- danach, sonst stehen die Ueberschriften irgendwo.
-local COL_FAV     = 20
+local COL_FAV     = 26
 local COL_PERCENT = 62
 local COL_FORCES  = 76
 local COL_PULLS   = 54
@@ -1034,7 +1035,7 @@ local function acquireRow(index)
     -- Favoritenherz. Rein lokal: ein Addon kann nichts nach draussen senden,
     -- also ist das die eigene Merkliste, keine Community-Wertung.
     row.fav = CreateFrame("Button", nil, row)
-    row.fav:SetSize(16, 16)
+    row.fav:SetSize(20, 20)
     row.fav:SetPoint("RIGHT", row, "RIGHT", -6, 0)
     row.fav.texture = row.fav:CreateTexture(nil, "ARTWORK")
     row.fav.texture:SetAllPoints()
@@ -1782,7 +1783,14 @@ function B.Refresh()
             local fav = isFavourite(route.id)
             row.fav:Show()
             row.fav.texture:SetTexture("Interface\\Common\\friendship-heart")
-            row.fav.texture:SetVertexColor(1, fav and 0.3 or 1, fav and 0.4 or 1, fav and 1 or 0.25)
+            -- Nicht markiert war fast unsichtbar. Gedaempftes Grau statt
+            -- verblasstem Rot: als Schaltflaeche erkennbar, ohne den
+            -- markierten die Aufmerksamkeit zu nehmen.
+            if fav then
+                row.fav.texture:SetVertexColor(1, 0.25, 0.35, 1)
+            else
+                row.fav.texture:SetVertexColor(0.65, 0.65, 0.65, 0.55)
+            end
             row.percent:SetText(percentText(route))
 
             local isSelected = route.id == selectedId
