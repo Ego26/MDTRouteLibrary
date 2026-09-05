@@ -32,6 +32,9 @@ local SCALE      = MAP_W / MDT_WIDTH
 
 local PADDING    = 10
 local DOT_SIZE   = 5
+-- Mindestabstand zwischen zwei Pullnummern. Enger nebeneinander sind sie
+-- nicht mehr lesbar, dann bleibt die zweite weg.
+local LABEL_GAP  = 18
 local DELAY      = 0.35 -- Sekunden Verweilen, bevor die Vorschau aufgeht
 
 -- Obergrenze fuer die Punkte. Keine echte Route kommt in die Naehe; die
@@ -114,8 +117,9 @@ local function ensureFrame()
         end
     end
 
-    f.dots  = {}
-    f.links = {}
+    f.dots   = {}
+    f.links  = {}
+    f.labels = {}
 
     f.footer = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     f.footer:SetPoint("TOPLEFT", f.map, "BOTTOMLEFT", 0, -6)
@@ -138,6 +142,24 @@ local function acquireDot(index)
     dot:SetSize(DOT_SIZE, DOT_SIZE)
     frame.dots[index] = dot
     return dot
+end
+
+---Holt die n-te Pullnummer aus dem Vorrat.
+---@param index number
+---@return table
+local function acquireLabel(index)
+    local label = frame.labels[index]
+    if label then return label end
+
+    label = frame.map:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    -- Ueber den Punkten, sonst verschwindet die Ziffer in einer dichten Gruppe.
+    label:SetDrawLayer("OVERLAY", 7)
+    -- Schlagschatten statt Umrandung: die Karte ist stellenweise hell, und
+    -- eine helle Ziffer auf hellem Stein liest sonst niemand.
+    label:SetShadowColor(0, 0, 0, 1)
+    label:SetShadowOffset(1, -1)
+    frame.labels[index] = label
+    return label
 end
 
 ---Holt die n-te Verbindungslinie aus dem Vorrat.
@@ -233,8 +255,10 @@ local function fill(route)
     if not applyTiles(dungeon, sublevel) then return false end
 
     local total = #pulls
-    local dotIndex, linkIndex = 0, 0
+    local dotIndex, linkIndex, labelIndex = 0, 0, 0
     local prevX, prevY
+    -- Schon vergebene Nummernplaetze, fuer den Abstandstest weiter unten.
+    local placed = {}
 
     for i, points in ipairs(pulls) do
         local t = total > 1 and (i - 1) / (total - 1) or 0
@@ -270,11 +294,39 @@ local function fill(route)
                 link:Show()
             end
             prevX, prevY = cx, cy
+
+            -- Die Pullnummer in die Mitte der Gruppe. Bei vierzig Pulls auf
+            -- 360 Pixeln passen nicht alle nebeneinander, deshalb bleibt eine
+            -- Nummer weg, wenn schon eine zu nah daneben steht. Erster und
+            -- letzter Pull werden immer beschriftet - sie sagen, wo die Route
+            -- anfaengt und wo sie aufhoert.
+            local must = (i == 1 or i == total)
+            local room = true
+            if not must then
+                for _, p in ipairs(placed) do
+                    if math.abs(p[1] - cx) < LABEL_GAP and math.abs(p[2] - cy) < LABEL_GAP then
+                        room = false
+                        break
+                    end
+                end
+            end
+
+            if must or room then
+                labelIndex = labelIndex + 1
+                local label = acquireLabel(labelIndex)
+                label:SetText(tostring(i))
+                label:SetTextColor(r, g, b)
+                label:ClearAllPoints()
+                label:SetPoint("CENTER", frame.map, "TOPLEFT", cx, cy)
+                label:Show()
+                placed[#placed + 1] = { cx, cy }
+            end
         end
     end
 
     for i = dotIndex + 1, #frame.dots do frame.dots[i]:Hide() end
     for i = linkIndex + 1, #frame.links do frame.links[i]:Hide() end
+    for i = labelIndex + 1, #frame.labels do frame.labels[i]:Hide() end
 
     frame.title:SetText(T:Hex("textPrimary") .. (route.title or "?") .. "|r")
 
@@ -283,6 +335,9 @@ local function fill(route)
         T:Hex("success"), ns.L["MAP_START"],
         T:Hex("danger"), ns.L["MAP_END"]
     )
+    footer = footer .. T:Hex("textMuted") .. "  ·  "
+        .. ("%d %s"):format(total, ns.L["COL_PULLS"]) .. "|r"
+
     -- Bei mehrstoeckigen Dungeons sagen wir dazu, welches Stockwerk man sieht.
     if levels > 1 then
         local map = dungeon.maps[sublevel]
@@ -298,23 +353,22 @@ end
 -- Schnittstelle
 --------------------------------------------------------------------------
 
----Haengt die Vorschau an eine Zeile. Sie geht nach rechts auf, weicht aber
----nach links aus, wenn dort der Bildschirm zu Ende ist.
+---Haengt die Vorschau an eine Zeile.
+---
+---Rechtsbuendig zur Zeile, also innerhalb von MDTs Fenster. Rechts daneben
+---waere mehr Platz, aber dort liegen die Addons des Nutzers - Schadensmesser,
+---Gruppenrahmen -, und die Vorschau stuende ploetzlich mitten in deren
+---Anzeige. Verdeckt werden hier nur die Zahlenspalten der Nachbarzeilen, und
+---das auch nur, solange die Maus stehen bleibt.
 ---@param owner table
 local function anchor(owner)
     frame.owner = owner
     frame:ClearAllPoints()
-    frame:SetPoint("TOPLEFT", owner, "TOPRIGHT", 8, 8)
+    frame:SetPoint("TOPRIGHT", owner, "TOPRIGHT", -4, 8)
 
-    local right = frame:GetRight()
-    if right and right > UIParent:GetRight() then
-        frame:ClearAllPoints()
-        frame:SetPoint("TOPRIGHT", owner, "TOPLEFT", -8, 8)
-    end
-
-    -- Nach unten darf sie auch nicht aus dem Bild laufen.
+    -- Nach unten darf sie nicht aus dem Bild laufen.
     local bottom = frame:GetBottom()
-    if bottom and bottom < 0 then
+    if bottom and bottom < 8 then
         local point, relTo, relPoint, x, y = frame:GetPoint(1)
         frame:ClearAllPoints()
         frame:SetPoint(point, relTo, relPoint, x, y - bottom + 8)
