@@ -162,6 +162,41 @@ function alreadyReported(number, fingerprint) {
   return comments.some((c) => (c.body ?? '').includes(`<!-- mdtrl-check:${fingerprint} -->`))
 }
 
+/**
+ * Findet offene Issues mit einem Einreich-Blob, denen das Label fehlt, und
+ * traegt es nach.
+ *
+ * Warum: das Label ist die einzige Bruecke zwischen einer Einreichung und
+ * dieser Pipeline. Faellt es aus - weil es im Repository fehlte, weil jemand
+ * ein leeres Issue statt der Vorlage benutzt hat, weil es versehentlich
+ * entfernt wurde -, verschwindet die Route spurlos. Niemand bekommt eine
+ * Fehlermeldung, der Einreichende wartet vergeblich.
+ *
+ * Das Nachtragen loest ein "labeled"-Ereignis aus, der Lauf dazu prueft die
+ * Einreichung dann regulaer.
+ *
+ * @returns {number} wie viele nachgetragen wurden
+ */
+export function adoptStraySubmissions() {
+  const found = ghTry([
+    'issue', 'list',
+    '--state', 'open',
+    '--search', 'mdtrl1 in:body',
+    '--limit', '50',
+    '--json', 'number,labels',
+  ])
+
+  let adopted = 0
+  for (const issue of found ?? []) {
+    const labels = (issue.labels ?? []).map((l) => l.name)
+    if (labels.includes(LABEL_SUBMISSION) || labels.includes(LABEL_BLOCKED)) continue
+    console.log(`  ~ #${issue.number}: Einreich-Code ohne Label gefunden, Label nachgetragen`)
+    ghTry(['issue', 'edit', String(issue.number), '--add-label', LABEL_SUBMISSION])
+    adopted += 1
+  }
+  return adopted
+}
+
 function parseArgs(argv) {
   const args = {}
   for (let i = 0; i < argv.length; i += 1) {
@@ -214,10 +249,24 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   console.log(`${issues.length} offene Einreichungen`)
   mkdirSync(outDir, { recursive: true })
 
-  if (!dry && issues.length > 0) {
+  // Immer anlegen, nicht erst wenn Einreichungen da sind - sonst gibt es
+  // route-submission nie. Die Issue-Vorlage vergibt das Label, kann es aber
+  // nicht selbst erzeugen; fehlt es, wird es beim Anlegen stillschweigend
+  // verworfen, der Workflow springt nicht an und die Einreichung verschwindet
+  // spurlos. Genau das war in einem frisch angelegten Repository der Fall.
+  if (!dry) {
+    ensureLabel(LABEL_SUBMISSION, '1D76DB', 'Vorschlag für eine Route, wird automatisch geprüft')
     ensureLabel(LABEL_NEEDS_FIX, 'D93F0B', 'Einreichung erfüllt die Aufnahmekriterien noch nicht')
     ensureLabel(LABEL_ACCEPTED, '0E8A16', 'Einreichung wurde ins Datenpaket übernommen')
     ensureLabel(LABEL_BLOCKED, '000000', 'Einreichung wird dauerhaft nicht aufgenommen')
+
+    // Nachtragen kann Einreichungen sichtbar machen, die eben noch fehlten -
+    // dann muss die Liste neu geholt werden, sonst bleiben sie bis zum
+    // naechsten Lauf liegen.
+    if (adoptStraySubmissions() > 0) {
+      issues = listSubmissions()
+      console.log(`${issues.length} offene Einreichungen nach dem Nachtragen`)
+    }
   }
 
   let accepted = 0
