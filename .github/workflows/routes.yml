@@ -71,7 +71,7 @@ jobs:
         run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes
 
       # Laeuft nur mit Schluessel UND vorliegender Freigabe zur Weiterverteilung
-      # (siehe docs/02-Datenquellen.md) - und nur beim taeglichen Lauf. Eine
+      # - und nur beim taeglichen Lauf. Eine
       # freigegebene Einreichung braucht keine frischen keystone.guru-Daten,
       # und wir haben dort einen Abruf pro Tag zugesagt.
       - name: Routen von keystone.guru holen

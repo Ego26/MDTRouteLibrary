@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="branding/png/banner-1696.png" width="100%"
+  <img src="branding/banner-1696.png" width="100%"
        alt="MDT Route Library — kuratierte Mythic+-Routen, direkt in Mythic Dungeon Tools durchsuchbar">
 </div>
 
@@ -14,7 +14,7 @@ Klick zeigt eine Route auf der Karte, ein weiterer übernimmt sie dauerhaft.
 
 Frühe Entwicklung. Gebaut und geprüft gegen **MDT 6.2.13** (Client 12.0.1).
 Addon, MDT-Anbindung, Einreich-Pfad, Generator und tägliche Pipeline stehen.
-Was fehlt, ist der Inhalt – siehe [docs/02-Datenquellen.md](docs/02-Datenquellen.md).
+Was fehlt, ist der Inhalt.
 
 ## Wie es sich in MDT verhält
 
@@ -49,7 +49,6 @@ Drumherum:
 | `tools/`      | Node-Skripte für Build und Pipeline.                    |
 | `data/routes` | Normalisierte Routen als JSON – die eigentliche Quelle.  |
 | `data/mock`   | Testdaten, damit der Build ohne API-Schlüssel läuft.     |
-| `docs/`       | Architektur, Datenquellen, Veröffentlichung.             |
 
 ## Befehle im Spiel
 
@@ -91,14 +90,6 @@ Ins Spiel kopieren:
 `tools/build.mjs` sagt über den Exitcode, ob sich etwas geändert hat:
 `0` = neuer Inhalt, `9` = unverändert, `1` = Fehler. Die tägliche GitHub Action
 veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Routen.
-
-## Weiterführend
-
-| Dokument | Inhalt |
-|---|---|
-| [docs/01-Architektur.md](docs/01-Architektur.md) | Wie die MDT-Anbindung funktioniert und warum so |
-| [docs/02-Datenquellen.md](docs/02-Datenquellen.md) | Woher Routen kommen sollen, und was rechtlich gilt |
-| [docs/04-Veroeffentlichen.md](docs/04-Veroeffentlichen.md) | Secrets, Projekt-IDs, erster Release |
 
 ## Mitmachen
 

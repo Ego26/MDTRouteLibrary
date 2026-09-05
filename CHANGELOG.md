@@ -32,7 +32,7 @@ Erstes Grundgerüst. Gebaut und geprüft gegen MDT 6.2.13 (Interface 120100).
 - Tägliche GitHub Action, die nur bei geändertem Inhalt veröffentlicht.
 
 ### Offen
-- Inhalt. Siehe `docs/02-Datenquellen.md`.
+- Inhalt.
 - Freigabe von Raider.IO für die Weiterverteilung von keystone.guru-Routen.
 - Bedeutung von `mdtIndex` in der keystone.guru-API (klärt sich mit dem ersten
   echten API-Aufruf).
