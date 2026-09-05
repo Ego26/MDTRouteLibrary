@@ -1,20 +1,22 @@
 name: Routen-Update
 
-# Veroeffentlicht wird nur, wenn sich der Inhalt wirklich geaendert hat.
-# tools/build.mjs meldet das ueber den Exitcode: 0 = geaendert, 9 = unveraendert.
-# Damit sieht der Nutzer in CurseForge nur dann ein Update, wenn auch neue
-# Routen drinstecken.
+# Zwei Geschwindigkeiten, und die Trennung ist Absicht.
 #
-# Zwei Ausloeser mit unterschiedlichem Zweck:
+#   * Ein Einreichungslauf startet sofort, wenn jemand ein Issue anlegt oder
+#     bearbeitet. Er prueft die Einreichung, nimmt sie auf und legt die Route
+#     im Repository ab. Er baut *nicht* und veroeffentlicht *nicht*.
 #
-#   * Das Label "approved" an einer Einreichung startet den Lauf sofort. Eine
-#     freigegebene Route ist damit innerhalb von Minuten im Paket. Das kostet
-#     nur GitHub-Minuten und beruehrt keystone.guru gar nicht.
+#   * Der taegliche Lauf holt zusaetzlich die Routen von keystone.guru, baut
+#     das Datenaddon und laedt es hoch.
 #
-#   * Der taegliche Lauf holt zusaetzlich die Routen von keystone.guru. Der
-#     bleibt bewusst bei einmal am Tag: die Routen dort aendern sich nicht
-#     schneller, und haeufigeres Abfragen waere Last auf fremden Servern ohne
-#     Gegenwert.
+# Warum nicht sofort veroeffentlichen? Weil jedes Release bei jedem Nutzer als
+# Update aufschlaegt. Wuerde jede angenommene Einreichung eines ausloesen,
+# saehen drei Einreichungen an einem Abend nach drei Updates aus - fuer Inhalt,
+# den man genauso gut gebuendelt bekommt. So gibt es hoechstens ein Release am
+# Tag, und der Einreichende bekommt seine Rueckmeldung trotzdem sofort.
+#
+# Veroeffentlicht wird ohnehin nur bei echter Aenderung: tools/build.mjs meldet
+# das ueber den Exitcode (0 = geaendert, 9 = unveraendert).
 
 on:
   schedule:
@@ -32,8 +34,15 @@ on:
         type: boolean
         default: false
 
+# Einreichungen bekommen eine Gruppe je Issue, alles andere teilt sich eine.
+#
+# Das ist die Mindestpause: laeuft fuer ein Issue schon etwas, wird eine neue
+# Bearbeitung nur *vorgemerkt* - und jede weitere ersetzt die Vormerkung,
+# statt einen eigenen Lauf zu starten. Aus zehn schnellen Bearbeitungen werden
+# so zwei Laeufe statt zehn. Abgebrochen wird nichts: ein Lauf, der gerade eine
+# Route schreibt, soll sie auch zu Ende schreiben.
 concurrency:
-  group: daily-routes
+  group: routen-${{ github.event_name == 'issues' && format('einreichung-{0}', github.event.issue.number) || 'veroeffentlichen' }}
   cancel-in-progress: false
 
 permissions:
@@ -53,6 +62,13 @@ jobs:
     env:
       KEYSTONE_API_KEY: ${{ secrets.KEYSTONE_API_KEY }}
     steps:
+      # Bedenkzeit. Wer sein Issue gerade noch bearbeitet, soll nicht mit
+      # jedem Zwischenstand einen Lauf ausloesen. Zusammen mit der Gruppe
+      # oben faellt eine Serie von Bearbeitungen auf zwei Laeufe zusammen.
+      - name: Kurz abwarten, ob noch weiter bearbeitet wird
+        if: github.event_name == 'issues'
+        run: sleep 45
+
       - name: Repository auschecken
         uses: actions/checkout@v4
 
@@ -79,6 +95,34 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes --season "${{ vars.SEASON || 'current' }}"
 
+      # Hier endet der Einreichungslauf: die Route ist im Repository, das
+      # Issue geschlossen, der Einreichende hat seine Rueckmeldung. Ins Spiel
+      # kommt sie mit dem naechsten taeglichen Lauf.
+      - name: Aufgenommene Routen sichern
+        if: github.event_name == 'issues'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # status statt diff: eine neu aufgenommene Route ist eine neue,
+          # unversionierte Datei - die sieht "git diff" nicht.
+          if [ -z "$(git status --porcelain -- data/routes)" ]; then
+            echo "Keine neue Route aufgenommen." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git add data/routes
+          git commit -m "Route aus Einreichung #${{ github.event.issue.number }}"
+          # Ein Lauf zu einem anderen Issue kann in derselben Minute gepusht
+          # haben - die Gruppen trennen ja nach Issue.
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash origin main && git push; then
+              echo "Route aus #${{ github.event.issue.number }} gesichert." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "Push nach drei Versuchen fehlgeschlagen." >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
       # Laeuft nur mit Schluessel und nur beim taeglichen Lauf: eine
       # Einreichung braucht keine frischen keystone.guru-Daten, und
       # haeufigeres Abfragen waere Last auf fremden Servern ohne Gegenwert.
@@ -87,6 +131,7 @@ jobs:
         run: node tools/keystone-sync.mjs --out data/cache
 
       - name: Datenaddon bauen
+        if: github.event_name != 'issues'
         id: build
         run: |
           set +e
@@ -123,8 +168,23 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add MDTRouteLibrary_Data data/build-state.json data/routes
           git commit -m "Routendaten ${{ steps.version.outputs.tag }}"
+
+          # Ein Einreichungslauf kann zwischen Auschecken und Push eine Route
+          # abgelegt haben, deshalb der Rebase mit Wiederholung.
+          pushed=no
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash origin main && git push; then
+              pushed=yes
+              break
+            fi
+            sleep $((attempt * 5))
+          done
+          [ "$pushed" = yes ] || exit 1
+
+          # Erst jetzt taggen. Ein Rebase schreibt den Commit neu, ein vorher
+          # gesetzter Tag zeigte danach auf einen verwaisten Commit.
           git tag "${{ steps.version.outputs.tag }}"
-          git push --follow-tags
+          git push origin "${{ steps.version.outputs.tag }}"
 
       # Der BigWigs-Packager ist der De-facto-Standard fuer WoW-Addons.
       # Er koennte auch Wago und WoWInterface bedienen; wir laden bewusst nur
@@ -140,6 +200,7 @@ jobs:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Zusammenfassung
+        if: github.event_name != 'issues'
         run: |
           if [ "${{ steps.build.outputs.changed }}" = "true" ]; then
             echo "Veröffentlicht: ${{ steps.version.outputs.tag }}" >> "$GITHUB_STEP_SUMMARY"

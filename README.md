@@ -96,8 +96,9 @@ veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Route
 Routen einreichen: `/routes submit` im Spiel, dann
 [eine Einreichung anlegen](../../issues/new?template=route-submission.yml).
 
-Es wartet niemand auf eine Freigabe – die Einreichung wird automatisch
-geprüft und ist bei bestandener Prüfung in Minuten im Paket. Geprüft wird:
+Es wartet niemand auf eine Freigabe: die Einreichung wird automatisch geprüft
+und bei bestandener Prüfung sofort aufgenommen, das Issue schließt sich
+selbst. Geprüft wird:
 
 | | |
 |---|---|
@@ -109,6 +110,13 @@ geprüft und ist bei bestandener Prüfung in Minuten im Paket. Geprüft wird:
 
 Fällt eine Einreichung durch, bleibt ihr Issue offen und bekommt einen
 Kommentar mit den Mängeln. Jede Änderung am Issue startet die Prüfung neu.
+
+**Bis sie im Spiel ankommt, dauert es länger.** Addons dürfen nicht ins Netz,
+die Routen stecken also fest im Paket. Der tägliche Lauf bündelt alles Neue,
+baut das Datenaddon und lädt es zu CurseForge – ab dann kommt es mit dem
+nächsten Addon-Update beim Spieler an. Das ist Absicht: würde jede einzelne
+Einreichung ein Release auslösen, wären drei Routen an einem Abend drei
+Update-Benachrichtigungen für jeden Nutzer.
 
 ## Lizenz
 
