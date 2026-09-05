@@ -48,7 +48,6 @@ Drumherum:
 |---------------|---------------------------------------------------------|
 | `tools/`      | Node-Skripte für Build und Pipeline.                    |
 | `data/routes` | Normalisierte Routen als JSON – die eigentliche Quelle.  |
-| `data/mock`   | Testdaten, damit der Build ohne API-Schlüssel läuft.     |
 
 ## Befehle im Spiel
 
@@ -69,9 +68,6 @@ Voraussetzungen: Node 20+, eine MDT-Installation (oder ein Checkout von
 ```bash
 # Datenaddon aus data/routes + data/cache bauen
 node tools/build.mjs --mdt "C:/Spiele/World of Warcraft/_retail_/Interface/AddOns/MythicDungeonTools"
-
-# Mit Testdaten arbeiten (kein API-Schlüssel nötig)
-cp data/mock/ks-*.json data/cache/
 
 # MDTs Dungeonkatalog und Saison-Listen ansehen
 node tools/mdt-dungeons.mjs --mdt "<MDT-Pfad>"

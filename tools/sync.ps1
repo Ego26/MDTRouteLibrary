@@ -16,7 +16,10 @@
     Beobachtet das Repo und synchronisiert bei jeder Aenderung automatisch.
 
 .PARAMETER Mock
-    Baut vorher das Datenaddon aus den Testdaten in data/mock neu.
+    Baut vorher das Datenaddon aus den Testdaten in intern/mock neu.
+
+    Der Ordner ist nicht Teil des Repositorys - er steht in .gitignore und
+    liegt nur lokal. Testdaten gehoeren nicht in ein oeffentliches Addon-Repo.
 
     Ohne das spiegelt der Sync den Repo-Stand, und der ist absichtlich leer:
     ausgeliefert werden nur echte Routen. Wer im Spiel etwas sehen will,
