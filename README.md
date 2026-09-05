@@ -1,4 +1,7 @@
-# MDT Route Library
+<div align="center">
+  <img src="branding/png/banner@2x.png" width="100%"
+       alt="MDT Route Library — kuratierte Mythic+-Routen, direkt in Mythic Dungeon Tools durchsuchbar">
+</div>
 
 Kuratierte Mythic+-Routen, direkt in **Mythic Dungeon Tools** durchsuchbar –
 ohne Alt-Tab, ohne Copy-Paste.

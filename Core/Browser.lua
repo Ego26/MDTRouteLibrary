@@ -2066,9 +2066,10 @@ local function buildList(parent)
         return slider
     end
 
+    -- Keine Breite setzen: UICheckButtonTemplate zieht seine Textur mit und
+    -- wuerde zu einer breiten Ellipse. Die Beschriftung steht daneben.
     local favBox = T:Checkbox(panel, ns.L["FILTER_FAVOURITES"])
     favBox:SetPoint("TOPLEFT", panel, "TOPLEFT", 14, -14)
-    favBox:SetWidth(200)
     favBox:SetScript("OnClick", function(self)
         filters.favourites = self:GetChecked() and true or false
         wipe(pages)
