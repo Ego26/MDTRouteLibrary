@@ -15,8 +15,7 @@
 //   1 = Fehler
 //
 // Aufruf:
-//   node tools/build.mjs --mdt "<MDT-Pfad>" [--season midnight-s1]
-//                        [--max-per-dungeon 8] [--force]
+//   node tools/build.mjs --mdt "<MDT-Pfad>" [--season midnight-s1] [--force]
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -144,7 +143,7 @@ function parseArgs(argv) {
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   if (!args.mdt) {
-    console.error('Aufruf: node tools/build.mjs --mdt "<Pfad zu MythicDungeonTools>" [--season ...] [--max-per-dungeon N] [--force]')
+    console.error('Aufruf: node tools/build.mjs --mdt "<Pfad zu MythicDungeonTools>" [--season ...] [--force]')
     return EXIT_ERROR
   }
 
@@ -238,95 +237,6 @@ async function main() {
   }
   console.log(`   ${accepted.length} von ${routes.length} akzeptiert`)
 
-  // 4b) Auswahl fuers Paket: Obergrenze je Dungeon, mit Schonfrist.
-  //
-  // Ohne Freigabe durch einen Menschen wachsen die Routen pro Dungeon
-  // unbegrenzt. Vierzig Vorschlaege fuer einen Dungeon machen die Liste im
-  // Spiel unbrauchbar, egal wie gueltig jede einzelne ist. Also nur die
-  // besten N ausliefern.
-  //
-  // Nur nach Zustimmung zu sortieren waere aber ein geschlossener Kreis: der
-  // Daumen haengt am Einreich-Issue, gesehen wird eine Route aber im Spiel.
-  // Was nie ausgeliefert wird, sammelt also nie Stimmen und kommt nie ueber
-  // die Grenze - wer einmal unten liegt, bleibt dort, und das entscheidet der
-  // Zufall des Zeitpunkts, nicht die Qualitaet.
-  //
-  // Deshalb die Schonfrist: eine frisch aufgenommene Route wird eine Zeit lang
-  // ausgeliefert, ohne sich zu qualifizieren. Erst danach zaehlt ihre Bilanz.
-  // Damit hatte jede Route dieselbe Chance, gesehen zu werden, bevor sie an
-  // ihrer Zustimmung gemessen wird - und dann ist auch der Stichentscheid
-  // nach Datum fair: drei Daumen in fuenf Tagen sind mehr wert als drei in
-  // sechzig.
-  //
-  // Hoechstens die Haelfte der Plaetze geht an Neulinge. Sonst koennten fuenf
-  // Einreichungen an einem Abend alles Bewaehrte aus dem Paket draengen.
-  const maxPerDungeon = Number(args['max-per-dungeon'] ?? 0) || 0
-  const graceDays = args['grace-days'] === undefined ? 14 : Number(args['grace-days'])
-  const now = args.now ? new Date(args.now) : new Date()
-  let selected = accepted
-
-  if (maxPerDungeon > 0) {
-    const coverage = (route) =>
-      route.enemyForcesRequired ? route.enemyForces / route.enemyForcesRequired : 0
-
-    const ageInDays = (route) => {
-      const stamp = route.acceptedAt ?? route.submittedAt
-      if (!stamp) return Infinity
-      const at = new Date(stamp)
-      return Number.isNaN(at.getTime()) ? Infinity : (now - at) / 86400000
-    }
-
-    // Bewaehrte Rangfolge. Die letzten beiden Stufen sind nicht Geschmack,
-    // sondern Notwendigkeit: bei gleichem Datenstand muss derselbe Hash
-    // herauskommen, sonst veroeffentlicht die Pipeline Updates ohne Inhalt.
-    const byMerit = (a, b) =>
-      (b.votes ?? 0) - (a.votes ?? 0) ||
-      coverage(b) - coverage(a) ||
-      ageInDays(a) - ageInDays(b) ||
-      String(a.id).localeCompare(String(b.id))
-
-    // Unter den Neulingen zuerst die juengsten: sie hatten am wenigsten Zeit.
-    const byAge = (a, b) => ageInDays(a) - ageInDays(b) || String(a.id).localeCompare(String(b.id))
-
-    const byDungeon = new Map()
-    for (const route of accepted) {
-      const key = route.challengeModeId ?? route.dungeonEnglishName ?? '?'
-      if (!byDungeon.has(key)) byDungeon.set(key, [])
-      byDungeon.get(key).push(route)
-    }
-
-    selected = []
-    let dropped = 0
-    let onGrace = 0
-
-    for (const [, list] of byDungeon) {
-      if (list.length <= maxPerDungeon) {
-        selected.push(...list)
-        continue
-      }
-
-      const fresh = list.filter((r) => graceDays > 0 && ageInDays(r) < graceDays).sort(byAge)
-      const quota = Math.min(Math.floor(maxPerDungeon / 2), fresh.length)
-      const newcomers = fresh.slice(0, quota)
-      const taken = new Set(newcomers.map((r) => r.id))
-
-      const rest = list.filter((r) => !taken.has(r.id)).sort(byMerit)
-      const picked = [...newcomers, ...rest.slice(0, maxPerDungeon - newcomers.length)]
-
-      selected.push(...picked)
-      onGrace += newcomers.length
-      dropped += list.length - picked.length
-      console.log(
-        `   ${list[0].dungeonEnglishName ?? '?'}: ${list.length} Routen, ` +
-        `${picked.length} ausgeliefert (${newcomers.length} in Schonfrist)`)
-    }
-
-    // Wieder in eine stabile Reihenfolge bringen: der Hash haengt daran.
-    selected.sort((a, b) => String(a.id).localeCompare(String(b.id)))
-    console.log(
-      `   Obergrenze ${maxPerDungeon} je Dungeon, Schonfrist ${graceDays} Tage: ` +
-      `${selected.length} ausgeliefert, davon ${onGrace} noch ungeprueft, ${dropped} zurueckgestellt`)
-  }
 
   // Alle Gegner des Dungeons ausliefern, nicht nur die in unseren Routen:
   // die eigenen Routen des Nutzers koennen jeden davon enthalten.
@@ -392,11 +302,11 @@ async function main() {
 
   console.log('5) Lua erzeugen')
   const build = new Date().toISOString().slice(0, 10)
-  const { files, hash, stats } = buildDataAddon(selected, {
+  const { files, hash, stats } = buildDataAddon(accepted, {
     build,
     season: args.season ?? null,
     mdtVersion,
-    sources: [...new Set(selected.map((r) => r.source).filter(Boolean))],
+    sources: [...new Set(accepted.map((r) => r.source).filter(Boolean))],
     dungeons: dungeonMeta,
   })
   console.log(`   ${stats.routes} Routen, ${stats.dungeons} Dungeons, Hash ${hash}`)

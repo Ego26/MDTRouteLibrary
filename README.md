@@ -121,27 +121,16 @@ nichts, gibt es auch kein Release.
 
 ### Wie viele Routen es pro Dungeon gibt
 
-Aufgenommen wird jede Route, die die Prüfung besteht. Ins Paket kommen aber
-höchstens **acht je Dungeon** – vierzig Vorschläge für einen Dungeon machen
-die Liste im Spiel unbrauchbar, egal wie gültig jede einzelne ist.
+Alle, die die Prüfung bestehen. Es gibt keine Obergrenze und keine Auswahl
+durch jemanden – was gültig ist, wird ausgeliefert.
 
-Wer drin ist, entscheidet der 👍 am Einreich-Issue: wer eine Route gelaufen
-ist und sie gut fand, klickt ihn. Bei Gleichstand zählt die höhere Abdeckung
-der Gegnerkräfte, dann die kürzere Zeit – drei Daumen in fünf Tagen sind mehr
-wert als drei in sechzig.
-
-**Jede neue Route wird erst einmal ausgeliefert, ohne sich zu qualifizieren.**
-Vierzehn Tage lang, dann zählt ihre Bilanz. Das ist keine Nettigkeit, sondern
-notwendig: der Daumen hängt am Issue, gesehen wird eine Route aber im Spiel.
-Ohne Schonfrist käme eine Route, die einmal unter der Grenze liegt, nie wieder
-darüber – sie würde nie ausgeliefert, also nie gelaufen, also nie bewertet.
-Höchstens die Hälfte der Plätze geht an Neulinge, damit fünf Einreichungen an
-einem Abend nicht alles Bewährte verdrängen.
-
-Zurückgestellte Routen bleiben im Repository und rücken nach, sobald sie mehr
-Zustimmung haben als eine ausgelieferte. Grenze und Schonfrist lassen sich
-über die Repository-Variable `MAX_ROUTES_PER_DUNGEON` und den Schalter
-`--grace-days` ändern.
+Das ist bewusst so. Eine Rangfolge bräuchte ein Signal dafür, welche Route
+gut ist, und dieses Signal gibt es nicht: das Addon darf nicht ins Netz, und
+wer im Spiel eine Route lädt, geht danach nicht auf GitHub, um sie zu
+bewerten. Jede Auswahl wäre also geraten. Statt zu raten liefern wir alles
+aus und überlassen die Auswahl dem, der sie treffen kann: Der Browser im
+Spiel filtert nach Name, Autor, Dungeon, Schlüsselstufe, Pull-Zahl und
+Gegnerkräften, und Favoriten wandern nach oben.
 
 ## Lizenz
 

@@ -138,21 +138,12 @@ jobs:
           (github.event_name != 'schedule' || github.event.schedule == '0 5,11,17,23 * * *')
         run: node tools/keystone-sync.mjs --out data/cache
 
-      # Die Daumen an den Einreich-Issues entscheiden, welche Routen ins
-      # Paket kommen, wenn es fuer einen Dungeon mehr gibt als die Grenze
-      # zulaesst. Muss vor dem Bauen laufen und schreibt in data/routes.
-      - name: Zustimmungen aktualisieren
-        if: github.event_name != 'issues'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node tools/refresh-votes.mjs --routes data/routes
-
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
         id: build
         run: |
           set +e
-          node tools/build.mjs --mdt .mdt --season "${{ vars.SEASON || 'current' }}" --max-per-dungeon "${{ vars.MAX_ROUTES_PER_DUNGEON || 8 }}" ${{ inputs.force && '--force' || '' }}
+          node tools/build.mjs --mdt .mdt --season "${{ vars.SEASON || 'current' }}" ${{ inputs.force && '--force' || '' }}
           code=$?
           set -e
           echo "exit=$code" >> "$GITHUB_OUTPUT"
