@@ -14,12 +14,14 @@ local REQUIRED = { "id", "title", "challengeModeId", "pulls" }
 ---@param route table
 ---@return boolean ok, string|nil reason
 local function validate(route)
-    if type(route) ~= "table" then return false, "keine Tabelle" end
+    -- Diese Gruende landen nur im Chat, wenn ein Datenpaket kaputt ist.
+    -- Englisch, weil sie im Zweifel in einem Fehlerbericht auftauchen.
+    if type(route) ~= "table" then return false, "not a table" end
     for _, field in ipairs(REQUIRED) do
-        if route[field] == nil then return false, "Feld fehlt: " .. field end
+        if route[field] == nil then return false, "missing field: " .. field end
     end
     if type(route.pulls) ~= "table" or #route.pulls == 0 then
-        return false, "keine Pulls"
+        return false, "no pulls"
     end
     return true
 end
@@ -30,7 +32,7 @@ end
 function ns.RegisterRoute(route)
     local ok, reason = validate(route)
     if not ok then
-        ns.Warn("Route verworfen (%s): %s", tostring(route and route.id), reason)
+        ns.Warn(ns.L["ROUTE_REJECTED"], tostring(route and route.id), reason)
         return
     end
 

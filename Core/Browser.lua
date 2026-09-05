@@ -407,7 +407,7 @@ end
 function B.CopyString(route)
     local str, err = ns.MDT.BuildImportString(route)
     if not str then
-        ns.Warn(err or "Importstring konnte nicht erzeugt werden.")
+        ns.Warn(err or ns.L["COPY_FAILED"])
         return
     end
     ns.UI.ShowCopyDialog(route.title or route.id, ns.L["COPY_HELP"], str)
@@ -1311,7 +1311,7 @@ local function updateDetail(route)
     d.dungeon:SetText(route.dungeonEnglishName or "")
     d.title:SetText(route.title or route.id)
 
-    local author = route.author and ("von " .. route.author) or ""
+    local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
     local source = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
     d.author:SetText(author .. source)
 
@@ -1332,7 +1332,7 @@ local function updateDetail(route)
     d.affixes:SetPoint("RIGHT", d.frame, "RIGHT", -PADDING, 0)
 
     local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "-"
-    d.affixes:SetText(("%d Pulls · %s"):format(#route.pulls, affixes))
+    d.affixes:SetText(("%d %s · %s"):format(#route.pulls, ns.L["COL_PULLS"], affixes))
 
     -- Pull-Liste: Ueberschrift je Pull, darunter die Gegner einzeln mit ihren
     -- Zaubern. Eine Sammelzeile pro Pull war zu gedraengt, und die Zauber
@@ -1761,13 +1761,13 @@ function B.Refresh()
                 meta = T:Hex("success") .. ns.L["ROUTE_OWN"] .. "|r"
                 local by = route.own and route.author or route.author
                 if by then
-                    meta = meta .. T:Hex("textMuted") .. " · von " .. by .. "|r"
+                    meta = meta .. T:Hex("textMuted") .. " · " .. ns.L["BY_AUTHOR"]:format(by) .. "|r"
                 end
                 if route.saved and route.source then
                     meta = meta .. T:Hex("textMuted") .. " · " .. route.source .. "|r"
                 end
             else
-                local author = route.author and ("von " .. route.author) or ""
+                local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
                 local src = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
                 meta = author .. src
             end

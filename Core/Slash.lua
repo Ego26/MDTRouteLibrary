@@ -46,7 +46,7 @@ function handlers.status()
             ns.Print(L["ROUTES_INSTALLED"], result.installed, result.dungeons)
         end
     else
-        ns.Print("MDT gefunden, Oberflaeche noch nicht geladen (oeffne MDT einmal).")
+        ns.Print(L["MDT_NOT_LOADED"])
     end
 
     if not ns.EnsureData() then return end
@@ -66,7 +66,7 @@ function handlers.cleanup()
     if not ns.EnsureData() then return end
 
     if not ns.MDT.IsReady() then
-        ns.Warn("MDT ist noch nicht geladen. Oeffne MDT einmal (/mdt).")
+        ns.Warn(L["MDT_OPEN_FIRST"])
         return
     end
 
@@ -92,13 +92,13 @@ function handlers.copy(arg)
     local index = tonumber(arg)
     local route = index and ns.routes[index]
     if not route then
-        ns.Warn("Unbekannte Route. /routes list zeigt die Nummern.")
+        ns.Warn(L["UNKNOWN_ROUTE"])
         return
     end
 
     local str, err = ns.MDT.BuildImportString(route)
     if not str then
-        ns.Warn(err or "Importstring konnte nicht erzeugt werden.")
+        ns.Warn(err or L["COPY_FAILED"])
         return
     end
 
