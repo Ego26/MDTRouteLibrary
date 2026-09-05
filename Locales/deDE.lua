@@ -68,6 +68,7 @@ ns.RegisterLocale("deDE", {
     ["MAP_FLOOR"]           = "Ebene: %s",
     ["VIEW_MAP"]            = "Karte",
     ["VIEW_LIST"]           = "Liste",
+    ["VIEW_MAP_TIP"]        = "Zeigt die gewählte Route auf der Dungeonkarte. Ziehen verschiebt, Scrollen zoomt.",
     ["MAPVIEW_HINT"]        = "Ziehen verschiebt, Scrollen zoomt. Über einem Gegner hebt sich sein Pull hervor.",
     ["MAPVIEW_EMPTY"]       = "Wähle eine Route, um sie auf der Karte zu sehen.",
     ["FILTER_FAVOURITES"]   = "Nur Favoriten",

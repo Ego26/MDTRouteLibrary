@@ -1856,7 +1856,6 @@ function B.Refresh()
     if mapMode then ns.MapView.SetRoute(route) end
     ui.viewToggle:SetText(mapMode and ns.L["VIEW_LIST"] or ns.L["VIEW_MAP"])
     ui.viewToggle:SetActive(mapMode)
-    ui.viewToggle:SetEnabled(route ~= nil)
 
     ui.mapButton:SetEnabled(route ~= nil)
     ui.copyButton:SetEnabled(route ~= nil and not route.own and not (route and route.saved))
@@ -2062,9 +2061,20 @@ local function buildList(parent)
     viewToggle:SetHeight(22)
     viewToggle:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
     viewToggle:SetScript("OnClick", function()
+        if viewMode ~= "map" and not selectedId then
+            -- Ohne gewaehlte Route haette die Karte nichts zu zeigen. Statt
+            -- den Knopf tot zu stellen, nehmen wir die erste Route der Liste.
+            for _, entry in ipairs(entries) do
+                if entry.route then
+                    selectedId = entry.route.id
+                    break
+                end
+            end
+        end
         viewMode = (viewMode == "map") and "list" or "map"
         B.Refresh()
     end)
+    viewToggle.tooltipText = ns.L["VIEW_MAP_TIP"]
     ui.viewToggle = viewToggle
 
     local panel = T:Panel(root, "bgOverlay")

@@ -68,6 +68,7 @@ ns.RegisterLocale("enUS", {
     ["MAP_FLOOR"]           = "Floor: %s",
     ["VIEW_MAP"]            = "Map",
     ["VIEW_LIST"]           = "List",
+    ["VIEW_MAP_TIP"]        = "Show the selected route on the dungeon map. Drag to move, scroll to zoom.",
     ["MAPVIEW_HINT"]        = "Drag to move, scroll to zoom. Hover an enemy to highlight its pull.",
     ["MAPVIEW_EMPTY"]       = "Select a route to see it on the map.",
     ["FILTER_FAVOURITES"]   = "Favourites only",
