@@ -1,0 +1,13 @@
+.release/
+node_modules/
+*.log
+
+# Rohantworten der keystone.guru-API (Cache, nicht versionieren)
+data/cache/
+
+# Lokale Zugangsdaten - niemals einchecken
+.env
+*.key
+
+# Checkout der MDT-Quellen in der CI
+.mdt/

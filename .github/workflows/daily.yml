@@ -1,0 +1,120 @@
+name: Tägliches Routen-Update
+
+# Einmal am Tag bauen, aber nur veroeffentlichen, wenn sich der Inhalt wirklich
+# geaendert hat. tools/build.mjs meldet das ueber den Exitcode:
+#   0 = geaendert, 9 = unveraendert.
+# Damit sieht der Nutzer in CurseForge nur dann ein Update, wenn auch neue
+# Routen drinstecken.
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # täglich 05:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Auch ohne Inhaltsänderung veröffentlichen'
+        type: boolean
+        default: false
+
+concurrency:
+  group: daily-routes
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Secrets lassen sich in einem step-level "if" nicht direkt abfragen,
+    # deshalb hier einmal in die Job-Umgebung heben.
+    env:
+      KEYSTONE_API_KEY: ${{ secrets.KEYSTONE_API_KEY }}
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Die MDT-Quellen sind die Wahrheit fuer Dungeonindizes und
+      # Gegnertabellen. Wir bauen immer gegen den aktuellen Stand, damit ein
+      # MDT-Update unsere Routen nicht stillschweigend kaputt macht.
+      - name: MDT-Quellen holen
+        uses: actions/checkout@v4
+        with:
+          repository: Nnoggie/MythicDungeonTools
+          path: .mdt
+          ref: master
+
+      - name: Freigegebene Einreichungen einsammeln
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/collect-submissions.mjs --mdt .mdt --out data/routes
+
+      # Laeuft nur mit Schluessel UND vorliegender Freigabe zur Weiterverteilung.
+      # Siehe docs/02-Datenquellen.md.
+      - name: Routen von keystone.guru holen
+        if: env.KEYSTONE_API_KEY != ''
+        run: node tools/keystone-sync.mjs --out data/cache
+
+      - name: Datenaddon bauen
+        id: build
+        run: |
+          set +e
+          node tools/build.mjs --mdt .mdt --season "${{ vars.SEASON || 'current' }}" ${{ inputs.force && '--force' || '' }}
+          code=$?
+          set -e
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = "9" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif [ "$code" = "0" ]; then
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
+          else
+            exit $code
+          fi
+
+      - name: Lua prüfen
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1 luarocks
+          sudo luarocks install luacheck
+          luacheck .
+
+      - name: Version bestimmen
+        if: steps.build.outputs.changed == 'true'
+        id: version
+        run: |
+          hash=$(node -p "require('./data/build-state.json').hash")
+          echo "tag=$(date -u +%Y.%m.%d)-$hash" >> "$GITHUB_OUTPUT"
+
+      - name: Änderungen committen
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add MDTRouteLibrary_Data data/build-state.json data/routes
+          git commit -m "Routendaten ${{ steps.version.outputs.tag }}"
+          git tag "${{ steps.version.outputs.tag }}"
+          git push --follow-tags
+
+      # Der BigWigs-Packager ist der De-facto-Standard fuer WoW-Addons und
+      # bedient CurseForge, Wago und WoWInterface in einem Schritt.
+      - name: Veröffentlichen
+        if: steps.build.outputs.changed == 'true'
+        uses: BigWigsMods/packager@master
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Zusammenfassung
+        run: |
+          if [ "${{ steps.build.outputs.changed }}" = "true" ]; then
+            echo "Veröffentlicht: ${{ steps.version.outputs.tag }}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Keine Änderung – kein Release." >> "$GITHUB_STEP_SUMMARY"
+          fi

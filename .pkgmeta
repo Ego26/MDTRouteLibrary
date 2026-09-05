@@ -1,0 +1,23 @@
+package-as: MDTRouteLibrary
+
+# Das Datenaddon wird aus dem Paketordner herausgezogen, damit es im
+# AddOns-Verzeichnis als eigenstaendiges LoadOnDemand-Addon landet.
+move-folders:
+  MDTRouteLibrary/MDTRouteLibrary_Data: MDTRouteLibrary_Data
+
+# Keine externen Bibliotheken: MDTRouteLibrary nutzt ausschliesslich Blizzard-API
+# (C_EncodingUtil fuer die MDT-Stringkodierung). Das haelt das Paket klein
+# und vermeidet Versionskonflikte mit MDT, das eigene Libs mitbringt.
+externals: {}
+
+# Nicht ins Release-Paket
+ignore:
+  - docs
+  - tools
+  - data
+  - .github
+  - .luacheckrc
+  - .editorconfig
+  - .gitattributes
+  - README.md
+  - CHANGELOG.md

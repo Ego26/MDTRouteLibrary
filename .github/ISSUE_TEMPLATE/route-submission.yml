@@ -1,0 +1,67 @@
+name: Route einreichen
+description: Eine eigene MDT-Route für das nächste MDTRouteLibrary-Update vorschlagen
+title: '[Route] '
+labels: ['route-submission']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke, dass du eine Route beisteuerst!
+
+        **So kommst du an den Einreichungs-Code:**
+        1. Baue die Route in MDT fertig.
+        2. Lass sie in MDT geöffnet und tippe im Spiel `/routes submit`.
+        3. Kopiere den Text aus dem Fenster mit **Strg+C**.
+        4. Füge ihn unten ein.
+
+        Der Code enthält die Pulls, den Dungeon und deinen Charakternamen als
+        Autorenangabe. Er enthält **keine** weiteren Kontodaten.
+
+  - type: textarea
+    id: blob
+    attributes:
+      label: Einreichungs-Code
+      description: Der komplette Text aus `/routes submit`, beginnt mit `mdtrl1:`
+      placeholder: mdtrl1:...
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Name der Route
+      description: Wie soll sie in MDT heißen? Leer lassen übernimmt den Namen aus MDT.
+      placeholder: z. B. "Altar of Fangs – Meta 18+"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Art der Route
+      options:
+        - Meta (die übliche Route auf hohen Schlüsseln)
+        - Einsteiger (sicherer, mehr Puffer)
+        - Spezialisiert (bestimmte Gruppenzusammenstellung)
+        - Sonstiges
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anmerkungen
+      description: Worauf sollte man bei dieser Route achten? Für welche Affixe ist sie gedacht?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Bestätigung
+      options:
+        - label: Die Route ist von mir, und sie darf im MDTRouteLibrary-Addon veröffentlicht werden.
+          required: true
+        - label: Ich habe die Route im Spiel getestet.
+          required: false

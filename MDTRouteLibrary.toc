@@ -1,0 +1,37 @@
+## Interface: 120100
+## Title: MDT Route Library
+## Title-deDE: MDT Route Library
+## Notes: Curated Mythic+ routes, ready to use in MDT. Type /routes.
+## Notes-deDE: Kuratierte Mythic+-Routen, direkt in MDT nutzbar. Tippe /routes.
+## Author: Ego26
+## Version: @project-version@
+## SavedVariables: MDTRouteLibraryDB
+## IconTexture: Interface\Icons\INV_Misc_Map02
+## AddonCompartmentFunc: MDTRouteLibrary_OnCompartmentClick
+# Nur der Kern von MDT. MythicDungeonTools_UI wird bewusst NICHT genannt:
+# das ist ein LoadOnDemand-Addon und soll erst laden, wenn jemand MDT oeffnet.
+## OptionalDeps: MythicDungeonTools
+## X-Category: Mythic+
+## X-Website: https://github.com/Ego26/MDTRouteLibrary
+
+# --- Kern, Teil 1 (Reihenfolge ist bindend) ---
+Core\Init.lua
+Core\Locale.lua
+
+# --- Sprachen: enUS ist die Basis und muss zuerst geladen werden ---
+Locales\enUS.lua
+Locales\deDE.lua
+
+# --- Kern, Teil 2 ---
+Core\Theme.lua
+Core\Util.lua
+Core\Registry.lua
+Core\MDT.lua
+Core\Submit.lua
+Core\UI.lua
+Core\Dispels.lua
+Core\Browser.lua
+Core\Slash.lua
+
+# --- Startet den Ablauf, deshalb ganz zum Schluss ---
+Core\Boot.lua

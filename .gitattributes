@@ -1,0 +1,18 @@
+# Im Repository einheitlich LF, im Arbeitsverzeichnis nach Bedarf.
+* text=auto eol=lf
+
+# PowerShell braucht unter Windows CRLF.
+*.ps1 text eol=crlf
+
+# Generierte Routendaten nicht als Konflikt behandeln - sie werden neu gebaut.
+MDTRouteLibrary_Data/Routes/*.lua linguist-generated=true
+MDTRouteLibrary_Data/Manifest.lua linguist-generated=true
+
+# Binaerdateien nie anfassen.
+*.tga  binary
+*.blp  binary
+*.png  binary
+*.jpg  binary
+*.ttf  binary
+*.otf  binary
+*.ogg  binary
