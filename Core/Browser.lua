@@ -31,6 +31,18 @@ local ICON_COORDS = { 0, 1, 0, 1 }
 local ROW_HEIGHT     = 34
 local HEADER_HEIGHT  = 24
 local PULLROW_HEIGHT = 16
+local SPELLROW_HEIGHT = 34
+-- Rundes Gegnerbild. Dieselbe Maske nimmt MDT fuer seine Kartenblips, also
+-- sehen Liste und Karte gleich aus.
+local PORTRAIT_MASK = "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask"
+local PORTRAIT_SIZE = 18
+
+-- Um so viel steht die Detailspalte ueber MDTs Seitenspalte hinaus. MDT gibt
+-- dort feste 251 Pixel vor; darin bekommt man Kennzahlen, Pull-Liste und
+-- Zauber nicht geordnet unter.
+local DETAIL_EXTRA = 130
+local TILE_HEIGHT  = 40
+local TILE_GAP     = 6
 local SPELL_ICON     = 16
 local PADDING        = 14
 local DUNGEON_BUTTON = 42
@@ -45,6 +57,9 @@ local COL_LEVEL   = 62  -- "+10-18" braucht mehr Platz als "+10"
 
 local pluginAPI
 local ui           -- gebaute Oberflaeche
+local showAddSheet -- weiter unten definiert, aber schon in den Zeilen gebraucht
+local hideAddSheet
+local lastDetailId -- welche Route zuletzt im Detailbereich stand
 local entries = {} -- flache Liste aus Kopfzeilen und Routen
 local selectedId
 local filterText = ""
@@ -1148,6 +1163,31 @@ local function acquirePullRow(index)
     row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
     row.highlight:Hide()
 
+    -- Farbstreifen am linken Rand, in der Farbe des Pulls auf der Karte.
+    -- Nur Ueberschriftszeilen tragen ihn.
+    row.bar = row:CreateTexture(nil, "ARTWORK")
+    row.bar:SetPoint("TOPLEFT", row, "TOPLEFT", 0, -1)
+    row.bar:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", 0, 1)
+    row.bar:SetWidth(3)
+    row.bar:Hide()
+
+    -- Rundes Gegnerbild wie auf der Karte.
+    row.portrait = row:CreateTexture(nil, "ARTWORK")
+    row.portrait:SetSize(PORTRAIT_SIZE, PORTRAIT_SIZE)
+    row.portrait:SetPoint("TOPLEFT", row, "TOPLEFT", 16, -1)
+    row.portraitMask = row:CreateMaskTexture()
+    row.portraitMask:SetAllPoints(row.portrait)
+    row.portraitMask:SetTexture(PORTRAIT_MASK, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    row.portrait:AddMaskTexture(row.portraitMask)
+    row.portrait:Hide()
+
+    -- Klick auf einen Gegner oeffnet sein Blatt. Auf Ueberschriftszeilen
+    -- passiert nichts, dort steht kein Gegner.
+    row:SetScript("OnMouseUp", function(self, button)
+        if button ~= "LeftButton" or not self.npcId then return end
+        showAddSheet(self.challengeModeId, self.npcId, self.amount)
+    end)
+
     row:SetScript("OnEnter", function(self)
         self.highlight:Show()
         -- Auch die Ueberschriftszeile eines Pulls hebt ihn auf der Karte
@@ -1177,7 +1217,7 @@ local function acquirePullRow(index)
     -- Mehrzeilig: ein Pull kann etliche verschiedene Gegner enthalten, und
     -- abgeschnitten waere die Liste wertlos.
     row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    row.text:SetPoint("TOPLEFT", row, "TOPLEFT", 38, -1)
+    row.text:SetPoint("TOPLEFT", row, "TOPLEFT", 38, -2)
     row.text:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
     row.text:SetJustifyH("LEFT")
     row.text:SetWordWrap(true)
@@ -1249,6 +1289,15 @@ local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
     row.amount = amount
 
     row.index:SetText("")
+    row.bar:Hide()
+
+    if npc and npc.displayId then
+        SetPortraitTextureFromCreatureDisplayID(row.portrait, npc.displayId)
+        row.portrait:Show()
+    else
+        row.portrait:Hide()
+    end
+
     local forces = (npc and npc.count or 0) * amount
     row.percent:SetText(forces > 0 and (T:Hex("textMuted") .. "%d|r"):format(forces) or "")
     local colour = (npc and npc.isBoss) and T:Hex("accent") or T:Hex("textPrimary")
@@ -1298,6 +1347,203 @@ local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
     return height
 end
 
+--------------------------------------------------------------------------
+-- Detailbereich
+--------------------------------------------------------------------------
+
+---Setzt eine der vier Kennzahl-Kacheln.
+---@param index number
+---@param value string
+---@param caption string
+local function setTile(index, value, caption)
+    local tile = ui.detail.tiles[index]
+    if not tile then return end
+    tile.value:SetText(value)
+    tile.caption:SetText(caption)
+    tile:Show()
+end
+
+--------------------------------------------------------------------------
+-- Gegnerblatt
+--------------------------------------------------------------------------
+
+---Erzeugt oder recycelt eine Zauberzeile im Gegnerblatt.
+---@param index number
+---@return table
+local function acquireSpellRow(index)
+    local row = ui.detail.spellRows[index]
+    if row then return row end
+
+    row = CreateFrame("Button", nil, ui.detail.sheet.content)
+    row:SetHeight(SPELLROW_HEIGHT)
+
+    row.highlight = row:CreateTexture(nil, "BACKGROUND")
+    row.highlight:SetAllPoints()
+    row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
+    row.highlight:Hide()
+
+    -- Weisser Rand hinter dem Symbol: dieselbe Markierung fuer unterbrechbar
+    -- wie in der Pull-Liste.
+    row.interrupt = row:CreateTexture(nil, "BACKGROUND")
+    row.interrupt:SetPoint("TOPLEFT", row, "TOPLEFT", 1, -4)
+    row.interrupt:SetSize(28, 28)
+    row.interrupt:SetColorTexture(1, 1, 1, 0.95)
+    row.interrupt:Hide()
+
+    row.icon = row:CreateTexture(nil, "ARTWORK")
+    row.icon:SetPoint("TOPLEFT", row, "TOPLEFT", 2, -5)
+    row.icon:SetSize(26, 26)
+    row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+
+    row.name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    row.name:SetPoint("TOPLEFT", row.icon, "TOPRIGHT", 8, 0)
+    row.name:SetPoint("RIGHT", row, "RIGHT", -4, 0)
+    row.name:SetJustifyH("LEFT")
+    row.name:SetWordWrap(false)
+
+    row.flags = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.flags:SetPoint("TOPLEFT", row.name, "BOTTOMLEFT", 0, -2)
+    row.flags:SetPoint("RIGHT", row, "RIGHT", -4, 0)
+    row.flags:SetJustifyH("LEFT")
+    row.flags:SetWordWrap(false)
+
+    row:SetScript("OnEnter", function(self)
+        if not self.spellId then return end
+        self.highlight:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetSpellByID(self.spellId)
+        GameTooltip:Show()
+    end)
+    row:SetScript("OnLeave", function(self)
+        self.highlight:Hide()
+        GameTooltip:Hide()
+    end)
+
+    ui.detail.spellRows[index] = row
+    return row
+end
+
+---Setzt eine Wertzeile im Gegnerblatt.
+---@param index number
+---@param label string
+---@param value string
+local function setStat(index, label, value)
+    local line = ui.detail.statRows[index]
+    if not line then return end
+    line.label:SetText(label)
+    line.value:SetText(value)
+end
+
+---Blendet das Gegnerblatt wieder aus.
+function hideAddSheet()
+    if ui and ui.detail and ui.detail.sheet then ui.detail.sheet:Hide() end
+end
+
+---Zeigt alles, was wir ueber einen Gegner wissen.
+---
+---Aufgerufen aus zwei Richtungen: Klick auf einen Gegner in der Pull-Liste
+---und Klick auf einen Blip auf der Karte. Beide landen hier.
+---@param challengeModeId number
+---@param npcId number
+---@param amount number|nil Anzahl im angeklickten Pull
+function showAddSheet(challengeModeId, npcId, amount)
+    if not ui or not ui.detail then return end
+
+    local npc = ns.GetNpc(challengeModeId, npcId)
+    if not npc then return end
+
+    local d = ui.detail
+    local sheet = d.sheet
+    local dungeon = ns.GetDungeon(challengeModeId)
+    local need = dungeon and dungeon.totalCount
+
+    if npc.displayId then
+        sheet.model:SetDisplayInfo(npc.displayId)
+        -- Ganzkoerper statt Portraitausschnitt: bei Bossen ist die Silhouette
+        -- die halbe Wiedererkennung.
+        sheet.model:SetPortraitZoom(0)
+        sheet.model:SetRotation(0.5)
+        sheet.model:Show()
+    else
+        sheet.model:Hide()
+    end
+
+    sheet.name:SetText(("%s%s|r"):format(
+        npc.isBoss and T:Hex("accent") or T:Hex("textPrimary"), npc.name or "?"))
+
+    local kind = npc.creatureType or ""
+    if npc.level then
+        kind = kind ~= "" and (kind .. " · " .. ns.L["PREVIEW_LEVEL"] .. " " .. npc.level)
+            or (ns.L["PREVIEW_LEVEL"] .. " " .. npc.level)
+    end
+    if npc.isBoss then
+        kind = kind ~= "" and (kind .. " · " .. ns.L["SHEET_BOSS"]) or ns.L["SHEET_BOSS"]
+    end
+    sheet.kind:SetText(kind)
+
+    local share = (npc.count and need and need > 0) and (npc.count / need * 100) or nil
+
+    setStat(1, ns.L["SHEET_HEALTH"], shortHealth(npc.health))
+    setStat(2, ns.L["SHEET_FORCES"], tostring(npc.count or "?"))
+    setStat(3, ns.L["SHEET_SHARE"], share and ("%.2f %%"):format(share) or "–")
+    setStat(4, ns.L["SHEET_IN_PULL"], amount and ("%d×"):format(amount) or "–")
+    setStat(5, ns.L["SHEET_NPCID"], tostring(npcId))
+
+    -- Zauber. Namen holen wir zur Laufzeit: im Datenpaket steht nur die ID,
+    -- und die ist in jeder Sprache dieselbe.
+    local spells = npc.spells or {}
+    local y = 0
+
+    for i, spell in ipairs(spells) do
+        local row = acquireSpellRow(i)
+        row.spellId = spell.id
+
+        local info = C_Spell and C_Spell.GetSpellInfo and C_Spell.GetSpellInfo(spell.id)
+        row.name:SetText(("%s%s|r"):format(T:Hex("textPrimary"),
+            (info and info.name) or ("Spell " .. tostring(spell.id))))
+
+        row.icon:SetTexture(C_Spell.GetSpellTexture(spell.id) or 134400)
+        row.interrupt:SetShown(spell.interruptible == true)
+
+        local flags = {}
+        if spell.interruptible then
+            flags[#flags + 1] = T:Hex("success") .. ns.L["SPELL_INTERRUPTIBLE"] .. "|r"
+        end
+        for _, dispel in ipairs(DISPEL_TYPES) do
+            if spell[dispel.key] then
+                flags[#flags + 1] = ("|cff%02x%02x%02x%s|r"):format(
+                    dispel.r * 255, dispel.g * 255, dispel.b * 255, ns.L["SPELL_" .. dispel.label])
+            end
+        end
+        row.flags:SetText(table.concat(flags, " · "))
+
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", sheet.content, "TOPLEFT", 0, -y)
+        row:SetPoint("TOPRIGHT", sheet.content, "TOPRIGHT", 0, -y)
+        row:Show()
+        y = y + SPELLROW_HEIGHT
+    end
+
+    for i = #spells + 1, #d.spellRows do d.spellRows[i]:Hide() end
+
+    if #spells == 0 then
+        local row = acquireSpellRow(1)
+        row.spellId = nil
+        row.icon:SetTexture(nil)
+        row.interrupt:Hide()
+        row.name:SetText(T:Text("textMuted", ns.L["SHEET_NO_SPELLS"]))
+        row.flags:SetText("")
+        row:ClearAllPoints()
+        row:SetPoint("TOPLEFT", sheet.content, "TOPLEFT", 0, 0)
+        row:SetPoint("TOPRIGHT", sheet.content, "TOPRIGHT", 0, 0)
+        row:Show()
+        y = SPELLROW_HEIGHT
+    end
+
+    sheet.content:SetHeight(math.max(y, 1))
+    sheet:Show()
+end
+
 ---Fuellt den Detailbereich rechts.
 ---@param route table|nil
 local function updateDetail(route)
@@ -1316,9 +1562,13 @@ local function updateDetail(route)
         d.dungeon:SetText("")
         d.title:SetText("")
         d.author:SetText("")
-        d.percent:SetText("")
-        d.forces:SetText("")
         d.affixes:SetText("")
+        d.section:SetText("")
+        for _, tile in ipairs(d.tiles) do
+            tile.value:SetText("")
+            tile.caption:SetText("")
+            tile:Hide()
+        end
         for _, row in ipairs(d.pullRows) do row:Hide() end
         d.content:SetHeight(1)
         d.hint:Show()
@@ -1333,24 +1583,18 @@ local function updateDetail(route)
     local source = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
     d.author:SetText(author .. source)
 
-    -- Beschriftung neben die Zahl (im Dungeonmodus steht sie darunter).
-    d.forces:ClearAllPoints()
-    d.forces:SetPoint("LEFT", d.percent, "RIGHT", 10, -2)
-    d.forces:SetPoint("RIGHT", d.frame, "RIGHT", -PADDING, 0)
+    -- Vier Kennzahlen, dieselben wie die Spalten der Liste und in derselben
+    -- Reihenfolge.
+    setTile(1, percentText(route), ns.L["TILE_PERCENT"])
+    setTile(2, (route.enemyForces and route.enemyForcesRequired)
+        and ("%d/%d"):format(route.enemyForces, route.enemyForcesRequired)
+        or T:Text("textMuted", "–"), ns.L["COL_FORCES"])
+    setTile(3, tostring(#route.pulls), ns.L["COL_PULLS"])
+    setTile(4, levelText(route) ~= "" and levelText(route) or T:Text("textMuted", "–"), ns.L["COL_LEVEL"])
 
-    d.percent:SetText(percentText(route))
-    if route.enemyForces and route.enemyForcesRequired then
-        d.forces:SetText(("%d / %d"):format(route.enemyForces, route.enemyForcesRequired))
-    else
-        d.forces:SetText("")
-    end
-
-    d.affixes:ClearAllPoints()
-    d.affixes:SetPoint("TOPLEFT", d.percent, "BOTTOMLEFT", 2, -6)
-    d.affixes:SetPoint("RIGHT", d.frame, "RIGHT", -PADDING, 0)
-
-    local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "-"
-    d.affixes:SetText(("%d %s · %s"):format(#route.pulls, ns.L["COL_PULLS"], affixes))
+    local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
+    d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
+    d.section:SetText(ns.L["DETAIL_SECTION_PULLS"]:upper())
 
     -- Pull-Liste: Ueberschrift je Pull, darunter die Gegner einzeln mit ihren
     -- Zaubern. Eine Sammelzeile pro Pull war zu gedraengt, und die Zauber
@@ -1376,11 +1620,19 @@ local function updateDetail(route)
         header.pullIndex = i
         for _, icon in ipairs(header.icons) do icon:Hide() end
 
+        header.portrait:Hide()
         header.index:SetText((T:Hex("textSecondary") .. "%d|r"):format(i))
         header.text:SetText(("%s%s%s|r"):format(
             pull.boss and T:Hex("accent") or T:Hex("textSecondary"),
             ns.L["PULL"],
             pull.boss and "  !" or ""))
+
+        -- Derselbe Farbverlauf wie auf der Karte: gruen am Anfang, rot am
+        -- Ende. So findet man einen Pull dort wieder, ohne die Nummer zu
+        -- lesen.
+        local t = #route.pulls > 1 and (i - 1) / (#route.pulls - 1) or 0
+        header.bar:SetColorTexture(ns.MapView.PullColor(t))
+        header.bar:Show()
 
         if pull.cumulative and need and need > 0 then
             header.percent:SetText((T:Hex("textSecondary") .. "%.1f %%|r"):format(pull.cumulative / need * 100))
@@ -1496,36 +1748,28 @@ function updateDungeonDetail(dungeon)
     local name, _, timeLimit = C_ChallengeMode.GetMapUIInfo(cmId)
     d.dungeon:SetText(ns.L["DETAIL_DUNGEON"])
     d.title:SetText(name or dungeon.englishName or "?")
-    d.author:SetText(("%s %s · %d %s"):format(
-        ns.L["DETAIL_TIMER"], formatTime(timeLimit), dungeon.totalCount or 0, ns.L["DETAIL_FORCES"]))
+    d.author:SetText(("%d %s"):format(dungeon.totalCount or 0, ns.L["DETAIL_FORCES"]))
 
     -- Bestleistung der laufenden Season, falls vorhanden.
-    local best = ""
+    local best, bestTime = "", nil
     if C_MythicPlus and C_MythicPlus.GetSeasonBestForMap then
         local intime, overtime = C_MythicPlus.GetSeasonBestForMap(cmId)
         local run = intime or overtime
         if type(run) == "table" and run.level then
-            best = ("+%d  %s%s|r"):format(
-                run.level,
-                intime and T:Hex("success") or T:Hex("warning"),
-                run.durationSec and (" " .. formatTime(math.floor(run.durationSec))) or "")
+            best = ("%s+%d|r"):format(intime and T:Hex("success") or T:Hex("warning"), run.level)
+            bestTime = run.durationSec and formatTime(math.floor(run.durationSec)) or nil
         end
     end
-    d.percent:SetText(best ~= "" and best or T:Text("textMuted", "–"))
-
-    -- Unter die Zahl: "deine Saison-Bestleistung" ist zu lang, um daneben zu
-    -- passen, und lief bisher aus dem Panel heraus.
-    d.forces:ClearAllPoints()
-    d.forces:SetPoint("TOPLEFT", d.percent, "BOTTOMLEFT", 2, -2)
-    d.forces:SetPoint("RIGHT", d.frame, "RIGHT", -PADDING, 0)
-    d.forces:SetText(best ~= "" and ns.L["DETAIL_BEST"] or ns.L["DETAIL_NO_RUN"])
 
     local list, routeCount = dungeonConsensus(cmId)
 
-    d.affixes:ClearAllPoints()
-    d.affixes:SetPoint("TOPLEFT", d.forces, "BOTTOMLEFT", -2, -10)
-    d.affixes:SetPoint("RIGHT", d.frame, "RIGHT", -PADDING, 0)
-    d.affixes:SetText(ns.L["DETAIL_CONSENSUS"]:format(routeCount))
+    setTile(1, best ~= "" and best or T:Text("textMuted", "–"), ns.L["TILE_BEST"])
+    setTile(2, bestTime or T:Text("textMuted", "–"), ns.L["TILE_BEST_TIME"])
+    setTile(3, formatTime(timeLimit), ns.L["DETAIL_TIMER"])
+    setTile(4, tostring(routeCount), ns.L["TILE_ROUTES"])
+
+    d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
+    d.section:SetText(ns.L["DETAIL_SECTION_ADDS"]:upper())
 
     local y = 0
     for i, entry in ipairs(list) do
@@ -1847,6 +2091,10 @@ function B.Refresh()
         or ns.L["FILTER"])
 
     local route = selectedId and displayById[selectedId]
+    if lastDetailId ~= selectedId then
+        hideAddSheet()
+        lastDetailId = selectedId
+    end
     updateDetail(route)
 
     ui.mapButton:SetEnabled(route ~= nil)
@@ -1899,14 +2147,29 @@ local function liftMDTControls(level)
     end
 end
 
----Baut die Detailspalte in MDTs rechter Spalte.
+---Baut die Detailspalte rechts.
+---
+---Sie ist breiter als MDTs Seitenspalte. MDT gibt dort feste 251 Pixel vor,
+---und darin bekommt man Kennzahlen, Pull-Liste, Zauber und Gegnerwerte nicht
+---geordnet unter. Die zusaetzlichen Pixel liegen ueber unserem eigenen
+---Listenbereich; die Liste wird um denselben Betrag schmaler, damit sich
+---nichts ueberdeckt.
 ---@param parent table
 local function buildDetail(parent)
-    local root = makeRoot(parent)
-    local d = { pullRows = {} }
+    local root = CreateFrame("Frame", nil, parent)
+    root:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0, 0)
+    root:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 0, 0)
+    root:SetPoint("LEFT", parent, "LEFT", -DETAIL_EXTRA, 0)
+    -- Weit ueber allem im Listenbereich: dessen Zeilen haengen tief in
+    -- Scrollrahmen und laegen sonst ueber dem ueberstehenden Stueck.
+    root:SetFrameLevel(parent:GetFrameLevel() + 200)
+    root:EnableMouse(true)
+    T:Fill(root, "bgBase", 0.98)
 
+    local d = { pullRows = {}, spellRows = {}, statRows = {} }
     d.frame = root
 
+    --------------------------------------------------------------- Kopf
     d.dungeon = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     d.dungeon:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -PADDING)
     d.dungeon:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
@@ -1925,27 +2188,65 @@ local function buildDetail(parent)
     d.author:SetJustifyH("LEFT")
     d.author:SetWordWrap(true)
 
-    -- Der Prozentwert ist die Kernaussage und bekommt den meisten Platz.
-    d.percent = root:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
-    d.percent:SetPoint("TOPLEFT", d.author, "BOTTOMLEFT", 0, -14)
+    -------------------------------------------------------- Kennzahlen
+    -- Vier Kacheln statt einer riesigen Zahl mit lose danebenstehenden
+    -- Werten. Es sind dieselben vier Groessen wie die Spalten der Liste, in
+    -- derselben Reihenfolge - wer dort vergleicht, findet sie hier wieder.
+    d.tiles = {}
+    for i = 1, 4 do
+        local tile = CreateFrame("Frame", nil, root)
+        tile:SetHeight(TILE_HEIGHT)
+        T:Fill(tile, "bgOverlay", 0.9)
 
-    d.forces = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    d.forces:SetPoint("LEFT", d.percent, "RIGHT", 10, -2)
-    d.forces:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
-    d.forces:SetJustifyH("LEFT")
-    d.forces:SetWordWrap(false)
+        tile.value = tile:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        tile.value:SetPoint("TOP", tile, "TOP", 0, -6)
+        tile.value:SetPoint("LEFT", tile, "LEFT", 3, 0)
+        tile.value:SetPoint("RIGHT", tile, "RIGHT", -3, 0)
+        tile.value:SetJustifyH("CENTER")
+        tile.value:SetWordWrap(false)
+
+        tile.caption = tile:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        tile.caption:SetPoint("BOTTOM", tile, "BOTTOM", 0, 5)
+        tile.caption:SetJustifyH("CENTER")
+        tile.caption:SetWordWrap(false)
+
+        if i == 1 then
+            tile:SetPoint("TOPLEFT", d.author, "BOTTOMLEFT", 0, -10)
+        else
+            tile:SetPoint("TOPLEFT", d.tiles[i - 1], "TOPRIGHT", TILE_GAP, 0)
+        end
+        d.tiles[i] = tile
+    end
+
+    -- Die Kachelbreite haengt an der Fensterbreite, nicht an einer festen
+    -- Zahl: MDT laesst sein Fenster skalieren.
+    root:SetScript("OnSizeChanged", function(self)
+        local inner = (self:GetWidth() or 0) - PADDING * 2
+        local w = math.max(40, (inner - TILE_GAP * 3) / 4)
+        for _, tile in ipairs(d.tiles) do tile:SetWidth(w) end
+    end)
+
+    -- Einmal von Hand: OnSizeChanged feuert nicht, wenn der Rahmen beim
+    -- Anlegen schon seine endgueltige Groesse hat.
+    root:GetScript("OnSizeChanged")(root)
 
     d.affixes = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    d.affixes:SetPoint("TOPLEFT", d.percent, "BOTTOMLEFT", 2, -6)
+    d.affixes:SetPoint("TOPLEFT", d.tiles[1], "BOTTOMLEFT", 2, -8)
     d.affixes:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.affixes:SetJustifyH("LEFT")
+    d.affixes:SetWordWrap(true)
+
+    ---------------------------------------------------------- Abschnitt
+    d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.section:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", -2, -10)
+    d.section:SetTextColor(T:Color("textMuted"))
 
     local divider = T:Divider(root)
-    divider:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", -2, -10)
+    divider:SetPoint("TOPLEFT", d.section, "BOTTOMLEFT", 0, -4)
     divider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
 
     local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 0, -8)
+    scroll:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 0, -6)
     scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22), PADDING)
     d.scroll = scroll
 
@@ -1958,10 +2259,93 @@ local function buildDetail(parent)
     content:SetWidth(scroll:GetWidth())
 
     d.hint = root:CreateFontString(nil, "OVERLAY", "GameFontDisable")
-    d.hint:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -80)
-    d.hint:SetPoint("TOPRIGHT", root, "TOPRIGHT", -PADDING, -80)
+    d.hint:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -90)
+    d.hint:SetPoint("TOPRIGHT", root, "TOPRIGHT", -PADDING, -90)
     d.hint:SetJustifyH("CENTER")
     d.hint:SetText(ns.L["DETAIL_HINT"])
+
+    ------------------------------------------------------- Gegnerblatt
+    -- Klickt man einen Gegner an - auf der Karte oder in der Pull-Liste -,
+    -- legt sich dieses Blatt ueber die Routenansicht. Ein eigenes Fenster
+    -- waere ein dritter Ort auf dem Bildschirm; hier steht es da, wo man
+    -- ohnehin hinsieht.
+    local sheet = CreateFrame("Frame", nil, root)
+    sheet:SetAllPoints(root)
+    sheet:SetFrameLevel(root:GetFrameLevel() + 10)
+    sheet:EnableMouse(true)
+    T:Fill(sheet, "bgBase", 1)
+    sheet:Hide()
+    d.sheet = sheet
+
+    sheet.back = T:Button(sheet, ns.L["SHEET_BACK"], 96)
+    sheet.back:SetHeight(20)
+    sheet.back:SetPoint("TOPLEFT", sheet, "TOPLEFT", PADDING, -PADDING)
+    sheet.back:SetScript("OnClick", function() hideAddSheet() end)
+
+    sheet.model = CreateFrame("PlayerModel", nil, sheet)
+    sheet.model:SetSize(96, 122)
+    sheet.model:SetPoint("TOPLEFT", sheet.back, "BOTTOMLEFT", 0, -8)
+
+    sheet.name = sheet:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    sheet.name:SetPoint("TOPLEFT", sheet.model, "TOPRIGHT", 12, -2)
+    sheet.name:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
+    sheet.name:SetJustifyH("LEFT")
+    sheet.name:SetWordWrap(true)
+
+    sheet.kind = sheet:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    sheet.kind:SetPoint("TOPLEFT", sheet.name, "BOTTOMLEFT", 0, -4)
+    sheet.kind:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
+    sheet.kind:SetJustifyH("LEFT")
+    sheet.kind:SetWordWrap(true)
+
+    -- Wertzeilen: Bezeichnung links, Wert rechts. Untereinander ausgerichtet,
+    -- damit man Zahlen vergleichen kann, statt sie zu suchen.
+    local previous
+    for i = 1, 5 do
+        local line = CreateFrame("Frame", nil, sheet)
+        line:SetHeight(16)
+        if previous then
+            line:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, -2)
+            line:SetPoint("TOPRIGHT", previous, "BOTTOMRIGHT", 0, -2)
+        else
+            line:SetPoint("TOPLEFT", sheet.model, "BOTTOMLEFT", 0, -12)
+            line:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
+        end
+
+        line.label = line:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        line.label:SetPoint("LEFT", line, "LEFT", 0, 0)
+        line.label:SetJustifyH("LEFT")
+        line.label:SetTextColor(T:Color("textMuted"))
+
+        line.value = line:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        line.value:SetPoint("RIGHT", line, "RIGHT", 0, 0)
+        line.value:SetJustifyH("RIGHT")
+
+        d.statRows[i] = line
+        previous = line
+    end
+
+    sheet.spellLabel = sheet:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    sheet.spellLabel:SetPoint("TOPLEFT", d.statRows[5], "BOTTOMLEFT", 0, -12)
+    sheet.spellLabel:SetTextColor(T:Color("textMuted"))
+    sheet.spellLabel:SetText(ns.L["SHEET_SPELLS"])
+
+    local sheetDivider = T:Divider(sheet)
+    sheetDivider:SetPoint("TOPLEFT", sheet.spellLabel, "BOTTOMLEFT", 0, -4)
+    sheetDivider:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
+
+    local sheetScroll = CreateFrame("ScrollFrame", nil, sheet, "UIPanelScrollFrameTemplate")
+    sheetScroll:SetPoint("TOPLEFT", sheetDivider, "BOTTOMLEFT", 0, -6)
+    sheetScroll:SetPoint("BOTTOMRIGHT", sheet, "BOTTOMRIGHT", -(PADDING + 22), PADDING)
+    sheet.scroll = sheetScroll
+
+    local sheetContent = CreateFrame("Frame", nil, sheetScroll)
+    sheetContent:SetSize(1, 1)
+    sheetScroll:SetScrollChild(sheetContent)
+    sheet.content = sheetContent
+
+    sheetScroll:SetScript("OnSizeChanged", function(self, width) sheetContent:SetWidth(width) end)
+    sheetContent:SetWidth(sheetScroll:GetWidth())
 
     ui.detail = d
 end
@@ -1993,7 +2377,7 @@ local function buildList(parent)
 
     local search = CreateFrame("EditBox", nil, root, "SearchBoxTemplate")
     search:SetSize(200, 22)
-    search:SetPoint("TOPRIGHT", root, "TOPRIGHT", -PADDING, -PADDING)
+    search:SetPoint("TOPRIGHT", root, "TOPRIGHT", -(PADDING + DETAIL_EXTRA), -PADDING)
     search:SetAutoFocus(false)
     search:SetScript("OnTextChanged", function(self, userInput)
         -- Ohne diesen Aufruf blendet die SearchBoxTemplate ihren Platzhalter
@@ -2174,7 +2558,7 @@ local function buildList(parent)
     -- Blaettern stehen bleibt.
     local head = CreateFrame("Frame", nil, root)
     head:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -6)
-    head:SetPoint("RIGHT", root, "RIGHT", -(PADDING + 22), 0)
+    head:SetPoint("RIGHT", root, "RIGHT", -(PADDING + 22 + DETAIL_EXTRA), 0)
     head:SetHeight(16)
 
     -- Erklaerung beim Ueberfahren. "Kraefte" versteht sonst niemand, der
@@ -2235,7 +2619,7 @@ local function buildList(parent)
 
     local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", head, "BOTTOMLEFT", 0, -6)
-    scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22), PADDING + 34)
+    scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22 + DETAIL_EXTRA), PADDING + 34)
     ui.scroll = scroll
 
     local content = CreateFrame("Frame", nil, scroll)
@@ -2256,6 +2640,9 @@ local function buildList(parent)
         showEnemyPreview(owner, challengeModeId, npcId)
     end
     ns.MapView.onEnemyLeave = hidePreview
+    ns.MapView.onEnemyClick = function(challengeModeId, npcId)
+        showAddSheet(challengeModeId, npcId)
+    end
 
     ns.MapView.onPullEnter = function(index)
         for _, row in ipairs(ui.detail.pullRows) do
@@ -2268,7 +2655,7 @@ local function buildList(parent)
         end
     end
 
-    local mapButton = T:Button(root, ns.L["BROWSER_SHOW_ON_MAP"], 150)
+    local mapButton = T:Button(root, ns.L["BROWSER_SHOW_ON_MAP"], 132)
     mapButton.primary = true
     mapButton:Apply()
     mapButton:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", PADDING, 8)
@@ -2282,7 +2669,7 @@ local function buildList(parent)
     -- Nutzers, das wir nie wieder anfassen - loeschbar unter "Meine Routen".
     -- Mit gedrueckter Umschalttaste stattdessen den Importstring kopieren,
     -- fuer alle, die ihn ausserhalb des Spiels weitergeben wollen.
-    local copyButton = T:Button(root, ns.L["BROWSER_SAVE"], 150)
+    local copyButton = T:Button(root, ns.L["BROWSER_SAVE"], 132)
     copyButton:SetPoint("LEFT", mapButton, "RIGHT", 8, 0)
     copyButton:SetScript("OnClick", function()
         local route = selectedId and displayById[selectedId]
@@ -2304,7 +2691,7 @@ local function buildList(parent)
     copyButton.tooltipText = ns.L["BROWSER_SAVE_TIP"]
     ui.copyButton = copyButton
 
-    local deleteButton = T:Button(root, ns.L["DELETE"], 150)
+    local deleteButton = T:Button(root, ns.L["DELETE"], 132)
     deleteButton:SetPoint("LEFT", copyButton, "RIGHT", 8, 0)
     deleteButton:SetScript("OnClick", function()
         local n = countChecked()
@@ -2313,7 +2700,7 @@ local function buildList(parent)
     end)
     ui.deleteButton = deleteButton
 
-    local undoButton = T:Button(root, ns.L["UNDO"], 130)
+    local undoButton = T:Button(root, ns.L["UNDO"], 112)
     undoButton:SetPoint("LEFT", deleteButton, "RIGHT", 8, 0)
     undoButton:SetScript("OnClick", function()
         local restored = restoreDeleted()
@@ -2324,8 +2711,8 @@ local function buildList(parent)
     end)
     ui.undoButton = undoButton
 
-    local submitButton = T:Button(root, ns.L["BROWSER_SUBMIT"], 160)
-    submitButton:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -PADDING, 8)
+    local submitButton = T:Button(root, ns.L["BROWSER_SUBMIT"], 140)
+    submitButton:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + DETAIL_EXTRA), 8)
     submitButton:SetScript("OnClick", function()
         local route = selectedId and displayById[selectedId]
 
@@ -2457,7 +2844,7 @@ function B.Register(api)
             -- Fensterknoepfe wieder nach oben holen: unsere Flaechen liegen
             -- darueber, sobald die Sektion sichtbar ist.
             if ui and ui.frame then
-                liftMDTControls(ui.frame:GetFrameLevel() + 20)
+                liftMDTControls((ui.detail and ui.detail.frame:GetFrameLevel() or ui.frame:GetFrameLevel()) + 20)
             end
 
             syncWithMDT()

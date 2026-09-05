@@ -80,6 +80,27 @@ local function pullColor(t)
     return 1.0, 0.85 - 0.55 * k, 0.20 + 0.05 * k
 end
 
+-- Nach aussen, damit die Pull-Liste rechts dieselben Farben benutzt.
+MV.PullColor = pullColor
+
+--------------------------------------------------------------------------
+-- Ziehen
+--------------------------------------------------------------------------
+
+---Merkt sich die Cursorposition als Ausgangspunkt einer Zugbewegung.
+local function beginDrag()
+    local viewport = panel.viewport
+    local scale = viewport:GetEffectiveScale()
+    local x, y = GetCursorPosition()
+    viewport.dragX, viewport.dragY = x / scale, y / scale
+    viewport.dragging = true
+end
+
+---Beendet die Zugbewegung.
+local function endDrag()
+    if panel then panel.viewport.dragging = false end
+end
+
 --------------------------------------------------------------------------
 -- Vorrat
 --------------------------------------------------------------------------
@@ -94,10 +115,25 @@ local function acquireBlip(index)
     blip = CreateFrame("Button", nil, panel.canvas)
     blip:SetSize(BLIP_SIZE, BLIP_SIZE)
 
-    -- Klicks weiterreichen, damit man die Karte auch dann ziehen kann, wenn
-    -- der Zeiger gerade auf einem Gegner steht. Ohne das faengt der Blip den
-    -- Mausdruck ab und die Karte bleibt stehen.
-    if blip.SetPropagateMouseClicks then blip:SetPropagateMouseClicks(true) end
+    -- Ziehen und Anklicken teilen sich die linke Maustaste. Der Blip faengt
+    -- den Mausdruck ab, also schiebt er die Karte selbst weiter - und
+    -- entscheidet beim Loslassen anhand des zurueckgelegten Weges, ob es ein
+    -- Klick war oder ein Zug.
+    blip:SetScript("OnMouseDown", function(self, button)
+        if button ~= "LeftButton" then return end
+        beginDrag()
+        self.downX, self.downY = GetCursorPosition()
+    end)
+    blip:SetScript("OnMouseUp", function(self, button)
+        endDrag()
+        if button ~= "LeftButton" or not self.downX then return end
+        local x, y = GetCursorPosition()
+        local moved = math.abs(x - self.downX) + math.abs(y - self.downY)
+        self.downX, self.downY = nil, nil
+        if moved < 6 and MV.onEnemyClick and self.npcId then
+            MV.onEnemyClick(self.challengeModeId, self.npcId, self.pull)
+        end
+    end)
 
     blip.glow = blip:CreateTexture(nil, "BACKGROUND")
     blip.glow:SetPoint("CENTER")
@@ -511,14 +547,11 @@ local function ensurePanel()
     -- Ziehen zum Verschieben. Gerechnet wird gegen die letzte Cursorposition
     -- statt gegen einen Startpunkt: so bleibt die Karte auch dann unter dem
     -- Zeiger, wenn sie zwischendurch am Rand angeschlagen ist.
-    viewport:SetScript("OnMouseDown", function(self, button)
+    viewport:SetScript("OnMouseDown", function(_, button)
         if button ~= "LeftButton" then return end
-        local scale = self:GetEffectiveScale()
-        local x, y = GetCursorPosition()
-        self.dragX, self.dragY = x / scale, y / scale
-        self.dragging = true
+        beginDrag()
     end)
-    viewport:SetScript("OnMouseUp", function(self) self.dragging = false end)
+    viewport:SetScript("OnMouseUp", endDrag)
     viewport:SetScript("OnHide", function(self) self.dragging = false end)
     viewport:SetScript("OnUpdate", function(self)
         if not self.dragging then return end
