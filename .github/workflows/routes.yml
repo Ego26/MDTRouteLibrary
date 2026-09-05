@@ -174,12 +174,18 @@ jobs:
           done
           echo "Erzeugtes Lua ist syntaktisch gültig."
 
+      # Datum plus Zaehler statt Datum plus Hash. Der Hash war fuer Nutzer
+      # bedeutungslos und stand nur da, um mehrere Releases am selben Tag
+      # auseinanderzuhalten - das kann ein Zaehler besser. Ob sich etwas
+      # geaendert hat, entscheidet ohnehin data/build-state.json, nicht der Tag.
       - name: Version bestimmen
         if: steps.build.outputs.changed == 'true'
         id: version
         run: |
-          hash=$(node -p "require('./data/build-state.json').hash")
-          echo "tag=$(date -u +%Y.%m.%d)-$hash" >> "$GITHUB_OUTPUT"
+          git fetch --tags --quiet
+          today=$(date -u +%Y.%m.%d)
+          count=$(git tag -l "$today.*" | wc -l)
+          echo "tag=$today.$((count + 1))" >> "$GITHUB_OUTPUT"
 
       - name: Änderungen committen
         if: steps.build.outputs.changed == 'true'

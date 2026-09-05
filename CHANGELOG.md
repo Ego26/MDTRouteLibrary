@@ -1,38 +1,46 @@
 # Changelog
 
-## 2026.09.05 – erste Veröffentlichung
+## 2026.09.05.1 — first release
 
-Erstes Grundgerüst. Gebaut und geprüft gegen MDT 6.2.13 (Interface 120100).
+MDT Route Library adds a route catalogue inside the Mythic Dungeon Tools
+window. Browse routes, put one on the map, keep the ones you like — without
+leaving the game.
 
-### Addon
-- Anbindung an MDT über `MythicDungeonToolsAPI:RegisterUIInitializer` – lädt
-  MDTs Oberfläche nicht selbst nach.
-- Routen werden als Presets in MDTs Datenbank eingetragen und beim nächsten
-  Update anhand einer eigenen Markierung wieder ersetzt. Presets des Nutzers
-  bleiben unangetastet.
-- Dungeonindizes werden zur Laufzeit über den englischen Namen aufgelöst, nicht
-  eingebacken – MDT nummeriert zwischen Versionen um.
-- Eigene Erzeugung von MDT-Importstrings (`!~MDT2~`) über `C_EncodingUtil`,
-  ohne fremde Bibliotheken.
-- Einreich-Dialog: `/routes submit` packt die geöffnete Route in einen Blob zum
-  Kopieren.
-- Routendaten liegen im LoadOnDemand-Addon `MDTRouteLibrary_Data` und werden erst
-  geladen, wenn MDT aufgeht.
-- Deutsche und englische Sprachdateien.
+**The library is still empty.** This release brings the addon and the dungeon
+data for the current season; the routes come from players. Adding one takes a
+minute: build it in MDT, type `/routes submit`, paste the code into a
+submission on GitHub. Approved routes go out with the next update.
 
-### Toolchain
-- `tools/lua-table.mjs` – kleiner Lua-Parser für MDTs Datendateien.
-- `tools/mdt-dungeons.mjs` – liest MDTs Dungeonkatalog samt Gegnertabellen.
-- `tools/keystone-convert.mjs` – keystone.guru-Routen nach MDT, mit
-  Gegnerkräfte-Gegenrechnung als Selbsttest.
-- `tools/parse-submission.mjs` – dekodiert Einreichungen, ergänzt NPC-IDs.
-- `tools/collect-submissions.mjs` – holt freigegebene Einreichungen aus Issues.
-- `tools/generate-lua.mjs` – erzeugt das Datenaddon deterministisch.
-- `tools/build.mjs` – Gesamtbau; Exitcode 9 bedeutet „unverändert“.
-- Tägliche GitHub Action, die nur bei geändertem Inhalt veröffentlicht.
+### What it does
 
-### Offen
-- Inhalt.
-- Freigabe von Raider.IO für die Weiterverteilung von keystone.guru-Routen.
-- Bedeutung von `mdtIndex` in der keystone.guru-API (klärt sich mit dem ersten
-  echten API-Aufruf).
+- A browsable list inside MDT's own window, grouped by dungeon. Search by
+  name, author or dungeon; filter by key level, pull count or enemy forces.
+- Enemy forces shown as a percentage of what the dungeon needs, so you see
+  before you commit whether a route actually finishes the key.
+- Every pull broken down into the enemies it contains, with a running total.
+- Enemy details on hover: 3D model, level, type, health, and every ability —
+  interrupts outlined, dispel types colour coded.
+- A map preview you can pan and zoom, with the pull under your cursor
+  highlighted in the list beside it.
+- Favourites move to their own section at the top.
+
+### It leaves your MDT alone
+
+Nothing is written to your preset list when the addon loads. *Show on map*
+uses a single preview slot per dungeon that gets overwritten next time. *Save
+to MDT* makes a permanent copy that becomes an ordinary preset of yours — the
+addon never touches it again. Your own presets are never modified or deleted.
+
+### Commands
+
+- `/routes` — open the browser
+- `/routes submit` — pack the route currently open in MDT for submission
+- `/routes status` — data age and MDT connection
+- `/routes cleanup` — remove preview presets from MDT
+
+### Requirements
+
+Mythic Dungeon Tools. Built and tested against MDT 6.2.13 (Interface 120100).
+
+Not affiliated with Blizzard Entertainment, and not an official part of Mythic
+Dungeon Tools.
