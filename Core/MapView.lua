@@ -1,22 +1,23 @@
--- Kartenansicht: die Route auf der Dungeonkarte, zum Hineinfahren und Zoomen.
+-- Kartenvorschau: faehrt man ueber eine Route, geht die Dungeonkarte auf.
+-- Man kann mit der Maus hinein, zoomen, schieben und Gegner anfassen.
 --
 -- Warum nachgebaut und nicht MDTs eigene benutzt: MDTs Plugin-Schnittstelle
 -- kennt sechs Methoden (RegisterNavigationSection, GetCurrentSection,
 -- SetCurrentSection, GetNavigationSectionContentFrame, HideAllDialogs,
 -- RegisterDungeonData). Keine davon zeichnet eine Karte, und MDTs Karte gibt
--- es nur einmal - fest an MDT.main_frame gebunden. Sie in unsere Sektion zu
--- holen ginge nur ueber MDTs Interna, und davon haelt sich dieses Addon fern.
+-- es nur einmal - fest an MDT.main_frame gebunden. Sie hierher zu holen ginge
+-- nur ueber MDTs Interna, und davon haelt sich dieses Addon fern.
 --
 -- Was wir stattdessen benutzen, ist alles oeffentlich: MDTs Kacheln liegen als
 -- Dateien im Addonordner, die Gegnerbilder kommen aus Blizzards
 -- SetPortraitTextureFromCreatureDisplayID, und die Koordinaten stecken im
--- Datenpaket. Ring und Leuchten um die Bilder sind dieselben Ausschnitte aus
--- MDTs Texturatlas, die MDT selbst dafuer nimmt - damit sieht es aus wie dort.
+-- Datenpaket. Ring und Leuchten sind dieselben Ausschnitte aus MDTs
+-- Texturatlas, die MDT selbst dafuer nimmt - damit sieht es aus wie dort.
 --
 -- Was hier bewusst fehlt: Patrouillenwege, Sichtlinien, Interessenpunkte,
--- Bossflaechen. Wer das braucht, ist mit "Auf Karte zeigen" in MDTs echter
--- Ansicht besser bedient. Diese hier beantwortet eine Frage: wo laeuft die
--- Route lang, und was liegt in welchem Pull.
+-- Bossflaechen. Wer das braucht, klickt "In MDT oeffnen" und bekommt MDTs
+-- echte Ansicht. Diese hier beantwortet eine Frage: wo laeuft die Route lang,
+-- und was liegt in welchem Pull.
 
 local _, ns = ...
 
@@ -30,7 +31,7 @@ local T = ns.Theme
 -- Kachelgeometrie.
 local MDT_WIDTH  = 840
 local COLS, ROWS = 15, 10
-local ASPECT     = COLS / ROWS  -- 1.5
+local ASPECT     = COLS / ROWS -- 1.5
 
 -- MDTs Texturatlas. Dieselben Ausschnitte benutzt MDT fuer seine Blips.
 local ATLAS = "Interface\\AddOns\\MythicDungeonTools\\Textures\\UI-EncounterJournalTextures"
@@ -38,9 +39,14 @@ local RING  = { 0.85, 0.97, 0.43, 0.4865 }
 local GLOW  = { 0.69, 0.81, 0.39, 0.333 }
 local MASK  = "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask"
 
+local VIEW_W  = 480
+local VIEW_H  = VIEW_W / ASPECT -- 320
+local PADDING = 10
+local HEAD_H  = 18
+local FOOT_H  = 22
+
 local BLIP_SIZE = 15
 local LABEL_GAP = 22
-local BAR_SPACE = 46 -- Ueberschrift oben, Zoomleiste unten
 
 -- Blasse Darstellung fuer Gegner, die nicht zur Route gehoeren.
 local DIM_ALPHA  = 0.5
@@ -48,15 +54,21 @@ local MUTE_ALPHA = 0.3
 
 local ZOOM_MIN, ZOOM_MAX, ZOOM_STEP = 1, 4, 0.5
 
-local panel    -- die ganze Ansicht
-local route    -- aktuell gezeigte Route
+-- Verweilzeit, bevor die Karte aufgeht. Ohne die flackerte beim Scrollen
+-- durch die Liste bei jeder Zeile ein grosses Fenster auf.
+local DELAY = 0.3
+
+local panel   -- die ganze Ansicht
+local route   -- aktuell gezeigte Route
+local pending -- laufender Timer
 
 --------------------------------------------------------------------------
 -- Farben
 --------------------------------------------------------------------------
 
 ---Farbe eines Pulls nach seiner Position in der Route: Gruen am Anfang,
----Gold in der Mitte, Rot am Ende.
+---Gold in der Mitte, Rot am Ende. Damit sieht man die Laufrichtung, ohne
+---eine einzige Zahl lesen zu muessen.
 ---@param t number 0 = erster Pull, 1 = letzter
 ---@return number r, number g, number b
 local function pullColor(t)
@@ -134,8 +146,9 @@ local function acquireLabel(index)
     local label = panel.labels[index]
     if label then return label end
 
-    -- Auf der Beschriftungsebene, nicht auf der Karte: sonst verschwindet die
-    -- Ziffer hinter den Blips, die genau dort stehen.
+    -- Auf der Beschriftungsebene, nicht auf der Karte: Blips sind Rahmen und
+    -- liegen ueber jeder Textur - eine Ziffer auf der Karte selbst waere
+    -- ausgerechnet in der Pullmitte verdeckt.
     label = panel.overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     label:SetShadowColor(0, 0, 0, 1)
     label:SetShadowOffset(1, -1)
@@ -161,23 +174,9 @@ end
 -- Anordnung
 --------------------------------------------------------------------------
 
----Setzt die Groesse des Sichtfensters. Die Karte behaelt ihr
----Seitenverhaeltnis, egal wie MDTs Fenster gerade steht.
-local function layoutViewport()
-    local w = panel:GetWidth()
-    local h = (panel:GetHeight() or 0) - BAR_SPACE
-    if not w or w <= 0 or h <= 0 then return end
-
-    local vw = math.min(w, h * ASPECT)
-    panel.viewport:SetSize(vw, vw / ASPECT)
-end
-
 ---Legt Kacheln, Blips, Linien und Nummern auf die aktuelle Zoomstufe.
 local function layoutCanvas()
-    local vw = panel.viewport:GetWidth()
-    if not vw or vw <= 0 then return end
-
-    local canvasW = vw * panel.zoom
+    local canvasW = VIEW_W * panel.zoom
     local tile    = canvasW / COLS
     panel.canvas:SetSize(canvasW, tile * ROWS)
 
@@ -213,7 +212,7 @@ local function layoutCanvas()
         end
         prevX, prevY = cx, cy
 
-        -- Bei vielen Pulls passen nicht alle Nummern nebeneinander. Erste und
+        -- Bei vierzig Pulls passen nicht alle Nummern nebeneinander. Erste und
         -- letzte stehen immer, der Rest nur mit genug Abstand - beim
         -- Hineinzoomen kommen die fehlenden von selbst dazu.
         local must = (k == 1 or k == #panel.centres)
@@ -247,36 +246,42 @@ end
 ---@param ox number|nil neue Verschiebung, sonst die bestehende nachziehen
 ---@param oy number|nil
 local function pan(ox, oy)
-    local vw, vh = panel.viewport:GetWidth(), panel.viewport:GetHeight()
     local cw, ch = panel.canvas:GetWidth(), panel.canvas:GetHeight()
-    if not vw or not cw then return end
 
-    panel.ox = math.max(math.min(ox or panel.ox, 0), math.min(0, vw - cw))
-    panel.oy = math.min(math.max(oy or panel.oy, math.min(0, vh - ch)), 0)
+    panel.ox = math.max(math.min(ox or panel.ox, 0), math.min(0, VIEW_W - cw))
+    panel.oy = math.min(math.max(oy or panel.oy, math.min(0, VIEW_H - ch)), 0)
 
     panel.canvas:ClearAllPoints()
     panel.canvas:SetPoint("TOPLEFT", panel.viewport, "TOPLEFT", panel.ox, panel.oy)
 end
 
----Aendert die Zoomstufe und haelt dabei die Bildmitte fest.
+---Aendert die Zoomstufe und haelt dabei den Punkt unter dem Zeiger fest.
 ---@param delta number
 local function zoomBy(delta)
     local target = math.max(ZOOM_MIN, math.min(ZOOM_MAX, panel.zoom + delta))
     if target == panel.zoom then return end
 
-    local vw, vh = panel.viewport:GetWidth(), panel.viewport:GetHeight()
     local cw, ch = panel.canvas:GetWidth(), panel.canvas:GetHeight()
 
-    -- Welcher Punkt der Karte liegt gerade in der Mitte? Der soll dort
-    -- bleiben, sonst springt beim Zoomen der Ausschnitt.
-    local fx = (cw and cw > 0) and (-panel.ox + vw / 2) / cw or 0.5
-    local fy = (ch and ch > 0) and (-panel.oy + vh / 2) / ch or 0.5
+    -- Wo im Sichtfenster steht der Zeiger? Der Punkt der Karte unter ihm soll
+    -- dort bleiben - so zoomt man dorthin, wo man hinsieht, statt dass der
+    -- Ausschnitt wegspringt. Ausserhalb der Karte gilt die Mitte.
+    local px, py = VIEW_W / 2, VIEW_H / 2
+    if panel.viewport:IsMouseOver() then
+        local scale = panel.viewport:GetEffectiveScale()
+        local mx, my = GetCursorPosition()
+        px = mx / scale - panel.viewport:GetLeft()
+        py = panel.viewport:GetTop() - my / scale
+    end
+
+    local fx = cw > 0 and (-panel.ox + px) / cw or 0.5
+    local fy = ch > 0 and (-panel.oy + py) / ch or 0.5
 
     panel.zoom = target
     layoutCanvas()
 
     local nw, nh = panel.canvas:GetWidth(), panel.canvas:GetHeight()
-    pan(-(fx * nw - vw / 2), -(fy * nh - vh / 2))
+    pan(-(fx * nw - px), -(fy * nh - py))
     panel.zoomLabel:SetText(("%.0f %%"):format(panel.zoom * 100))
 end
 
@@ -311,9 +316,8 @@ local function build()
 
     -- Zuordnung Gegner/Klon -> Pull. Was nicht darin steht, gehoert nicht zur
     -- Route und wird blass gezeigt.
-    local pullOf = {}
+    local pullOf, counts = {}, {}
     local total = #route.pulls
-    local counts = {}
 
     for i, pull in ipairs(route.pulls) do
         for _, entry in ipairs(pull.enemies or {}) do
@@ -331,7 +335,8 @@ local function build()
     end
 
     -- Ebene mit den meisten Gegnern der Route zeigen. Ein Ausschnitt ist
-    -- ehrlicher als eine Karte, auf der die Haelfte der Punkte fehlt.
+    -- ehrlicher als eine Karte, auf der die Haelfte der Punkte fehlt und
+    -- niemand erfaehrt warum.
     local sublevel, best, levels = 1, -1, 0
     for level, count in pairs(counts) do
         levels = levels + 1
@@ -343,8 +348,7 @@ local function build()
     -- Blips fuer alle Gegner des Dungeons, nicht nur die der Route. Erst
     -- daran sieht man, was eine Route auslaesst - beim Vergleich zweier
     -- Routen ist genau das die interessante Frage.
-    local index = 0
-    local sums = {}
+    local index, sums = 0, {}
     local baseLevel = panel.canvas:GetFrameLevel()
 
     for enemyIdx, enemy in pairs(enemies) do
@@ -399,9 +403,9 @@ local function build()
     for i = index + 1, #panel.blips do panel.blips[i]:Hide() end
     panel.blipCount = index
 
-    -- Dichte Liste der Pullmitten: { Pullnummer, x, y, r, g, b }. Pulls ohne
-    -- Gegner auf dieser Ebene fallen dabei heraus, und genau deshalb ist die
-    -- Liste dicht - eine Luecke haette #centres unbrauchbar gemacht.
+    -- Dichte Liste der Pullmitten: { Nummer, x, y, r, g, b }. Pulls ohne
+    -- Gegner auf dieser Ebene fallen heraus, und genau deshalb ist die Liste
+    -- dicht - eine Luecke haette #centres unbrauchbar gemacht.
     wipe(panel.centres)
     for i = 1, total do
         local sum = sums[i]
@@ -411,15 +415,138 @@ local function build()
         end
     end
 
-    local map = dungeon.maps[sublevel]
-    panel.caption:SetText(("%s%s|r%s"):format(
-        T:Hex("textPrimary"), route.title or route.id,
-        levels > 1
-            and (T:Hex("textMuted") .. "   " ..
-                 ns.L["MAP_FLOOR"]:format(map and map.name or tostring(sublevel)) .. "|r")
-            or ""))
+    panel.title:SetText(T:Hex("textPrimary") .. (route.title or route.id) .. "|r")
+
+    -- Legende zur Farbfolge. Der Pfeil braucht keine Uebersetzung.
+    local footer = ("%s%s|r → %s%s|r%s  ·  %d %s"):format(
+        T:Hex("success"), ns.L["MAP_START"],
+        T:Hex("danger"), ns.L["MAP_END"],
+        T:Hex("textMuted"), total, ns.L["COL_PULLS"])
+
+    if levels > 1 then
+        local map = dungeon.maps[sublevel]
+        footer = footer .. "  ·  " .. ns.L["MAP_FLOOR"]:format(map and map.name or tostring(sublevel))
+    end
+    panel.footer:SetText(footer .. "|r")
 
     return true
+end
+
+--------------------------------------------------------------------------
+-- Aufbau
+--------------------------------------------------------------------------
+
+---Baut den Rahmen beim ersten Aufruf.
+---@return table
+local function ensurePanel()
+    if panel then return panel end
+
+    local p = CreateFrame("Frame", "MDTRouteLibraryMapView", UIParent, "TooltipBorderedFrameTemplate")
+    p:SetSize(VIEW_W + PADDING * 2, VIEW_H + PADDING * 2 + HEAD_H + FOOT_H)
+    -- Eine Stufe unter TOOLTIP: Blizzards Zaubertooltips sollen darueber
+    -- liegen, unsere Gegnervorschau ebenso.
+    p:SetFrameStrata("FULLSCREEN_DIALOG")
+    -- Anders als ein gewoehnlicher Tooltip nimmt dieser hier die Maus an -
+    -- sonst koennte man weder zoomen noch schieben, und das Mausrad ginge an
+    -- die Routenliste darunter.
+    p:EnableMouse(true)
+    p:EnableMouseWheel(true)
+    p:Hide()
+
+    p.zoom, p.ox, p.oy = ZOOM_MIN, 0, 0
+    p.blips, p.labels, p.links, p.centres = {}, {}, {}, {}
+    p.blipCount = 0
+
+    -- Frueh setzen: die Anordnungsfunktionen greifen darauf zu.
+    panel = p
+
+    p.title = p:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    p.title:SetPoint("TOPLEFT", p, "TOPLEFT", PADDING, -PADDING)
+    p.title:SetPoint("TOPRIGHT", p, "TOPRIGHT", -PADDING, -PADDING)
+    p.title:SetJustifyH("LEFT")
+    p.title:SetWordWrap(false)
+
+    -- Sichtfenster: schneidet die Karte ab, damit sie beim Zoomen nicht ueber
+    -- Ueberschrift und Fusszeile laeuft.
+    local viewport = CreateFrame("Frame", nil, p)
+    viewport:SetSize(VIEW_W, VIEW_H)
+    viewport:SetPoint("TOPLEFT", p, "TOPLEFT", PADDING, -(PADDING + HEAD_H))
+    viewport:SetClipsChildren(true)
+    viewport:EnableMouse(true)
+    viewport:EnableMouseWheel(true)
+    p.viewport = viewport
+
+    viewport.ground = viewport:CreateTexture(nil, "BACKGROUND", nil, -2)
+    viewport.ground:SetAllPoints()
+    viewport.ground:SetColorTexture(T:Color("bgInset", 1))
+
+    local canvas = CreateFrame("Frame", nil, viewport)
+    canvas:SetPoint("TOPLEFT", viewport, "TOPLEFT", 0, 0)
+    p.canvas = canvas
+
+    local overlay = CreateFrame("Frame", nil, canvas)
+    overlay:SetAllPoints(canvas)
+    overlay:SetFrameLevel(canvas:GetFrameLevel() + 20)
+    p.overlay = overlay
+
+    p.tiles = {}
+    for row = 1, ROWS do
+        for col = 1, COLS do
+            p.tiles[(row - 1) * COLS + col] = canvas:CreateTexture(nil, "BACKGROUND", nil, 0)
+        end
+    end
+
+    local function onWheel(_, delta) zoomBy(delta > 0 and ZOOM_STEP or -ZOOM_STEP) end
+    viewport:SetScript("OnMouseWheel", onWheel)
+    p:SetScript("OnMouseWheel", onWheel)
+
+    -- Ziehen zum Verschieben. Gerechnet wird gegen die letzte Cursorposition
+    -- statt gegen einen Startpunkt: so bleibt die Karte auch dann unter dem
+    -- Zeiger, wenn sie zwischendurch am Rand angeschlagen ist.
+    viewport:SetScript("OnMouseDown", function(self, button)
+        if button ~= "LeftButton" then return end
+        local scale = self:GetEffectiveScale()
+        local x, y = GetCursorPosition()
+        self.dragX, self.dragY = x / scale, y / scale
+        self.dragging = true
+    end)
+    viewport:SetScript("OnMouseUp", function(self) self.dragging = false end)
+    viewport:SetScript("OnHide", function(self) self.dragging = false end)
+    viewport:SetScript("OnUpdate", function(self)
+        if not self.dragging then return end
+        local scale = self:GetEffectiveScale()
+        local x, y = GetCursorPosition()
+        x, y = x / scale, y / scale
+        pan(p.ox + (x - self.dragX), p.oy + (y - self.dragY))
+        self.dragX, self.dragY = x, y
+    end)
+
+    p.footer = p:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    p.footer:SetPoint("TOPLEFT", viewport, "BOTTOMLEFT", 0, -6)
+    p.footer:SetJustifyH("LEFT")
+    p.footer:SetWordWrap(false)
+
+    p.zoomLabel = p:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    p.zoomLabel:SetPoint("TOPRIGHT", viewport, "BOTTOMRIGHT", 0, -6)
+    p.zoomLabel:SetText("100 %")
+
+    -- Selbst aufraeumen. Die Karte bleibt stehen, solange der Zeiger auf ihr
+    -- oder auf der Zeile ist, aus der sie kam - sonst waere sie nicht
+    -- bedienbar, sie verschwaende beim Hineinfahren.
+    p:SetScript("OnUpdate", function(self)
+        local owner = self.owner
+        if owner and owner:IsVisible() and (owner:IsMouseOver() or self:IsMouseOver()) then return end
+        self:Hide()
+    end)
+
+    p:SetScript("OnHide", function(self)
+        MV.HighlightPull(nil)
+        if MV.onPullLeave then MV.onPullLeave() end
+        if MV.onEnemyLeave then MV.onEnemyLeave() end
+        self.owner = nil
+    end)
+
+    return p
 end
 
 --------------------------------------------------------------------------
@@ -449,172 +576,75 @@ function MV.HighlightPull(index)
     end
 end
 
----Zeigt eine Route auf der Karte.
+---Haengt die Karte an eine Zeile. Rechtsbuendig zur Zeile, also innerhalb von
+---MDTs Fenster: rechts daneben liegen die Addons des Nutzers.
+---@param owner table
+local function anchor(owner)
+    panel.owner = owner
+    panel:ClearAllPoints()
+    panel:SetPoint("TOPRIGHT", owner, "TOPRIGHT", -4, 8)
+
+    -- Nach unten darf sie nicht aus dem Bild laufen.
+    local bottom = panel:GetBottom()
+    if bottom and bottom < 8 then
+        local point, relTo, relPoint, x, y = panel:GetPoint(1)
+        panel:ClearAllPoints()
+        panel:SetPoint(point, relTo, relPoint, x, y - bottom + 8)
+    end
+end
+
+---Blendet die Karte aus und bricht eine wartende ab.
+function MV.Hide()
+    if pending then
+        pending:Cancel()
+        pending = nil
+    end
+    if panel then panel:Hide() end
+end
+
+---Bricht nur eine wartende Karte ab. Eine offene bleibt stehen, damit man
+---mit der Maus hineinfahren kann - sie raeumt sich selbst weg.
+function MV.Cancel()
+    if pending then
+        pending:Cancel()
+        pending = nil
+    end
+end
+
+---Fordert die Karte fuer eine Route an.
+---@param owner table Zeile, an der die Karte haengt
 ---@param newRoute table|nil
----@return boolean ok false, wenn es dazu keine Kartendaten gibt
-function MV.SetRoute(newRoute)
-    if not panel then return false end
+function MV.Request(owner, newRoute)
+    MV.Cancel()
+    if not owner or not newRoute then return end
 
-    -- Dieselbe Route nicht neu aufbauen. Die Oberflaeche zeichnet sich bei
-    -- jeder Kleinigkeit neu; zweihundert Blips jedes Mal neu zu setzen waere
-    -- Verschwendung, und die Zoomstufe des Nutzers ginge dabei verloren.
-    local key = newRoute and (newRoute.id .. ":" .. #newRoute.pulls) or nil
-    if key and key == panel.routeKey and panel.blipCount > 0 then
+    -- Schon offen und dieselbe Route: nur neu anhaengen, nicht neu bauen.
+    if panel and panel:IsShown() and route == newRoute then
+        anchor(owner)
+        return
+    end
+
+    pending = C_Timer.NewTimer(DELAY, function()
+        pending = nil
+        -- Der Zeiger kann in der Zwischenzeit weitergewandert sein.
+        if not owner:IsVisible() or not owner:IsMouseOver() then return end
+
+        ensurePanel()
         route = newRoute
-        return true
-    end
-    panel.routeKey = key
 
-    route = newRoute
-    if not route or not build() then
-        route = nil
-        panel.blipCount = 0
-        for _, blip in ipairs(panel.blips) do blip:Hide() end
-        panel.caption:SetText("")
-        panel.viewport:Hide()
-        panel.empty:Show()
-        return false
-    end
-
-    panel.empty:Hide()
-    panel.viewport:Show()
-    panel.zoom = ZOOM_MIN
-    panel.ox, panel.oy = 0, 0
-    panel.highlighted = nil
-    panel.zoomLabel:SetText(("%.0f %%"):format(panel.zoom * 100))
-
-    layoutViewport()
-    layoutCanvas()
-    pan(0, 0)
-    return true
-end
-
----Ist die Kartenansicht sichtbar?
----@return boolean
-function MV.IsShown()
-    return panel ~= nil and panel:IsShown()
-end
-
----Blendet die Kartenansicht ein oder aus.
----@param shown boolean
-function MV.SetShown(shown)
-    if not panel then return end
-    panel:SetShown(shown and true or false)
-end
-
----Baut die Ansicht. Einmal beim Aufbau der Sektion aufgerufen.
----@param parent table Wurzelrahmen des Listenbereichs
----@param anchorTop table Rahmen, unter dem die Karte beginnt
----@param padding number
----@param bottomInset number
----@return table panel
-function MV.Build(parent, anchorTop, padding, bottomInset)
-    if panel then return panel end
-
-    local p = CreateFrame("Frame", nil, parent)
-    p:SetPoint("TOPLEFT", anchorTop, "BOTTOMLEFT", 0, -6)
-    p:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -padding, bottomInset)
-    p:Hide()
-
-    p.zoom, p.ox, p.oy = ZOOM_MIN, 0, 0
-    p.blips, p.labels, p.links, p.centres = {}, {}, {}, {}
-    p.blipCount = 0
-
-    -- Frueh setzen: OnSizeChanged kann feuern, waehrend hier noch gebaut wird,
-    -- und die Anordnungsfunktionen greifen auf diese Variable zu.
-    panel = p
-
-    p.caption = p:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    p.caption:SetPoint("TOPLEFT", p, "TOPLEFT", 2, -2)
-    p.caption:SetPoint("TOPRIGHT", p, "TOPRIGHT", -2, -2)
-    p.caption:SetJustifyH("LEFT")
-    p.caption:SetWordWrap(false)
-
-    -- Sichtfenster: schneidet die Karte ab, damit sie beim Zoomen nicht ueber
-    -- Ueberschrift und Knopfleiste laeuft.
-    local viewport = CreateFrame("Frame", nil, p)
-    viewport:SetPoint("TOP", p.caption, "BOTTOM", 0, -4)
-    viewport:SetClipsChildren(true)
-    viewport:EnableMouse(true)
-    viewport:EnableMouseWheel(true)
-    p.viewport = viewport
-
-    viewport.ground = viewport:CreateTexture(nil, "BACKGROUND", nil, -2)
-    viewport.ground:SetAllPoints()
-    viewport.ground:SetColorTexture(T:Color("bgInset", 1))
-
-    local canvas = CreateFrame("Frame", nil, viewport)
-    canvas:SetPoint("TOPLEFT", viewport, "TOPLEFT", 0, 0)
-    p.canvas = canvas
-
-    -- Eigene Ebene fuer die Pullnummern. Blips sind Rahmen und liegen damit
-    -- ueber jeder Textur der Karte - eine Ziffer auf der Karte selbst waere
-    -- ausgerechnet in der Pullmitte verdeckt.
-    local overlay = CreateFrame("Frame", nil, canvas)
-    overlay:SetAllPoints(canvas)
-    overlay:SetFrameLevel(canvas:GetFrameLevel() + 20)
-    p.overlay = overlay
-
-    p.tiles = {}
-    for row = 1, ROWS do
-        for col = 1, COLS do
-            p.tiles[(row - 1) * COLS + col] = canvas:CreateTexture(nil, "BACKGROUND", nil, 0)
+        if not build() then
+            route = nil
+            panel:Hide()
+            return
         end
-    end
 
-    viewport:SetScript("OnMouseWheel", function(_, delta)
-        zoomBy(delta > 0 and ZOOM_STEP or -ZOOM_STEP)
-    end)
-
-    -- Ziehen zum Verschieben. Gerechnet wird gegen die letzte Cursorposition
-    -- statt gegen einen Startpunkt: so bleibt die Karte auch dann unter dem
-    -- Zeiger, wenn sie zwischendurch am Rand angeschlagen ist.
-    viewport:SetScript("OnMouseDown", function(self, button)
-        if button ~= "LeftButton" then return end
-        local scale = self:GetEffectiveScale()
-        local x, y = GetCursorPosition()
-        self.dragX, self.dragY = x / scale, y / scale
-        self.dragging = true
-    end)
-    viewport:SetScript("OnMouseUp", function(self) self.dragging = false end)
-    viewport:SetScript("OnHide", function(self) self.dragging = false end)
-    viewport:SetScript("OnUpdate", function(self)
-        if not self.dragging then return end
-        local scale = self:GetEffectiveScale()
-        local x, y = GetCursorPosition()
-        x, y = x / scale, y / scale
-        pan(p.ox + (x - self.dragX), p.oy + (y - self.dragY))
-        self.dragX, self.dragY = x, y
-    end)
-
-    p:SetScript("OnSizeChanged", function()
-        layoutViewport()
+        panel.zoom, panel.ox, panel.oy = ZOOM_MIN, 0, 0
+        panel.highlighted = nil
+        panel.zoomLabel:SetText("100 %")
         layoutCanvas()
-        pan()
+        pan(0, 0)
+
+        anchor(owner)
+        panel:Show()
     end)
-
-    local zoomIn = T:Button(p, "+", 26)
-    zoomIn:SetHeight(20)
-    zoomIn:SetPoint("BOTTOMRIGHT", p, "BOTTOMRIGHT", -2, 2)
-    zoomIn:SetScript("OnClick", function() zoomBy(ZOOM_STEP) end)
-
-    local zoomOut = T:Button(p, "-", 26)
-    zoomOut:SetHeight(20)
-    zoomOut:SetPoint("RIGHT", zoomIn, "LEFT", -4, 0)
-    zoomOut:SetScript("OnClick", function() zoomBy(-ZOOM_STEP) end)
-
-    p.zoomLabel = p:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    p.zoomLabel:SetPoint("RIGHT", zoomOut, "LEFT", -8, 0)
-    p.zoomLabel:SetText("100 %")
-
-    p.hint = p:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    p.hint:SetPoint("BOTTOMLEFT", p, "BOTTOMLEFT", 2, 7)
-    p.hint:SetText(ns.L["MAPVIEW_HINT"])
-
-    p.empty = p:CreateFontString(nil, "OVERLAY", "GameFontDisable")
-    p.empty:SetPoint("CENTER", p, "CENTER", 0, 0)
-    p.empty:SetText(ns.L["MAPVIEW_EMPTY"])
-    p.empty:Hide()
-
-    return p
 end

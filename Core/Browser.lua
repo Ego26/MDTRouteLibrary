@@ -8,10 +8,10 @@
 -- Nur mit beiden nutzen wir die volle Fensterbreite; deshalb steht
 -- createSidePanelFrame hier bewusst auf true.
 --
--- Warum in MDT und nicht in einem eigenen Fenster: der Wert eines
--- Routenbrowsers ist die Kartenvorschau, und die zeichnet MDT bereits. Ein
--- Klick auf eine Route wechselt in die Kartenansicht und laedt sie dort -
--- kein nachgebauter Kartenrenderer noetig.
+-- Warum in MDT und nicht in einem eigenen Fenster: die Routen sind nur dann
+-- etwas wert, wenn MDT sie gleich uebernehmen kann. Ein eigenes Fenster waere
+-- ein zweiter Ort fuer dieselbe Sache - und der Weg dorthin waere wieder das
+-- Alt-Tab-Hin-und-Her, das dieses Addon gerade abschaffen soll.
 
 local _, ns = ...
 
@@ -50,9 +50,6 @@ local selectedId
 local filterText = ""
 local filterDungeon -- challengeModeId oder nil fuer "alle"
 local filterMode = "all" -- "all" | "community" | "mine"
--- Was im Listenbereich steht: die Routenliste oder die Karte der gewaehlten
--- Route. Beide belegen dieselbe Flaeche.
-local viewMode = "list" -- "list" | "map"
 -- Filterkriterien. 0 heisst jeweils "egal".
 local filters = {
     favourites = false,
@@ -221,6 +218,9 @@ local function ensurePreview()
     frame:SetSize(250, 168)
     -- Eine Stufe unter TOOLTIP, damit Blizzards Zaubertooltip darueber liegt.
     frame:SetFrameStrata("FULLSCREEN_DIALOG")
+    -- Ueber der Kartenvorschau, die in derselben Ebene liegt: faehrt man auf
+    -- der Karte ueber einen Gegner, soll sein Steckbrief oben liegen.
+    frame:SetFrameLevel(600)
     -- Rein informativ: anklicken muss man hier nichts, die Zauber haengen an
     -- den Zeilen selbst. Ohne Maus kommt sie auch niemandem in die Quere.
     frame:EnableMouse(false)
@@ -984,13 +984,16 @@ local function acquireRow(index)
         if self.isHeader then return end
         self.highlight:Show()
         -- Kartenvorschau: zeigt den Verlauf, bevor man die Route ueberhaupt
-        -- anfasst. Geht bewusst verzoegert auf, siehe Core/MapPreview.lua.
-        ns.MapPreview.Request(self, self.route)
+        -- anfasst. Geht verzoegert auf, siehe Core/MapView.lua.
+        ns.MapView.Request(self, self.route)
     end)
     row:SetScript("OnLeave", function(self)
         if self.isHeader then return end
         if self.routeId ~= selectedId then self.highlight:Hide() end
-        ns.MapPreview.Hide()
+        -- Nur eine wartende Karte abbrechen. Eine offene bleibt stehen, sonst
+        -- koennte man nicht mit der Maus hineinfahren; sie raeumt sich selbst
+        -- weg, sobald der Zeiger weder auf ihr noch auf der Zeile ist.
+        ns.MapView.Cancel()
     end)
 
     -- Auswahlkaestchen: nur bei eigenen Routen sichtbar.
@@ -1631,9 +1634,9 @@ end
 function B.Refresh()
     if not ui then return end
 
-    -- Die Zeilen werden gleich neu belegt; eine offene Kartenvorschau zeigte
-    -- danach die Route der vorigen Belegung.
-    ns.MapPreview.Hide()
+    -- Die Zeilen werden gleich neu belegt; eine wartende Kartenvorschau
+    -- zeigte danach die Route der vorigen Belegung.
+    ns.MapView.Cancel()
 
     for _, tab in ipairs(ui.tabs) do
         tab:SetActive(tab.mode == filterMode)
@@ -1846,17 +1849,6 @@ function B.Refresh()
     local route = selectedId and displayById[selectedId]
     updateDetail(route)
 
-    -- Liste oder Karte. Ohne gewaehlte Route hat die Karte nichts zu zeigen,
-    -- deshalb faellt die Ansicht dann von selbst auf die Liste zurueck.
-    local mapMode = (viewMode == "map") and route ~= nil
-    ui.head:SetShown(not mapMode)
-    ui.scroll:SetShown(not mapMode)
-    if mapMode then ui.empty:Hide() end
-    ns.MapView.SetShown(mapMode)
-    if mapMode then ns.MapView.SetRoute(route) end
-    ui.viewToggle:SetText(mapMode and ns.L["VIEW_LIST"] or ns.L["VIEW_MAP"])
-    ui.viewToggle:SetActive(mapMode)
-
     ui.mapButton:SetEnabled(route ~= nil)
     ui.copyButton:SetEnabled(route ~= nil and not route.own and not (route and route.saved))
 
@@ -2054,32 +2046,9 @@ local function buildList(parent)
     filterButton:SetPoint("RIGHT", search, "LEFT", -8, 0)
     ui.filterButton = filterButton
 
-    -- Umschalter zwischen Liste und Karte. Er sitzt am rechten Ende der
-    -- Reiterzeile, weil er dasselbe tut wie die Reiter links: er bestimmt,
-    -- was im grossen Bereich darunter steht.
-    local viewToggle = T:Tab(root, ns.L["VIEW_MAP"], 110)
-    viewToggle:SetHeight(22)
-    viewToggle:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
-    viewToggle:SetScript("OnClick", function()
-        if viewMode ~= "map" and not selectedId then
-            -- Ohne gewaehlte Route haette die Karte nichts zu zeigen. Statt
-            -- den Knopf tot zu stellen, nehmen wir die erste Route der Liste.
-            for _, entry in ipairs(entries) do
-                if entry.route then
-                    selectedId = entry.route.id
-                    break
-                end
-            end
-        end
-        viewMode = (viewMode == "map") and "list" or "map"
-        B.Refresh()
-    end)
-    viewToggle.tooltipText = ns.L["VIEW_MAP_TIP"]
-    ui.viewToggle = viewToggle
-
     local panel = T:Panel(root, "bgOverlay")
     panel:SetSize(250, 252)
-    panel:SetPoint("TOPRIGHT", viewToggle, "BOTTOMRIGHT", 0, -4)
+    panel:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
     panel:SetFrameLevel(root:GetFrameLevel() + 20)
     panel:EnableMouse(true)
     panel:Hide()
@@ -2280,10 +2249,6 @@ local function buildList(parent)
     ui.empty = root:CreateFontString(nil, "OVERLAY", "GameFontDisable")
     ui.empty:SetPoint("CENTER", scroll, "CENTER", 0, 0)
     ui.empty:Hide()
-
-    -- Die Karte belegt dieselbe Flaeche wie die Liste. Der Umschalter oben
-    -- zeigt immer genau eine von beiden.
-    ns.MapView.Build(root, ui.head, PADDING, PADDING + 34)
 
     -- Rueckmeldungen der Karte an die Oberflaeche: dieselbe Gegnervorschau
     -- wie in der Pull-Liste, und die Pull-Zeile rechts leuchtet mit.
