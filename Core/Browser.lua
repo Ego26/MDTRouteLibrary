@@ -40,7 +40,7 @@ local COL_FAV     = 20
 local COL_PERCENT = 62
 local COL_FORCES  = 76
 local COL_PULLS   = 54
-local COL_LEVEL   = 40
+local COL_LEVEL   = 62  -- "+10-18" braucht mehr Platz als "+10"
 
 local pluginAPI
 local ui           -- gebaute Oberflaeche
@@ -129,6 +129,29 @@ local function percentText(route)
 end
 
 B.PercentText = percentText
+
+---Beschriftung der Stufenspalte.
+---Ein Bereich, wenn beide Grenzen bekannt sind, sonst die einzelne Angabe.
+---@param route table
+---@return string
+local function levelText(route)
+    local min, max = route.keyLevelMin, route.keyLevelMax
+
+    if min and max and max > min then
+        return ("%s+%d–%d|r"):format(T:Hex("accent"), min, max)
+    end
+
+    local single = min or max or route.keyLevel or route.difficulty
+    if not single then return "" end
+    return ("%s+%d|r"):format(T:Hex("accent"), single)
+end
+
+---Hoechste Stufe, fuer die eine Route gedacht ist. Fuer den Filter.
+---@param route table
+---@return number|nil
+local function levelCeiling(route)
+    return route.keyLevelMax or route.keyLevelMin or route.keyLevel or route.difficulty
+end
 
 ---Fasst die Gegner eines Pulls zusammen: "3x Bloodletter, 2x Living Venom".
 ---@param route table
@@ -791,7 +814,9 @@ local function rebuildEntries()
             (route.dungeonEnglishName or "")):lower()
 
         local percent = forcesPercent(route)
-        local level = route.keyLevel or route.difficulty
+        -- Fuer den Filter zaehlt die Obergrenze: eine Route fuer +2 bis +9
+        -- soll bei "ab +18" nicht auftauchen, eine fuer +10 bis +20 schon.
+        local level = levelCeiling(route)
         local pulls = #(route.pulls or {})
 
         -- Routen ohne Angabe fallen nur raus, wenn nach dem Kriterium
@@ -1634,8 +1659,7 @@ function B.Refresh()
             row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", indent, 5)
             row.meta:SetText(meta)
 
-            local level = route.keyLevel or route.difficulty
-            row.level:SetText(level and (T:Hex("accent") .. "+%d|r"):format(level) or "")
+            row.level:SetText(levelText(route))
             row.pulls:SetText(("%d"):format(#route.pulls))
             row.forces:SetText(("%d/%d"):format(
                 route.enemyForces or 0, route.enemyForcesRequired or 0))

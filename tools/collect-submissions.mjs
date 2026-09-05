@@ -22,6 +22,42 @@ import { pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup } from './mdt-dungeons.mjs'
 import { decodeBlob, toRoute } from './parse-submission.mjs'
 
+/**
+ * Zerlegt den Text eines GitHub-Issue-Formulars.
+ *
+ * GitHub rendert jedes Feld als "### Beschriftung" gefolgt vom Wert. Leere
+ * Felder stehen als "_No response_" drin.
+ *
+ * @param {string} body
+ * @returns {Record<string, string>} Beschriftung -> Wert
+ */
+export function parseIssueForm(body) {
+  const fields = {}
+  const parts = (body ?? '').split(/^###\s+/m).slice(1)
+
+  for (const part of parts) {
+    const breakAt = part.indexOf('\n')
+    if (breakAt === -1) continue
+
+    const label = part.slice(0, breakAt).trim()
+    const value = part.slice(breakAt + 1).trim()
+    if (value && value !== '_No response_') fields[label] = value
+  }
+
+  return fields
+}
+
+/**
+ * Liest eine Stufenangabe wie "+18" oder "egal".
+ *
+ * @param {string|undefined} value
+ * @returns {number|null}
+ */
+function parseLevel(value) {
+  const match = /^\+?(\d+)$/.exec((value ?? '').trim())
+  return match ? Number(match[1]) : null
+}
+
 const LABEL_APPROVED = 'approved'
 const LABEL_SUBMISSION = 'route-submission'
 
@@ -93,6 +129,26 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 
     try {
       const { route, warnings } = toRoute(decodeBlob(found[0]), lookup)
+
+      // Angaben aus dem Formular haben Vorrang vor dem, was im Blob steckt:
+      // der Einreichende sieht das Formular vor sich, den Blob nicht.
+      const fields = parseIssueForm(issue.body)
+
+      if (fields['Name der Route']) route.title = fields['Name der Route']
+      if (fields['Anmerkungen']) route.notes = fields['Anmerkungen']
+      if (fields['Art der Route']) route.kind = fields['Art der Route'].replace(/\s*\(.*$/, '')
+
+      const min = parseLevel(fields['Schlüsselstufe ab'])
+      const max = parseLevel(fields['Schlüsselstufe bis'])
+      if (min != null) route.keyLevelMin = min
+      if (max != null) route.keyLevelMax = max
+
+      // Vertauscht angegeben? Stillschweigend drehen statt abweisen.
+      if (route.keyLevelMin && route.keyLevelMax && route.keyLevelMin > route.keyLevelMax) {
+        const swap = route.keyLevelMin
+        route.keyLevelMin = route.keyLevelMax
+        route.keyLevelMax = swap
+      }
 
       // Wer einreicht, wird genannt - der GitHub-Name ist verlaesslicher als
       // der Charaktername aus dem Blob.

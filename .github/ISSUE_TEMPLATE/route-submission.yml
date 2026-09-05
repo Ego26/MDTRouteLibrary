@@ -36,6 +36,86 @@ body:
     validations:
       required: false
 
+  # Zwei Auswahlfelder statt eines Reglers: Issue-Formulare kennen keine
+  # Regler, und ein Bereich laesst sich so sauber auswerten.
+  - type: dropdown
+    id: level_min
+    attributes:
+      label: Schlüsselstufe ab
+      description: Ab welcher Stufe ist die Route sinnvoll?
+      options:
+        - "egal"
+        - "+2"
+        - "+3"
+        - "+4"
+        - "+5"
+        - "+6"
+        - "+7"
+        - "+8"
+        - "+9"
+        - "+10"
+        - "+11"
+        - "+12"
+        - "+13"
+        - "+14"
+        - "+15"
+        - "+16"
+        - "+17"
+        - "+18"
+        - "+19"
+        - "+20"
+        - "+21"
+        - "+22"
+        - "+23"
+        - "+24"
+        - "+25"
+        - "+26"
+        - "+27"
+        - "+28"
+        - "+29"
+        - "+30"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: level_max
+    attributes:
+      label: Schlüsselstufe bis
+      description: Bis zu welcher Stufe? Gleiche Angabe wie oben, wenn sie für genau eine Stufe gedacht ist.
+      options:
+        - "egal"
+        - "+2"
+        - "+3"
+        - "+4"
+        - "+5"
+        - "+6"
+        - "+7"
+        - "+8"
+        - "+9"
+        - "+10"
+        - "+11"
+        - "+12"
+        - "+13"
+        - "+14"
+        - "+15"
+        - "+16"
+        - "+17"
+        - "+18"
+        - "+19"
+        - "+20"
+        - "+21"
+        - "+22"
+        - "+23"
+        - "+24"
+        - "+25"
+        - "+26"
+        - "+27"
+        - "+28"
+        - "+29"
+        - "+30"
+    validations:
+      required: true
+
   - type: dropdown
     id: kind
     attributes:

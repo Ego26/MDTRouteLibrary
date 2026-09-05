@@ -184,7 +184,10 @@ function M.BuildPreset(route, dungeonIdx)
         uid     = makeUID(route.id),
         objects = {},
         colorPaletteInfo = { autoColoring = true, colorPaletteIdx = 4 },
-        difficulty = route.difficulty or DEFAULT_DIFFICULTY,
+        -- MDTs "Dungeon Level"-Regler kennt nur einen Wert. Bei einem
+        -- Bereich nehmen wir die Untergrenze: damit ist die Route auf jeden
+        -- Fall gueltig, nur eventuell vorsichtiger als noetig.
+        difficulty = route.keyLevelMin or route.keyLevel or route.difficulty or DEFAULT_DIFFICULTY,
 
         -- Eigene Markierung: daran erkennen wir beim naechsten Update, welche
         -- Presets von uns stammen. Presets des Nutzers fassen wir nie an.
