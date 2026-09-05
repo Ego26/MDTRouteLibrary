@@ -71,6 +71,12 @@ end
 -- Eingeklappte Bereiche und Dungeongruppen, Schluessel wie "section:community".
 local collapsed = {}
 
+-- Wie viele Routen je Abschnitt auf eine Seite passen.
+local PAGE_SIZE = 10
+
+-- Aktuelle Seite je Abschnitt.
+local pages = {}
+
 -- Auswahl muss auch eigene Routen finden. ns.routeById kennt nur das
 -- Datenpaket; die Routen aus MDT stehen dort nie drin.
 local displayById = {}
@@ -849,18 +855,40 @@ local function rebuildEntries()
     local function addSection(key, label, list)
         if #list == 0 then return end
 
+        -- Erst den ganzen Abschnitt sortieren, dann die Seite herausschneiden.
+        -- Andersherum liefen die Seiten quer durch die Dungeongruppen.
+        table.sort(list, function(a, b)
+            local nameA = a.dungeonEnglishName or ""
+            local nameB = b.dungeonEnglishName or ""
+            if nameA ~= nameB then return nameA < nameB end
+            return (forcesPercent(a) or 0) > (forcesPercent(b) or 0)
+        end)
+
         local sectionKey = "section:" .. key
+        local pageCount = math.max(1, math.ceil(#list / PAGE_SIZE))
+
+        -- Seite festhalten, aber nie ins Leere zeigen lassen: Filter koennen
+        -- die Liste jederzeit verkuerzen.
+        local page = math.min(pages[sectionKey] or 1, pageCount)
+        pages[sectionKey] = page
+
         entries[#entries + 1] = {
             section = true,
             key = sectionKey,
             text = label,
             count = #list,
+            page = page,
+            pageCount = pageCount,
             collapsed = collapsed[sectionKey] or false,
         }
         if collapsed[sectionKey] then return end
 
+        local first = (page - 1) * PAGE_SIZE + 1
+        local last = math.min(#list, page * PAGE_SIZE)
+
         local byDungeon, order = {}, {}
-        for _, route in ipairs(list) do
+        for index = first, last do
+            local route = list[index]
             local dungeon = route.dungeonEnglishName or "?"
             if not byDungeon[dungeon] then
                 byDungeon[dungeon] = {}
@@ -869,12 +897,8 @@ local function rebuildEntries()
             local bucket = byDungeon[dungeon]
             bucket[#bucket + 1] = route
         end
-        table.sort(order)
 
         for _, dungeon in ipairs(order) do
-            table.sort(byDungeon[dungeon], function(a, b)
-                return (forcesPercent(a) or 0) > (forcesPercent(b) or 0)
-            end)
 
             local groupKey = sectionKey .. ":" .. dungeon
             local ids = {}
@@ -964,6 +988,35 @@ local function acquireRow(index)
         B.Refresh()
     end)
     row.check:Hide()
+
+    -- Seitenwechsel. Sitzt in der Abschnittskopfzeile, weil dort auch die
+    -- Anzahl steht - eine eigene Leiste waere ein zweiter Ort fuer dieselbe
+    -- Information.
+    row.pageLabel = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.pageLabel:SetPoint("RIGHT", row, "RIGHT", -64, 0)
+    row.pageLabel:SetJustifyH("RIGHT")
+
+    row.prev = T:Button(row, "<", 22)
+    row.prev:SetHeight(18)
+    row.prev:SetPoint("RIGHT", row, "RIGHT", -34, 0)
+    row.prev:SetScript("OnClick", function(self)
+        local parent = self:GetParent()
+        if not parent.groupKey then return end
+        pages[parent.groupKey] = math.max(1, (pages[parent.groupKey] or 1) - 1)
+        B.Refresh()
+    end)
+    row.prev:Hide()
+
+    row.next = T:Button(row, ">", 22)
+    row.next:SetHeight(18)
+    row.next:SetPoint("RIGHT", row, "RIGHT", -8, 0)
+    row.next:SetScript("OnClick", function(self)
+        local parent = self:GetParent()
+        if not parent.groupKey then return end
+        pages[parent.groupKey] = (pages[parent.groupKey] or 1) + 1
+        B.Refresh()
+    end)
+    row.next:Hide()
 
     -- Favoritenherz. Rein lokal: ein Addon kann nichts nach draussen senden,
     -- also ist das die eigene Merkliste, keine Community-Wertung.
@@ -1503,6 +1556,7 @@ local function refreshDungeonBar()
                 filterDungeon = (filterDungeon == self.challengeModeId) and nil or self.challengeModeId
                 -- Auswahl loesen, damit die Dungeonuebersicht sichtbar wird.
                 selectedId = nil
+                wipe(pages)
                 B.Refresh()
             end)
             button:SetScript("OnEnter", function(self)
@@ -1571,6 +1625,19 @@ function B.Refresh()
             row.band:SetShown(entry.section == true)
             row.bandAccent:SetShown(entry.section == true)
 
+            -- Blaettern gibt es nur bei Abschnitten und nur, wenn es mehr als
+            -- eine Seite gibt.
+            local paged = entry.section and (entry.pageCount or 1) > 1
+            row.pageLabel:SetShown(paged == true)
+            row.prev:SetShown(paged == true)
+            row.next:SetShown(paged == true)
+
+            if paged then
+                row.pageLabel:SetText(ns.L["PAGE"]:format(entry.page, entry.pageCount))
+                row.prev:SetEnabled(entry.page > 1)
+                row.next:SetEnabled(entry.page < entry.pageCount)
+            end
+
             local arrow = T:Text("accent", entry.collapsed and "+" or "-")
 
             -- Alles-auswaehlen gehoert zur Dungeon-Gruppe, nicht zum Bereich.
@@ -1636,6 +1703,9 @@ function B.Refresh()
             local indent = deletable and 28 or 20
             row.band:Hide()
             row.bandAccent:Hide()
+            row.pageLabel:Hide()
+            row.prev:Hide()
+            row.next:Hide()
             row.warn:SetShown(incomplete)
             row.warn:SetPoint("LEFT", row, "LEFT", indent - 2, 6)
             row.title:SetPoint("TOPLEFT", row, "TOPLEFT", indent + (incomplete and 16 or 0), -4)
@@ -1850,6 +1920,8 @@ local function buildList(parent)
         -- nicht aus und "Suchen" liegt ueber dem eingegebenen Text.
         SearchBoxTemplate_OnTextChanged(self)
         filterText = self:GetText() or ""
+        -- Nach einer neuen Suche wieder auf Seite eins.
+        wipe(pages)
         B.Refresh()
     end)
     search:SetScript("OnEscapePressed", function(self)
@@ -1880,6 +1952,7 @@ local function buildList(parent)
             filterMode = self.mode
             selectedId = nil
             wipe(checked)
+            wipe(pages)
             B.Refresh()
         end)
         ui.tabs[#ui.tabs + 1] = tab
@@ -1937,6 +2010,8 @@ local function buildList(parent)
             if v == get() then return end
             set(v)
             render(v)
+            -- Nach einer Filteraenderung wieder auf Seite eins.
+            wipe(pages)
             B.Refresh()
         end)
 
@@ -1951,6 +2026,7 @@ local function buildList(parent)
     favBox:SetWidth(200)
     favBox:SetScript("OnClick", function(self)
         filters.favourites = self:GetChecked() and true or false
+        wipe(pages)
         B.Refresh()
     end)
     panel.favBox = favBox
