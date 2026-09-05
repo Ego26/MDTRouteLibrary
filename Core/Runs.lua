@@ -245,6 +245,30 @@ end
 -- Ereignisse
 --------------------------------------------------------------------------
 
+---Ergebnis des gerade beendeten Schluesselsteins.
+---
+---Der Name hat sich geaendert: frueher GetCompletionInfo mit mehreren
+---Rueckgabewerten, heute GetChallengeCompletionInfo mit einer Tabelle. Wir
+---fragen beide ab, statt uns auf einen Client festzulegen.
+---@return number|nil mapId, number|nil level, number|nil ms, boolean|nil onTime, boolean|nil practice
+local function completionInfo()
+    local C = C_ChallengeMode
+
+    if type(C.GetChallengeCompletionInfo) == "function" then
+        local info = C.GetChallengeCompletionInfo()
+        if type(info) == "table" then
+            return info.mapChallengeModeID, info.level, info.time, info.onTime, info.practiceRun
+        end
+    end
+
+    if type(C.GetCompletionInfo) == "function" then
+        local mapId, level, ms, onTime, _, practice = C.GetCompletionInfo()
+        return mapId, level, ms, onTime, practice
+    end
+
+    return nil
+end
+
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHALLENGE_MODE_START")
 frame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
@@ -267,7 +291,7 @@ frame:SetScript("OnEvent", function(_, event)
         return
     end
 
-    local mapId, level, ms, onTime, _, practice = C_ChallengeMode.GetCompletionInfo()
+    local mapId, level, ms, onTime, practice = completionInfo()
     -- Uebungslaeufe zaehlen nicht: sie haben keine Wertung und wuerden die
     -- Rangliste mit Zeiten fuellen, die niemand vergleichen kann.
     if mapId and level and ms and ms > 0 and not practice then

@@ -2551,6 +2551,10 @@ local function buildDetail(parent)
     sheetScroll:SetScript("OnSizeChanged", function(self, width) sheetContent:SetWidth(width) end)
     sheetContent:SetWidth(sheetScroll:GetWidth())
 
+    -- Ueber der Detailspalte bleibt die Kartenvorschau offen: von dort aus
+    -- hebt man Pulls auf der Karte hervor.
+    ns.MapView.KeepOpenOver(root)
+
     ui.detail = d
 end
 

@@ -66,9 +66,15 @@ local ZOOM_MIN, ZOOM_MAX, ZOOM_STEP = 1, 4, 0.5
 -- durch die Liste bei jeder Zeile ein grosses Fenster auf.
 local DELAY = 0.3
 
+-- Nachlauf, bevor sie wieder zugeht. Der Weg von der Zeile zur Karte und von
+-- der Karte zur Pull-Liste fuehrt ueber ein paar Pixel, die zu keinem von
+-- beiden gehoeren; ohne Nachlauf faellt sie einem dabei zu.
+local GRACE = 0.4
+
 local panel   -- die ganze Ansicht
 local route   -- aktuell gezeigte Route
 local pending -- laufender Timer
+local keepOpen = {} -- Rahmen, ueber denen die Karte offen bleibt
 
 --------------------------------------------------------------------------
 -- Farben
@@ -669,15 +675,36 @@ local function ensurePanel()
     -- Selbst aufraeumen. Die Karte bleibt stehen, solange der Zeiger auf ihr
     -- oder auf der Zeile ist, aus der sie kam - sonst waere sie nicht
     -- bedienbar, sie verschwaende beim Hineinfahren.
-    p:SetScript("OnUpdate", function(self)
+    p:SetScript("OnUpdate", function(self, elapsed)
         -- Waehrend des Ziehens bleibt sie offen. Wer die Karte schiebt, faehrt
         -- mit gedrueckter Taste zwangslaeufig ueber den Rand hinaus, und dort
         -- ginge sie ihm sonst unter der Hand zu.
-        if self.viewport.dragging then return end
+        if self.viewport.dragging then
+            self.grace = 0
+            return
+        end
 
         local owner = self.owner
-        if owner and owner:IsVisible() and (owner:IsMouseOver() or self:IsMouseOver()) then return end
-        self:Hide()
+        if owner and owner:IsVisible() and (owner:IsMouseOver() or self:IsMouseOver()) then
+            self.grace = 0
+            return
+        end
+
+        -- Auch ueber der Detailspalte bleibt sie offen: dort haengt die
+        -- Pull-Liste, und ueber deren Zeilen leuchten die Gegner auf der Karte
+        -- auf. Ginge die Karte beim Hinuebergehen zu, waere die Verbindung
+        -- zwischen beiden nutzlos.
+        for _, frame in ipairs(keepOpen) do
+            if frame:IsVisible() and frame:IsMouseOver() then
+                self.grace = 0
+                return
+            end
+        end
+
+        -- Erst nach dem Nachlauf zu. Ein Pixel neben der Zeile ist keine
+        -- Absicht.
+        self.grace = (self.grace or 0) + elapsed
+        if self.grace >= GRACE then self:Hide() end
     end)
 
     p:SetScript("OnHide", function(self)
@@ -748,6 +775,16 @@ local function anchor(owner)
     end
 end
 
+---Meldet einen Rahmen an, ueber dem die Karte offen bleibt.
+---@param frame table
+function MV.KeepOpenOver(frame)
+    if type(frame) ~= "table" then return end
+    for _, existing in ipairs(keepOpen) do
+        if existing == frame then return end
+    end
+    keepOpen[#keepOpen + 1] = frame
+end
+
 ---Blendet die Karte aus und bricht eine wartende ab.
 function MV.Hide()
     if pending then
@@ -800,6 +837,7 @@ function MV.Request(owner, newRoute)
         pan(0, 0)
 
         anchor(owner)
+        panel.grace = 0
         panel:Show()
     end)
 end
