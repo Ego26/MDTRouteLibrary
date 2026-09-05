@@ -127,10 +127,21 @@ die Liste im Spiel unbrauchbar, egal wie gültig jede einzelne ist.
 
 Wer drin ist, entscheidet der 👍 am Einreich-Issue: wer eine Route gelaufen
 ist und sie gut fand, klickt ihn. Bei Gleichstand zählt die höhere Abdeckung
-der Gegnerkräfte, dann das jüngere Datum. Zurückgestellte Routen bleiben im
-Repository und rücken nach, sobald sie mehr Zustimmung haben als eine
-ausgelieferte. Die Grenze lässt sich über die Repository-Variable
-`MAX_ROUTES_PER_DUNGEON` ändern.
+der Gegnerkräfte, dann die kürzere Zeit – drei Daumen in fünf Tagen sind mehr
+wert als drei in sechzig.
+
+**Jede neue Route wird erst einmal ausgeliefert, ohne sich zu qualifizieren.**
+Vierzehn Tage lang, dann zählt ihre Bilanz. Das ist keine Nettigkeit, sondern
+notwendig: der Daumen hängt am Issue, gesehen wird eine Route aber im Spiel.
+Ohne Schonfrist käme eine Route, die einmal unter der Grenze liegt, nie wieder
+darüber – sie würde nie ausgeliefert, also nie gelaufen, also nie bewertet.
+Höchstens die Hälfte der Plätze geht an Neulinge, damit fünf Einreichungen an
+einem Abend nicht alles Bewährte verdrängen.
+
+Zurückgestellte Routen bleiben im Repository und rücken nach, sobald sie mehr
+Zustimmung haben als eine ausgelieferte. Grenze und Schonfrist lassen sich
+über die Repository-Variable `MAX_ROUTES_PER_DUNGEON` und den Schalter
+`--grace-days` ändern.
 
 ## Lizenz
 

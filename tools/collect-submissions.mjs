@@ -22,7 +22,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readDungeons, readSeasons, buildLookup } from './mdt-dungeons.mjs'
@@ -285,6 +285,14 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 
     const file = join(outDir, `${route.id}.json`)
     const isNew = !existsSync(file)
+
+    // Tag der Aufnahme, nicht der Erstellung: submittedAt sagt, wann jemand
+    // die Route in MDT gebaut hat, und das kann Monate her sein. Fuer die
+    // Schonfrist im Build zaehlt, ab wann sie ueberhaupt ausgeliefert werden
+    // konnte. Einmal gesetzt bleibt er stehen.
+    route.acceptedAt = isNew
+      ? new Date().toISOString().slice(0, 10)
+      : (JSON.parse(readFileSync(file, 'utf8')).acceptedAt ?? new Date().toISOString().slice(0, 10))
 
     for (const w of warnings) console.log(`      Hinweis: ${w.replace(/\*\*/g, '')}`)
     console.log(`  ${isNew ? '+' : '='} #${issue.number} ${route.id} "${route.title}" (${route.dungeonEnglishName}, ${route.enemyForces}/${route.enemyForcesRequired})`)
