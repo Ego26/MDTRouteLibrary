@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="branding/png/banner@2x.png" width="100%"
+  <img src="branding/png/banner-1696.png" width="100%"
        alt="MDT Route Library — kuratierte Mythic+-Routen, direkt in Mythic Dungeon Tools durchsuchbar">
 </div>
 
@@ -98,7 +98,6 @@ veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Route
 |---|---|
 | [docs/01-Architektur.md](docs/01-Architektur.md) | Wie die MDT-Anbindung funktioniert und warum so |
 | [docs/02-Datenquellen.md](docs/02-Datenquellen.md) | Woher Routen kommen sollen, und was rechtlich gilt |
-| [docs/03-Anfrage-keystone-guru.md](docs/03-Anfrage-keystone-guru.md) | Entwurf der Anfrage an Raider.IO |
 | [docs/04-Veroeffentlichen.md](docs/04-Veroeffentlichen.md) | Secrets, Projekt-IDs, erster Release |
 
 ## Mitmachen
