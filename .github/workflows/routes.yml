@@ -193,7 +193,15 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add MDTRouteLibrary_Data data/build-state.json data/routes
-          git commit -m "Routendaten ${{ steps.version.outputs.tag }}"
+
+          # Mit "force" meldet der Build eine Aenderung, auch wenn der Inhalt
+          # derselbe ist - dann gibt es nichts zu committen und "git commit"
+          # bricht ab. Der Tag und der Upload sollen trotzdem entstehen.
+          if git diff --cached --quiet; then
+            echo "Inhalt unveraendert, nur neu veroeffentlicht."
+          else
+            git commit -m "Routendaten ${{ steps.version.outputs.tag }}"
+          fi
 
           # Ein Einreichungslauf kann zwischen Auschecken und Push eine Route
           # abgelegt haben, deshalb der Rebase mit Wiederholung.
