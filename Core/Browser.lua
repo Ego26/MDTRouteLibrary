@@ -50,6 +50,9 @@ local selectedId
 local filterText = ""
 local filterDungeon -- challengeModeId oder nil fuer "alle"
 local filterMode = "all" -- "all" | "community" | "mine"
+-- Was im Listenbereich steht: die Routenliste oder die Karte der gewaehlten
+-- Route. Beide belegen dieselbe Flaeche.
+local viewMode = "list" -- "list" | "map"
 -- Filterkriterien. 0 heisst jeweils "egal".
 local filters = {
     favourites = false,
@@ -1143,12 +1146,16 @@ local function acquirePullRow(index)
     row.highlight:Hide()
 
     row:SetScript("OnEnter", function(self)
-        if not self.npcId then return end
         self.highlight:Show()
+        -- Auch die Ueberschriftszeile eines Pulls hebt ihn auf der Karte
+        -- hervor - dort steht die Nummer, die man sucht.
+        ns.MapView.HighlightPull(self.pullIndex)
+        if not self.npcId then return end
         showEnemyPreview(self, self.challengeModeId, self.npcId, self.amount)
     end)
     row:SetScript("OnLeave", function(self)
         self.highlight:Hide()
+        ns.MapView.HighlightPull(nil)
         hidePreview()
     end)
 
@@ -1230,6 +1237,7 @@ end
 ---@param hideAmount boolean|nil Ohne "3x" davor (Dungeonuebersicht)
 ---@return number height
 local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
+    row.pullIndex = nil
     local npc = ns.GetNpc(challengeModeId, npcId)
     local name = (npc and npc.name) or ("NPC " .. tostring(npcId))
 
@@ -1362,6 +1370,7 @@ local function updateDetail(route)
 
         -- Ueberschriften zeigen keine Vorschau und keine Zauber.
         header.npcId = nil
+        header.pullIndex = i
         for _, icon in ipairs(header.icons) do icon:Hide() end
 
         header.index:SetText((T:Hex("textSecondary") .. "%d|r"):format(i))
@@ -1395,7 +1404,11 @@ local function updateDetail(route)
         for _, npcId in ipairs(order) do
             rowIndex = rowIndex + 1
             local row = acquirePullRow(rowIndex)
-            place(row, fillAddRow(row, route.challengeModeId, npcId, counts[npcId]))
+            -- Erst fuellen, dann zuordnen: fillAddRow raeumt pullIndex weg,
+            -- weil dieselben Zeilen auch die Dungeonuebersicht bedienen.
+            local height = fillAddRow(row, route.challengeModeId, npcId, counts[npcId])
+            row.pullIndex = i
+            place(row, height)
         end
     end
 
@@ -1832,6 +1845,19 @@ function B.Refresh()
 
     local route = selectedId and displayById[selectedId]
     updateDetail(route)
+
+    -- Liste oder Karte. Ohne gewaehlte Route hat die Karte nichts zu zeigen,
+    -- deshalb faellt die Ansicht dann von selbst auf die Liste zurueck.
+    local mapMode = (viewMode == "map") and route ~= nil
+    ui.head:SetShown(not mapMode)
+    ui.scroll:SetShown(not mapMode)
+    if mapMode then ui.empty:Hide() end
+    ns.MapView.SetShown(mapMode)
+    if mapMode then ns.MapView.SetRoute(route) end
+    ui.viewToggle:SetText(mapMode and ns.L["VIEW_LIST"] or ns.L["VIEW_MAP"])
+    ui.viewToggle:SetActive(mapMode)
+    ui.viewToggle:SetEnabled(route ~= nil)
+
     ui.mapButton:SetEnabled(route ~= nil)
     ui.copyButton:SetEnabled(route ~= nil and not route.own and not (route and route.saved))
 
@@ -2029,9 +2055,21 @@ local function buildList(parent)
     filterButton:SetPoint("RIGHT", search, "LEFT", -8, 0)
     ui.filterButton = filterButton
 
+    -- Umschalter zwischen Liste und Karte. Er sitzt am rechten Ende der
+    -- Reiterzeile, weil er dasselbe tut wie die Reiter links: er bestimmt,
+    -- was im grossen Bereich darunter steht.
+    local viewToggle = T:Tab(root, ns.L["VIEW_MAP"], 110)
+    viewToggle:SetHeight(22)
+    viewToggle:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
+    viewToggle:SetScript("OnClick", function()
+        viewMode = (viewMode == "map") and "list" or "map"
+        B.Refresh()
+    end)
+    ui.viewToggle = viewToggle
+
     local panel = T:Panel(root, "bgOverlay")
     panel:SetSize(250, 252)
-    panel:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
+    panel:SetPoint("TOPRIGHT", viewToggle, "BOTTOMRIGHT", 0, -4)
     panel:SetFrameLevel(root:GetFrameLevel() + 20)
     panel:EnableMouse(true)
     panel:Hide()
@@ -2232,6 +2270,28 @@ local function buildList(parent)
     ui.empty = root:CreateFontString(nil, "OVERLAY", "GameFontDisable")
     ui.empty:SetPoint("CENTER", scroll, "CENTER", 0, 0)
     ui.empty:Hide()
+
+    -- Die Karte belegt dieselbe Flaeche wie die Liste. Der Umschalter oben
+    -- zeigt immer genau eine von beiden.
+    ns.MapView.Build(root, ui.head, PADDING, PADDING + 34)
+
+    -- Rueckmeldungen der Karte an die Oberflaeche: dieselbe Gegnervorschau
+    -- wie in der Pull-Liste, und die Pull-Zeile rechts leuchtet mit.
+    ns.MapView.onEnemyEnter = function(owner, challengeModeId, npcId)
+        showEnemyPreview(owner, challengeModeId, npcId)
+    end
+    ns.MapView.onEnemyLeave = hidePreview
+
+    ns.MapView.onPullEnter = function(index)
+        for _, row in ipairs(ui.detail.pullRows) do
+            row.highlight:SetShown(index ~= nil and row.pullIndex == index)
+        end
+    end
+    ns.MapView.onPullLeave = function()
+        for _, row in ipairs(ui.detail.pullRows) do
+            row.highlight:Hide()
+        end
+    end
 
     local mapButton = T:Button(root, ns.L["BROWSER_SHOW_ON_MAP"], 150)
     mapButton.primary = true
