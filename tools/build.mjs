@@ -15,7 +15,8 @@
 //   1 = Fehler
 //
 // Aufruf:
-//   node tools/build.mjs --mdt "<MDT-Pfad>" [--season midnight-s1] [--force]
+//   node tools/build.mjs --mdt "<MDT-Pfad>" [--season midnight-s1]
+//                        [--max-per-dungeon 8] [--force]
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -143,7 +144,7 @@ function parseArgs(argv) {
 async function main() {
   const args = parseArgs(process.argv.slice(2))
   if (!args.mdt) {
-    console.error('Aufruf: node tools/build.mjs --mdt "<Pfad zu MythicDungeonTools>" [--season ...] [--force]')
+    console.error('Aufruf: node tools/build.mjs --mdt "<Pfad zu MythicDungeonTools>" [--season ...] [--max-per-dungeon N] [--force]')
     return EXIT_ERROR
   }
 
@@ -237,6 +238,60 @@ async function main() {
   }
   console.log(`   ${accepted.length} von ${routes.length} akzeptiert`)
 
+  // 4b) Obergrenze je Dungeon.
+  //
+  // Ohne Freigabe durch einen Menschen wachsen die Routen pro Dungeon
+  // unbegrenzt. Vierzig Vorschlaege fuer einen Dungeon machen die Liste im
+  // Spiel unbrauchbar, egal wie gueltig jede einzelne ist. Also nur die
+  // besten N ausliefern - alle bleiben im Repository und ruecken nach,
+  // sobald sie mehr Zustimmung bekommen als eine ausgelieferte.
+  //
+  // Rangfolge: Daumen am Einreich-Issue, dann Abdeckung der Gegnerkraefte,
+  // dann das juengere Datum, zuletzt die ID. Die letzten beiden Stufen sind
+  // nur da, um die Reihenfolge eindeutig zu machen: der Build muss bei
+  // gleichem Datenstand denselben Hash ergeben, sonst veroeffentlicht die
+  // Pipeline Updates ohne Inhalt.
+  //
+  // Offen: keystone.guru-Routen haben kein Issue und damit keine Daumen. Sie
+  // landen deshalb hinter jeder Community-Route mit auch nur einer Stimme.
+  // Sobald von dort echte Routen kommen, braucht die Rangfolge ein zweites
+  // Signal - ihre eigene Beliebtheit liefert die API mit.
+  const maxPerDungeon = Number(args['max-per-dungeon'] ?? 0) || 0
+  let selected = accepted
+
+  if (maxPerDungeon > 0) {
+    const coverage = (route) =>
+      route.enemyForcesRequired ? route.enemyForces / route.enemyForcesRequired : 0
+
+    const byDungeon = new Map()
+    for (const route of accepted) {
+      const key = route.challengeModeId ?? route.dungeonEnglishName ?? '?'
+      if (!byDungeon.has(key)) byDungeon.set(key, [])
+      byDungeon.get(key).push(route)
+    }
+
+    selected = []
+    let dropped = 0
+    for (const [, list] of byDungeon) {
+      list.sort((a, b) =>
+        (b.votes ?? 0) - (a.votes ?? 0) ||
+        coverage(b) - coverage(a) ||
+        String(b.submittedAt ?? '').localeCompare(String(a.submittedAt ?? '')) ||
+        String(a.id).localeCompare(String(b.id)))
+
+      selected.push(...list.slice(0, maxPerDungeon))
+      if (list.length > maxPerDungeon) {
+        dropped += list.length - maxPerDungeon
+        const name = list[0].dungeonEnglishName ?? '?'
+        console.log(`   ${name}: ${list.length} Routen, ${maxPerDungeon} ausgeliefert`)
+      }
+    }
+
+    // Wieder in eine stabile Reihenfolge bringen: der Hash haengt daran.
+    selected.sort((a, b) => String(a.id).localeCompare(String(b.id)))
+    console.log(`   Obergrenze ${maxPerDungeon} je Dungeon: ${selected.length} ausgeliefert, ${dropped} zurueckgestellt`)
+  }
+
   // Alle Gegner des Dungeons ausliefern, nicht nur die in unseren Routen:
   // die eigenen Routen des Nutzers koennen jeden davon enthalten.
   const dungeonMeta = [...usedDungeons.values()].map((meta) => {
@@ -301,11 +356,11 @@ async function main() {
 
   console.log('5) Lua erzeugen')
   const build = new Date().toISOString().slice(0, 10)
-  const { files, hash, stats } = buildDataAddon(accepted, {
+  const { files, hash, stats } = buildDataAddon(selected, {
     build,
     season: args.season ?? null,
     mdtVersion,
-    sources: [...new Set(accepted.map((r) => r.source).filter(Boolean))],
+    sources: [...new Set(selected.map((r) => r.source).filter(Boolean))],
     dungeons: dungeonMeta,
   })
   console.log(`   ${stats.routes} Routen, ${stats.dungeons} Dungeons, Hash ${hash}`)

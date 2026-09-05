@@ -6,21 +6,28 @@ name: Routen-Update
 #     bearbeitet. Er prueft die Einreichung, nimmt sie auf und legt die Route
 #     im Repository ab. Er baut *nicht* und veroeffentlicht *nicht*.
 #
-#   * Der taegliche Lauf holt zusaetzlich die Routen von keystone.guru, baut
-#     das Datenaddon und laedt es hoch.
+#   * Ein Veroeffentlichungslauf baut das Datenaddon und laedt es hoch. Er
+#     laeuft alle sechs Stunden - so wartet niemand einen ganzen Tag auf
+#     eine Route, die schon aufgenommen ist. Nur der Lauf um 05:00 UTC holt
+#     zusaetzlich die Routen von keystone.guru: die aendern sich nicht
+#     schneller, und haeufigeres Abfragen waere Last auf fremden Servern
+#     ohne Gegenwert.
 #
 # Warum nicht sofort veroeffentlichen? Weil jedes Release bei jedem Nutzer als
 # Update aufschlaegt. Wuerde jede angenommene Einreichung eines ausloesen,
 # saehen drei Einreichungen an einem Abend nach drei Updates aus - fuer Inhalt,
 # den man genauso gut gebuendelt bekommt. So gibt es hoechstens ein Release am
-# Tag, und der Einreichende bekommt seine Rueckmeldung trotzdem sofort.
+# Tag - hoechstens vier, und nur bei echter Aenderung. Der Einreichende
+# bekommt seine Rueckmeldung trotzdem sofort.
 #
 # Veroeffentlicht wird ohnehin nur bei echter Aenderung: tools/build.mjs meldet
 # das ueber den Exitcode (0 = geaendert, 9 = unveraendert).
 
 on:
   schedule:
-    - cron: '0 5 * * *' # täglich 05:00 UTC
+    # Alle sechs Stunden veroeffentlichen. Ohne Inhaltsaenderung passiert
+    # nichts, ein ruhiger Tag erzeugt also weiterhin kein einziges Release.
+    - cron: '0 5,11,17,23 * * *'
   issues:
     # Beim Anlegen und bei jeder Aenderung neu pruefen - so bessert der
     # Einreichende selbst nach, ohne dass jemand ein Label setzen muss.
@@ -97,7 +104,7 @@ jobs:
 
       # Hier endet der Einreichungslauf: die Route ist im Repository, das
       # Issue geschlossen, der Einreichende hat seine Rueckmeldung. Ins Spiel
-      # kommt sie mit dem naechsten taeglichen Lauf.
+      # kommt sie mit dem naechsten Veroeffentlichungslauf.
       - name: Aufgenommene Routen sichern
         if: github.event_name == 'issues'
         run: |
@@ -123,19 +130,29 @@ jobs:
           echo "Push nach drei Versuchen fehlgeschlagen." >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
-      # Laeuft nur mit Schluessel und nur beim taeglichen Lauf: eine
-      # Einreichung braucht keine frischen keystone.guru-Daten, und
-      # haeufigeres Abfragen waere Last auf fremden Servern ohne Gegenwert.
+      # Nur einmal am Tag, im 05:00-Lauf. Die anderen drei
+      # Veroeffentlichungslaeufe buendeln nur, was ohnehin schon da ist.
       - name: Routen von keystone.guru holen
-        if: env.KEYSTONE_API_KEY != '' && github.event_name != 'issues'
+        if: >-
+          env.KEYSTONE_API_KEY != '' && github.event_name != 'issues' &&
+          (github.event_name != 'schedule' || github.event.schedule == '0 5,11,17,23 * * *')
         run: node tools/keystone-sync.mjs --out data/cache
+
+      # Die Daumen an den Einreich-Issues entscheiden, welche Routen ins
+      # Paket kommen, wenn es fuer einen Dungeon mehr gibt als die Grenze
+      # zulaesst. Muss vor dem Bauen laufen und schreibt in data/routes.
+      - name: Zustimmungen aktualisieren
+        if: github.event_name != 'issues'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/refresh-votes.mjs --routes data/routes
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
         id: build
         run: |
           set +e
-          node tools/build.mjs --mdt .mdt --season "${{ vars.SEASON || 'current' }}" ${{ inputs.force && '--force' || '' }}
+          node tools/build.mjs --mdt .mdt --season "${{ vars.SEASON || 'current' }}" --max-per-dungeon "${{ vars.MAX_ROUTES_PER_DUNGEON || 8 }}" ${{ inputs.force && '--force' || '' }}
           code=$?
           set -e
           echo "exit=$code" >> "$GITHUB_OUTPUT"

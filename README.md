@@ -111,12 +111,26 @@ selbst. Geprüft wird:
 Fällt eine Einreichung durch, bleibt ihr Issue offen und bekommt einen
 Kommentar mit den Mängeln. Jede Änderung am Issue startet die Prüfung neu.
 
-**Bis sie im Spiel ankommt, dauert es länger.** Addons dürfen nicht ins Netz,
-die Routen stecken also fest im Paket. Der tägliche Lauf bündelt alles Neue,
-baut das Datenaddon und lädt es zu CurseForge – ab dann kommt es mit dem
-nächsten Addon-Update beim Spieler an. Das ist Absicht: würde jede einzelne
-Einreichung ein Release auslösen, wären drei Routen an einem Abend drei
-Update-Benachrichtigungen für jeden Nutzer.
+**Bis sie im Spiel ankommt, dauert es etwas länger.** Addons dürfen nicht ins
+Netz, die Routen stecken also fest im Paket. Alle sechs Stunden bündelt ein
+Lauf alles Neue, baut das Datenaddon und lädt es zu CurseForge – ab dann kommt
+es mit dem nächsten Addon-Update beim Spieler an. Gebündelt wird mit Absicht:
+würde jede einzelne Einreichung ein Release auslösen, wären drei Routen an
+einem Abend drei Update-Benachrichtigungen für jeden Nutzer. Ändert sich
+nichts, gibt es auch kein Release.
+
+### Wie viele Routen es pro Dungeon gibt
+
+Aufgenommen wird jede Route, die die Prüfung besteht. Ins Paket kommen aber
+höchstens **acht je Dungeon** – vierzig Vorschläge für einen Dungeon machen
+die Liste im Spiel unbrauchbar, egal wie gültig jede einzelne ist.
+
+Wer drin ist, entscheidet der 👍 am Einreich-Issue: wer eine Route gelaufen
+ist und sie gut fand, klickt ihn. Bei Gleichstand zählt die höhere Abdeckung
+der Gegnerkräfte, dann das jüngere Datum. Zurückgestellte Routen bleiben im
+Repository und rücken nach, sobald sie mehr Zustimmung haben als eine
+ausgelieferte. Die Grenze lässt sich über die Repository-Variable
+`MAX_ROUTES_PER_DUNGEON` ändern.
 
 ## Lizenz
 
