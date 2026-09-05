@@ -72,7 +72,7 @@ ns.RegisterLocale("enUS", {
     ["PREVIEW_IN_PULL"]     = "In this pull:",
     ["BROWSER_SAVE"]        = "Save to MDT",
     ["BROWSER_SAVE_TIP"]    = "Adds a permanent copy as your own preset. Hold Shift to copy the import string instead.",
-    ["SAVED_TO_MDT"]        = ""%s" saved as your own preset in MDT.",
+    ["SAVED_TO_MDT"]        = "\"%s\" saved as your own preset in MDT.",
     ["CLEANED_UP"]          = "%d preview presets removed from MDT.",
     ["PREVIEW_PREFIX"]      = "[Preview]",
     ["FILTER_FAVOURITES"]   = "Favourites only",
