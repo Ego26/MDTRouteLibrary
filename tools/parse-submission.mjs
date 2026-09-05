@@ -91,8 +91,14 @@ export function toRoute(payload, lookup) {
         continue
       }
 
+      // Gegen die echten Schluessel pruefen, nicht gegen 1..Anzahl: MDTs
+      // Klontabellen haben Luecken. Gegner 3 in Den of Nalorakk etwa hat
+      // 21 Klone, aber die Nummern laufen bis 23 - eine Pruefung auf
+      // "kleiner gleich Anzahl" verwirft die letzten beiden und rechnet die
+      // Route damit unter 100 Prozent.
+      const known = new Set(enemy.cloneKeys ?? [])
       const clones = (entry.clones ?? []).filter((c) => {
-        if (c >= 1 && c <= enemy.clones) return true
+        if (known.has(c)) return true
         warnings.push(`Klon ${entry.enemy}/${c} gibt es nicht - uebersprungen`)
         return false
       })
