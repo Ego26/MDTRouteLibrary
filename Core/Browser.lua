@@ -60,6 +60,8 @@ local ui           -- gebaute Oberflaeche
 local showAddSheet -- weiter unten definiert, aber schon in den Zeilen gebraucht
 local hideAddSheet
 local lastDetailId -- welche Route zuletzt im Detailbereich stand
+-- Zugeklappte Pulls, je Route. Schluessel: Routen-Id und Pullnummer.
+local collapsedPulls = {}
 local entries = {} -- flache Liste aus Kopfzeilen und Routen
 local selectedId
 local filterText = ""
@@ -1163,13 +1165,12 @@ local function acquirePullRow(index)
     row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
     row.highlight:Hide()
 
-    -- Farbstreifen am linken Rand, in der Farbe des Pulls auf der Karte.
-    -- Nur Ueberschriftszeilen tragen ihn.
-    row.bar = row:CreateTexture(nil, "ARTWORK")
-    row.bar:SetPoint("TOPLEFT", row, "TOPLEFT", 0, -1)
-    row.bar:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", 0, 1)
-    row.bar:SetWidth(3)
-    row.bar:Hide()
+    -- Band hinter den Ueberschriftszeilen, wie bei den Bereichen der
+    -- Routenliste. Es traegt die Gliederung, nicht eine Farbe.
+    row.band = row:CreateTexture(nil, "BACKGROUND", nil, -2)
+    row.band:SetAllPoints()
+    row.band:SetColorTexture(T:Color("bgOverlay", 1))
+    row.band:Hide()
 
     -- Rundes Gegnerbild wie auf der Karte.
     row.portrait = row:CreateTexture(nil, "ARTWORK")
@@ -1181,11 +1182,16 @@ local function acquirePullRow(index)
     row.portrait:AddMaskTexture(row.portraitMask)
     row.portrait:Hide()
 
-    -- Klick auf einen Gegner oeffnet sein Blatt. Auf Ueberschriftszeilen
-    -- passiert nichts, dort steht kein Gegner.
+    -- Ueberschriftszeilen klappen ihren Pull auf und zu, Gegnerzeilen
+    -- oeffnen das Gegnerblatt.
     row:SetScript("OnMouseUp", function(self, button)
-        if button ~= "LeftButton" or not self.npcId then return end
-        showAddSheet(self.challengeModeId, self.npcId, self.amount)
+        if button ~= "LeftButton" then return end
+        if self.collapseKey then
+            collapsedPulls[self.collapseKey] = (not collapsedPulls[self.collapseKey]) or nil
+            B.Refresh()
+        elseif self.npcId then
+            showAddSheet(self.challengeModeId, self.npcId, self.amount)
+        end
     end)
 
     row:SetScript("OnEnter", function(self)
@@ -1289,7 +1295,8 @@ local function fillAddRow(row, challengeModeId, npcId, amount, hideAmount)
     row.amount = amount
 
     row.index:SetText("")
-    row.bar:Hide()
+    row.band:Hide()
+    row.collapseKey = nil
 
     -- In der Dungeonuebersicht steht links noch "3/3" - dort faengt das
     -- Gegnerbild spaeter an. In der Routenansicht ist die Spalte leer.
@@ -1418,6 +1425,14 @@ local function acquireSpellRow(index)
     row.flags:SetJustifyH("LEFT")
     row.flags:SetWordWrap(false)
 
+    -- Wer etwas dagegen tun kann. Steht in der Pull-Liste nur im Tooltip;
+    -- hier ist Platz, also steht es fest da.
+    row.hints = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.hints:SetPoint("TOPLEFT", row.flags, "BOTTOMLEFT", 0, -2)
+    row.hints:SetPoint("RIGHT", row, "RIGHT", -4, 0)
+    row.hints:SetJustifyH("LEFT")
+    row.hints:SetWordWrap(true)
+
     row:SetScript("OnEnter", function(self)
         if not self.spellId then return end
         self.highlight:Show()
@@ -1516,7 +1531,7 @@ function showAddSheet(challengeModeId, npcId, amount)
         row.icon:SetTexture(C_Spell.GetSpellTexture(spell.id) or 134400)
         row.interrupt:SetShown(spell.interruptible == true)
 
-        local flags = {}
+        local flags, hints = {}, {}
         if spell.interruptible then
             flags[#flags + 1] = T:Hex("success") .. ns.L["SPELL_INTERRUPTIBLE"] .. "|r"
         end
@@ -1524,15 +1539,28 @@ function showAddSheet(challengeModeId, npcId, amount)
             if spell[dispel.key] then
                 flags[#flags + 1] = ("|cff%02x%02x%02x%s|r"):format(
                     dispel.r * 255, dispel.g * 255, dispel.b * 255, ns.L["SPELL_" .. dispel.label])
+                for _, hint in ipairs(ns.GetDispelHint(dispel.key)) do
+                    hints[#hints + 1] = hint.text
+                end
             end
         end
         row.flags:SetText(table.concat(flags, " · "))
+        row.hints:SetText(table.concat(hints, "\n"))
 
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", sheet.content, "TOPLEFT", 0, -y)
         row:SetPoint("TOPRIGHT", sheet.content, "TOPRIGHT", 0, -y)
+
+        -- Hoehe aus dem, was wirklich dasteht: ein Zauber ohne Bannart
+        -- braucht keine zwei leeren Zeilen.
+        local height = 8 + row.name:GetStringHeight() + 2
+        if #flags > 0 then height = height + row.flags:GetStringHeight() + 2 end
+        if #hints > 0 then height = height + row.hints:GetStringHeight() + 2 end
+        height = math.max(height, SPELLROW_HEIGHT)
+
+        row:SetHeight(height)
         row:Show()
-        y = y + SPELLROW_HEIGHT
+        y = y + height
     end
 
     for i = #spells + 1, #d.spellRows do d.spellRows[i]:Hide() end
@@ -1544,6 +1572,8 @@ function showAddSheet(challengeModeId, npcId, amount)
         row.interrupt:Hide()
         row.name:SetText(T:Text("textMuted", ns.L["SHEET_NO_SPELLS"]))
         row.flags:SetText("")
+        row.hints:SetText("")
+        row:SetHeight(SPELLROW_HEIGHT)
         row:ClearAllPoints()
         row:SetPoint("TOPLEFT", sheet.content, "TOPLEFT", 0, 0)
         row:SetPoint("TOPRIGHT", sheet.content, "TOPRIGHT", 0, 0)
@@ -1626,37 +1656,8 @@ local function updateDetail(route)
         rowIndex = rowIndex + 1
         local header = acquirePullRow(rowIndex)
 
-        -- Ueberschriften zeigen keine Vorschau und keine Zauber.
-        header.npcId = nil
-        header.pullIndex = i
-        for _, icon in ipairs(header.icons) do icon:Hide() end
-
-        header.portrait:Hide()
-        header.text:ClearAllPoints()
-        header.text:SetPoint("TOPLEFT", header, "TOPLEFT", 38, -2)
-        header.text:SetPoint("RIGHT", header.percent, "LEFT", -6, 0)
-        header.index:SetText((T:Hex("textSecondary") .. "%d|r"):format(i))
-        header.text:SetText(("%s%s%s|r"):format(
-            pull.boss and T:Hex("accent") or T:Hex("textSecondary"),
-            ns.L["PULL"],
-            pull.boss and "  !" or ""))
-
-        -- Derselbe Farbverlauf wie auf der Karte: gruen am Anfang, rot am
-        -- Ende. So findet man einen Pull dort wieder, ohne die Nummer zu
-        -- lesen.
-        local t = #route.pulls > 1 and (i - 1) / (#route.pulls - 1) or 0
-        header.bar:SetColorTexture(ns.MapView.PullColor(t))
-        header.bar:Show()
-
-        if pull.cumulative and need and need > 0 then
-            header.percent:SetText((T:Hex("textSecondary") .. "%.1f %%|r"):format(pull.cumulative / need * 100))
-        else
-            header.percent:SetText("")
-        end
-
-        place(header, PULLROW_HEIGHT + 3)
-
-        -- Gegner des Pulls zusammenfassen, haeufigste zuerst.
+        -- Gegner des Pulls zusammenfassen, haeufigste zuerst. Muss vor die
+        -- Ueberschrift, denn die nennt ihre Anzahl.
         local counts, order = {}, {}
         for _, entry in ipairs(pull.enemies or {}) do
             local npcId = entry.npc
@@ -1670,14 +1671,50 @@ local function updateDetail(route)
         end
         table.sort(order, function(x, z) return counts[x] > counts[z] end)
 
-        for _, npcId in ipairs(order) do
-            rowIndex = rowIndex + 1
-            local row = acquirePullRow(rowIndex)
-            -- Erst fuellen, dann zuordnen: fillAddRow raeumt pullIndex weg,
-            -- weil dieselben Zeilen auch die Dungeonuebersicht bedienen.
-            local height = fillAddRow(row, route.challengeModeId, npcId, counts[npcId])
-            row.pullIndex = i
-            place(row, height)
+        -- Ueberschriften zeigen keine Vorschau und keine Zauber.
+        header.npcId = nil
+        header.pullIndex = i
+        for _, icon in ipairs(header.icons) do icon:Hide() end
+
+        local key = (selectedId or "") .. ":" .. i
+        local folded = collapsedPulls[key] or false
+        header.collapseKey = key
+
+        header.portrait:Hide()
+        header.band:Show()
+        header.index:SetText("")
+        header.text:ClearAllPoints()
+        header.text:SetPoint("TOPLEFT", header, "TOPLEFT", 8, -2)
+        header.text:SetPoint("RIGHT", header.percent, "LEFT", -6, 0)
+
+        -- Dieselbe Schreibweise wie die Bereiche der Routenliste: Pfeil,
+        -- Name, Anzahl in Klammern.
+        header.text:SetText(("%s %s%s %d%s|r  %s(%d)|r"):format(
+            T:Text("accent", folded and "+" or "-"),
+            pull.boss and T:Hex("accent") or T:Hex("textSecondary"),
+            ns.L["PULL"], i,
+            pull.boss and " !" or "",
+            T:Hex("textMuted"), #order))
+
+        if pull.cumulative and need and need > 0 then
+            header.percent:SetText((T:Hex("textSecondary") .. "%.1f %%|r"):format(pull.cumulative / need * 100))
+        else
+            header.percent:SetText("")
+        end
+
+        place(header, PULLROW_HEIGHT + 5)
+
+        if not folded then
+            for _, npcId in ipairs(order) do
+                rowIndex = rowIndex + 1
+                local row = acquirePullRow(rowIndex)
+                -- Erst fuellen, dann zuordnen: fillAddRow raeumt pullIndex
+                -- weg, weil dieselben Zeilen auch die Dungeonuebersicht
+                -- bedienen.
+                local height = fillAddRow(row, route.challengeModeId, npcId, counts[npcId])
+                row.pullIndex = i
+                place(row, height)
+            end
         end
     end
 
@@ -1795,6 +1832,7 @@ function updateDungeonDetail(dungeon)
         -- Dieselbe Darstellung wie in der Routenansicht: Zauber am Gegner und
         -- Modellvorschau beim Ueberfahren. Nur die linke Spalte ist anders.
         local height = fillAddRow(row, cmId, entry.npc, 1, true)
+        row.pullIndex = nil
 
         -- Anteil der Routen, die diesen Gegner mitnehmen.
         local share = routeCount > 0 and (entry.count / routeCount * 100) or 0

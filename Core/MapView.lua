@@ -80,9 +80,6 @@ local function pullColor(t)
     return 1.0, 0.85 - 0.55 * k, 0.20 + 0.05 * k
 end
 
--- Nach aussen, damit die Pull-Liste rechts dieselben Farben benutzt.
-MV.PullColor = pullColor
-
 --------------------------------------------------------------------------
 -- Ziehen
 --------------------------------------------------------------------------
