@@ -214,11 +214,19 @@ export function decode(buffer) {
  * Nur fuer die Pruefung da: sie haelt damit den Leser gegen selbst erzeugte
  * Werte. Im Betrieb wird nichts geschrieben.
  *
+ * Mit textAsBytes werden Zeichenketten als Bytefolge abgelegt statt als Text -
+ * genau so, wie Blizzards SerializeCBOR es tut, weil Lua zwischen beidem nicht
+ * unterscheidet. An einem echten MDT-Export gemessen. Die Pruefung braucht das,
+ * um die Verarbeitung gegen die Wirklichkeit zu halten statt gegen die
+ * gutmuetige Variante.
+ *
  * @param {*} value
+ * @param {{textAsBytes?: boolean}} [options]
  * @returns {Buffer}
  */
-export function encode(value) {
+export function encode(value, options = {}) {
   const parts = []
+  const textMajor = options.textAsBytes ? 2 : 3
 
   const head = (major, n) => {
     if (n < 24) return parts.push(Buffer.from([(major << 5) | n]))
@@ -245,7 +253,7 @@ export function encode(value) {
 
     if (typeof v === 'string') {
       const bytes = Buffer.from(v, 'utf8')
-      head(3, bytes.length)
+      head(textMajor, bytes.length)
       return parts.push(bytes)
     }
 

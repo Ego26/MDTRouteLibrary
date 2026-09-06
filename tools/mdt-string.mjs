@@ -31,6 +31,24 @@ import { texts } from './submission-texts.mjs'
 export const MDT_PREFIX = '!~MDT2~'
 
 /**
+ * Zeichenkette aus einem CBOR-Wert.
+ *
+ * Blizzards SerializeCBOR legt Lua-Strings als *Bytefolge* ab (CBOR-Haupttyp
+ * 2), nicht als Text (Haupttyp 3) - Lua unterscheidet beides nicht. Aus dem
+ * Leser kommen sie deshalb als Buffer an, und ohne diese Umwandlung waere der
+ * Routenname still null und die Pullfarbe verloren. An einem echten Export
+ * gemessen, nicht geraten.
+ *
+ * @param {*} value
+ * @returns {string|null}
+ */
+export function asText(value) {
+  if (typeof value === 'string') return value
+  if (Buffer.isBuffer(value)) return value.toString('utf8')
+  return null
+}
+
+/**
  * Entpackt einen MDT-Exportstring zum Preset.
  *
  * @param {string} text
@@ -96,7 +114,7 @@ export function normalizePulls(pulls) {
 
     if (enemies.length > 0) {
       enemies.sort((a, b) => a.enemy - b.enemy)
-      out.push({ color: typeof pull.color === 'string' ? pull.color : undefined, enemies })
+      out.push({ color: asText(pull.color) ?? undefined, enemies })
     }
   }
 
@@ -136,7 +154,7 @@ export function presetToPayload(preset, lookup, lang = 'en') {
     // GitHub-Namen des Einreichenden ein.
     author: { character: null },
     route: {
-      title: typeof preset.text === 'string' ? preset.text : null,
+      title: asText(preset.text),
       keyLevel: typeof preset.difficulty === 'number' ? preset.difficulty : null,
       sublevel: Number(preset.value?.currentSublevel) || 1,
       pulls,

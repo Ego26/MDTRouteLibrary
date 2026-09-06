@@ -124,5 +124,22 @@ console.log('Hin und zurück')
   check('grosse Zahlen', decode(encode(123456789)), 123456789)
 }
 
+console.log('Blizzards Schreibweise')
+{
+  // Lua unterscheidet Text und Bytes nicht. Blizzards SerializeCBOR legt
+  // deshalb jede Zeichenkette als Bytefolge ab - an einem echten MDT-Export
+  // gemessen. Der Leser muss sie als Buffer liefern, nicht als String, damit
+  // die Umwandlung in mdt-string.mjs greift.
+  const asBytes = encode({ text: 'Tactyks PUG Friendly', n: 22 }, { textAsBytes: true })
+  const back = decode(asBytes)
+  check('Schluessel werden zu Text', Object.keys(back).sort().join(','), 'n,text')
+  check('Wert bleibt Bytefolge', Buffer.isBuffer(back.text), true)
+  check('Bytefolge ist lesbar', back.text.toString('utf8'), 'Tactyks PUG Friendly')
+  check('Zahlen bleiben Zahlen', back.n, 22)
+
+  // Zum Vergleich der uebliche Weg.
+  check('als Text bleibt Text', typeof decode(encode({ text: 'x' })).text, 'string')
+}
+
 console.log(failed ? `\n${failed} Prüfungen fehlgeschlagen` : '\nAlle Prüfungen bestanden')
 process.exit(failed ? 1 : 0)
