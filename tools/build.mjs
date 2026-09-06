@@ -327,7 +327,7 @@ async function main() {
   return EXIT_CHANGED
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     process.exit(await main())
   } catch (err) {

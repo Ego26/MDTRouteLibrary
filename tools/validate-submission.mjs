@@ -10,8 +10,13 @@
 // ablehnen und den Einreichenden nachbessern lassen - das Issue bleibt offen,
 // eine Aenderung loest die Pruefung erneut aus.
 
-/** Erlaubte Werte des Auswahlfelds "Art der Route". */
-export const ROUTE_KINDS = ['Meta', 'Einsteiger', 'Spezialisiert', 'Sonstiges']
+import { KINDS, readField, normalizeKind, hasRightsConfirmation, texts } from './submission-texts.mjs'
+
+// Weitergereicht, damit Aufrufer nicht zwei Module einbinden muessen.
+export { hasRightsConfirmation }
+
+/** Kanonische Werte des Auswahlfelds "Art der Route". */
+export const ROUTE_KINDS = Object.keys(KINDS)
 
 export const LIMITS = {
   titleMin: 3,
@@ -75,30 +80,16 @@ function isInvisible(code) {
 }
 
 /**
- * Liest eine Stufenangabe wie "+18", "18" oder "egal".
+ * Liest eine Stufenangabe wie "+18", "18", "egal" oder "any".
  *
  * @param {string|undefined} value
  * @returns {number|null} null bedeutet "egal", nicht "ungueltig"
  */
 export function parseLevel(value) {
   const text = (value ?? '').trim()
-  if (!text || /^egal$/i.test(text)) return null
+  if (!text || /^(egal|any)$/i.test(text)) return null
   const match = /^\+?(\d+)$/.exec(text)
   return match ? Number(match[1]) : Number.NaN
-}
-
-/**
- * Prueft, ob im Bestaetigungsblock das Pflichthaekchen gesetzt ist.
- *
- * GitHub rendert Checkboxen als "- [x] Beschriftung". Wer das Issue ueber die
- * API statt ueber das Formular anlegt, hat den Block gar nicht - dann fehlt
- * die Zusage, und das ist ein Ablehnungsgrund.
- *
- * @param {string|undefined} block
- * @returns {boolean}
- */
-export function hasRightsConfirmation(block) {
-  return /^\s*-\s*\[x\]\s*Die Route ist von mir/im.test(block ?? '')
 }
 
 /**
@@ -108,10 +99,12 @@ export function hasRightsConfirmation(block) {
  * @param {object} options.route         Ergebnis von toRoute()
  * @param {Record<string,string>} options.fields  Ergebnis von parseIssueForm()
  * @param {{name?: string, dungeonIndices?: Set<number>}} [options.season]
+ * @param {'de'|'en'} [options.lang]     Sprache der benutzten Issue-Vorlage
  * @returns {{ ok: boolean, errors: string[], warnings: string[], patch: object }}
  *   `patch` sind die bereinigten Werte, die bei ok auf die Route gehoeren.
  */
-export function validateSubmission({ route, fields = {}, season } = {}) {
+export function validateSubmission({ route, fields = {}, season, lang = 'en' } = {}) {
+  const t = texts(lang)
   const errors = []
   const warnings = []
   const patch = {}
@@ -122,14 +115,10 @@ export function validateSubmission({ route, fields = {}, season } = {}) {
   // sie sonst ist.
   const required = route.enemyForcesRequired
   if (!required) {
-    warnings.push('Für diesen Dungeon kennt MDT keine Gesamt-Gegnerkräfte – die 100-%-Prüfung entfällt.')
+    warnings.push(t.noTotalForces)
   } else if (route.enemyForces < required) {
-    const percent = (route.enemyForces / required) * 100
-    errors.push(
-      `Die Route erreicht nur **${percent.toFixed(1)} %** der Gegnerkräfte ` +
-      `(${route.enemyForces} von ${required}). Aufgenommen werden nur Routen ab 100 %, ` +
-      'weil sich der Schlüssel sonst nicht abschließen lässt.'
-    )
+    const percent = ((route.enemyForces / required) * 100).toFixed(1)
+    errors.push(t.belowFull(percent, route.enemyForces, required))
   }
 
   // ---- 2. Dungeon der laufenden Season ----------------------------------
@@ -137,42 +126,34 @@ export function validateSubmission({ route, fields = {}, season } = {}) {
   // welche Karte offen war, der Einreichende koennte sich verklicken.
   const indices = season?.dungeonIndices
   if (indices && indices.size > 0 && !indices.has(route.mdtDungeonIdx)) {
-    errors.push(
-      `**${route.dungeonEnglishName}** gehört nicht zur laufenden Season` +
-      (season.name ? ` (${season.name})` : '') +
-      '. Routen für vergangene Seasons nimmt die Bibliothek nicht auf.'
-    )
+    errors.push(t.wrongSeason(route.dungeonEnglishName, season.name))
   }
 
   // ---- 3. Name ----------------------------------------------------------
   // Das Formularfeld hat Vorrang vor dem Namen aus MDT: der Einreichende sieht
   // das Formular vor sich, den Blob nicht.
-  const title = sanitizeText(fields['Name der Route'] || route.title, LIMITS.titleMax)
+  const given = readField(fields, 'title')
+  const title = sanitizeText(given || route.title, LIMITS.titleMax)
   if (title.length < LIMITS.titleMin) {
-    errors.push(
-      `Der Name der Route ist zu kurz (mindestens ${LIMITS.titleMin} Zeichen). ` +
-      'Trag im Formularfeld einen Namen ein, unter dem man die Route wiedererkennt.'
-    )
+    errors.push(t.titleTooShort(LIMITS.titleMin))
   } else {
     patch.title = title
-    if (title !== (fields['Name der Route'] ?? route.title ?? '').trim()) {
-      warnings.push(`Der Name wurde auf \`${title}\` gekürzt oder bereinigt.`)
-    }
+    if (title !== (given ?? route.title ?? '').trim()) warnings.push(t.titleTrimmed(title))
   }
 
   // ---- 4. Schluesselstufen ----------------------------------------------
-  let min = parseLevel(fields['Schlüsselstufe ab'])
-  let max = parseLevel(fields['Schlüsselstufe bis'])
+  let min = parseLevel(readField(fields, 'levelMin'))
+  let max = parseLevel(readField(fields, 'levelMax'))
 
   if (Number.isNaN(min) || Number.isNaN(max)) {
-    errors.push('Die Schlüsselstufen sind unlesbar. Erwartet wird eine Angabe wie `+18` oder `egal`.')
+    errors.push(t.levelsUnreadable)
   } else {
     // Vertauscht angegeben? Stillschweigend drehen statt abweisen.
     if (min != null && max != null && min > max) [min, max] = [max, min]
 
-    for (const [label, value] of [['ab', min], ['bis', max]]) {
+    for (const [which, value] of [['min', min], ['max', max]]) {
       if (value != null && (value < LIMITS.keyMin || value > LIMITS.keyMax)) {
-        errors.push(`Die Schlüsselstufe "${label}" liegt mit +${value} außerhalb von +${LIMITS.keyMin} bis +${LIMITS.keyMax}.`)
+        errors.push(t.levelOutOfRange(which, value, LIMITS.keyMin, LIMITS.keyMax))
       }
     }
     if (min != null) patch.keyLevelMin = min
@@ -180,12 +161,14 @@ export function validateSubmission({ route, fields = {}, season } = {}) {
   }
 
   // ---- 5. Art der Route -------------------------------------------------
-  // Die Klammer hinter dem Auswahltext ist Erklaerung, kein Wert.
-  const kind = sanitizeText(fields['Art der Route'], 40).replace(/\s*\(.*$/, '').trim()
-  if (!kind) {
-    errors.push('Die Art der Route fehlt. Wähle im Formular eine der vorgegebenen Möglichkeiten.')
-  } else if (!ROUTE_KINDS.includes(kind)) {
-    errors.push(`Die Art der Route ist unbekannt: \`${kind}\`. Erlaubt sind: ${ROUTE_KINDS.join(', ')}.`)
+  // Beide Vorlagen bieten dieselben vier Moeglichkeiten unter verschiedenen
+  // Woertern an; gespeichert wird der kanonische Wert.
+  const given_kind = sanitizeText(readField(fields, 'kind'), 60)
+  const kind = normalizeKind(given_kind)
+  if (!given_kind) {
+    errors.push(t.kindMissing)
+  } else if (!kind) {
+    errors.push(t.kindUnknown(given_kind))
   } else {
     patch.kind = kind
   }
@@ -193,21 +176,14 @@ export function validateSubmission({ route, fields = {}, season } = {}) {
   // ---- 6. Rechtezusage --------------------------------------------------
   // GitHub erzwingt das Haekchen nur in der Formularmaske. Ein Issue ueber die
   // API umgeht die Vorlage vollstaendig, deshalb hier serverseitig nachsehen.
-  if (!hasRightsConfirmation(fields['Bestätigung'])) {
-    errors.push(
-      'Die Bestätigung fehlt, dass die Route von dir stammt und veröffentlicht werden darf. ' +
-      'Setz das Häkchen im Formular – ohne diese Zusage kann die Route nicht aufgenommen werden.'
-    )
-  }
+  if (!hasRightsConfirmation(readField(fields, 'rights'))) errors.push(t.rightsMissing)
 
   // ---- 7. Anmerkungen ---------------------------------------------------
-  const notes = sanitizeText(fields['Anmerkungen'], LIMITS.notesMax)
+  const notes = sanitizeText(readField(fields, 'notes'), LIMITS.notesMax)
   if (notes) patch.notes = notes
 
   // ---- Hinweise, die nicht ablehnen -------------------------------------
-  if (route.pulls.length < 3) {
-    warnings.push(`Die Route hat nur ${route.pulls.length} Pulls – ungewöhnlich wenig.`)
-  }
+  if (route.pulls.length < 3) warnings.push(t.fewPulls(route.pulls.length))
 
   return { ok: errors.length === 0, errors, warnings, patch }
 }

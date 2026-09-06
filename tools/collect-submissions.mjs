@@ -28,6 +28,7 @@ import { pathToFileURL } from 'node:url'
 import { readDungeons, readSeasons, buildLookup } from './mdt-dungeons.mjs'
 import { decodeBlob, toRoute } from './parse-submission.mjs'
 import { validateSubmission } from './validate-submission.mjs'
+import { detectLanguage, texts } from './submission-texts.mjs'
 
 const LABEL_SUBMISSION = 'route-submission'
 const LABEL_BLOCKED = 'blocked'
@@ -122,29 +123,20 @@ export function listSubmissions() {
  *
  * @param {string[]} errors
  * @param {string[]} warnings
+ * @param {'de'|'en'} [lang] Sprache der benutzten Issue-Vorlage
  * @returns {{ body: string, fingerprint: string }}
  */
-export function buildRejection(errors, warnings) {
+export function buildRejection(errors, warnings, lang = 'en') {
+  const t = texts(lang)
   const fingerprint = createHash('sha256').update(errors.join('\n')).digest('hex').slice(0, 12)
 
-  const parts = [
-    'Die Einreichung ist noch nicht aufnahmefähig:',
-    '',
-    ...errors.map((e) => `- ${e}`),
-  ]
+  const parts = [t.rejectionIntro, '', ...errors.map((e) => `- ${e}`)]
 
   if (warnings.length > 0) {
-    parts.push('', 'Hinweise, die der Aufnahme nicht im Weg stehen:', '', ...warnings.map((w) => `- ${w}`))
+    parts.push('', t.rejectionWarnings, '', ...warnings.map((w) => `- ${w}`))
   }
 
-  parts.push(
-    '',
-    'Das Issue bleibt offen. **Bearbeite es einfach** – jede Änderung startet die Prüfung ' +
-    'automatisch neu, du musst nichts weiter tun. Sobald alles stimmt, wird die Route ' +
-    'aufgenommen und das Issue geschlossen.',
-    '',
-    `<!-- mdtrl-check:${fingerprint} -->`,
-  )
+  parts.push('', t.rejectionOutro, '', `<!-- mdtrl-check:${fingerprint} -->`)
 
   return { body: parts.join('\n'), fingerprint }
 }
@@ -210,7 +202,7 @@ function parseArgs(argv) {
 
 // ---------------------------------------------------------------- CLI
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = parseArgs(process.argv.slice(2))
   if (!args.mdt) {
     console.error('Aufruf: node tools/collect-submissions.mjs --mdt <MDT-Pfad> --out data/routes [--season "..."] [--dry-run]')
@@ -275,6 +267,12 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   for (const issue of issues) {
     const fields = parseIssueForm(issue.body)
 
+    // In welcher Sprache wurde eingereicht? Danach richtet sich alles, was
+    // dieser Einreichende zu lesen bekommt - eine deutsche Maengelliste unter
+    // einer englischen Einreichung ist so gut wie keine.
+    const lang = detectLanguage(fields)
+    const t = texts(lang)
+
     // Erst dekodieren. Alles, was hier schiefgeht, ist ein Formatfehler und
     // wird wie ein Pruefergebnis behandelt - der Einreichende soll denselben
     // hilfreichen Kommentar bekommen wie bei einem inhaltlichen Mangel.
@@ -284,22 +282,19 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 
     const found = /mdtrl1:[A-Za-z0-9+/=]+/.exec(issue.body ?? '')
     if (!found) {
-      errors.push(
-        'Im Issue steht kein Einreichungs-Code. Erwartet wird der Text aus `/routes submit`, ' +
-        'der mit `mdtrl1:` beginnt.'
-      )
+      errors.push(t.noBlob)
     } else {
       try {
-        const decoded = toRoute(decodeBlob(found[0]), lookup)
+        const decoded = toRoute(decodeBlob(found[0]), lookup, lang)
         route = decoded.route
         warnings = decoded.warnings
       } catch (err) {
-        errors.push(`Der Einreichungs-Code ließ sich nicht verarbeiten: ${err.message}`)
+        errors.push(t.blobFailed(err.message))
       }
     }
 
     if (route) {
-      const check = validateSubmission({ route, fields, season })
+      const check = validateSubmission({ route, fields, season, lang })
       errors = errors.concat(check.errors)
       warnings = warnings.concat(check.warnings)
       if (check.ok) Object.assign(route, check.patch)
@@ -308,7 +303,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     // ---- abgelehnt ------------------------------------------------------
     if (errors.length > 0) {
       rejected += 1
-      const { body, fingerprint } = buildRejection(errors, warnings)
+      const { body, fingerprint } = buildRejection(errors, warnings, lang)
       console.log(`  - #${issue.number}: ${errors.length} Mangel/Mängel`)
       for (const e of errors) console.log(`      ${e.replace(/\*\*/g, '')}`)
 
@@ -352,13 +347,11 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     writeFileSync(file, `${JSON.stringify(route, null, 2)}\n`)
 
     const note = warnings.length > 0
-      ? `\n\nHinweise:\n${warnings.map((w) => `- ${w}`).join('\n')}`
+      ? `\n\n${t.acceptedNotes}\n${warnings.map((w) => `- ${w}`).join('\n')}`
       : ''
     ghTry(['issue', 'edit', String(issue.number), '--add-label', LABEL_ACCEPTED, '--remove-label', LABEL_NEEDS_FIX])
     ghTry(['issue', 'close', String(issue.number), '--comment',
-      `Aufgenommen als \`${route.id}\`. Die Route erreicht ` +
-      `${route.enemyForces} von ${route.enemyForcesRequired} Gegnerkräften und ist im nächsten ` +
-      `Datenpaket enthalten. Danke!${note}`])
+      t.accepted(route.id, route.enemyForces, route.enemyForcesRequired) + note])
   }
 
   console.log(`${accepted} aufgenommen, ${rejected} zurückgestellt`)

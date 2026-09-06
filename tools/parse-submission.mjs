@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup } from './mdt-dungeons.mjs'
+import { texts } from './submission-texts.mjs'
 
 const PREFIX = 'mdtrl1:'
 
@@ -68,9 +69,11 @@ export function decodeBlob(blob) {
  *
  * @param {object} payload
  * @param {object} lookup Ergebnis von buildLookup()
+ * @param {'de'|'en'} [lang] Sprache fuer die Hinweise an den Einreichenden
  * @returns {{ route: object, warnings: string[] }}
  */
-export function toRoute(payload, lookup) {
+export function toRoute(payload, lookup, lang = 'en') {
+  const t = texts(lang)
   const warnings = []
   const name = payload.dungeon?.englishName
   if (!name) throw new Error('Einreichung nennt keinen Dungeon')
@@ -87,7 +90,7 @@ export function toRoute(payload, lookup) {
     for (const entry of pull.enemies ?? []) {
       const enemy = byIndex.get(entry.enemy)
       if (!enemy) {
-        warnings.push(`Gegnerindex ${entry.enemy} gibt es in ${name} nicht - uebersprungen`)
+        warnings.push(t.unknownEnemy(entry.enemy, name))
         continue
       }
 
@@ -99,7 +102,7 @@ export function toRoute(payload, lookup) {
       const known = new Set(enemy.cloneKeys ?? [])
       const clones = (entry.clones ?? []).filter((c) => {
         if (known.has(c)) return true
-        warnings.push(`Klon ${entry.enemy}/${c} gibt es nicht - uebersprungen`)
+        warnings.push(t.unknownClone(entry.enemy, c))
         return false
       })
       if (clones.length === 0) continue
@@ -139,7 +142,7 @@ export function toRoute(payload, lookup) {
   }
 
   if (dungeon.totalCount && forces < dungeon.totalCount) {
-    warnings.push(`Route erreicht nur ${forces} von ${dungeon.totalCount} noetigen Gegnerkraeften`)
+    warnings.push(t.belowRequired(forces, dungeon.totalCount))
   }
 
   return { route, warnings }
@@ -158,7 +161,7 @@ function parseArgs(argv) {
   return args
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = parseArgs(process.argv.slice(2))
   if (!args.mdt || (!args.blob && !args.file)) {
     console.error('Aufruf: node tools/parse-submission.mjs (--blob "..." | --file datei) --mdt "<MDT-Pfad>" [--out ordner]')
@@ -175,7 +178,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   }
 
   const { dungeons } = readDungeons(args.mdt)
-  const { route, warnings } = toRoute(decodeBlob(found[0]), buildLookup(dungeons))
+  const { route, warnings } = toRoute(decodeBlob(found[0]), buildLookup(dungeons), 'de')
 
   for (const w of warnings) console.warn(`  ! ${w}`)
   console.log(`${route.id}  ${route.dungeonEnglishName}  "${route.title}"  ${route.pulls.length} Pulls  ${route.enemyForces} Kraefte`)

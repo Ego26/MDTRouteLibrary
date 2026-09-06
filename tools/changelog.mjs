@@ -156,11 +156,11 @@ export function routeLine(route) {
   return line
 }
 
-// Die Routenart steht im Einreichungsformular auf Deutsch, der Release-Text
-// ist englisch. Unbekanntes bleibt stehen, wie es ist - lieber ein deutsches
-// Wort im Text als gar keine Angabe.
+// Routen tragen die Art seit der zweisprachigen Einreichung als englischen
+// Wert. Aeltere Dateien koennen noch den deutschen enthalten - der Release-Text
+// ist englisch, also hier uebersetzen. Unbekanntes bleibt stehen, wie es ist:
+// lieber ein fremdes Wort im Text als gar keine Angabe.
 const KIND_LABELS = {
-  Meta: 'Meta',
   Einsteiger: 'Beginner',
   Spezialisiert: 'Specialised',
   Sonstiges: 'Other',

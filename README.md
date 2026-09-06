@@ -90,7 +90,11 @@ veröffentlicht nur bei `0` – deshalb sieht niemand ein Update ohne neue Route
 ## Mitmachen
 
 Routen einreichen: `/routes submit` im Spiel, dann
-[eine Einreichung anlegen](../../issues/new?template=route-submission.yml).
+[eine Einreichung anlegen](../../issues/new?template=route-submission.yml) –
+auf Englisch geht es
+[hier entlang](../../issues/new?template=route-submission-en.yml). Das Addon
+verlinkt von selbst die Vorlage, die zur Spielsprache passt, und der Bot
+antwortet in der Sprache des benutzten Formulars.
 
 Es wartet niemand auf eine Freigabe: die Einreichung wird automatisch geprüft
 und bei bestandener Prüfung sofort aufgenommen, das Issue schließt sich

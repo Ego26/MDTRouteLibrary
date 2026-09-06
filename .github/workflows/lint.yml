@@ -17,6 +17,7 @@ on:
       - '.luacheckrc'
       - 'tools/**.mjs'
       - 'CHANGELOG.md'
+      - '.github/ISSUE_TEMPLATE/**'
       - '.github/workflows/lint.yml'
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - '.luacheckrc'
       - 'tools/**.mjs'
       - 'CHANGELOG.md'
+      - '.github/ISSUE_TEMPLATE/**'
   workflow_dispatch:
 
 permissions:
@@ -56,7 +58,7 @@ jobs:
   # baut der Packager den Release-Text wieder aus den Commit-Texten. Der
   # Release-Lauf bricht dann zwar ab, aber erst dort - hier faellt es beim Push
   # auf, waehrend man an der Sache noch dran ist.
-  changelog:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - name: Repository auschecken
@@ -69,6 +71,21 @@ jobs:
 
       - name: Release-Notes prüfen
         run: node tools/check-changelog.mjs
+
+      # Die Pruefung liest die Formularfelder ueber ihre Beschriftung - GitHub
+      # schreibt die Feld-IDs nicht in den Issue-Text. Benennt jemand ein Feld
+      # in einer der beiden Vorlagen um, faellt danach jede Einreichung durch,
+      # ohne dass irgendwo ein Fehler auftaucht. Genau das faengt der Abgleich
+      # zwischen Vorlagen und tools/submission-texts.mjs hier ab.
+      - name: MDT-Quellen holen
+        uses: actions/checkout@v4
+        with:
+          repository: Nnoggie/MythicDungeonTools
+          path: .mdt
+          ref: master
+
+      - name: Aufnahmekriterien prüfen
+        run: node tools/check-submission-rules.mjs --mdt .mdt
 
       # Das Unreleased-Fach muss da sein, sonst faellt der handgeschriebene
       # Teil beim naechsten Release stillschweigend weg.

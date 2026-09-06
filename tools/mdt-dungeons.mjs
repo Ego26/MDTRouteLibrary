@@ -271,7 +271,7 @@ function parseArgs(argv) {
   return args
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = parseArgs(process.argv.slice(2))
   if (!args.mdt) {
     console.error('Aufruf: node tools/mdt-dungeons.mjs --mdt "<Pfad zu MythicDungeonTools>" [--out datei.json]')

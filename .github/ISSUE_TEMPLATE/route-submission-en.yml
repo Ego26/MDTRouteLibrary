@@ -1,0 +1,166 @@
+name: Submit a route
+description: Suggest one of your own MDT routes for the next MDTRouteLibrary update
+title: '[Route] '
+labels: ['route-submission']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing a route!
+
+        *Du sprichst Deutsch? Es gibt auch eine
+        [deutsche Vorlage](?template=route-submission.yml).*
+
+        **Nobody is waiting to approve this.** As soon as you submit the issue
+        the route is checked automatically – that takes a minute or two. If
+        everything fits it is accepted and the issue closes by itself. If
+        something is missing you get a comment saying exactly what; just edit
+        the issue and the check starts again on its own.
+
+        **In the game it arrives a little later.** Addons are not allowed to
+        talk to the internet, so routes have to be baked into the package.
+        Every six hours the pipeline builds everything new and uploads it to
+        CurseForge – from then on it reaches you with the next addon update.
+        Reckon with a few hours.
+
+        A route is accepted when it clears the whole dungeon:
+        **at least 100% of the enemy forces**. Below that the key cannot be
+        completed, and the route helps nobody.
+
+        **How to get the submission code:**
+        1. Finish building the route in MDT.
+        2. Leave it open in MDT and type `/routes submit` in the game.
+        3. Copy the text from the window with **Ctrl+C**.
+        4. Paste it below.
+
+        The code contains the pulls, the dungeon and your character name as
+        the author. It contains **no** other account data.
+
+  - type: textarea
+    id: blob
+    attributes:
+      label: Submission code
+      description: The complete text from `/routes submit`, starts with `mdtrl1:`
+      placeholder: mdtrl1:...
+      render: text
+    validations:
+      required: true
+
+  - type: input
+    id: name
+    attributes:
+      label: Route name
+      description: What should it be called in MDT? Leave empty to keep the name from MDT.
+      placeholder: e.g. "Altar of Fangs – Meta 18+"
+    validations:
+      required: false
+
+  # Zwei Auswahlfelder statt eines Reglers: Issue-Formulare kennen keine
+  # Regler, und ein Bereich laesst sich so sauber auswerten.
+  - type: dropdown
+    id: level_min
+    attributes:
+      label: Key level from
+      description: From which key level is the route worth using?
+      options:
+        - "any"
+        - "+2"
+        - "+3"
+        - "+4"
+        - "+5"
+        - "+6"
+        - "+7"
+        - "+8"
+        - "+9"
+        - "+10"
+        - "+11"
+        - "+12"
+        - "+13"
+        - "+14"
+        - "+15"
+        - "+16"
+        - "+17"
+        - "+18"
+        - "+19"
+        - "+20"
+        - "+21"
+        - "+22"
+        - "+23"
+        - "+24"
+        - "+25"
+        - "+26"
+        - "+27"
+        - "+28"
+        - "+29"
+        - "+30"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: level_max
+    attributes:
+      label: Key level to
+      description: Up to which level? Same value as above if it is meant for exactly one level.
+      options:
+        - "any"
+        - "+2"
+        - "+3"
+        - "+4"
+        - "+5"
+        - "+6"
+        - "+7"
+        - "+8"
+        - "+9"
+        - "+10"
+        - "+11"
+        - "+12"
+        - "+13"
+        - "+14"
+        - "+15"
+        - "+16"
+        - "+17"
+        - "+18"
+        - "+19"
+        - "+20"
+        - "+21"
+        - "+22"
+        - "+23"
+        - "+24"
+        - "+25"
+        - "+26"
+        - "+27"
+        - "+28"
+        - "+29"
+        - "+30"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Route type
+      options:
+        - Meta (the usual route on high keys)
+        - Beginner (safer, more headroom)
+        - Specialised (for a particular group composition)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: What should people watch out for on this route? Which affixes is it built for?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Confirmation
+      options:
+        - label: The route is mine, and it may be published in the MDTRouteLibrary addon.
+          required: true
+        - label: I have tested the route in the game.
+          required: false

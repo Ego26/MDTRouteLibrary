@@ -16,7 +16,13 @@ ns.MDT_UI_ADDON = "MythicDungeonTools_UI"
 
 -- Zieladresse fuer Einreichungen. Ein Addon kann keinen Browser oeffnen, die
 -- URL muss also zum Kopieren danebenstehen.
-ns.SUBMIT_URL = "https://github.com/Ego26/MDTRouteLibrary/issues/new?template=route-submission.yml"
+--
+-- Es gibt zwei Issue-Vorlagen. Deutsche Clients bekommen die deutsche, alle
+-- anderen die englische - sonst steht jemand vor einem Formular in einer
+-- Sprache, die er nicht liest. Die Pruefung versteht beide Beschriftungssaetze
+-- und antwortet in der Sprache der benutzten Vorlage.
+local submitTemplate = GetLocale() == "deDE" and "route-submission.yml" or "route-submission-en.yml"
+ns.SUBMIT_URL = "https://github.com/Ego26/MDTRouteLibrary/issues/new?template=" .. submitTemplate
 
 -- Praefix der Einreich-Blobs. Die Zahl ist die Formatversion: aendert sich
 -- das Schema, zaehlt sie hoch und tools/parse-submission.mjs weiss Bescheid.
