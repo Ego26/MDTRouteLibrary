@@ -7,6 +7,10 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+- The submission link from `/routes submit` now opens the form in your game's
+  language — German clients get the German template, everyone else the English
+  one.
+
 ## 2026.09.06.1
 
 The library is no longer empty: the first player-submitted route is in.
