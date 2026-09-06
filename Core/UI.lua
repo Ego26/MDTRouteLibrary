@@ -66,12 +66,12 @@ local function ensureFrame()
     -- Zweite Zeile fuer eine Adresse. WoW kann keine Links oeffnen, also muss
     -- auch die URL kopierbar sein.
     frame.linkLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    frame.linkLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 72)
+    frame.linkLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 100)
     frame.linkLabel:SetTextColor(0.8, 0.8, 0.8)
 
     frame.linkBox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
     frame.linkBox:SetHeight(20)
-    frame.linkBox:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 24, 50)
+    frame.linkBox:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 24, 76)
     frame.linkBox:SetPoint("RIGHT", frame, "RIGHT", -24, 0)
     frame.linkBox:SetAutoFocus(false)
     frame.linkBox:SetScript("OnEscapePressed", function() frame:Hide() end)
@@ -82,6 +82,15 @@ local function ensureFrame()
         end
     end)
     frame.linkBox:SetScript("OnEditFocusGained", function(self) self:HighlightText() end)
+
+    -- Dritte Zeile: wann die Route im Spiel ankommt. Wer gerade eingereicht
+    -- hat, fragt genau das als Naechstes - und ohne Antwort sieht ein Tag
+    -- Wartezeit nach einem Fehler aus.
+    frame.note = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    frame.note:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 46)
+    frame.note:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 46)
+    frame.note:SetJustifyH("LEFT")
+    frame.note:SetTextColor(0.65, 0.65, 0.65)
 
     local close = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
     close:SetSize(120, 24)
@@ -116,13 +125,16 @@ function UI.ShowCopyDialog(title, help, text, link)
     if link then
         f.linkLabel:SetText(ns.L["COPY_LINK_LABEL"])
         f.linkBox:SetText(link)
+        f.note:SetText(ns.L["SUBMIT_WHEN"])
         f.linkLabel:Show()
         f.linkBox:Show()
-        f:SetHeight(300)
-        f.scroll:SetPoint("BOTTOMRIGHT", -36, 98)
+        f.note:Show()
+        f:SetHeight(326)
+        f.scroll:SetPoint("BOTTOMRIGHT", -36, 124)
     else
         f.linkLabel:Hide()
         f.linkBox:Hide()
+        f.note:Hide()
         f:SetHeight(220)
         f.scroll:SetPoint("BOTTOMRIGHT", -36, 48)
     end

@@ -7,6 +7,9 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+- After `/routes submit`, the copy window now says when the route arrives in
+  the game: with the next data update, up to four a day.
+
 ## 2026.09.06.2
 
 - The submission link from `/routes submit` now opens the form in your game's

@@ -31,6 +31,7 @@ ns.RegisterLocale("deDE", {
     ["TAB_MINE"]            = "Meine Routen",
     ["ROUTE_OWN"]           = "deine eigene Route in MDT",
     ["COPY_LINK_LABEL"]     = "2. Diese Adresse im Browser öffnen und den String dort einfügen:",
+    ["SUBMIT_WHEN"]         = "3. Aufgenommene Routen kommen mit dem nächsten Datenpaket - bis zu viermal täglich, rechne also mit ein paar Stunden.",
     ["DELETE"]              = "Löschen",
     ["DELETE_N"]            = "Löschen (%d)",
     ["DELETE_DONE"]         = "%d Routen aus MDT gelöscht.",
