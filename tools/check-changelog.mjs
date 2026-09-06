@@ -134,6 +134,14 @@ console.log('Abschnitt einsetzen')
   const next = insertSection(text, '2026.09.07.1', notes)
 
   check('Unreleased ist danach leer', unreleasedBody(next), '')
+  // Die Anleitung muss stehen bleiben - sie verschwand beim ersten Release
+  // mit dem Eintrag darueber, und danach fand man ein Fach ohne Hinweis vor.
+  check('Anleitung bleibt stehen', next.includes('one short line per change'), true)
+  check('Anleitung steht unter Unreleased',
+    next.indexOf('one short line per change') > next.indexOf('## Unreleased'), true)
+  check('Anleitung steht vor dem neuen Abschnitt',
+    next.indexOf('one short line per change') < next.indexOf('## 2026.09.07.1'), true)
+  check('Anleitung nur einmal', (next.match(/one short line per change/g) ?? []).length, 1)
   check('neuer Abschnitt da', next.includes('## 2026.09.07.1'), true)
   check('alter Abschnitt bleibt', next.includes('## 2026.09.06.1'), true)
   check('alter Inhalt bleibt', next.trimEnd().endsWith('alt'), true)

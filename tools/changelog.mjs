@@ -37,6 +37,14 @@ const MAX_ROUTE_LINES = 25
 // Route, nicht in den Release-Text.
 const MAX_NOTE_CHARS = 200
 
+// Steht nach jedem Release wieder unter "## Unreleased". Beim ersten Release
+// verschwand die Anleitung mit dem Eintrag darueber - wer danach etwas
+// eintragen wollte, fand ein leeres Fach ohne Hinweis vor.
+const UNRELEASED_HINT = `<!-- Anything done to the addon itself goes here, one short line per change,
+     written for players. New, changed and removed routes are added
+     automatically at release time by tools/changelog.mjs - do not list them
+     here. This section is emptied with every release. -->`
+
 /**
  * Ruft git auf und gibt die Ausgabe zurueck, oder null wenn der Aufruf
  * fehlschlaegt (etwa weil es den Tag noch gar nicht gibt).
@@ -350,7 +358,7 @@ export function insertSection(text, version, notes) {
   const after = text.slice(marker)
   const next = after.slice(1).search(/^##\s/m)
   const tail = next < 0 ? '' : after.slice(next + 1)
-  return `${text.slice(0, marker)}## Unreleased\n\n${entry}\n${tail}`.replace(/\n{3,}$/, '\n')
+  return `${text.slice(0, marker)}## Unreleased\n\n${UNRELEASED_HINT}\n\n${entry}\n${tail}`.replace(/\n{3,}$/, '\n')
 }
 
 // ---------------------------------------------------------------- CLI
