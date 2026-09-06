@@ -26,7 +26,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readDungeons, readSeasons, buildLookup } from './mdt-dungeons.mjs'
-import { decodeBlob, toRoute } from './parse-submission.mjs'
+import { decodeSubmission, toRoute, CODE_PATTERN } from './parse-submission.mjs'
 import { validateSubmission } from './validate-submission.mjs'
 import { detectLanguage, texts } from './submission-texts.mjs'
 
@@ -170,13 +170,21 @@ function alreadyReported(number, fingerprint) {
  * @returns {number} wie viele nachgetragen wurden
  */
 export function adoptStraySubmissions() {
-  const found = ghTry([
-    'issue', 'list',
-    '--state', 'open',
-    '--search', 'mdtrl1 in:body',
-    '--limit', '50',
-    '--json', 'number,labels',
-  ])
+  // Zwei Suchen, weil es zwei Formate gibt. "MDT2" statt "!~MDT2~": GitHubs
+  // Suche stolpert ueber die Sonderzeichen, der Wortteil genuegt.
+  const byNumber = new Map()
+  for (const term of ['mdtrl1 in:body', 'MDT2 in:body']) {
+    for (const issue of ghTry([
+      'issue', 'list',
+      '--state', 'open',
+      '--search', term,
+      '--limit', '50',
+      '--json', 'number,labels',
+    ]) ?? []) {
+      byNumber.set(issue.number, issue)
+    }
+  }
+  const found = [...byNumber.values()]
 
   let adopted = 0
   for (const issue of found ?? []) {
@@ -280,15 +288,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     let errors = []
     let warnings = []
 
-    const found = /mdtrl1:[A-Za-z0-9+/=]+/.exec(issue.body ?? '')
+    const found = CODE_PATTERN.exec(issue.body ?? '')
     if (!found) {
-      // Wer den MDT-Export-String eingefuegt hat, hat nicht "nichts"
-      // eingefuegt - der soll das Passende hoeren, nicht die allgemeine
-      // Meldung.
-      errors.push((issue.body ?? '').includes('!~MDT2~') ? t.decodeMdtString : t.noBlob)
+      errors.push(t.noBlob)
     } else {
       try {
-        const decoded = toRoute(decodeBlob(found[0], lang), lookup, lang)
+        const decoded = toRoute(decodeSubmission(found[0], lookup, lang), lookup, lang)
         route = decoded.route
         warnings = decoded.warnings
       } catch (err) {

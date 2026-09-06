@@ -251,11 +251,17 @@ export function readSeasons(mdtPath) {
 export function buildLookup(dungeons) {
   const byChallengeMode = new Map()
   const byName = new Map()
+  // Nur fuer MDT-Exportstrings: die nennen den Dungeon ausschliesslich ueber
+  // MDTs eigenen Index. Der ist keine stabile Kennung - er verschiebt sich,
+  // wenn MDT Dungeons hinzufuegt oder umsortiert. Wo ein englischer Name
+  // vorliegt, hat der Vorrang.
+  const byMdtIndex = new Map()
   for (const d of dungeons) {
     if (d.challengeModeId != null) byChallengeMode.set(d.challengeModeId, d)
     if (d.englishName) byName.set(d.englishName.toLowerCase(), d)
+    if (d.mdtIndex != null) byMdtIndex.set(d.mdtIndex, d)
   }
-  return { byChallengeMode, byName }
+  return { byChallengeMode, byName, byMdtIndex }
 }
 
 // ---------------------------------------------------------------- CLI

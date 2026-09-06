@@ -72,6 +72,13 @@ jobs:
       - name: Release-Notes prüfen
         run: node tools/check-changelog.mjs
 
+      # Der CBOR-Leser ist selbst geschrieben, weil das Repository ohne
+      # node_modules auskommt. Ein Fehler darin sieht aus wie eine schlecht
+      # gebaute Route, nicht wie ein Programmfehler - deshalb gegen die
+      # Beispiele aus RFC 8949.
+      - name: CBOR-Leser prüfen
+        run: node tools/check-cbor.mjs
+
       # Die Pruefung liest die Formularfelder ueber ihre Beschriftung - GitHub
       # schreibt die Feld-IDs nicht in den Issue-Text. Benennt jemand ein Feld
       # in einer der beiden Vorlagen um, faellt danach jede Einreichung durch,

@@ -36,16 +36,19 @@ body:
         The code contains the pulls, the dungeon and your character name as
         the author. It contains **no** other account data.
 
-        **Not to be confused:** the MDT export string starts with `!~MDT2~` –
-        that is what MDT itself and keystone.guru hand out, and it does not fit
-        here. If you have one of those, import it into MDT first and then type
-        `/routes submit`.
+        **You can also use MDT's own export.** Hit **Share** in the MDT window,
+        copy the string (it starts with `!~MDT2~`) and paste it below. That
+        works without our addon.
+
+        `/routes submit` is still the better route: that code names the dungeon
+        instead of using MDT's internal number, and it carries your character
+        name as the author.
 
   - type: textarea
     id: blob
     attributes:
       label: Submission code
-      description: The complete text from `/routes submit`, starts with `mdtrl1:`
+      description: The text from `/routes submit` (`mdtrl1:...`) or MDT's export string (`!~MDT2~...`)
       placeholder: mdtrl1:...
       render: text
     validations:

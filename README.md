@@ -96,6 +96,11 @@ auf Englisch geht es
 verlinkt von selbst die Vorlage, die zur Spielsprache passt, und der Bot
 antwortet in der Sprache des benutzten Formulars.
 
+Es geht auch **ohne das Addon**: MDTs eigener Export-String aus dem
+*Share*-Fenster (`!~MDT2~…`) wird genauso angenommen. `/routes submit` bleibt
+der bessere Weg, weil dieser Code den Dungeon beim Namen nennt statt über MDTs
+interne Nummer und den Charakternamen als Autorenangabe mitbringt.
+
 Es wartet niemand auf eine Freigabe: die Einreichung wird automatisch geprüft
 und bei bestandener Prüfung sofort aufgenommen, das Issue schließt sich
 selbst. Geprüft wird:

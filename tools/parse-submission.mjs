@@ -17,12 +17,9 @@ import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup } from './mdt-dungeons.mjs'
 import { texts } from './submission-texts.mjs'
+import { MDT_PREFIX, decodeMdtPreset, presetToPayload } from './mdt-string.mjs'
 
 const PREFIX = 'mdtrl1:'
-
-// MDTs eigener Export-String (Core/Init.lua: ns.MDT_STRING_PREFIX). Wird hier
-// nicht gelesen, aber erkannt - siehe decodeBlob().
-const MDT_PREFIX = '!~MDT2~'
 
 /**
  * Entpackt die Nutzlast. Faellt der Reihe nach auf andere Deflate-Varianten
@@ -32,17 +29,26 @@ const MDT_PREFIX = '!~MDT2~'
  * @param {object} t Textsatz aus submission-texts.mjs
  * @returns {string}
  */
-function decompress(raw, t) {
+function inflate(raw, t) {
   for (const fn of [inflateSync, inflateRawSync, gunzipSync]) {
     try {
-      return fn(raw).toString('utf8')
+      return fn(raw)
     } catch {
       // naechste Variante
     }
   }
-  const text = raw.toString('utf8')
-  if (text.trimStart().startsWith('{')) return text
   throw new Error(t.decodeUnpackFailed)
+}
+
+function decompress(raw, t) {
+  try {
+    return inflate(raw, t).toString('utf8')
+  } catch {
+    // Unkomprimiert eingefuegt? Dann muss es wenigstens nach JSON aussehen.
+    const text = raw.toString('utf8')
+    if (text.trimStart().startsWith('{')) return text
+    throw new Error(t.decodeUnpackFailed)
+  }
 }
 
 /**
@@ -59,11 +65,6 @@ export function decodeBlob(blob, lang = 'en') {
   const t = texts(lang)
   const trimmed = blob.trim().replace(/\s+/g, '')
   if (!trimmed.startsWith(PREFIX)) {
-    // Der haeufigste Irrtum: der MDT-Export-String. MDT gibt ihn selbst aus,
-    // keystone.guru auch - er sieht nach "dem String zur Route" aus, enthaelt
-    // aber weder unsere Zusatzangaben noch ein Format, das hier gelesen wird.
-    // Ein blosses "beginnt nicht mit mdtrl1:" hilft da niemandem weiter.
-    if (trimmed.startsWith(MDT_PREFIX)) throw new Error(t.decodeMdtString)
     throw new Error(t.decodeWrongPrefix(PREFIX))
   }
 
@@ -73,6 +74,38 @@ export function decodeBlob(blob, lang = 'en') {
   const payload = JSON.parse(decompress(raw, t))
   if (payload.format !== 1) throw new Error(t.decodeUnknownFormat(payload.format))
   return payload
+}
+
+/** Findet den Routen-Code in einem Issue-Text, gleich welchen Formats. */
+export const CODE_PATTERN = /(?:mdtrl1:|!~MDT2~)[A-Za-z0-9+/=]+/
+
+/**
+ * Nimmt beides an: unseren Einreich-Blob und MDTs eigenen Exportstring.
+ *
+ * Warum beides: wer eine Route in MDT gebaut hat, hat den MDT-String mit zwei
+ * Klicks. Ihn abzuweisen kostet ehrliche Leute Zeit und haelt niemanden auf,
+ * der eine fremde Route einreichen will - der importiert sie eben erst in MDT.
+ * Die Kontrolle dagegen ist die Rechtezusage im Formular, nicht das Dateiformat.
+ *
+ * Unser eigener Blob bleibt der bessere Weg: er nennt den Dungeon beim Namen
+ * statt ueber MDTs Index, und er traegt den Charakternamen als Autor.
+ *
+ * @param {string} text
+ * @param {object} lookup Ergebnis von buildLookup()
+ * @param {'de'|'en'} [lang]
+ * @returns {object} Nutzlast in der Form von Core/Submit.lua
+ */
+export function decodeSubmission(text, lookup, lang = 'en') {
+  const t = texts(lang)
+  const trimmed = String(text ?? '').trim().replace(/\s+/g, '')
+
+  if (trimmed.startsWith(MDT_PREFIX)) {
+    // Bytes, nicht Text: CBOR ist ein Binaerformat.
+    const preset = decodeMdtPreset(trimmed, (raw) => inflate(raw, t), lang)
+    return presetToPayload(preset, lookup, lang)
+  }
+
+  return decodeBlob(trimmed, lang)
 }
 
 /**

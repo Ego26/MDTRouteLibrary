@@ -138,11 +138,13 @@ export const TEXTS = {
     // Dekodieren. Diese landen als err.message in blobFailed() und damit
     // wörtlich im Kommentar - deshalb müssen auch sie übersetzt sein.
     decodeWrongPrefix: (prefix) => `Der Text beginnt nicht mit "${prefix}" – vermutlich das Falsche kopiert.`,
-    decodeMdtString:
-      'Das ist ein MDT-Export-String (er beginnt mit `!~MDT2~`), wie ihn MDT selbst und ' +
-      'keystone.guru ausgeben – nicht der Einreichungs-Code. Importiere ihn zuerst in MDT ' +
-      '(**Import** im MDT-Fenster), lass die Route dort geöffnet und tippe im Spiel ' +
-      '`/routes submit`. Der Text, der dann erscheint, beginnt mit `mdtrl1:` und gehört hier herein.',
+    decodeMdtNoPreset:
+      'Der MDT-String enthält kein Preset. Nimm den String aus MDTs **Share**-Fenster zu einer ' +
+      'geöffneten Route – nicht den zu einer Notiz oder einem einzelnen Objekt.',
+    decodeMdtUnknownDungeon: (index) =>
+      `Den Dungeon zu MDT-Index ${index} gibt es in der Version nicht, gegen die gebaut wird. ` +
+      'Das passiert, wenn dein MDT älter oder neuer ist als unseres. Reiche die Route mit ' +
+      '`/routes submit` ein – dieser Code nennt den Dungeon beim Namen statt über eine Nummer.',
     decodeEmpty: 'Der Einreichungs-Code ist leer.',
     decodeUnpackFailed: 'Der Einreichungs-Code ließ sich nicht entpacken – vermutlich unterwegs abgeschnitten.',
     decodeUnknownFormat: (version) =>
@@ -157,8 +159,9 @@ export const TEXTS = {
 
     // Kommentare
     noBlob:
-      'Im Issue steht kein Einreichungs-Code. Erwartet wird der Text aus `/routes submit`, ' +
-      'der mit `mdtrl1:` beginnt.',
+      'Im Issue steht kein Routen-Code. Erwartet wird entweder der Text aus `/routes submit` ' +
+      '(beginnt mit `mdtrl1:`) oder MDTs eigener Export-String aus dem **Share**-Fenster ' +
+      '(beginnt mit `!~MDT2~`).',
     blobFailed: (message) => `Der Einreichungs-Code ließ sich nicht verarbeiten: ${message}`,
     rejectionIntro: 'Die Einreichung ist noch nicht aufnahmefähig:',
     rejectionWarnings: 'Hinweise, die der Aufnahme nicht im Weg stehen:',
@@ -195,11 +198,13 @@ export const TEXTS = {
     fewPulls: (n) => `The route has only ${n} pulls – unusually few.`,
 
     decodeWrongPrefix: (prefix) => `The text does not start with "${prefix}" – you probably copied the wrong thing.`,
-    decodeMdtString:
-      'That is an MDT export string (it starts with `!~MDT2~`), the kind MDT itself and ' +
-      'keystone.guru hand out – not the submission code. Import it into MDT first (**Import** ' +
-      'in the MDT window), leave the route open there and type `/routes submit` in the game. ' +
-      'The text that appears then starts with `mdtrl1:` and belongs in here.',
+    decodeMdtNoPreset:
+      'The MDT string contains no preset. Take the string from the **Share** window of MDT for an ' +
+      'open route – not the one for a note or a single object.',
+    decodeMdtUnknownDungeon: (index) =>
+      `There is no dungeon for MDT index ${index} in the version we build against. ` +
+      'That happens when your MDT is older or newer than ours. Submit the route with ' +
+      '`/routes submit` instead – that code names the dungeon rather than numbering it.',
     decodeEmpty: 'The submission code is empty.',
     decodeUnpackFailed: 'The submission code could not be unpacked – it was probably cut off on the way.',
     decodeUnknownFormat: (version) =>
@@ -213,8 +218,9 @@ export const TEXTS = {
     belowRequired: (have, need) => `Route only reaches ${have} of the ${need} enemy forces required.`,
 
     noBlob:
-      'There is no submission code in this issue. Expected the text from `/routes submit`, ' +
-      'which starts with `mdtrl1:`.',
+      'There is no route code in this issue. Expected either the text from `/routes submit` ' +
+      '(starts with `mdtrl1:`) or the export string from the **Share** window of MDT ' +
+      '(starts with `!~MDT2~`).',
     blobFailed: (message) => `The submission code could not be processed: ${message}`,
     rejectionIntro: 'This submission is not ready to be accepted yet:',
     rejectionWarnings: 'Notes that do not stand in the way:',
