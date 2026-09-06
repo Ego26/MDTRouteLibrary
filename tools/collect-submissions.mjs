@@ -285,7 +285,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       errors.push(t.noBlob)
     } else {
       try {
-        const decoded = toRoute(decodeBlob(found[0]), lookup, lang)
+        const decoded = toRoute(decodeBlob(found[0], lang), lookup, lang)
         route = decoded.route
         warnings = decoded.warnings
       } catch (err) {

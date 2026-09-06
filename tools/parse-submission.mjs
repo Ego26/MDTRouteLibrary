@@ -25,9 +25,10 @@ const PREFIX = 'mdtrl1:'
  * und zuletzt auf unkomprimierten Text zurueck.
  *
  * @param {Buffer} raw
+ * @param {object} t Textsatz aus submission-texts.mjs
  * @returns {string}
  */
-function decompress(raw) {
+function decompress(raw, t) {
   for (const fn of [inflateSync, inflateRawSync, gunzipSync]) {
     try {
       return fn(raw).toString('utf8')
@@ -37,26 +38,31 @@ function decompress(raw) {
   }
   const text = raw.toString('utf8')
   if (text.trimStart().startsWith('{')) return text
-  throw new Error('Nutzlast liess sich nicht entpacken')
+  throw new Error(t.decodeUnpackFailed)
 }
 
 /**
  * Dekodiert einen Einreich-Blob.
  *
+ * Die Fehlertexte gehen unveraendert in den Kommentar am Issue - deshalb
+ * kommen auch sie aus dem Textsatz und nicht als feste Zeichenkette.
+ *
  * @param {string} blob
+ * @param {'de'|'en'} [lang]
  * @returns {object} Nutzlast aus Core/Submit.lua
  */
-export function decodeBlob(blob) {
+export function decodeBlob(blob, lang = 'en') {
+  const t = texts(lang)
   const trimmed = blob.trim().replace(/\s+/g, '')
   if (!trimmed.startsWith(PREFIX)) {
-    throw new Error(`Blob beginnt nicht mit "${PREFIX}" - vermutlich der falsche Text kopiert`)
+    throw new Error(t.decodeWrongPrefix(PREFIX))
   }
 
   const raw = Buffer.from(trimmed.slice(PREFIX.length), 'base64')
-  if (raw.length === 0) throw new Error('Blob ist leer')
+  if (raw.length === 0) throw new Error(t.decodeEmpty)
 
-  const payload = JSON.parse(decompress(raw))
-  if (payload.format !== 1) throw new Error(`Unbekannte Formatversion: ${payload.format}`)
+  const payload = JSON.parse(decompress(raw, t))
+  if (payload.format !== 1) throw new Error(t.decodeUnknownFormat(payload.format))
   return payload
 }
 
@@ -76,10 +82,10 @@ export function toRoute(payload, lookup, lang = 'en') {
   const t = texts(lang)
   const warnings = []
   const name = payload.dungeon?.englishName
-  if (!name) throw new Error('Einreichung nennt keinen Dungeon')
+  if (!name) throw new Error(t.decodeNoDungeon)
 
   const dungeon = lookup.byName.get(name.toLowerCase())
-  if (!dungeon) throw new Error(`Dungeon unbekannt: ${name}`)
+  if (!dungeon) throw new Error(t.decodeUnknownDungeon(name))
 
   const byIndex = new Map(dungeon.enemies.map((e) => [e.index, e]))
   let forces = 0
@@ -116,7 +122,7 @@ export function toRoute(payload, lookup, lang = 'en') {
     }
   }
 
-  if (pulls.length === 0) throw new Error('Nach der Pruefung bleibt kein gueltiger Pull uebrig')
+  if (pulls.length === 0) throw new Error(t.decodeNoPulls)
 
   // Stabile ID aus dem Inhalt: dieselbe Route zweimal eingereicht ergibt
   // dieselbe ID und wird nicht doppelt ausgeliefert.
@@ -178,7 +184,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
 
   const { dungeons } = readDungeons(args.mdt)
-  const { route, warnings } = toRoute(decodeBlob(found[0]), buildLookup(dungeons), 'de')
+  const { route, warnings } = toRoute(decodeBlob(found[0], 'de'), buildLookup(dungeons), 'de')
 
   for (const w of warnings) console.warn(`  ! ${w}`)
   console.log(`${route.id}  ${route.dungeonEnglishName}  "${route.title}"  ${route.pulls.length} Pulls  ${route.enemyForces} Kraefte`)

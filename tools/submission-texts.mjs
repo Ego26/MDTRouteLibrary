@@ -135,7 +135,17 @@ export const TEXTS = {
       'Setz das Häkchen im Formular – ohne diese Zusage kann die Route nicht aufgenommen werden.',
     fewPulls: (n) => `Die Route hat nur ${n} Pulls – ungewöhnlich wenig.`,
 
-    // Dekodieren
+    // Dekodieren. Diese landen als err.message in blobFailed() und damit
+    // wörtlich im Kommentar - deshalb müssen auch sie übersetzt sein.
+    decodeWrongPrefix: (prefix) => `Der Text beginnt nicht mit "${prefix}" – vermutlich das Falsche kopiert.`,
+    decodeEmpty: 'Der Einreichungs-Code ist leer.',
+    decodeUnpackFailed: 'Der Einreichungs-Code ließ sich nicht entpacken – vermutlich unterwegs abgeschnitten.',
+    decodeUnknownFormat: (version) =>
+      `Unbekannte Formatversion: ${version}. Bring das Addon auf den neuesten Stand und reiche neu ein.`,
+    decodeNoDungeon: 'Der Einreichungs-Code nennt keinen Dungeon.',
+    decodeUnknownDungeon: (name) => `Dungeon unbekannt: ${name}.`,
+    decodeNoPulls: 'Nach der Prüfung bleibt kein gültiger Pull übrig.',
+
     unknownEnemy: (index, dungeon) => `Gegnerindex ${index} gibt es in ${dungeon} nicht – übersprungen.`,
     unknownClone: (enemy, clone) => `Klon ${enemy}/${clone} gibt es nicht – übersprungen.`,
     belowRequired: (have, need) => `Route erreicht nur ${have} von ${need} nötigen Gegnerkräften.`,
@@ -178,6 +188,15 @@ export const TEXTS = {
       'The confirmation is missing that the route is yours and may be published. ' +
       'Tick the box in the form – without it the route cannot be accepted.',
     fewPulls: (n) => `The route has only ${n} pulls – unusually few.`,
+
+    decodeWrongPrefix: (prefix) => `The text does not start with "${prefix}" – you probably copied the wrong thing.`,
+    decodeEmpty: 'The submission code is empty.',
+    decodeUnpackFailed: 'The submission code could not be unpacked – it was probably cut off on the way.',
+    decodeUnknownFormat: (version) =>
+      `Unknown format version: ${version}. Update the addon to the latest version and submit again.`,
+    decodeNoDungeon: 'The submission code names no dungeon.',
+    decodeUnknownDungeon: (name) => `Unknown dungeon: ${name}.`,
+    decodeNoPulls: 'No valid pull is left after the check.',
 
     unknownEnemy: (index, dungeon) => `Enemy index ${index} does not exist in ${dungeon} – skipped.`,
     unknownClone: (enemy, clone) => `Clone ${enemy}/${clone} does not exist – skipped.`,
