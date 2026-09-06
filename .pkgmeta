@@ -13,8 +13,15 @@ externals: {}
 # Ohne diese Angabe baut der Packager die Release-Notes aus den
 # Commit-Texten zusammen - inklusive aller Rumpfzeilen. Was bei CurseForge
 # steht, soll hier stehen und nicht aus der Versionsgeschichte fallen.
+#
+# Angegeben ist bewusst RELEASE-NOTES.md und nicht CHANGELOG.md: der Packager
+# nimmt diese Datei sowohl als GitHub-Release-Text als auch als
+# CurseForge-Changelog. Mit der vollen Historie darin waeren beide nach ein
+# paar Wochen unlesbar. tools/changelog.mjs schreibt sie vor jedem Release neu
+# und legt nur den aktuellen Abschnitt hinein; die Historie bleibt in
+# CHANGELOG.md im Repository.
 manual-changelog:
-  filename: CHANGELOG.md
+  filename: RELEASE-NOTES.md
   markup-type: markdown
 
 # Nicht ins Release-Paket
@@ -29,3 +36,5 @@ ignore:
   - .gitignore
   - .pkgmeta
   - README.md
+  # Die Historie bleibt im Repository. Ins Paket geht RELEASE-NOTES.md.
+  - CHANGELOG.md

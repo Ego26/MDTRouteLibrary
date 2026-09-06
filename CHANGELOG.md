@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+<!-- Anything done to the addon itself goes here, one short line per change,
+     written for players. New, changed and removed routes are added
+     automatically at release time by tools/changelog.mjs - do not list them
+     here. This section is emptied with every release. -->
+
+## 2026.09.06.1
+
+The library is no longer empty: the first player-submitted route is in.
+
+### New route
+
+- **Its a honor to run with you guys!** — Den of Nalorakk, +10 to +16, Meta, by Ego26 (15 pulls)
+
 ## 2026.09.05.1 — first release
 
 MDT Route Library adds a route catalogue inside the Mythic Dungeon Tools

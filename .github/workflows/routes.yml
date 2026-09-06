@@ -85,6 +85,10 @@ jobs:
 
       - name: Repository auschecken
         uses: actions/checkout@v4
+        with:
+          # Vollstaendig, nicht flach: die Release-Notes vergleichen den
+          # Routenbestand mit dem letzten Tag, dafuer muss dessen Baum da sein.
+          fetch-depth: 0
 
       - name: Node einrichten
         uses: actions/setup-node@v4
@@ -194,12 +198,22 @@ jobs:
           count=$(git tag -l "$today.*" | wc -l)
           echo "tag=$today.$((count + 1))" >> "$GITHUB_OUTPUT"
 
+      # Der Packager nimmt RELEASE-NOTES.md als GitHub-Release-Text und als
+      # CurseForge-Changelog. Fehlt die Datei, baut er sich beides aus den
+      # Commit-Texten zusammen - genau das soll nicht passieren. Der Schritt
+      # muss deshalb scheitern duerfen, statt still nichts zu schreiben.
+      - name: Release-Notes schreiben
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          node tools/changelog.mjs --version "${{ steps.version.outputs.tag }}"
+          test -s RELEASE-NOTES.md
+
       - name: Änderungen committen
         if: steps.build.outputs.changed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MDTRouteLibrary_Data data/build-state.json data/routes
+          git add MDTRouteLibrary_Data data/build-state.json data/routes CHANGELOG.md
 
           # Mit "force" meldet der Build eine Aenderung, auch wenn der Inhalt
           # derselbe ist - dann gibt es nichts zu committen und "git commit"

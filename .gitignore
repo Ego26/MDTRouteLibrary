@@ -15,3 +15,6 @@ intern/
 
 # Checkout der MDT-Quellen in der CI
 .mdt/
+
+# Wird vor jedem Release aus CHANGELOG.md erzeugt (tools/changelog.mjs).
+RELEASE-NOTES.md
