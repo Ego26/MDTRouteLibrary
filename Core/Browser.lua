@@ -2561,7 +2561,13 @@ local function buildList(parent)
 
     ui.title = root:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
     ui.title:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -PADDING)
-    ui.title:SetText("MDT Route Library")
+    -- "dev" setzt Init.lua, wenn der Versionsplatzhalter nicht ersetzt wurde -
+    -- also bei jeder Kopie aus dem Repo und nie bei einer aus CurseForge. Der
+    -- Zusatz beantwortet beim Entwickeln die Frage, welchen Stand man vor sich
+    -- hat, ohne dass es dafuer ein zweites Addon braucht.
+    ui.title:SetText(ns.version == "dev"
+        and "MDT Route Library |cffff8800DEV|r"
+        or "MDT Route Library")
     ui.title:SetTextColor(T:Color("textPrimary"))
 
     ui.subtitle = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
@@ -3004,7 +3010,7 @@ function B.Register(api)
 
     api:RegisterNavigationSection({
         key       = SECTION_KEY,
-        tooltip   = "MDT Route Library",
+        tooltip   = ns.version == "dev" and "MDT Route Library (DEV)" or "MDT Route Library",
         texture   = ICON,
         texCoords = ICON_COORDS,
         -- Beide Frames: erst zusammen decken sie die volle Fensterbreite ab.

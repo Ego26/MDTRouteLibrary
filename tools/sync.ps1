@@ -50,7 +50,17 @@ if ($Mock) {
         exit 1
     }
 
-    Copy-Item (Join-Path $RepoRoot "data\mock\ks-*.json") (Join-Path $RepoRoot "data\cache") -Force
+    # Die Testdaten liegen in intern\, nicht in data\ - sie sind beim
+    # Oeffentlichmachen des Repositorys dorthin gewandert.
+    $mock = Join-Path $RepoRoot "intern\mock"
+    if (-not (Test-Path $mock)) {
+        Write-Error "Testdaten nicht gefunden: $mock"
+        exit 1
+    }
+
+    $cache = Join-Path $RepoRoot "data\cache"
+    if (-not (Test-Path $cache)) { New-Item -ItemType Directory -Force $cache | Out-Null }
+    Copy-Item (Join-Path $mock "ks-*.json") $cache -Force
     & node (Join-Path $RepoRoot "tools\build.mjs") --mdt $mdt --season "Midnight Season 2" --force | Out-Null
     Remove-Item (Join-Path $RepoRoot "data\cache\ks-*.json") -Force -ErrorAction SilentlyContinue
 
