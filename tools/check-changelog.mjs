@@ -8,8 +8,10 @@
 // Aufruf:
 //   node tools/check-changelog.mjs
 
+import { readFileSync } from 'node:fs'
 import {
-  unreleasedBody, insertSection, buildNotes, diffRoutes, routeLine, levelRange, escapeMarkdown,
+  unreleasedBody, insertSection, buildNotes, buildReleaseNotes, diffRoutes, routeLine, levelRange,
+  escapeMarkdown, leadSentence,
 } from './changelog.mjs'
 
 let failed = 0
@@ -51,6 +53,26 @@ check('ein Pull', routeLine(route({ pulls: [{}] })),
 check('ohne Autor', routeLine(route({ author: null })),
   '- **Meta Route** — Den of Nalorakk, +10 to +16, Meta (15 pulls)')
 check('Titel wird entschaerft', routeLine(route({ title: 'Pull *hier*' })).startsWith('- **Pull \\*hier\\***'), true)
+check('Art wird uebersetzt', routeLine(route({ kind: 'Spezialisiert' })).includes(', Specialised,'), true)
+check('unbekannte Art bleibt stehen', routeLine(route({ kind: 'Wildwuchs' })).includes(', Wildwuchs,'), true)
+check('Anmerkung haengt eingerueckt darunter',
+  routeLine(route({ notes: 'Built for Fortified weeks.' })).split('\n')[1], '  Built for Fortified weeks.')
+check('lange Anmerkung wird gekuerzt',
+  routeLine(route({ notes: 'x'.repeat(400) })).split('\n')[1].length, 202)
+check('ohne Anmerkung nur eine Zeile', routeLine(route()).includes('\n'), false)
+
+console.log('Einleitungssatz')
+check('eine Route', leadSentence([route()], [], []), 'One new route, for Den of Nalorakk.')
+check('mehrere, ein Dungeon',
+  leadSentence([route({ id: 'a' }), route({ id: 'b' })], [], []),
+  'Two new routes, all for Den of Nalorakk.')
+check('mehrere Dungeons',
+  leadSentence([route({ id: 'a' }), route({ id: 'b', dungeonEnglishName: 'Altar of Fangs' })], [], []),
+  'Two new routes across two dungeons.')
+check('geaendert und entfernt', leadSentence([], [route()], [route({ id: 'b' })]),
+  'One route was updated by its author. One route was withdrawn.')
+check('nichts ergibt nichts', leadSentence([], [], []), '')
+check('grosser Anfangsbuchstabe', leadSentence([], [route(), route({ id: 'b' })], [])[0], 'T')
 
 console.log('Routen vergleichen')
 {
@@ -77,6 +99,25 @@ console.log('Routen vergleichen')
   check('Rest wird gezaehlt', notes.includes('…and 5 more.'), true)
 }
 
+console.log('Aufbau des Abschnitts')
+{
+  // Einleitung, dann Liste - nicht andersherum.
+  const notes = buildNotes({ added: [route()] })
+  check('Einleitung steht oben', notes.startsWith('One new route, for Den of Nalorakk.'), true)
+  check('Einleitung vor der Liste', notes.indexOf('One new route') < notes.indexOf('### New route'), true)
+}
+{
+  // Blosse Stichpunkte zum Addon bekommen ein Dach, sobald darunter noch
+  // Routen kommen - sonst haengen sie ueberschriftslos vor der Einleitung.
+  const withRoutes = buildNotes({ manual: '- Zoom bleibt erhalten.', added: [route()] })
+  check('Stichpunkte bekommen Dach', withRoutes.startsWith('### Addon'), true)
+  const alone = buildNotes({ manual: '- Zoom bleibt erhalten.' })
+  check('allein ohne Dach', alone.trim(), '- Zoom bleibt erhalten.')
+  const own = buildNotes({ manual: '### Fixed\n\n- Zoom bleibt erhalten.', added: [route()] })
+  check('eigene Ueberschrift bleibt', own.startsWith('### Fixed'), true)
+  check('kein doppeltes Dach', own.includes('### Addon'), false)
+}
+
 console.log('Handgeschriebener Teil')
 {
   const text = '# Changelog\n\n## Unreleased\n\n<!-- Hinweis -->\n\n- Zoom bleibt erhalten.\n\n## 2026.09.06.1\n\nalt\n'
@@ -100,6 +141,24 @@ console.log('Abschnitt einsetzen')
   check('handgeschriebenes uebernommen', next.includes('- Zoom bleibt erhalten.'), true)
   check('Route uebernommen', next.includes('### New route'), true)
   check('Ueberschriften gezaehlt', (next.match(/^## /gm) ?? []).length, 3)
+}
+
+console.log('Veroeffentlichter Text')
+{
+  const published = buildReleaseNotes('Was das Addon macht.', buildNotes({ added: [route()] }))
+  check('Kopftext steht oben', published.startsWith('Was das Addon macht.'), true)
+  check('Trennlinie dazwischen', published.includes('\n---\n'), true)
+  check('Ueberschrift fuer die Aenderungen', published.includes("## What's new in this version"), true)
+  check('Kopf vor den Aenderungen', published.indexOf('Was das Addon macht.') < published.indexOf('### New route'), true)
+  check('ohne Kopftext bleibt nur der Rest', buildReleaseNotes('', '- Etwas.').trim(), '- Etwas.')
+  check('ohne Aenderungen bleibt nur der Kopf', buildReleaseNotes('Kopf.', '').trim(), 'Kopf.')
+}
+{
+  // Der Kopftext ist eine Datei, die von Hand gepflegt wird. Leert sie jemand
+  // versehentlich, soll das hier auffallen und nicht erst im Release.
+  const intro = readFileSync(new URL('../RELEASE-INTRO.md', import.meta.url), 'utf8')
+  check('RELEASE-INTRO.md hat Inhalt', intro.trim().length > 200, true)
+  check('Kopftext nennt die Befehle', intro.includes('/routes submit'), true)
 }
 
 console.log('Notdurft, wenn nichts vorliegt')

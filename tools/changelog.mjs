@@ -33,6 +33,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 // Mehr Zeilen als das liest ohnehin niemand. Der Rest wird gezaehlt.
 const MAX_ROUTE_LINES = 25
 
+// Anmerkungen duerfen bis 600 Zeichen lang sein. So viel gehoert in die
+// Route, nicht in den Release-Text.
+const MAX_NOTE_CHARS = 200
+
 /**
  * Ruft git auf und gibt die Ausgabe zurueck, oder null wenn der Aufruf
  * fehlschlaegt (etwa weil es den Tag noch gar nicht gibt).
@@ -127,7 +131,7 @@ export function routeLine(route) {
   const facts = [escapeMarkdown(route.dungeonEnglishName)]
   const level = levelRange(route)
   if (level) facts.push(level)
-  if (route.kind) facts.push(escapeMarkdown(route.kind))
+  if (route.kind) facts.push(escapeMarkdown(KIND_LABELS[route.kind] ?? route.kind))
   if (route.author) facts.push(`by ${escapeMarkdown(route.author)}`)
 
   // Der Prozentsatz steht bewusst nicht dabei: aufgenommen wird ohnehin nur,
@@ -137,7 +141,74 @@ export function routeLine(route) {
   const detail = pulls > 0 ? ` (${pulls} ${pulls === 1 ? 'pull' : 'pulls'})` : ''
 
   const title = escapeMarkdown(route.title || 'Untitled route')
-  return `- **${title}** — ${facts.join(', ')}${detail}`
+  let line = `- **${title}** — ${facts.join(', ')}${detail}`
+
+  // Was der Einreichende zu seiner Route geschrieben hat, gehoert dazu: es
+  // sagt mehr ueber sie als jede Zahl. Eingerueckt, damit Markdown es noch
+  // zum selben Punkt zaehlt, und gekuerzt, damit ein Aufsatz den Release-Text
+  // nicht sprengt.
+  const notes = String(route.notes ?? '').trim()
+  if (notes) {
+    const short = notes.length > MAX_NOTE_CHARS ? `${notes.slice(0, MAX_NOTE_CHARS - 1).trimEnd()}…` : notes
+    line += `\n  ${escapeMarkdown(short)}`
+  }
+
+  return line
+}
+
+// Die Routenart steht im Einreichungsformular auf Deutsch, der Release-Text
+// ist englisch. Unbekanntes bleibt stehen, wie es ist - lieber ein deutsches
+// Wort im Text als gar keine Angabe.
+const KIND_LABELS = {
+  Meta: 'Meta',
+  Einsteiger: 'Beginner',
+  Spezialisiert: 'Specialised',
+  Sonstiges: 'Other',
+}
+
+const NUMBERS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+
+/** "three", oder "17" wenn es dafuer kein Wort mehr gibt. */
+function count(n) {
+  return NUMBERS[n] ?? String(n)
+}
+
+/**
+ * Der Satz, der ueber den Listen steht. Ohne ihn liest sich ein Release wie
+ * ein Diff; mit ihm weiss man nach einer Zeile, was drin ist.
+ *
+ * @param {object[]} added
+ * @param {object[]} changed
+ * @param {object[]} removed
+ * @returns {string}
+ */
+export function leadSentence(added, changed, removed) {
+  const parts = []
+
+  if (added.length > 0) {
+    const dungeons = [...new Set(added.map((r) => r.dungeonEnglishName))]
+    if (added.length === 1) {
+      parts.push(`One new route, for ${dungeons[0]}.`)
+    } else if (dungeons.length === 1) {
+      parts.push(`${count(added.length)} new routes, all for ${dungeons[0]}.`)
+    } else {
+      parts.push(`${count(added.length)} new routes across ${count(dungeons.length)} dungeons.`)
+    }
+  }
+
+  if (changed.length > 0) {
+    parts.push(changed.length === 1
+      ? 'One route was updated by its author.'
+      : `${count(changed.length)} routes were updated by their authors.`)
+  }
+
+  if (removed.length > 0) {
+    parts.push(removed.length === 1 ? 'One route was withdrawn.' : `${count(removed.length)} routes were withdrawn.`)
+  }
+
+  // Erster Buchstabe gross - "three new routes" faengt sonst klein an.
+  const text = parts.join(' ')
+  return text ? text[0].toUpperCase() + text.slice(1) : ''
 }
 
 /** Was an einer Route den Nutzer interessiert - nur daran haengt "changed". */
@@ -211,7 +282,19 @@ export function unreleasedBody(text) {
  */
 export function buildNotes({ manual = '', added = [], changed = [], removed = [], mdtVersion = null, previousMdt = null }) {
   const lines = []
-  if (manual) lines.push(manual, '')
+  const hasRoutes = added.length + changed.length + removed.length > 0
+
+  if (manual) {
+    // Wer eigene Ueberschriften geschrieben hat, bekommt keine
+    // uebergestuelpt. Blosse Stichpunkte dagegen brauchen ein Dach, sobald
+    // darunter noch Routenlisten kommen.
+    const ownHeading = /^#{2,4}\s/m.test(manual)
+    if (hasRoutes && !ownHeading) lines.push('### Addon', '')
+    lines.push(manual, '')
+  }
+
+  const lead = leadSentence(added, changed, removed)
+  if (lead) lines.push(lead, '')
 
   section(lines, added.length === 1 ? 'New route' : 'New routes', added)
   section(lines, 'Updated routes', changed)
@@ -228,6 +311,25 @@ export function buildNotes({ manual = '', added = [], changed = [], removed = []
   }
 
   return `${lines.join('\n').trim()}\n`
+}
+
+/**
+ * Der veroeffentlichte Text: erst der immer gleiche Kopf aus
+ * RELEASE-INTRO.md, darunter was sich in dieser Version getan hat.
+ *
+ * Der Kopf steht bewusst nur hier und nicht in CHANGELOG.md - sonst stuende
+ * derselbe Absatz dort bald dreissig Mal untereinander.
+ *
+ * @param {string} intro
+ * @param {string} notes
+ * @returns {string}
+ */
+export function buildReleaseNotes(intro, notes) {
+  const head = String(intro ?? '').trim()
+  const body = String(notes ?? '').trim()
+  if (!head) return `${body}\n`
+  if (!body) return `${head}\n`
+  return `${head}\n\n---\n\n## What's new in this version\n\n${body}\n`
 }
 
 /**
@@ -266,7 +368,9 @@ function parseArgs(argv) {
   return args
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Die Pruefung auf argv[1] ist noetig, weil "node --input-type=module -e"
+// kein Skript hat - ohne sie stuerzt schon der Import ab.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = parseArgs(process.argv.slice(2))
   if (!args.version || args.version === true) {
     console.error('Aufruf: node tools/changelog.mjs --version 2026.09.06.1 [--since <tag>] [--dry]')
@@ -302,14 +406,21 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
 
   console.log(`Vergleich gegen: ${since ?? '(kein Tag - erste Veroeffentlichung)'}`)
   console.log(`Routen: ${added.length} neu, ${changed.length} geaendert, ${removed.length} entfernt`)
-  console.log('---')
+  console.log('--- Abschnitt fuer CHANGELOG.md ---')
   console.log(notes.trimEnd())
-  console.log('---')
+  console.log('-----------------------------------')
+
+  const introFile = join(ROOT, typeof args.intro === 'string' ? args.intro : 'RELEASE-INTRO.md')
+  const intro = existsSync(introFile) ? readFileSync(introFile, 'utf8') : ''
+  if (!intro.trim()) console.warn(`  ! ${introFile} fehlt oder ist leer - Release ohne Kopftext`)
 
   if (args.dry) {
+    console.log('--- veroeffentlichter Text (RELEASE-NOTES.md) ---')
+    console.log(buildReleaseNotes(intro, notes).trimEnd())
+    console.log('------------------------------------------------')
     console.log('Probelauf - nichts geschrieben.')
   } else {
-    writeFileSync(notesFile, notes)
+    writeFileSync(notesFile, buildReleaseNotes(intro, notes))
     writeFileSync(changelogFile, insertSection(changelog, args.version, notes))
     console.log(`geschrieben: ${notesFile}`)
     console.log(`geschrieben: ${changelogFile}`)

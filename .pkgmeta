@@ -36,5 +36,7 @@ ignore:
   - .gitignore
   - .pkgmeta
   - README.md
-  # Die Historie bleibt im Repository. Ins Paket geht RELEASE-NOTES.md.
+  # Die Historie bleibt im Repository, der Kopftext steckt schon in
+  # RELEASE-NOTES.md drin. Ins Paket geht nur die.
   - CHANGELOG.md
+  - RELEASE-INTRO.md

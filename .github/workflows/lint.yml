@@ -17,6 +17,7 @@ on:
       - '.luacheckrc'
       - 'tools/**.mjs'
       - 'CHANGELOG.md'
+      - 'RELEASE-INTRO.md'
       - '.github/workflows/lint.yml'
   pull_request:
     paths:
@@ -24,6 +25,7 @@ on:
       - '.luacheckrc'
       - 'tools/**.mjs'
       - 'CHANGELOG.md'
+      - 'RELEASE-INTRO.md'
   workflow_dispatch:
 
 permissions:
