@@ -2,10 +2,7 @@
 
 ## Unreleased
 
-<!-- Anything done to the addon itself goes here, one short line per change,
-     written for players. New, changed and removed routes are added
-     automatically at release time by tools/changelog.mjs - do not list them
-     here. This section is emptied with every release. -->
+## 2026.09.06.2
 
 - The submission link from `/routes submit` now opens the form in your game's
   language — German clients get the German template, everyone else the English
