@@ -314,22 +314,19 @@ export function buildNotes({ manual = '', added = [], changed = [], removed = []
 }
 
 /**
- * Der veroeffentlichte Text: erst der immer gleiche Kopf aus
- * RELEASE-INTRO.md, darunter was sich in dieser Version getan hat.
+ * Der veroeffentlichte Text. Nur was sich in dieser Version getan hat, unter
+ * einer Ueberschrift - keine Beschreibung des Addons.
  *
- * Der Kopf steht bewusst nur hier und nicht in CHANGELOG.md - sonst stuende
- * derselbe Absatz dort bald dreissig Mal untereinander.
+ * Die gehoert auf die Projektseite, nicht in jeden Release-Text: dort stuende
+ * sie bei jeder Version wieder, und wer auf ein Update schaut, will wissen was
+ * neu ist und nicht noch einmal lesen was das Addon ueberhaupt macht.
  *
- * @param {string} intro
  * @param {string} notes
  * @returns {string}
  */
-export function buildReleaseNotes(intro, notes) {
-  const head = String(intro ?? '').trim()
+export function buildReleaseNotes(notes) {
   const body = String(notes ?? '').trim()
-  if (!head) return `${body}\n`
-  if (!body) return `${head}\n`
-  return `${head}\n\n---\n\n## What's new in this version\n\n${body}\n`
+  return body ? `## What's new in this version\n\n${body}\n` : ''
 }
 
 /**
@@ -410,17 +407,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   console.log(notes.trimEnd())
   console.log('-----------------------------------')
 
-  const introFile = join(ROOT, typeof args.intro === 'string' ? args.intro : 'RELEASE-INTRO.md')
-  const intro = existsSync(introFile) ? readFileSync(introFile, 'utf8') : ''
-  if (!intro.trim()) console.warn(`  ! ${introFile} fehlt oder ist leer - Release ohne Kopftext`)
-
   if (args.dry) {
     console.log('--- veroeffentlichter Text (RELEASE-NOTES.md) ---')
-    console.log(buildReleaseNotes(intro, notes).trimEnd())
+    console.log(buildReleaseNotes(notes).trimEnd())
     console.log('------------------------------------------------')
     console.log('Probelauf - nichts geschrieben.')
   } else {
-    writeFileSync(notesFile, buildReleaseNotes(intro, notes))
+    writeFileSync(notesFile, buildReleaseNotes(notes))
     writeFileSync(changelogFile, insertSection(changelog, args.version, notes))
     console.log(`geschrieben: ${notesFile}`)
     console.log(`geschrieben: ${changelogFile}`)

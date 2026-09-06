@@ -8,7 +8,7 @@
 // Aufruf:
 //   node tools/check-changelog.mjs
 
-import { readFileSync } from 'node:fs'
+
 import {
   unreleasedBody, insertSection, buildNotes, buildReleaseNotes, diffRoutes, routeLine, levelRange,
   escapeMarkdown, leadSentence,
@@ -145,20 +145,14 @@ console.log('Abschnitt einsetzen')
 
 console.log('Veroeffentlichter Text')
 {
-  const published = buildReleaseNotes('Was das Addon macht.', buildNotes({ added: [route()] }))
-  check('Kopftext steht oben', published.startsWith('Was das Addon macht.'), true)
-  check('Trennlinie dazwischen', published.includes('\n---\n'), true)
-  check('Ueberschrift fuer die Aenderungen', published.includes("## What's new in this version"), true)
-  check('Kopf vor den Aenderungen', published.indexOf('Was das Addon macht.') < published.indexOf('### New route'), true)
-  check('ohne Kopftext bleibt nur der Rest', buildReleaseNotes('', '- Etwas.').trim(), '- Etwas.')
-  check('ohne Aenderungen bleibt nur der Kopf', buildReleaseNotes('Kopf.', '').trim(), 'Kopf.')
-}
-{
-  // Der Kopftext ist eine Datei, die von Hand gepflegt wird. Leert sie jemand
-  // versehentlich, soll das hier auffallen und nicht erst im Release.
-  const intro = readFileSync(new URL('../RELEASE-INTRO.md', import.meta.url), 'utf8')
-  check('RELEASE-INTRO.md hat Inhalt', intro.trim().length > 200, true)
-  check('Kopftext nennt die Befehle', intro.includes('/routes submit'), true)
+  const published = buildReleaseNotes(buildNotes({ added: [route()] }))
+  check('Ueberschrift steht oben', published.startsWith("## What's new in this version"), true)
+  check('Einleitung darunter', published.includes('One new route, for Den of Nalorakk.'), true)
+  check('Liste darunter', published.includes('### New route'), true)
+  // Keine Beschreibung des Addons - die steht auf der Projektseite.
+  check('keine Befehlsliste', published.includes('/routes submit'), false)
+  check('keine Trennlinie', published.includes('\n---\n'), false)
+  check('ohne Inhalt gar nichts', buildReleaseNotes(''), '')
 }
 
 console.log('Notdurft, wenn nichts vorliegt')
