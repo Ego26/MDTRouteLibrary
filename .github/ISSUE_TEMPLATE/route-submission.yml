@@ -36,6 +36,11 @@ body:
         Der Code enthält die Pulls, den Dungeon und deinen Charakternamen als
         Autorenangabe. Er enthält **keine** weiteren Kontodaten.
 
+        **Nicht verwechseln:** Der MDT-Export-String beginnt mit `!~MDT2~` –
+        den geben MDT selbst und keystone.guru aus, und der passt hier nicht.
+        Hast du so einen, importiere ihn erst in MDT und tippe dann
+        `/routes submit`.
+
   - type: textarea
     id: blob
     attributes:

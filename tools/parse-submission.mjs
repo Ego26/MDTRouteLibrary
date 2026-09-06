@@ -20,6 +20,10 @@ import { texts } from './submission-texts.mjs'
 
 const PREFIX = 'mdtrl1:'
 
+// MDTs eigener Export-String (Core/Init.lua: ns.MDT_STRING_PREFIX). Wird hier
+// nicht gelesen, aber erkannt - siehe decodeBlob().
+const MDT_PREFIX = '!~MDT2~'
+
 /**
  * Entpackt die Nutzlast. Faellt der Reihe nach auf andere Deflate-Varianten
  * und zuletzt auf unkomprimierten Text zurueck.
@@ -55,6 +59,11 @@ export function decodeBlob(blob, lang = 'en') {
   const t = texts(lang)
   const trimmed = blob.trim().replace(/\s+/g, '')
   if (!trimmed.startsWith(PREFIX)) {
+    // Der haeufigste Irrtum: der MDT-Export-String. MDT gibt ihn selbst aus,
+    // keystone.guru auch - er sieht nach "dem String zur Route" aus, enthaelt
+    // aber weder unsere Zusatzangaben noch ein Format, das hier gelesen wird.
+    // Ein blosses "beginnt nicht mit mdtrl1:" hilft da niemandem weiter.
+    if (trimmed.startsWith(MDT_PREFIX)) throw new Error(t.decodeMdtString)
     throw new Error(t.decodeWrongPrefix(PREFIX))
   }
 

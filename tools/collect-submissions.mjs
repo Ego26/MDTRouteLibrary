@@ -282,7 +282,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
     const found = /mdtrl1:[A-Za-z0-9+/=]+/.exec(issue.body ?? '')
     if (!found) {
-      errors.push(t.noBlob)
+      // Wer den MDT-Export-String eingefuegt hat, hat nicht "nichts"
+      // eingefuegt - der soll das Passende hoeren, nicht die allgemeine
+      // Meldung.
+      errors.push((issue.body ?? '').includes('!~MDT2~') ? t.decodeMdtString : t.noBlob)
     } else {
       try {
         const decoded = toRoute(decodeBlob(found[0], lang), lookup, lang)
