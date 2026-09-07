@@ -16,6 +16,12 @@
 //
 // Aufruf:
 //   node tools/build.mjs --mdt "<MDT-Pfad>" [--season midnight-s1] [--force]
+//
+// --out schreibt das Datenaddon woandershin und laesst data/build-state.json
+// in Ruhe. Damit baut man Testdaten direkt in den WoW-Ordner, ohne dass das
+// Repository davon etwas mitbekommt - die erzeugten Routendateien sehen
+// naemlich genauso aus wie echte und landeten sonst irgendwann in einem
+// Commit.
 
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -311,10 +317,19 @@ async function main() {
   })
   console.log(`   ${stats.routes} Routen, ${stats.dungeons} Dungeons, Hash ${hash}`)
 
+  // Mit --out ist der Buildstand nicht der des Repositorys, also darf er
+  // ihn auch nicht ueberschreiben.
+  const target = args.out ? String(args.out) : join(ROOT, 'MDTRouteLibrary_Data')
+  writeDataAddon(target, files)
+
+  if (args.out) {
+    console.log(`\nGeschrieben nach ${target} (Buildstand unberuehrt).`)
+    return EXIT_CHANGED
+  }
+
   const previous = existsSync(STATE_FILE) ? JSON.parse(readFileSync(STATE_FILE, 'utf8')) : {}
   const changed = previous.hash !== hash
 
-  writeDataAddon(join(ROOT, 'MDTRouteLibrary_Data'), files)
   writeFileSync(STATE_FILE, `${JSON.stringify({ hash, build, routes: stats.routes, mdtVersion }, null, 2)}\n`)
 
   if (!changed && !args.force) {

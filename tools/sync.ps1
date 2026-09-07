@@ -16,7 +16,8 @@
     Beobachtet das Repo und synchronisiert bei jeder Aenderung automatisch.
 
 .PARAMETER Mock
-    Baut vorher das Datenaddon aus den Testdaten in intern/mock neu.
+    Baut das Datenaddon aus den Testdaten in intern/mock - direkt in den
+    WoW-Ordner, nicht ins Repository.
 
     Der Ordner ist nicht Teil des Repositorys - er steht in .gitignore und
     liegt nur lokal. Testdaten gehoeren nicht in ein oeffentliches Addon-Repo.
@@ -64,11 +65,16 @@ if ($Mock) {
     $cache = Join-Path $RepoRoot "data\cache"
     if (-not (Test-Path $cache)) { New-Item -ItemType Directory -Force $cache | Out-Null }
     Copy-Item (Join-Path $mockDir "ks-*.json") $cache -Force
-    & node (Join-Path $RepoRoot "tools\build.mjs") --mdt $mdt --season "Midnight Season 2" --force | Out-Null
+
+    # Direkt in den WoW-Ordner, nicht ins Repository. Die erzeugten
+    # Routendateien sehen genauso aus wie echte; lagen sie im Repo, landeten
+    # sie irgendwann in einem Commit - und im Release waeren dann Testrouten.
+    $dataTarget = Join-Path $AddOns "MDTRouteLibrary_Data"
+    & node (Join-Path $RepoRoot "tools\build.mjs") `
+        --mdt $mdt --season "Midnight Season 2" --force --out $dataTarget | Out-Null
     Remove-Item (Join-Path $RepoRoot "data\cache\ks-*.json") -Force -ErrorAction SilentlyContinue
 
-    Write-Host "Testdaten gebaut. Das Repo zeigt jetzt Aenderungen im Datenaddon," -ForegroundColor Yellow
-    Write-Host "die nicht committet werden sollen." -ForegroundColor Yellow
+    Write-Host "Testdaten gebaut - nur im Spiel, das Repository bleibt sauber." -ForegroundColor Yellow
 }
 
 if (-not (Test-Path $AddOns)) {
@@ -118,8 +124,11 @@ function Invoke-Sync {
                -ExcludeDirs  @(".git", ".github", ".release", ".vscode", "docs", "tools", "data", "assets", "branding", "node_modules", "MDTRouteLibrary_Data") `
                -ExcludeFiles @("*.md", "*.ps1", "*.mjs", ".gitignore", ".gitattributes", ".pkgmeta", ".luacheckrc", ".editorconfig")
 
+    # Mit -Mock stehen die Testdaten schon im Zielordner. Sie von hier aus
+    # zu spiegeln wuerde sie sofort wieder durch den (leeren) Repo-Stand
+    # ersetzen.
     $dataSource = Join-Path $RepoRoot "MDTRouteLibrary_Data"
-    if (Test-Path $dataSource) {
+    if (-not $Mock -and (Test-Path $dataSource)) {
         Sync-Addon -Source $dataSource `
                    -Target (Join-Path $AddOns "MDTRouteLibrary_Data") `
                    -ExcludeFiles @("*.md")
