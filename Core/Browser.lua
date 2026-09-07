@@ -2548,6 +2548,12 @@ local function buildList(parent)
     local root = makeRoot(parent)
     ui.frame = root
 
+    -- Geht MDT zu oder wechselt jemand die Sektion, verschwindet dieser
+    -- Rahmen - und mit ihm muss die Kartenvorschau verschwinden. Sie haengt
+    -- an UIParent, nicht an MDT, und bliebe sonst allein auf dem Bildschirm
+    -- stehen.
+    root:HookScript("OnHide", function() ns.MapView.Hide() end)
+
     -- Einmal pro Sekunde nachsehen, ob MDT etwas an seinen Presets geaendert
     -- hat - etwa durch einen Import. Haeufiger waere Verschwendung, seltener
     -- fuehle es sich nicht mehr nach "sofort" an.

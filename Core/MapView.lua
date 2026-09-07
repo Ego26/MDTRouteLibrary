@@ -718,8 +718,16 @@ local function ensurePanel()
             return
         end
 
+        -- Ist der Rahmen weg, an dem sie haengt, ist auch sie weg - ohne
+        -- Nachlauf. Der gilt dem Zeiger, der zwischen zwei Flaechen wandert,
+        -- nicht einem geschlossenen Fenster.
         local owner = self.owner
-        if owner and owner:IsVisible() and (owner:IsMouseOver() or self:IsMouseOver()) then
+        if not owner or not owner:IsVisible() then
+            self:Hide()
+            return
+        end
+
+        if owner:IsMouseOver() or self:IsMouseOver() then
             self.grace = 0
             return
         end
