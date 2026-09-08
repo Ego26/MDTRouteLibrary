@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.09.08.1
+
 - After `/routes submit`, the copy window now says when the route arrives in
   the game: with the next data update, up to four a day.
 - The map preview no longer lingers on screen after you close MDT or switch to
