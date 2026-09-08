@@ -206,8 +206,13 @@ jobs:
         run: |
           git fetch --tags --quiet
           today=$(date -u +%Y.%m.%d)
-          count=$(git tag -l "$today.*" | wc -l)
-          echo "tag=$today.$((count + 1))" >> "$GITHUB_OUTPUT"
+
+          # Hoechste vorhandene Nummer des Tages plus eins - nicht die Anzahl.
+          # Wird ein Tag geloescht oder scheitert ein Lauf nach dem Taggen,
+          # ist die Anzahl kleiner als die hoechste Nummer, und der naechste
+          # Lauf liefe in einen Namenskonflikt.
+          last=$(git tag -l "$today.*" | awk -F. '{print $NF}' | sort -n | tail -1)
+          echo "tag=$today.$(( ${last:-0} + 1 ))" >> "$GITHUB_OUTPUT"
 
       # Der Packager nimmt RELEASE-NOTES.md als GitHub-Release-Text und als
       # CurseForge-Changelog. Fehlt die Datei, baut er sich beides aus den
