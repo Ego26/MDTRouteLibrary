@@ -24,6 +24,16 @@ name: Routen-Update
 # das ueber den Exitcode (0 = geaendert, 9 = unveraendert).
 
 on:
+  # Aenderungen am Addon selbst gehen sofort raus. Der Inhaltshash deckt seit
+  # jeher die Routen ab und inzwischen auch die Quellen - ein Push ohne echte
+  # Aenderung erzeugt also weiterhin kein Release.
+  push:
+    branches: [main]
+    paths:
+      - 'Core/**'
+      - 'Locales/**'
+      - 'Media/**'
+      - 'MDTRouteLibrary.toc'
   schedule:
     # Alle sechs Stunden veroeffentlichen. Ohne Inhaltsaenderung passiert
     # nichts, ein ruhiger Tag erzeugt also weiterhin kein einziges Release.
@@ -67,6 +77,7 @@ jobs:
     #   * Von Issues nur echte Einreichungen, gesperrte gar nicht erst.
     if: >-
       (github.event_name != 'schedule' || vars.PUBLISH_PAUSED != 'true') &&
+      (github.event_name != 'push' || vars.PUBLISH_PAUSED != 'true') &&
       (github.event_name != 'issues' ||
        (contains(github.event.issue.labels.*.name, 'route-submission') &&
         !contains(github.event.issue.labels.*.name, 'blocked')))

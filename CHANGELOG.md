@@ -9,6 +9,8 @@
 
 - After `/routes submit`, the copy window now says when the route arrives in
   the game: with the next data update, up to four a day.
+- The map preview no longer lingers on screen after you close MDT or switch to
+  another section.
 
 ## 2026.09.06.2
 

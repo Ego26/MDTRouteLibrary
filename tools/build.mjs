@@ -23,7 +23,8 @@
 // naemlich genauso aus wie echte und landeten sonst irgendwann in einem
 // Commit.
 
-import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { createHash } from 'node:crypto'
+import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup, readSeasons } from './mdt-dungeons.mjs'
@@ -36,6 +37,39 @@ const STATE_FILE = join(ROOT, 'data', 'build-state.json')
 const EXIT_CHANGED = 0
 const EXIT_UNCHANGED = 9
 const EXIT_ERROR = 1
+
+/**
+ * Hasht alles, was mit ausgeliefert wird - nicht nur die Routen.
+ *
+ * Der Inhaltshash entscheidet, ob es ein Release gibt. Deckte er nur die
+ * Routendaten ab, blieben Fehlerbehebungen im Addon selbst liegen: die
+ * planmaessigen Laeufe faenden "unveraendert" und veroeffentlichten nichts,
+ * obwohl sich fuer den Nutzer sehr wohl etwas geaendert hat.
+ *
+ * @param {import('node:crypto').Hash} hash
+ */
+function hashAddonSources(hash) {
+  const walk = (dir) => {
+    if (!existsSync(dir)) return
+    for (const name of readdirSync(dir).sort()) {
+      const full = join(dir, name)
+      if (statSync(full).isDirectory()) {
+        walk(full)
+      } else {
+        hash.update(full.slice(ROOT.length).replace(/\\/g, '/'))
+        hash.update(readFileSync(full))
+      }
+    }
+  }
+
+  // Genau das, was im Paket landet: Code, Sprachen, Grafiken, TOC.
+  for (const dir of ['Core', 'Locales', 'Media']) walk(join(ROOT, dir))
+  const toc = join(ROOT, 'MDTRouteLibrary.toc')
+  if (existsSync(toc)) {
+    hash.update('MDTRouteLibrary.toc')
+    hash.update(readFileSync(toc))
+  }
+}
 
 /** Liest alle JSON-Routen eines Ordners. */
 function readRouteFiles(dir) {
@@ -307,14 +341,22 @@ async function main() {
   }).sort((a, b) => a.englishName.localeCompare(b.englishName))
 
   console.log('5) Lua erzeugen')
+
   const build = new Date().toISOString().slice(0, 10)
-  const { files, hash, stats } = buildDataAddon(accepted, {
+  const { files, hash: dataHash, stats } = buildDataAddon(accepted, {
     build,
     season: args.season ?? null,
     mdtVersion,
     sources: [...new Set(accepted.map((r) => r.source).filter(Boolean))],
     dungeons: dungeonMeta,
   })
+  // Der Gesamthash aus Routendaten und Addonquellen. Aendert sich eines von
+  // beiden, gibt es ein Release - und sonst nicht.
+  const combined = createHash('sha256')
+  combined.update(dataHash)
+  hashAddonSources(combined)
+  const hash = combined.digest('hex').slice(0, 12)
+
   console.log(`   ${stats.routes} Routen, ${stats.dungeons} Dungeons, Hash ${hash}`)
 
   // Mit --out ist der Buildstand nicht der des Repositorys, also darf er
