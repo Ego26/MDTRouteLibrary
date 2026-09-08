@@ -258,12 +258,30 @@ jobs:
       # das passende Secret.
       - name: Veröffentlichen
         if: steps.build.outputs.changed == 'true'
-        uses: BigWigsMods/packager@master
+        # Feste Version statt @master: was hier laeuft, entscheidet ueber jedes
+        # Release. Eine Referenz, die sich unter einem aendern kann, gehoert
+        # nicht in eine Auslieferungskette.
+        uses: BigWigsMods/packager@v2.5.1
         env:
           # Der Packager liest feste Variablennamen. Die Secrets duerfen anders
           # heissen, sie werden hier zugeordnet.
           CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+
+          # Der Packager schuetzt sich gegen Doppelbauten: laeuft er wegen
+          # eines Branch-Pushes und findet einen Tag auf HEAD, bricht er mit
+          # "Found future tag, not packaging" ab (release.sh) - er nimmt an,
+          # dass gleich ein eigener Lauf fuer den Tag folgt.
+          #
+          # Bei uns folgt keiner. Wir setzen den Tag selbst, ein paar Zeilen
+          # weiter oben, und lauschen bewusst nicht auf Tag-Pushes. Genau
+          # daran ist der erste Push-Lauf gescheitert: gebaut, getaggt,
+          # committet - und dann still nichts veroeffentlicht.
+          #
+          # Also sagen wir ihm, worauf sich dieser Lauf bezieht. Das ist keine
+          # Notluege: wir bauen tatsaechlich genau diesen Tag.
+          GITHUB_REF: refs/tags/${{ steps.version.outputs.tag }}
+          GITHUB_REF_NAME: ${{ steps.version.outputs.tag }}
 
       - name: Zusammenfassung
         if: github.event_name != 'issues'
