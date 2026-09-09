@@ -115,27 +115,34 @@ function ensureLabel(name, color, description) {
  *
  * @returns {Array<{number:number,body:string,author:string,labels:string[]}>}
  */
+/** Obergrenze je Abfrage. Wird sie erreicht, ist die Liste womoeglich unvollstaendig. */
+const LIST_LIMIT = 500
+
 export function listSubmissions() {
   // Zwei Listen. Die offenen sind die neuen Einreichungen - und die
   // geschlossenen sind die bereits aufgenommenen: dort bearbeitet ein Autor
   // seine Route oder zieht sie zurueck. Ohne die zweite Liste waere eine
   // einmal aufgenommene Route fuer ihren Autor unerreichbar.
   const byNumber = new Map()
+  let complete = true
 
   for (const [state, extra] of [['open', []], ['closed', ['--label', LABEL_ACCEPTED]]]) {
-    for (const issue of gh([
+    const page = gh([
       'issue', 'list',
       '--state', state,
       '--label', LABEL_SUBMISSION,
       ...extra,
-      '--limit', '100',
+      '--limit', String(LIST_LIMIT),
       '--json', 'number,title,body,author,labels,state',
-    ]) ?? []) {
-      byNumber.set(issue.number, issue)
-    }
+    ]) ?? []
+
+    // Genau an der Obergrenze wissen wir nicht, ob noch mehr da waere.
+    if (page.length >= LIST_LIMIT) complete = false
+
+    for (const issue of page) byNumber.set(issue.number, issue)
   }
 
-  return [...byNumber.values()]
+  const issues = [...byNumber.values()]
     .map((i) => ({
       ...i,
       author: i.author?.login ?? null,
@@ -144,6 +151,8 @@ export function listSubmissions() {
     }))
     .filter((i) => !i.labels.includes(LABEL_BLOCKED))
     .sort((a, b) => a.number - b.number)
+
+  return { issues, complete }
 }
 
 /**
@@ -292,8 +301,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
 
   let issues = []
+  let listComplete = false
   try {
-    issues = listSubmissions()
+    ;({ issues, complete: listComplete } = listSubmissions())
   } catch (err) {
     // Ohne GitHub-Zugriff ist das kein Fehler: der Build laeuft dann eben nur
     // mit den bereits eingecheckten Routen weiter.
@@ -301,7 +311,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(0)
   }
 
-  console.log(`${issues.length} offene Einreichungen`)
+  console.log(`${issues.length} Einreichungen (offen und aufgenommen)`)
   mkdirSync(outDir, { recursive: true })
 
   // Immer anlegen, nicht erst wenn Einreichungen da sind - sonst gibt es
@@ -319,8 +329,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     // dann muss die Liste neu geholt werden, sonst bleiben sie bis zum
     // naechsten Lauf liegen.
     if (adoptStraySubmissions() > 0) {
-      issues = listSubmissions()
-      console.log(`${issues.length} offene Einreichungen nach dem Nachtragen`)
+      ;({ issues, complete: listComplete } = listSubmissions())
+      console.log(`${issues.length} Einreichungen nach dem Nachtragen`)
     }
   }
 
@@ -517,5 +527,39 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     }
   }
 
-  console.log(`${accepted} aufgenommen, ${updated} aktualisiert, ${withdrawn} zurückgezogen, ${rejected} zurückgestellt`)
+  // ---- Abgleich ---------------------------------------------------------
+  // Bis hierher haben wir nur getan, was die Issues verlangen. Umgekehrt gilt
+  // aber auch: was im Repository liegt, muss zu einem lebenden Issue gehoeren.
+  //
+  // Ein Issue kann verschwinden, ohne dass jemand "/withdraw" schreibt - es
+  // wird geloescht (das koennen nur Verwalter), es bekommt "blocked", oder ihm
+  // wird das Einreich-Label entzogen. In allen drei Faellen faellt es aus der
+  // Liste, und ohne diesen Abgleich stuende seine Route weiter in der
+  // Bibliothek, ohne dass irgendwo noch stuende, woher sie kommt.
+  //
+  // Angefasst wird nur, was eine Einreichungsnummer traegt. Kuratierte Routen
+  // und alles von keystone.guru haben keine und bleiben unberuehrt.
+  let orphaned = 0
+
+  if (!listComplete) {
+    // Die Liste war moeglicherweise abgeschnitten. Dann koennte ein Issue
+    // schlicht nicht mitgekommen sein, und wir loeschten eine Route, die es
+    // noch gibt. Lieber nichts tun und es sagen.
+    console.warn(`  ! Mehr als ${LIST_LIMIT} Einreichungen - Abgleich übersprungen`)
+  } else {
+    const live = new Set(issues.map((i) => i.number))
+
+    for (const [name, data] of existing) {
+      if (typeof data?.submissionIssue !== 'number') continue
+      if (live.has(data.submissionIssue)) continue
+
+      orphaned += 1
+      console.log(`  x ${data.id}: Issue #${data.submissionIssue} ist weg - Route entfernt`)
+      if (!dry) rmSync(join(outDir, name), { force: true })
+    }
+  }
+
+  console.log(
+    `${accepted} aufgenommen, ${updated} aktualisiert, ${withdrawn} zurückgezogen, ` +
+    `${orphaned} verwaist, ${rejected} zurückgestellt`)
 }
