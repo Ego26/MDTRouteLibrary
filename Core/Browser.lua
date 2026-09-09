@@ -1602,6 +1602,7 @@ local function updateDetail(route)
         d.title:SetText("")
         d.author:SetText("")
         d.authorHit:Hide()
+        d.issueButton:Hide()
         d.affixes:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
@@ -1634,6 +1635,14 @@ local function updateDetail(route)
     d.authorHit.url = url
     d.authorHit.routeTitle = route.title or route.id
     d.authorHit:SetShown(url ~= nil)
+
+    d.issueButton.url = url
+    d.issueButton.routeTitle = route.title or route.id
+    -- Nur eigene Einreichungen heissen so. Eine Route von keystone.guru
+    -- fuehrt zu deren Seite, und die ist keine Einreichung.
+    d.issueButton:SetText(route.source == "community"
+        and ns.L["DETAIL_ISSUE_BUTTON"] or ns.L["DETAIL_SOURCE_BUTTON"])
+    d.issueButton:SetShown(url ~= nil)
 
     -- Vier Kennzahlen, dieselben wie die Spalten der Liste und in derselben
     -- Reihenfolge.
@@ -1838,6 +1847,7 @@ function updateDungeonDetail(dungeon)
     d.title:SetText(name or dungeon.englishName or "?")
     d.author:SetText(("%d %s"):format(dungeon.totalCount or 0, ns.L["DETAIL_FORCES"]))
     d.authorHit:Hide()
+    d.issueButton:Hide()
 
     -- Bestleistung der laufenden Season, falls vorhanden.
     local best, bestTime = "", nil
@@ -2436,6 +2446,22 @@ local function buildDetail(parent)
     d.runs:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.runs:SetJustifyH("LEFT")
     d.runs:SetWordWrap(false)
+
+    -- Ein Knopf, kein gefaerbtes Wort. Die Herkunftszeile war anklickbar,
+    -- aber niemand sieht einer Zeile an, dass sie das ist - und wer seine
+    -- eigene Route aendern will, sucht nach etwas zum Draufdruecken.
+    d.issueButton = T:Button(root, ns.L["DETAIL_ISSUE_BUTTON"], 140)
+    d.issueButton:SetHeight(18)
+    d.issueButton:SetPoint("TOPRIGHT", d.affixes, "BOTTOMRIGHT", 0, -4)
+    d.issueButton.tooltipText = ns.L["DETAIL_ISSUE_TIP"]
+    d.issueButton:SetScript("OnClick", function(self)
+        if not self.url then return end
+        ns.UI.ShowCopyDialog(self.routeTitle or "", ns.L["DETAIL_ISSUE_HELP"], self.url)
+    end)
+    d.issueButton:Hide()
+
+    -- Die Bestzeit teilt sich die Zeile mit ihm.
+    d.runs:SetPoint("RIGHT", d.issueButton, "LEFT", -8, 0)
 
     d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     d.section:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", -2, -10)

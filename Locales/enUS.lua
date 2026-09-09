@@ -71,6 +71,8 @@ ns.RegisterLocale("enUS", {
     ["TILE_ROUTES"]         = "Routes",
     ["DETAIL_AFFIXES"]      = "Affixes: %s",
     ["DETAIL_ISSUE_TIP_TITLE"] = "Where this route comes from",
+    ["DETAIL_ISSUE_BUTTON"] = "View submission",
+    ["DETAIL_SOURCE_BUTTON"] = "View source",
     ["DETAIL_ISSUE_TIP"]    = "Click to copy the address. Submitted it yourself? That page is where you change or withdraw it.",
     ["DETAIL_ISSUE_HELP"]   = "Copy the address (Ctrl+C) and open it in your browser.",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
