@@ -10,6 +10,9 @@
 - Route authors can now change or withdraw their own routes: edit the
   submission issue to update, comment /withdraw to take it out. A route keeps
   its identity across edits, so favourites and best times survive.
+- The source line under a route name is now clickable: it hands you the
+  address the route came from - for your own submissions, the page where you
+  change or withdraw it.
 
 ## 2026.09.09.1
 

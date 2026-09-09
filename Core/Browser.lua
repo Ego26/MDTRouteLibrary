@@ -1601,6 +1601,7 @@ local function updateDetail(route)
         d.dungeon:SetText("")
         d.title:SetText("")
         d.author:SetText("")
+        d.authorHit:Hide()
         d.affixes:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
@@ -1621,8 +1622,18 @@ local function updateDetail(route)
     d.title:SetText(route.title or route.id)
 
     local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
-    local source = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
+
+    -- Gibt es eine Adresse, wird die Herkunft golden statt grau: sie ist dann
+    -- keine Beschriftung mehr, sondern ein Weg dorthin.
+    local url = type(route.url) == "string" and route.url ~= "" and route.url or nil
+    local source = route.source
+        and ((url and T:Hex("accent") or T:Hex("textMuted")) .. " · " .. route.source .. "|r")
+        or ""
     d.author:SetText(author .. source)
+
+    d.authorHit.url = url
+    d.authorHit.routeTitle = route.title or route.id
+    d.authorHit:SetShown(url ~= nil)
 
     -- Vier Kennzahlen, dieselben wie die Spalten der Liste und in derselben
     -- Reihenfolge.
@@ -1826,6 +1837,7 @@ function updateDungeonDetail(dungeon)
     d.dungeon:SetText(ns.L["DETAIL_DUNGEON"])
     d.title:SetText(name or dungeon.englishName or "?")
     d.author:SetText(("%d %s"):format(dungeon.totalCount or 0, ns.L["DETAIL_FORCES"]))
+    d.authorHit:Hide()
 
     -- Bestleistung der laufenden Season, falls vorhanden.
     local best, bestTime = "", nil
@@ -2347,6 +2359,28 @@ local function buildDetail(parent)
     d.author:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.author:SetJustifyH("LEFT")
     d.author:SetWordWrap(true)
+
+    -- FontStrings nehmen keine Maus an, also ein Rahmen darueber. Er macht
+    -- die Herkunftszeile anklickbar und gibt die Adresse zum Kopieren heraus.
+    --
+    -- Fuer den Autor einer Community-Route ist das der Weg zurueck zu seiner
+    -- Einreichung: dort aendert oder loescht er sie. Ohne das muesste er sein
+    -- Issue unter allen anderen wiederfinden.
+    d.authorHit = CreateFrame("Button", nil, root)
+    d.authorHit:SetAllPoints(d.author)
+    d.authorHit:Hide()
+    d.authorHit:SetScript("OnClick", function(self)
+        if not self.url then return end
+        ns.UI.ShowCopyDialog(self.routeTitle or "", ns.L["DETAIL_ISSUE_HELP"], self.url)
+    end)
+    d.authorHit:SetScript("OnEnter", function(self)
+        if not self.url then return end
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:AddLine(ns.L["DETAIL_ISSUE_TIP_TITLE"], 1, 1, 1)
+        GameTooltip:AddLine(ns.L["DETAIL_ISSUE_TIP"], 0.8, 0.8, 0.8, true)
+        GameTooltip:Show()
+    end)
+    d.authorHit:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     -------------------------------------------------------- Kennzahlen
     -- Vier Kacheln statt einer riesigen Zahl mit lose danebenstehenden

@@ -135,6 +135,16 @@ Eine Bearbeitung, die die Prüfung nicht besteht, wirft die bereits
 veröffentlichte Fassung **nicht** weg. Sie bleibt stehen, das Issue geht wieder
 auf und bekommt die Mängelliste.
 
+**Sein Issue wiederfinden** muss dabei niemand von Hand:
+
+- **Im Spiel** – die Route anwählen und auf die Herkunftszeile unter dem
+  Namen klicken. Der Kopierdialog gibt die Adresse der Einreichung heraus.
+- **Auf GitHub** – [`is:issue author:@me`](../../issues?q=is%3Aissue+author%3A%40me)
+  zeigt nur die eigenen, unabhängig davon wie viele es insgesamt gibt. In der
+  Issue-Liste ist das der Filter *Author → dein Name*.
+- **Per Mail** – auf sein eigenes Issue ist man automatisch abonniert, die
+  Annahme-Nachricht liegt also im Postfach und verlinkt direkt dorthin.
+
 Das planmäßige Veröffentlichen lässt sich anhalten: Repository-Variable
 `PUBLISH_PAUSED` auf `true`. Einreichungen werden weiter angenommen, nur
 hochgeladen wird nichts mehr, bis die Variable wieder weg ist. Von Hand
