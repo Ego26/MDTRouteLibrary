@@ -2450,18 +2450,22 @@ local function buildDetail(parent)
     -- Ein Knopf, kein gefaerbtes Wort. Die Herkunftszeile war anklickbar,
     -- aber niemand sieht einer Zeile an, dass sie das ist - und wer seine
     -- eigene Route aendern will, sucht nach etwas zum Draufdruecken.
-    d.issueButton = T:Button(root, ns.L["DETAIL_ISSUE_BUTTON"], 140)
-    d.issueButton:SetHeight(18)
-    d.issueButton:SetPoint("TOPRIGHT", d.affixes, "BOTTOMRIGHT", 0, -4)
+    --
+    -- Er sitzt ganz unten, auf derselben Hoehe wie "Route einreichen" und die
+    -- uebrigen Knoepfe links. Dort gehoert er hin - es ist eine Handlung an
+    -- der gewaehlten Route, keine Angabe ueber sie. In die Leiste selbst passt
+    -- er nicht: die ist mit vier Knoepfen und dem Einreichen randvoll,
+    -- seit die Detailspalte 130 Pixel davon beansprucht. Die Detailspalte
+    -- reicht aber genauso weit nach unten, also steht er einfach an ihrem
+    -- Fuss - und sieht aus, als stuende er in derselben Reihe.
+    d.issueButton = T:Button(root, ns.L["DETAIL_ISSUE_BUTTON"], 150)
+    d.issueButton:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -PADDING, 8)
     d.issueButton.tooltipText = ns.L["DETAIL_ISSUE_TIP"]
     d.issueButton:SetScript("OnClick", function(self)
         if not self.url then return end
         ns.UI.ShowCopyDialog(self.routeTitle or "", ns.L["DETAIL_ISSUE_HELP"], self.url)
     end)
     d.issueButton:Hide()
-
-    -- Die Bestzeit teilt sich die Zeile mit ihm.
-    d.runs:SetPoint("RIGHT", d.issueButton, "LEFT", -8, 0)
 
     d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     d.section:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", -2, -10)
@@ -2498,7 +2502,9 @@ local function buildDetail(parent)
 
     local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 0, -6)
-    scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22), PADDING)
+    -- Unten bleibt eine Reihe frei: dort steht der Knopf zur Einreichung,
+    -- auf einer Linie mit den Knoepfen im Listenbereich.
+    scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22), PADDING + 26)
     d.scroll = scroll
 
     local content = CreateFrame("Frame", nil, scroll)
