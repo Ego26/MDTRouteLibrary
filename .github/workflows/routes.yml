@@ -23,17 +23,21 @@ name: Routen-Update
 # Veroeffentlicht wird ohnehin nur bei echter Aenderung: tools/build.mjs meldet
 # das ueber den Exitcode (0 = geaendert, 9 = unveraendert).
 
+# Kein Push-Ausloeser. Er war einmal da und musste wieder weg: der
+# BigWigs-Packager weigert sich bei einem Branch-Push zu bauen, wenn ein Tag
+# auf HEAD zeigt (release.sh: "Found future tag, not packaging"). Unser
+# Workflow setzt den Tag selbst, also traf ihn das jedes Mal - der Lauf baute,
+# committete und taggte, veroeffentlichte aber nichts. Zurueck blieben eine
+# verbrannte Versionsnummer und ein Tag ohne Release.
+#
+# Ueber die Umgebung ist ihm nicht beizukommen: GITHUB_EVENT_NAME und
+# GITHUB_REF setzt der Runner selbst, ein "env:" am Schritt kommt dort nicht
+# an. Bliebe, release.sh selbst aufzurufen - dafuer ist die Sache zu klein.
+#
+# Codeaenderungen gehen trotzdem raus: der Inhaltshash deckt seit dem Umbau
+# auch Core, Locales, Media und die TOC ab, der naechste planmaessige Lauf
+# sieht sie also. Wer nicht warten will, nimmt "Run workflow".
 on:
-  # Aenderungen am Addon selbst gehen sofort raus. Der Inhaltshash deckt seit
-  # jeher die Routen ab und inzwischen auch die Quellen - ein Push ohne echte
-  # Aenderung erzeugt also weiterhin kein Release.
-  push:
-    branches: [main]
-    paths:
-      - 'Core/**'
-      - 'Locales/**'
-      - 'Media/**'
-      - 'MDTRouteLibrary.toc'
   schedule:
     # Alle sechs Stunden veroeffentlichen. Ohne Inhaltsaenderung passiert
     # nichts, ein ruhiger Tag erzeugt also weiterhin kein einziges Release.
@@ -77,7 +81,6 @@ jobs:
     #   * Von Issues nur echte Einreichungen, gesperrte gar nicht erst.
     if: >-
       (github.event_name != 'schedule' || vars.PUBLISH_PAUSED != 'true') &&
-      (github.event_name != 'push' || vars.PUBLISH_PAUSED != 'true') &&
       (github.event_name != 'issues' ||
        (contains(github.event.issue.labels.*.name, 'route-submission') &&
         !contains(github.event.issue.labels.*.name, 'blocked')))
@@ -272,21 +275,6 @@ jobs:
           # heissen, sie werden hier zugeordnet.
           CF_API_KEY: ${{ secrets.CURSEFORGE_API_TOKEN }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
-
-          # Der Packager schuetzt sich gegen Doppelbauten: laeuft er wegen
-          # eines Branch-Pushes und findet einen Tag auf HEAD, bricht er mit
-          # "Found future tag, not packaging" ab (release.sh) - er nimmt an,
-          # dass gleich ein eigener Lauf fuer den Tag folgt.
-          #
-          # Bei uns folgt keiner. Wir setzen den Tag selbst, ein paar Zeilen
-          # weiter oben, und lauschen bewusst nicht auf Tag-Pushes. Genau
-          # daran ist der erste Push-Lauf gescheitert: gebaut, getaggt,
-          # committet - und dann still nichts veroeffentlicht.
-          #
-          # Also sagen wir ihm, worauf sich dieser Lauf bezieht. Das ist keine
-          # Notluege: wir bauen tatsaechlich genau diesen Tag.
-          GITHUB_REF: refs/tags/${{ steps.version.outputs.tag }}
-          GITHUB_REF_NAME: ${{ steps.version.outputs.tag }}
 
       - name: Zusammenfassung
         if: github.event_name != 'issues'
