@@ -7,6 +7,15 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.09.09.1
+
+Two new routes across two dungeons.
+
+### New routes
+
+- **Altar of Fangs +17** — Altar of Fangs, +17 and up, Meta, by Ego26 (15 pulls)
+- **Kings Rest +16** — King's Rest, +16 and up, Meta, by Ego26 (12 pulls)
+
 ## 2026.09.08.3
 
 Dungeon data rebuilt against Mythic Dungeon Tools 6.2.16.
