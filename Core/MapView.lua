@@ -75,6 +75,30 @@ local panel   -- die ganze Ansicht
 local route   -- aktuell gezeigte Route
 local pending -- laufender Timer
 local keepOpen = {} -- Rahmen, ueber denen die Karte offen bleibt
+local blockers = {} -- Rahmen, die die Karte unterbinden, solange sie offen sind
+
+---Steht gerade ein eigenes Fenster offen?
+---
+---Ein Kopierdialog will gelesen und markiert werden. Eine Karte, die sich
+---darueber oder daneben aufblaettert, weil der Zeiger auf dem Weg dorthin
+---ueber eine Zeile gewandert ist, stoert dabei nur.
+---@return boolean
+local function blocked()
+    for _, frame in ipairs(blockers) do
+        if frame:IsShown() then return true end
+    end
+    return false
+end
+
+---Meldet einen Rahmen an, der die Karte unterbindet, solange er offen ist.
+---@param frame table
+function MV.BlockedBy(frame)
+    if type(frame) ~= "table" then return end
+    for _, existing in ipairs(blockers) do
+        if existing == frame then return end
+    end
+    blockers[#blockers + 1] = frame
+end
 
 --------------------------------------------------------------------------
 -- Farben
@@ -710,6 +734,13 @@ local function ensurePanel()
     -- oder auf der Zeile ist, aus der sie kam - sonst waere sie nicht
     -- bedienbar, sie verschwaende beim Hineinfahren.
     p:SetScript("OnUpdate", function(self, elapsed)
+        -- Ein offenes Fenster hat Vorrang vor allem anderen, auch vor einer
+        -- laufenden Zugbewegung.
+        if blocked() then
+            self:Hide()
+            return
+        end
+
         -- Waehrend des Ziehens bleibt sie offen. Wer die Karte schiebt, faehrt
         -- mit gedrueckter Taste zwangslaeufig ueber den Rand hinaus, und dort
         -- ginge sie ihm sonst unter der Hand zu.
@@ -878,7 +909,7 @@ end
 ---@param newRoute table|nil
 function MV.ShowBeside(frame, newRoute)
     MV.Cancel()
-    if not frame or not newRoute then return end
+    if not frame or not newRoute or blocked() then return end
 
     ensurePanel()
     if not prepare(newRoute) then
@@ -901,6 +932,13 @@ end
 function MV.Request(owner, newRoute)
     MV.Cancel()
     if not owner or not newRoute then return end
+
+    -- Solange eines unserer Fenster offen steht, geht hier nichts auf - auch
+    -- nicht verzoegert, und auch nicht von der Pull-Liste aus.
+    if blocked() then
+        MV.Hide()
+        return
+    end
 
     -- Schon offen und dieselbe Route: nur neu anhaengen, nicht neu bauen.
     if panel and panel:IsShown() and route == newRoute then

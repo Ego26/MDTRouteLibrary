@@ -112,6 +112,11 @@ end
 function UI.ShowCopyDialog(title, help, text, link)
     local f = ensureFrame()
 
+    -- Die Kartenvorschau tritt zurueck, solange hier etwas zu lesen ist. Beim
+    -- ersten Mal anmelden reicht; danach fragt sie selbst nach.
+    ns.MapView.BlockedBy(f)
+    ns.MapView.Hide()
+
     f.payload = text
     f.link    = link
     f.title:SetText(title)
