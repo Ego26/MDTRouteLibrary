@@ -166,15 +166,20 @@ export function toRoute(payload, lookup, lang = 'en') {
 
   if (pulls.length === 0) throw new Error(t.decodeNoPulls)
 
-  // Stabile ID aus dem Inhalt: dieselbe Route zweimal eingereicht ergibt
-  // dieselbe ID und wird nicht doppelt ausgeliefert.
+  // Abdruck des Inhalts. Er ist nicht die Identitaet der Route - die ist die
+  // Issue-Nummer, damit eine Route ihre Identitaet behaelt, wenn ihr Autor sie
+  // aendert. Der Abdruck erkennt nur, ob zwei Einreichungen dieselbe Route
+  // sind und ob eine Bearbeitung ueberhaupt etwas am Weg geaendert hat.
   const fingerprint = createHash('sha256')
     .update(JSON.stringify({ d: dungeon.challengeModeId, p: pulls }))
     .digest('hex')
     .slice(0, 10)
 
   const route = {
+    // Vorlaeufig. Wer aus einem Issue einliest, setzt sie auf sub-<Nummer>;
+    // fuer den Aufruf von Hand bleibt es beim Abdruck.
     id: `sub-${fingerprint}`,
+    fingerprint,
     source: 'community',
     title: payload.route?.title || 'Community-Route',
     author: payload.author?.character ?? null,

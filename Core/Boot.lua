@@ -20,6 +20,7 @@ function ns.EnsureData()
 
     if C_AddOns.IsAddOnLoaded(ns.DATA_ADDON) then
         dataLoaded = true
+        ns.MigrateSavedIds()
         return true
     end
 
@@ -30,6 +31,9 @@ function ns.EnsureData()
     end
 
     dataLoaded = true
+
+    -- Erst jetzt sind die frueheren Kennungen bekannt.
+    ns.MigrateSavedIds()
     return true
 end
 

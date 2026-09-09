@@ -472,8 +472,11 @@ local function collectOwnRoutes()
                         mdtUid = type(preset.uid) == "string" and preset.uid or nil,
                         source = "MDT",
                         -- Aus welcher Community-Route stammt diese Kopie?
+                        -- Ueber die Aliasse: ein Preset, das vor einer
+                        -- Umbenennung gespeichert wurde, traegt noch die alte
+                        -- Kennung seiner Herkunft.
                         originId = type(preset.mdtrlOrigin) == "string"
-                            and preset.mdtrlOrigin or nil,
+                            and ns.CanonicalId(preset.mdtrlOrigin) or nil,
                         title = preset.text or "?",
                         -- MDT merkt sich, wer ein Preset angelegt hat, und zeigt
                         -- den Namen im Dropdown davor. Uebernehmen wir.

@@ -9,6 +9,17 @@
 //      mit den konkreten Maengeln. Jede Aenderung am Issue loest die Pruefung
 //      erneut aus - der Einreichende bessert also selbst nach.
 //
+// Danach gehoert die Route weiterhin ihrem Autor:
+//   * Aendern - er bearbeitet sein Issue, auch das geschlossene. Die Route
+//     wird ueberschrieben und behaelt ihre Identitaet, also auch die
+//     Favoriten und Bestzeiten der Nutzer.
+//   * Zurueckziehen - er schreibt "/withdraw" als Kommentar in sein Issue.
+//     Die Route wird geloescht und geht mit dem naechsten Datenpaket bei
+//     allen Nutzern weg.
+//
+// Deshalb ist die Identitaet einer Route ihre Issue-Nummer und nicht ein
+// Abdruck ihres Inhalts: eine geaenderte Route soll dieselbe Route bleiben.
+//
 // Warum ohne Freigabe: die Pruefung faengt alles ab, was maschinell
 // entscheidbar ist - kaputte Blobs, fremde Dungeons, Routen unter 100 Prozent,
 // fehlende Angaben, unsichtbare Zeichen im Namen. Was bleibt, ist Geschmack
@@ -22,7 +33,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { readDungeons, readSeasons, buildLookup } from './mdt-dungeons.mjs'
@@ -34,6 +45,10 @@ const LABEL_SUBMISSION = 'route-submission'
 const LABEL_BLOCKED = 'blocked'
 const LABEL_NEEDS_FIX = 'needs-fix'
 const LABEL_ACCEPTED = 'accepted'
+const LABEL_WITHDRAWN = 'withdrawn'
+
+/** Kommentarbefehl, mit dem ein Autor seine Route zurueckzieht. */
+const WITHDRAW_COMMAND = /^\s*\/withdraw\b/im
 
 /**
  * Zerlegt den Text eines GitHub-Issue-Formulars.
@@ -101,17 +116,57 @@ function ensureLabel(name, color, description) {
  * @returns {Array<{number:number,body:string,author:string,labels:string[]}>}
  */
 export function listSubmissions() {
-  const issues = gh([
-    'issue', 'list',
-    '--state', 'open',
-    '--label', LABEL_SUBMISSION,
-    '--limit', '100',
-    '--json', 'number,title,body,author,labels',
-  ])
+  // Zwei Listen. Die offenen sind die neuen Einreichungen - und die
+  // geschlossenen sind die bereits aufgenommenen: dort bearbeitet ein Autor
+  // seine Route oder zieht sie zurueck. Ohne die zweite Liste waere eine
+  // einmal aufgenommene Route fuer ihren Autor unerreichbar.
+  const byNumber = new Map()
 
-  return (issues ?? [])
-    .map((i) => ({ ...i, author: i.author?.login ?? null, labels: (i.labels ?? []).map((l) => l.name) }))
+  for (const [state, extra] of [['open', []], ['closed', ['--label', LABEL_ACCEPTED]]]) {
+    for (const issue of gh([
+      'issue', 'list',
+      '--state', state,
+      '--label', LABEL_SUBMISSION,
+      ...extra,
+      '--limit', '100',
+      '--json', 'number,title,body,author,labels,state',
+    ]) ?? []) {
+      byNumber.set(issue.number, issue)
+    }
+  }
+
+  return [...byNumber.values()]
+    .map((i) => ({
+      ...i,
+      author: i.author?.login ?? null,
+      labels: (i.labels ?? []).map((l) => l.name),
+      closed: String(i.state ?? '').toUpperCase() === 'CLOSED',
+    }))
     .filter((i) => !i.labels.includes(LABEL_BLOCKED))
+    .sort((a, b) => a.number - b.number)
+}
+
+/**
+ * Hat der Autor seine Route zurueckgezogen?
+ *
+ * Zaehlt nur aus dem Mund des Einreichenden selbst - sonst koennte jeder
+ * fremde Routen aus der Bibliothek werfen. Das Label setzt daneben der
+ * Betreiber, wenn er eine Route entfernen muss.
+ *
+ * @param {{number:number,author:string|null,labels:string[]}} issue
+ * @returns {boolean}
+ */
+function isWithdrawn(issue) {
+  if (issue.labels.includes(LABEL_WITHDRAWN)) return true
+
+  const data = ghTry(['issue', 'view', String(issue.number), '--json', 'comments'])
+  for (const comment of data?.comments ?? []) {
+    const who = comment.author?.login ?? null
+    if (who && issue.author && who === issue.author && WITHDRAW_COMMAND.test(comment.body ?? '')) {
+      return true
+    }
+  }
+  return false
 }
 
 /**
@@ -269,8 +324,22 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     }
   }
 
+  // Was schon im Repository liegt. Zwei Dinge haengen daran: die
+  // Doppel-Erkennung, und das Wiederfinden einer Route, die noch unter der
+  // alten, aus dem Inhalt abgeleiteten Kennung abgelegt ist.
+  const existing = new Map()
+  for (const name of readdirSync(outDir).filter((n) => n.endsWith('.json'))) {
+    try {
+      existing.set(name, JSON.parse(readFileSync(join(outDir, name), 'utf8')))
+    } catch {
+      console.warn(`  ! ${name} ist kein lesbares JSON - übersprungen`)
+    }
+  }
+
   let accepted = 0
+  let updated = 0
   let rejected = 0
+  let withdrawn = 0
 
   for (const issue of issues) {
     const fields = parseIssueForm(issue.body)
@@ -280,6 +349,44 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     // einer englischen Einreichung ist so gut wie keine.
     const lang = detectLanguage(fields)
     const t = texts(lang)
+
+    // Die Identitaet ist die Issue-Nummer. Sie ueberlebt jede Bearbeitung,
+    // und daran haengen im Spiel die Favoriten und die Bestzeiten.
+    const id = `sub-${issue.number}`
+    const fileName = `${id}.json`
+    const file = join(outDir, fileName)
+
+    // Liegt dieselbe Route noch unter der alten Kennung? Dann ist sie von
+    // frueher und wird gleich umbenannt.
+    let legacyName = null
+    for (const [name, data] of existing) {
+      if (name !== fileName && data?.submissionIssue === issue.number) {
+        legacyName = name
+        break
+      }
+    }
+    const previous = existing.get(fileName) ?? (legacyName ? existing.get(legacyName) : null)
+
+    // ---- zurueckgezogen -------------------------------------------------
+    if (isWithdrawn(issue)) {
+      if (!previous) continue
+
+      withdrawn += 1
+      console.log(`  x #${issue.number}: zurückgezogen, ${previous.id} entfernt`)
+      if (dry) continue
+
+      rmSync(file, { force: true })
+      existing.delete(fileName)
+      if (legacyName) {
+        rmSync(join(outDir, legacyName), { force: true })
+        existing.delete(legacyName)
+      }
+
+      ghTry(['issue', 'edit', String(issue.number),
+        '--add-label', LABEL_WITHDRAWN, '--remove-label', LABEL_ACCEPTED])
+      ghTry(['issue', 'comment', String(issue.number), '--body', t.withdrawn])
+      continue
+    }
 
     // Erst dekodieren. Alles, was hier schiefgeht, ist ein Formatfehler und
     // wird wie ein Pruefergebnis behandelt - der Einreichende soll denselben
@@ -308,9 +415,29 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       if (check.ok) Object.assign(route, check.patch)
     }
 
+    // Denselben Weg zweimal auszuliefern hilft niemandem. Geprueft wird gegen
+    // den Inhaltsabdruck, nicht gegen den Namen: zwei Leute koennen dieselbe
+    // Route unterschiedlich nennen.
+    if (route && errors.length === 0) {
+      for (const [name, data] of existing) {
+        if (name === fileName || name === legacyName) continue
+        if (data?.fingerprint && data.fingerprint === route.fingerprint) {
+          errors.push(t.duplicateOf(data.submissionIssue ?? '?'))
+          break
+        }
+      }
+    }
+
     // ---- abgelehnt ------------------------------------------------------
     if (errors.length > 0) {
       rejected += 1
+
+      // Eine kaputte Bearbeitung wirft nicht die bereits veroeffentlichte
+      // Fassung weg. Sie bleibt stehen, bis der Autor nachgebessert hat -
+      // sonst verschwaende eine Route bei allen Nutzern, weil jemand beim
+      // Bearbeiten einen Buchstaben verrutscht hat.
+      if (previous) errors.push(t.brokenUpdate)
+
       const { body, fingerprint } = buildRejection(errors, warnings, lang)
       console.log(`  - #${issue.number}: ${errors.length} Mangel/Mängel`)
       for (const e of errors) console.log(`      ${e.replace(/\*\*/g, '')}`)
@@ -325,42 +452,70 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       if (!issue.labels.includes(LABEL_NEEDS_FIX)) {
         ghTry(['issue', 'edit', String(issue.number), '--add-label', LABEL_NEEDS_FIX])
       }
+      // Geschlossene Issues wieder aufmachen: an einem geschlossenen Issue
+      // sieht niemand, dass etwas zu tun ist.
+      if (issue.closed) ghTry(['issue', 'reopen', String(issue.number)])
       continue
     }
 
     // ---- aufgenommen ----------------------------------------------------
     // Wer einreicht, wird genannt: der GitHub-Name ist verlaesslicher als der
     // Charaktername aus dem Blob.
+    route.id = id
     route.author = issue.author ?? route.author
     route.url = `https://github.com/${process.env.GITHUB_REPOSITORY ?? 'Ego26/MDTRouteLibrary'}/issues/${issue.number}`
     route.submissionIssue = issue.number
 
-    const file = join(outDir, `${route.id}.json`)
-    const isNew = !existsSync(file)
+    // Fruehere Kennungen mitfuehren. Im Spiel haengen Favoriten, gespeicherte
+    // Kopien und Bestzeiten an der Kennung; ohne diese Liste zeigten sie nach
+    // der Umbenennung ins Leere.
+    const aliases = new Set(previous?.aliases ?? [])
+    if (previous?.id && previous.id !== id) aliases.add(previous.id)
+    if (aliases.size > 0) route.aliases = [...aliases].sort()
 
     // Tag der Aufnahme, nicht der Erstellung: submittedAt sagt, wann jemand
     // die Route in MDT gebaut hat, und das kann Monate her sein. Fuer die
     // Schonfrist im Build zaehlt, ab wann sie ueberhaupt ausgeliefert werden
     // konnte. Einmal gesetzt bleibt er stehen.
-    route.acceptedAt = isNew
-      ? new Date().toISOString().slice(0, 10)
-      : (JSON.parse(readFileSync(file, 'utf8')).acceptedAt ?? new Date().toISOString().slice(0, 10))
+    const today = new Date().toISOString().slice(0, 10)
+    route.acceptedAt = previous?.acceptedAt ?? today
+
+    const changed = !previous || previous.fingerprint !== route.fingerprint
+    const mark = !previous ? '+' : changed ? '~' : '='
 
     for (const w of warnings) console.log(`      Hinweis: ${w.replace(/\*\*/g, '')}`)
-    console.log(`  ${isNew ? '+' : '='} #${issue.number} ${route.id} "${route.title}" (${route.dungeonEnglishName}, ${route.enemyForces}/${route.enemyForcesRequired})`)
-    accepted += 1
+    console.log(`  ${mark} #${issue.number} ${route.id} "${route.title}" (${route.dungeonEnglishName}, ${route.enemyForces}/${route.enemyForcesRequired})`)
+    if (previous) updated += changed ? 1 : 0
+    else accepted += 1
 
     if (dry) continue
 
     writeFileSync(file, `${JSON.stringify(route, null, 2)}\n`)
+    existing.set(fileName, route)
+    if (legacyName) {
+      rmSync(join(outDir, legacyName), { force: true })
+      existing.delete(legacyName)
+      console.log(`      umbenannt von ${legacyName.replace(/\.json$/, '')}`)
+    }
 
     const note = warnings.length > 0
       ? `\n\n${t.acceptedNotes}\n${warnings.map((w) => `- ${w}`).join('\n')}`
       : ''
-    ghTry(['issue', 'edit', String(issue.number), '--add-label', LABEL_ACCEPTED, '--remove-label', LABEL_NEEDS_FIX])
-    ghTry(['issue', 'close', String(issue.number), '--comment',
-      t.accepted(route.id, route.enemyForces, route.enemyForcesRequired) + note])
+
+    ghTry(['issue', 'edit', String(issue.number),
+      '--add-label', LABEL_ACCEPTED, '--remove-label', LABEL_NEEDS_FIX])
+
+    if (!previous) {
+      ghTry(['issue', 'close', String(issue.number), '--comment',
+        t.accepted(route.id, route.enemyForces, route.enemyForcesRequired) + note])
+    } else if (changed) {
+      // Nur melden, wenn sich der Weg wirklich geaendert hat. Sonst
+      // kommentierte jede Berichtigung eines Tippfehlers im Titel.
+      ghTry(['issue', 'comment', String(issue.number),
+        '--body', t.updated(route.enemyForces, route.enemyForcesRequired) + note])
+      if (issue.closed !== true) ghTry(['issue', 'close', String(issue.number)])
+    }
   }
 
-  console.log(`${accepted} aufgenommen, ${rejected} zurückgestellt`)
+  console.log(`${accepted} aufgenommen, ${updated} aktualisiert, ${withdrawn} zurückgezogen, ${rejected} zurückgestellt`)
 }

@@ -116,6 +116,25 @@ selbst. Geprüft wird:
 Fällt eine Einreichung durch, bleibt ihr Issue offen und bekommt einen
 Kommentar mit den Mängeln. Jede Änderung am Issue startet die Prüfung neu.
 
+### Die Route bleibt ihrem Autor
+
+Eine aufgenommene Route wird über die Nummer ihres Issues identifiziert, nicht
+über ihren Inhalt. Deshalb kann ihr Autor sie später noch anfassen:
+
+| | |
+|---|---|
+| **Ändern** | Das eigene Issue bearbeiten – auch das geschlossene. Die Route wird überschrieben und behält ihre Kennung, also auch die Favoriten und Bestzeiten, die Spieler auf ihr haben. |
+| **Zurückziehen** | `/withdraw` als Kommentar ins eigene Issue. Die Route wird gelöscht und verschwindet mit dem nächsten Datenpaket bei allen Spielern. |
+
+Zählen tut nur, was vom Einreichenden selbst kommt – sonst könnte jeder fremde
+Routen aus der Bibliothek werfen. Der Betreiber kann dasselbe über das Label
+`withdrawn` erreichen; es wieder zu entfernen nimmt die Route beim nächsten
+Lauf zurück in die Bibliothek.
+
+Eine Bearbeitung, die die Prüfung nicht besteht, wirft die bereits
+veröffentlichte Fassung **nicht** weg. Sie bleibt stehen, das Issue geht wieder
+auf und bekommt die Mängelliste.
+
 Das planmäßige Veröffentlichen lässt sich anhalten: Repository-Variable
 `PUBLISH_PAUSED` auf `true`. Einreichungen werden weiter angenommen, nur
 hochgeladen wird nichts mehr, bis die Variable wieder weg ist. Von Hand

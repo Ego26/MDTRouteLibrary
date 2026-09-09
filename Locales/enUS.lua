@@ -131,6 +131,7 @@ ns.RegisterLocale("enUS", {
     ["MDT_OPEN_FIRST"]      = "MDT is not loaded yet. Open it once with /mdt.",
     ["UNKNOWN_ROUTE"]       = "Unknown route. /routes list shows the numbers.",
     ["ROUTE_REJECTED"]      = "Route rejected (%s): %s",
+    ["IDS_MIGRATED"]        = "%d saved entries moved to the route's new id.",
     ["HELP_HEADER"]         = "MDTRouteLibrary commands:",
     ["HELP_OPEN"]           = "/routes - open the route browser",
     ["HELP_LIST"]           = "/routes list - show installed routes",

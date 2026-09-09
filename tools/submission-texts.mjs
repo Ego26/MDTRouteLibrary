@@ -171,8 +171,25 @@ export const TEXTS = {
       'aufgenommen und das Issue geschlossen.',
     accepted: (id, have, need) =>
       `Aufgenommen als \`${id}\`. Die Route erreicht ${have} von ${need} Gegnerkräften ` +
-      'und ist im nächsten Datenpaket enthalten. Danke!',
+      'und ist im nächsten Datenpaket enthalten. Danke!\n\n' +
+      'Die Route bleibt deine: **bearbeite dieses Issue**, um sie zu ändern – sie behält ' +
+      'dabei ihre Kennung, also auch die Favoriten und Bestzeiten der Spieler. Schreibe ' +
+      '`/withdraw` als Kommentar, um sie wieder zurückzuziehen.',
     acceptedNotes: 'Hinweise:',
+    updated: (have, need) =>
+      `Aktualisiert. Die Route erreicht jetzt ${have} von ${need} Gegnerkräften und geht mit ` +
+      'dem nächsten Datenpaket an alle Spieler, die sie gespeichert haben.',
+    withdrawn:
+      'Zurückgezogen. Die Route ist aus der Bibliothek entfernt und verschwindet mit dem ' +
+      'nächsten Datenpaket bei allen Spielern.\n\n' +
+      'War das ein Versehen? Label `withdrawn` entfernen, dann wird sie beim ' +
+      'nächsten Lauf wieder aufgenommen.',
+    duplicateOf: (number) =>
+      `Dieselbe Route steht schon in #${number}. Zwei gleiche Wege doppelt auszuliefern hilft ` +
+      'niemandem – ändere die Route oder ziehe diese Einreichung zurück.',
+    brokenUpdate:
+      'Die Bearbeitung ist nicht aufnahmefähig, deshalb bleibt vorerst die bisher ' +
+      'veröffentlichte Fassung stehen. Bessere nach, dann wird sie ersetzt.',
   },
 
   en: {
@@ -230,8 +247,24 @@ export const TEXTS = {
       'is closed.',
     accepted: (id, have, need) =>
       `Accepted as \`${id}\`. The route reaches ${have} of ${need} enemy forces and will be in ` +
-      'the next data package. Thank you!',
+      'the next data package. Thank you!\n\n' +
+      'The route stays yours: **edit this issue** to change it – it keeps its id, and with ' +
+      'it the favourites and best times players have on it. Comment `/withdraw` to take ' +
+      'it back out.',
     acceptedNotes: 'Notes:',
+    updated: (have, need) =>
+      `Updated. The route now reaches ${have} of ${need} enemy forces and goes out to ` +
+      'everyone who saved it with the next data update.',
+    withdrawn:
+      'Withdrawn. The route is out of the library and disappears for all players with the ' +
+      'next data update.\n\n' +
+      'A mistake? Remove the `withdrawn` label and the next run takes it back in.',
+    duplicateOf: (number) =>
+      `The same route is already in #${number}. Shipping the same path twice helps nobody – ` +
+      'change the route or withdraw this submission.',
+    brokenUpdate:
+      'The edit is not acceptable, so the version published so far stays in place for now. ' +
+      'Fix it and it will be replaced.',
   },
 }
 

@@ -36,6 +36,12 @@ ns.MDT_STRING_PREFIX = "!~MDT2~"
 ns.routes    = {}
 ns.routeById = {}
 
+-- Frueher vergebene Kennung -> heutige. Eine Route wird ueber ihre
+-- Einreichungsnummer identifiziert; bekam sie einmal eine andere Kennung,
+-- fuehrt sie die alte mit. Ohne diese Tabelle zeigten Favoriten, gespeicherte
+-- Kopien und Bestzeiten nach einer Umbenennung ins Leere.
+ns.aliasOf = {}
+
 -- Stammdaten der Dungeons, zu denen es Routen gibt (Kurzname, NPC-Namen).
 ns.dungeons    = {}
 ns.dungeonById = {}

@@ -69,10 +69,10 @@ local function keyForPreset(preset)
     local label = type(preset.text) == "string" and preset.text or nil
 
     if type(preset.mdtrl) == "table" and type(preset.mdtrl.id) == "string" then
-        return preset.mdtrl.id, label
+        return ns.CanonicalId(preset.mdtrl.id), label
     end
     if type(preset.mdtrlOrigin) == "string" then
-        return preset.mdtrlOrigin, label
+        return ns.CanonicalId(preset.mdtrlOrigin), label
     end
 
     local id = preset.uid or label
@@ -88,7 +88,7 @@ end
 function R.KeyFor(route)
     if type(route) ~= "table" then return nil end
     if not route.own then return route.id end
-    if type(route.originId) == "string" then return route.originId end
+    if type(route.originId) == "string" then return ns.CanonicalId(route.originId) end
 
     local id = route.mdtUid or route.title
     if not id then return nil end

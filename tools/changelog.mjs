@@ -241,10 +241,25 @@ export function diffRoutes(before, after) {
   const changed = []
 
   for (const route of after) {
-    const previous = old.get(route.id)
+    // Auch unter frueheren Kennungen suchen. Bekommt eine Route eine neue
+    // Kennung - etwa weil sie von der inhaltsabhaengigen auf die
+    // Einreichungsnummer umgestellt wurde -, ist sie deshalb weder neu noch
+    // zurueckgezogen. Ohne das stuende beides in den Release-Notes.
+    let key = route.id
+    let previous = old.get(key)
+    if (!previous) {
+      for (const alias of route.aliases ?? []) {
+        if (old.has(alias)) {
+          key = alias
+          previous = old.get(alias)
+          break
+        }
+      }
+    }
+
     if (!previous) added.push(route)
     else if (visible(previous) !== visible(route)) changed.push(route)
-    old.delete(route.id)
+    old.delete(key)
   }
 
   const byDungeon = (a, b) =>

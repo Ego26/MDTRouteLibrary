@@ -40,6 +40,60 @@ function ns.RegisterRoute(route)
 
     ns.routes[#ns.routes + 1] = route
     ns.routeById[route.id] = route
+
+    -- Unter ihren frueheren Kennungen bleibt sie auffindbar. Sonst faende ein
+    -- gespeichertes Preset seine Herkunft nicht mehr und die Bestzeiten
+    -- haetten kein Zuhause.
+    for _, alias in ipairs(route.aliases or {}) do
+        ns.aliasOf[alias] = route.id
+        if not ns.routeById[alias] then ns.routeById[alias] = route end
+    end
+end
+
+---Loest eine frueher vergebene Kennung auf die heutige auf.
+---@param id string|nil
+---@return string|nil
+function ns.CanonicalId(id)
+    if type(id) ~= "string" then return id end
+    return ns.aliasOf[id] or id
+end
+
+---Schreibt gespeicherte Kennungen einmalig auf den heutigen Stand um.
+---
+---Betrifft die Merkliste und die Laufzeiten - beides haengt an der Kennung.
+---Laeuft nach dem Laden des Datenpakets, denn erst dann sind die Aliasse
+---bekannt.
+function ns.MigrateSavedIds()
+    local db = MDTRouteLibraryDB
+    if type(db) ~= "table" or not next(ns.aliasOf) then return end
+
+    local moved = 0
+
+    if type(db.favourites) == "table" then
+        for old, canonical in pairs(ns.aliasOf) do
+            if db.favourites[old] ~= nil then
+                db.favourites[canonical] = db.favourites[old]
+                db.favourites[old] = nil
+                moved = moved + 1
+            end
+        end
+    end
+
+    if type(db.runs) == "table" then
+        for _, list in pairs(db.runs) do
+            for _, run in ipairs(type(list) == "table" and list or {}) do
+                local canonical = run.key and ns.aliasOf[run.key]
+                if canonical then
+                    run.key = canonical
+                    moved = moved + 1
+                end
+            end
+        end
+    end
+
+    if moved > 0 then
+        ns.Print(ns.L["IDS_MIGRATED"], moved)
+    end
 end
 
 ---Setzt die Metadaten des Datenpakets (Buildzeitpunkt, Season, Quelle).
