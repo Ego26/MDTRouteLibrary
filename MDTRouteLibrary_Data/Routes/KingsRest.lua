@@ -3,7 +3,8 @@
 local R = MDTRouteLibrary
 
 R:RegisterRoute({
-    id = "sub-43b9de8b44",
+    id = "sub-4",
+    fingerprint = "43b9de8b44",
     source = "community",
     title = "Kings Rest +16",
     author = "Ego26",
@@ -338,5 +339,8 @@ R:RegisterRoute({
     keyLevelMin = 16,
     kind = "Meta",
     submissionIssue = 4,
+    aliases = {
+        "sub-43b9de8b44",
+    },
     acceptedAt = "2026-09-09",
 })

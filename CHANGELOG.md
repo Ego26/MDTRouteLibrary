@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.09.09.2
+
 - Route authors can now change or withdraw their own routes: edit the
   submission issue to update, comment /withdraw to take it out. A route keeps
   its identity across edits, so favourites and best times survive.
