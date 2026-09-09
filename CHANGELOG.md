@@ -9,6 +9,10 @@
 
 ## 2026.09.09.2
 
+Maintenance release. No changes to routes or dungeon data.
+
+## 2026.09.09.2
+
 - Route authors can now change or withdraw their own routes: edit the
   submission issue to update, comment /withdraw to take it out. A route keeps
   its identity across edits, so favourites and best times survive.
