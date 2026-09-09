@@ -73,7 +73,7 @@ ns.RegisterLocale("deDE", {
     ["DETAIL_ISSUE_TIP_TITLE"] = "Woher diese Route stammt",
     ["DETAIL_ISSUE_BUTTON"] = "Einreichung ansehen",
     ["DETAIL_SOURCE_BUTTON"] = "Quelle ansehen",
-    ["DETAIL_ISSUE_TIP"]    = "Klicken kopiert die Adresse. Selbst eingereicht? Dort änderst oder löschst du sie.",
+    ["DETAIL_ISSUE_TIP"]    = "Klicken kopiert die Adresse. Selbst eingereicht? Dort das Issue bearbeiten ändert die Route, /withdraw als Kommentar nimmt sie heraus.",
     ["DETAIL_ISSUE_HELP"]   = "Adresse kopieren (Strg+C) und im Browser öffnen.",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
     ["DETAIL_FOLD_ALL"]     = "Alle einklappen",

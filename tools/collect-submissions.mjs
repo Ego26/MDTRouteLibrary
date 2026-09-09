@@ -47,8 +47,20 @@ const LABEL_NEEDS_FIX = 'needs-fix'
 const LABEL_ACCEPTED = 'accepted'
 const LABEL_WITHDRAWN = 'withdrawn'
 
-/** Kommentarbefehl, mit dem ein Autor seine Route zurueckzieht. */
-const WITHDRAW_COMMAND = /^\s*\/withdraw\b/im
+/**
+ * Kommentarbefehl, mit dem ein Autor seine Route zurueckzieht.
+ *
+ * Der Schraegstrich davor ist die halbe Miete: er macht aus einem Wort einen
+ * Befehl. Ohne ihn loeste "bitte nicht loeschen" eine Loeschung aus - und eine
+ * Route, die faelschlich verschwindet, waere schlimmer als eine, die sich
+ * umstaendlich zurueckziehen laesst.
+ *
+ * Mehrere Schreibweisen, weil sich niemand ein Kommando merkt, das er einmal
+ * im Leben braucht. Wer noch weiss, dass da ein Schraegstrich war, kommt ans
+ * Ziel.
+ */
+const WITHDRAW_COMMAND =
+  /^\s*\/(withdraw|remove|delete|zur(ü|ue)ckziehen|entfernen|l(ö|oe)schen)\b/im
 
 /**
  * Zerlegt den Text eines GitHub-Issue-Formulars.

@@ -172,9 +172,13 @@ export const TEXTS = {
     accepted: (id, have, need) =>
       `Aufgenommen als \`${id}\`. Die Route erreicht ${have} von ${need} Gegnerkräften ` +
       'und ist im nächsten Datenpaket enthalten. Danke!\n\n' +
-      'Die Route bleibt deine: **bearbeite dieses Issue**, um sie zu ändern – sie behält ' +
-      'dabei ihre Kennung, also auch die Favoriten und Bestzeiten der Spieler. Schreibe ' +
-      '`/withdraw` als Kommentar, um sie wieder zurückzuziehen.',
+      '---\n\n' +
+      '**Die Route bleibt deine.**\n\n' +
+      '- **Ändern:** dieses Issue bearbeiten – auch jetzt, wo es geschlossen ist. ' +
+      'Die Route behält dabei ihre Kennung, also auch die Favoriten und Bestzeiten ' +
+      'der Spieler.\n' +
+      '- **Zurückziehen:** `/withdraw` als Kommentar hier hinein. Die Route ' +
+      'verschwindet dann mit dem nächsten Datenpaket bei allen.',
     acceptedNotes: 'Hinweise:',
     updated: (have, need) =>
       `Aktualisiert. Die Route erreicht jetzt ${have} von ${need} Gegnerkräften und geht mit ` +
@@ -189,7 +193,8 @@ export const TEXTS = {
       'niemandem – ändere die Route oder ziehe diese Einreichung zurück.',
     brokenUpdate:
       'Die Bearbeitung ist nicht aufnahmefähig, deshalb bleibt vorerst die bisher ' +
-      'veröffentlichte Fassung stehen. Bessere nach, dann wird sie ersetzt.',
+      'veröffentlichte Fassung stehen. Bessere nach, dann wird sie ersetzt – oder ' +
+      'schreibe `/withdraw` als Kommentar, wenn die Route ganz raus soll.',
   },
 
   en: {
@@ -248,9 +253,12 @@ export const TEXTS = {
     accepted: (id, have, need) =>
       `Accepted as \`${id}\`. The route reaches ${have} of ${need} enemy forces and will be in ` +
       'the next data package. Thank you!\n\n' +
-      'The route stays yours: **edit this issue** to change it – it keeps its id, and with ' +
-      'it the favourites and best times players have on it. Comment `/withdraw` to take ' +
-      'it back out.',
+      '---\n\n' +
+      '**The route stays yours.**\n\n' +
+      '- **Change it:** edit this issue – yes, even now that it is closed. The route ' +
+      'keeps its id, and with it the favourites and best times players have on it.\n' +
+      '- **Take it back:** comment `/withdraw` here. The route disappears for ' +
+      'everyone with the next data package.',
     acceptedNotes: 'Notes:',
     updated: (have, need) =>
       `Updated. The route now reaches ${have} of ${need} enemy forces and goes out to ` +
@@ -264,7 +272,8 @@ export const TEXTS = {
       'change the route or withdraw this submission.',
     brokenUpdate:
       'The edit is not acceptable, so the version published so far stays in place for now. ' +
-      'Fix it and it will be replaced.',
+      'Fix it and it will be replaced – or comment `/withdraw` if the route ' +
+      'should come out entirely.',
   },
 }
 
