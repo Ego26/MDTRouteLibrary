@@ -239,7 +239,7 @@ jobs:
         if: >-
           env.WCL_CLIENT_ID != '' && github.event_name != 'issues' &&
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
-        run: node tools/wcl-toproutes.mjs --mdt .mdt --in data/raiderio
+        run: node tools/wcl-toproutes.mjs --mdt .mdt --in data/raiderio --max 60
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'

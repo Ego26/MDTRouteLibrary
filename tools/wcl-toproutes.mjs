@@ -14,7 +14,7 @@
 //
 // Aufruf:
 //   node tools/wcl-toproutes.mjs --mdt <MDT-Pfad> [--in data/raiderio]
-//        [--cache data/cache/wcl] [--nur murder-row] [--neu]
+//        [--cache data/cache/wcl] [--nur murder-row] [--neu] [--max 40]
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -47,7 +47,16 @@ const gql = await anmelden()
 // der Anfragen.
 const merker = new Map()
 
-let gesucht = 0, gefunden = 0, gebaut = 0, uebersprungen = 0
+// Hoechstens so viele je Lauf.
+//
+// Warcraftlogs laesst 3600 Punkte je Stunde zu und ein Lauf kostet rund 45 -
+// mehr als achtzig am Stueck heisst also warten. Lokal ist das gleichgueltig,
+// im taeglichen CI-Lauf nicht: verschiebt sich die Rangliste einmal stark,
+// stuende der Job stundenlang und liefe in sein Zeitlimit. Was heute nicht
+// drankommt, kommt morgen dran - die Eintraege von gestern bleiben ja stehen.
+const hoechstens = args.max !== undefined ? Number(args.max) : Infinity
+
+let gesucht = 0, gefunden = 0, gebaut = 0, uebersprungen = 0, vertagt = 0
 const magerer = []
 
 for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
@@ -58,6 +67,7 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
   for (const lauf of laeufe) {
     // Schon gebaut? Dann nichts noch einmal aus dem Netz holen.
     if (lauf.pulls && !args.neu) { uebersprungen += 1; continue }
+    if (gebaut >= hoechstens) { vertagt += 1; continue }
 
     const dungeon = lookup.byChallengeMode.get(lauf.challengeModeId)
     if (!dungeon) continue
@@ -136,5 +146,6 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
 console.log('')
 console.log('gesucht ' + gesucht + ', Bericht gefunden ' + gefunden +
   ', Route gebaut ' + gebaut +
-  (uebersprungen ? ', schon da ' + uebersprungen : ''))
+  (uebersprungen ? ', schon da ' + uebersprungen : '') +
+  (vertagt ? ', auf morgen vertagt ' + vertagt : ''))
 for (const m of magerer) console.log('   zu duenn: ' + m)
