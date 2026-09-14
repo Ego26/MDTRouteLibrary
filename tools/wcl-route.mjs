@@ -379,8 +379,25 @@ let kraefte = 0
 // obwohl nur zwei Klone falsch sind.
 const vergebeneInstanzen = new Set()
 
+// Warcraftlogs fasst Chainpulls zusammen: wer weiterzieht, ohne aus dem
+// Kampf zu fallen, bekommt dort einen einzigen Pull. keystone.guru trennt
+// sie - und wer eine Route liest, will diese Trennung, denn sie sagt, wo man
+// anhaelt.
+//
+// Innerhalb eines groben Pulls verrät der Erstkontakt die Grenze: ein Pack
+// wird auf einen Schlag angegriffen, das naechste Sekunden spaeter. Geteilt
+// wird nur innerhalb - so kann nichts falsch zusammengelegt werden, was
+// Warcraftlogs richtig getrennt hat.
+// 45 Sekunden, an drei echten Routen abgetastet. Der Wert ist eine Kante,
+// keine Spitze: darunter zerfaellt ein Pull in seine Wellen, darueber
+// verschmelzen benachbarte Packs. Gemessene Guete der Einteilung 80 / 95 / 86.
+//
+// Drei Routen sind wenig, um eine Zahl festzuzurren - wer mehr hat, sollte
+// nachmessen, statt ihr zu vertrauen.
+const teilen = Number(args.split ?? 45000)
+
 for (const p of kampf.dungeonPulls ?? []) {
-  const eintraege = new Map()
+  const mitglieder = []
   for (const n of p.enemyNPCs ?? []) {
     const von = n.minimumInstanceID ?? 1
     const bis = n.maximumInstanceID ?? von
@@ -390,14 +407,32 @@ for (const p of kampf.dungeonPulls ?? []) {
       const klon = zugeteilt.get(schluessel)
       if (!klon) continue
       vergebeneInstanzen.add(schluessel)
-      if (!eintraege.has(klon.enemy)) eintraege.set(klon.enemy, [])
-      eintraege.get(klon.enemy).push(klon.clone)
-      kraefte += klon.count ?? 0
+      mitglieder.push({ klon, t: ort.get(schluessel)?.t ?? p.startTime })
     }
   }
-  if (eintraege.size) {
+
+  mitglieder.sort((a, b) => a.t - b.t)
+
+  let gruppe = []
+  let vorige = null
+  const abschliessen = () => {
+    if (!gruppe.length) return
+    const eintraege = new Map()
+    for (const m of gruppe) {
+      if (!eintraege.has(m.klon.enemy)) eintraege.set(m.klon.enemy, [])
+      eintraege.get(m.klon.enemy).push(m.klon.clone)
+      kraefte += m.klon.count ?? 0
+    }
     pulls.push({ enemies: [...eintraege.entries()].map(([enemy, clones]) => ({ enemy, clones })) })
+    gruppe = []
   }
+
+  for (const m of mitglieder) {
+    if (vorige !== null && m.t - vorige > teilen) abschliessen()
+    gruppe.push(m)
+    vorige = m.t
+  }
+  abschliessen()
 }
 
 const anteil = Math.round(kraefte / dungeon.totalCount * 1000) / 10
@@ -436,7 +471,26 @@ if (args.truth) {
   }
   const A = sammeln(route.pulls), B = sammeln(pulls)
   const gemeinsam = [...A.keys()].filter((k) => B.has(k))
-  const gleicherPull = gemeinsam.filter((k) => A.get(k) === B.get(k)).length
+
+  // Die Einteilung paarweise messen, nicht ueber Pull-Nummern: wer 25 Pulls
+  // baut und 14 vergleicht, kann keine Nummer treffen, auch wenn er richtig
+  // gruppiert. Die Frage ist, ob zwei Gegner, die in der echten Route
+  // zusammenstehen, auch bei mir zusammenstehen - und ob getrennte getrennt
+  // bleiben.
+  let zusammenBeide = 0, zusammenNurEcht = 0, zusammenNurMeins = 0
+  for (let i = 0; i < gemeinsam.length; i += 1) {
+    for (let j = i + 1; j < gemeinsam.length; j += 1) {
+      const a = gemeinsam[i], b = gemeinsam[j]
+      const echt = A.get(a) === A.get(b)
+      const meins = B.get(a) === B.get(b)
+      if (echt && meins) zusammenBeide += 1
+      else if (echt) zusammenNurEcht += 1
+      else if (meins) zusammenNurMeins += 1
+    }
+  }
+  const genauigkeit = zusammenBeide / Math.max(1, zusammenBeide + zusammenNurMeins)
+  const vollstaendig = zusammenBeide / Math.max(1, zusammenBeide + zusammenNurEcht)
+  const guete = 2 * genauigkeit * vollstaendig / Math.max(1e-9, genauigkeit + vollstaendig)
 
   console.log('')
   console.log('Gegen die echte Route:')
@@ -446,5 +500,8 @@ if (args.truth) {
     ' (' + Math.round(gemeinsam.length / A.size * 100) + '%)')
   console.log('  falsch:          ' + [...B.keys()].filter((k) => !A.has(k)).length)
   console.log('  fehlend:         ' + [...A.keys()].filter((k) => !B.has(k)).length)
-  console.log('  im selben Pull:  ' + gleicherPull + ' von ' + gemeinsam.length)
+  console.log('  Einteilung:      ' +
+    Math.round(genauigkeit * 100) + '% der von mir zusammengelegten gehoeren zusammen, ' +
+    Math.round(vollstaendig * 100) + '% der zusammengehoerigen habe ich zusammen  (Guete ' +
+    Math.round(guete * 100) + ')')
 }
