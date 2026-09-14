@@ -54,7 +54,6 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
   if (args.nur && !datei.startsWith(String(args.nur))) continue
   const pfad = join(inDir, datei)
   const laeufe = JSON.parse(readFileSync(pfad, 'utf8'))
-  let geaendert = false
 
   for (const lauf of laeufe) {
     // Schon gebaut? Dann nichts noch einmal aus dem Netz holen.
@@ -121,14 +120,17 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
       // soll das erfahren.
       lauf.filled = ergebnis.ergaenzt || undefined
       gebaut += 1
-      geaendert = true
       process.stdout.write('.')
+
+      // Nach jedem Treffer sichern, nicht erst am Ende des Dungeons. Der
+      // ganze Lauf dauert ueber eine Stunde, weil Warcraftlogs 3600 Punkte
+      // je Stunde zulaesst und ein Lauf rund 45 kostet. Wer da erst am Ende
+      // schreibt, verliert bei einem Abbruch zwanzig gebaute Routen.
+      writeFileSync(pfad, JSON.stringify(laeufe, null, 2) + '\n')
     } catch (e) {
       console.log('   ! ' + lauf.id + ' bauen: ' + e.message.slice(0, 100))
     }
   }
-
-  if (geaendert) writeFileSync(pfad, JSON.stringify(laeufe, null, 2) + '\n')
 }
 
 console.log('')
