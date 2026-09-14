@@ -251,15 +251,18 @@ async function main() {
 
   console.log('3b) Top-Laeufe von Raider.IO')
   //
-  // Sie kommen als Verweis ins Addon, nicht als Route.
+  // Zwei Sorten, je nachdem, ob der Lauf sich rekonstruieren liess.
   //
   // Raider.IO protokolliert, welche Gegner wann gefallen sind - nicht,
   // welcher der neun gleichnamigen es war und wo die Grenze zwischen zwei
-  // Pulls lag. Beides liess sich nur schaetzen, und eine Route, die
-  // ungefaehr stimmt, ist fuer ihren Zweck wertlos: wer ihr folgt, pullt an
-  // der falschen Stelle. Ausgeliefert wird deshalb nur, was belegt ist -
-  // Stufe, Zeit, Gruppe, Rang - und fuer die Route selbst der Verweis auf
-  // keystone.guru, wo sie vollstaendig liegt.
+  // Pulls lag. Daraus allein laesst sich keine Route bauen, nur eine erraten,
+  // und eine Route, die ungefaehr stimmt, ist fuer ihren Zweck wertlos: wer
+  // ihr folgt, pullt an der falschen Stelle.
+  //
+  // Warcraftlogs weiss beides. Wo tools/wcl-toproutes.mjs den Bericht des
+  // Laufs gefunden hat, stehen die Pulls im Eintrag, und der Lauf kommt als
+  // vollwertige Route ins Addon - mit Karte, Pull-Liste und Import, wie jede
+  // andere. Wo nicht, bleibt es beim Verweis auf keystone.guru.
   const rioDir = join(ROOT, 'data', 'raiderio')
   let rioCount = 0
   let rioSkipped = 0
@@ -273,9 +276,9 @@ async function main() {
           continue
         }
 
-        // Ohne Adresse der echten Route waere der Eintrag eine Sackgasse,
-        // und ein Lauf ausser der Zeit gehoert ohnehin nicht hierher.
-        if (!run.keystoneUrl || !run.onTime) {
+        // Ein Lauf ausser der Zeit gehoert nicht hierher, und ohne Route
+        // und ohne Adresse waere der Eintrag eine Sackgasse.
+        if (!run.onTime || (!run.keystoneUrl && !run.pulls)) {
           rioSkipped += 1
           continue
         }
@@ -287,9 +290,15 @@ async function main() {
         routes.push({
           id: run.id,
           source: 'raider.io',
-          // Kein Weg zur Karte, kein Import nach MDT - dieser Eintrag
-          // behauptet keine Route zu sein.
-          reference: true,
+          // Ohne Pulls kein Weg zur Karte und kein Import - ein solcher
+          // Eintrag behauptet gar nicht, eine Route zu sein.
+          reference: run.pulls ? undefined : true,
+          pulls: run.pulls,
+          enemyForces: run.enemyForces,
+          // Woher die Pulls stammen. Wer nachsehen will, ob die Route wirklich
+          // so gelaufen wurde, findet dort die Wiederholung.
+          wclReport: run.wclReport,
+          wclFight: run.wclFight,
           title: `+${run.keyLevel} · ${minutes}:${seconds}`,
           author: tank && tank.spec ? `${tank.spec} ${tank.class}` : null,
           url: run.url,
@@ -313,7 +322,9 @@ async function main() {
     }
   }
 
-  console.log(`   ${rioCount} Verweise` + (rioSkipped > 0 ? `, ${rioSkipped} uebersprungen` : ''))
+  const rioEcht = routes.filter((r) => r.source === 'raider.io' && r.pulls).length
+  console.log(`   ${rioCount} Top-Laeufe: ${rioEcht} mit Route, ${rioCount - rioEcht} als Verweis` +
+    (rioSkipped > 0 ? `, ${rioSkipped} uebersprungen` : ''))
   console.log('4) Routen gegen MDT pruefen und anreichern')
   const accepted = []
   const usedDungeons = new Map()
