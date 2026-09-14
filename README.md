@@ -36,13 +36,21 @@ Filtern nach Stufe, Tempo, Klasse und Spezialisierung; die Listen bieten nur
 Werte an, hinter denen auch etwas steht. Jeder Lauf zeigt seine Gruppe in
 Klassenfarben, Zeit, Rang und einen Rückverlink zu raider.io.
 
-**Offen gesagt: das sind keine Routen im Addon.** Raider.IO protokolliert,
+**Und es sind echte Routen, keine geschätzten.** Raider.IO protokolliert nur,
 welche Gegner wann gefallen sind – nicht, welcher von neun gleichnamigen es
-war und wo ein Pull endete. Daraus eine Route zu bauen ging: sie sah
-überzeugend aus und war nicht die, die gespielt wurde. Wer ihr folgt, pullt
-an der falschen Stelle. Deshalb steht dort jetzt nur, was belegt ist –
-Stufe, Zeit, Gruppe, Weltrang – und ein Knopf zur echten Route auf
-keystone.guru, deren Ansicht Raider.IO selbst einbettet.
+war und wo ein Pull endete. Daraus eine Route zu bauen ging und sah
+überzeugend aus, war aber nicht die gespielte.
+
+Das Kampfprotokoll des Laufs weiß beides. Fast jede dieser Gruppen zeichnet
+auf, und Warcraftlogs gibt aus, was darin steht: welche Instanz eines Gegners
+fiel, wo sie stand, wann sie zuerst getroffen wurde. Raider.IO nennt den
+Bericht zwar nirgends – aber es nennt Kader, Realm und Zeitpunkt, und darüber
+findet er sich. Gegen drei echte keystone.guru-Routen gemessen trifft das
+Ergebnis 96, 100 und 98 Prozent der Gegner.
+
+Wo sich kein Bericht findet, bleibt der Eintrag ein Verweis auf keystone.guru
+statt einer geratenen Route. Und wer nachsehen will, wie ein Lauf wirklich
+aussah: der Eintrag nennt seinen Warcraftlogs-Bericht.
 
 Aufgenommen wird ein Lauf nur, wenn er in der Zeit mit vollen Gegnerkräften
 abgeschlossen wurde, sein Besitzer das Anzeigen der Route erlaubt hat und

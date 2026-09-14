@@ -115,6 +115,11 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
       lauf.wclFight = treffer.fight
       lauf.pulls = ergebnis.pulls
       lauf.enemyForces = ergebnis.kraefte
+      // Der einzige Teil der Route, den kein Ereignis direkt belegt: Gegner,
+      // die im Protokoll starben, aber geometrisch nicht unterzubringen waren
+      // und deshalb ueber ihr Pack eingeordnet wurden. Wer die Route ansieht,
+      // soll das erfahren.
+      lauf.filled = ergebnis.ergaenzt || undefined
       gebaut += 1
       geaendert = true
       process.stdout.write('.')

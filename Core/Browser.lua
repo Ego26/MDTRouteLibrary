@@ -2097,11 +2097,11 @@ local function updateDetail(route)
     d.authorHit.tipTitle = top and ns.L["DETAIL_RECONSTRUCTED_TITLE"] or ns.L["DETAIL_ISSUE_TIP_TITLE"]
     d.authorHit.tipText = top and ns.L["DETAIL_RECONSTRUCTED"] or ns.L["DETAIL_ISSUE_TIP"]
 
-    -- Wurde etwas nachgetragen, gehoert das dazugesagt - es ist der einzige
-    -- Teil der Route, den kein Protokoll belegt.
-    if top and route.filledEnemies and #route.filledEnemies > 0 then
+    -- Wurde etwas ergaenzt, gehoert das dazugesagt - es ist der einzige Teil
+    -- der Route, den kein Ereignis direkt belegt.
+    if top and (route.filled or 0) > 0 then
         d.authorHit.tipText = d.authorHit.tipText .. "\n\n" ..
-            ns.L["DETAIL_FILLED"]:format(table.concat(route.filledEnemies, ", "))
+            ns.L["DETAIL_FILLED"]:format(route.filled)
     end
 
     d.issueButton.url = url

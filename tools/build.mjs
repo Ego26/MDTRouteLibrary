@@ -299,6 +299,7 @@ async function main() {
           // so gelaufen wurde, findet dort die Wiederholung.
           wclReport: run.wclReport,
           wclFight: run.wclFight,
+          filled: run.filled,
           title: `+${run.keyLevel} · ${minutes}:${seconds}`,
           author: tank && tank.spec ? `${tank.spec} ${tank.class}` : null,
           url: run.url,

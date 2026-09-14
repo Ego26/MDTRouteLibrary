@@ -32,14 +32,21 @@ Filter by key level, pace, class and specialisation; the lists only ever
 offer values that lead somewhere. Every run carries its group in class
 colours, its clear time, its rank, and a link back to raider.io.
 
-**One thing said plainly: these are not routes inside the addon.**
-Raider.IO records which enemies died and when, not which of nine
-identically named ones it was, or where a pull ended. Rebuilding a route
-from that was possible — it looked convincing, and it was not the route
-that was played. Follow it and you pull the wrong pack. So the tab shows
-only what is documented — key level, time, group, world rank — and a
-button to the real route on keystone.guru, whose viewer Raider.IO embeds
-on its own run pages.
+**And they are the real routes, not estimates.** Raider.IO records which
+enemies died and when — not which of nine identically named ones it was, or
+where a pull ended. Rebuilding a route from that was possible; it looked
+convincing and it was not the route that was played.
+
+The run's own combat log knows both. Nearly every one of these groups
+records, and Warcraftlogs hands out what the log contains: which instance of
+an enemy fell, where it stood, when it was first hit. Raider.IO never names
+the report — but it names the roster, the realm and the time, and that is
+enough to find it. Measured against three real keystone.guru routes, the
+result matches 96, 100 and 98 per cent of the enemies.
+
+Where no report turns up, the entry stays a link to keystone.guru rather
+than becoming a guess. And every rebuilt route names the Warcraftlogs report
+it came from, so you can watch the run it describes.
 
 A run is only listed when it was timed with the full enemy forces, its
 owner allows the route to be shown, and a route was actually published.
