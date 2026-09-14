@@ -87,38 +87,78 @@ export async function berichtFinden(gql, lauf, merker = new Map()) {
   const ziel = Date.parse(lauf.completed_at)
   if (!Number.isFinite(ziel)) return null
 
-  for (const m of lauf.roster ?? []) {
-    if (!m.name || !m.realm || !m.region) continue
+  const kader = (lauf.roster ?? []).filter((m) => m.name && m.realm && m.region)
+  const schluessel = (m) => m.region + '/' + m.realm + '/' + m.name
 
-    const schluessel = m.region + '/' + m.realm + '/' + m.name
-    let berichte = merker.get(schluessel)
-    if (!berichte) {
-      const d = await gql(`query ($name: String!, $server: String!, $region: String!) {
-        characterData { character(name: $name, serverSlug: $server, serverRegion: $region) {
-          recentReports(limit: 40) { data { code startTime endTime } }
-        } }
-      }`, { name: m.name, server: m.realm, region: m.region })
-      berichte = d?.characterData?.character?.recentReports?.data ?? []
-      merker.set(schluessel, berichte)
+  // Alle fuenf Charaktere in einer einzigen Anfrage, ueber Aliase. Einzeln
+  // gefragt war das der Engpass: das Holen der Ereignisse dauert elf Sekunden,
+  // die Suche davor dauerte eine Minute.
+  const offen = kader.filter((m) => !merker.has(schluessel(m)))
+  if (offen.length) {
+    const teile = offen.map((m, i) =>
+      'c' + i + ': character(name: $n' + i + ', serverSlug: $s' + i + ', serverRegion: $r' + i + ') ' +
+      '{ recentReports(limit: 40) { data { code startTime endTime } } }')
+    const kopf = offen.map((m, i) =>
+      '$n' + i + ': String!, $s' + i + ': String!, $r' + i + ': String!').join(', ')
+    const werte = {}
+    for (const [i, m] of offen.entries()) {
+      werte['n' + i] = m.name
+      werte['s' + i] = m.realm
+      werte['r' + i] = m.region
     }
 
-    // Der Lauf endete waehrend des Berichts. Eine Stunde Zugabe, weil der
-    // Zeitpunkt bei Raider.IO auf die Sekunde gerundet in UTC steht und der
-    // Bericht erst nach dem letzten Kampf schliesst.
-    const passend = berichte.filter((b) => b.startTime <= ziel && ziel <= b.endTime + 3600000)
+    // Ein unbekannter Charakter laesst Warcraftlogs die ganze Anfrage als
+    // Fehler melden. Dann eben einzeln - das trifft wenige Laeufe.
+    let d = null
+    try {
+      d = await gql('query (' + kopf + ') { characterData { ' + teile.join(' ') + ' } }', werte)
+    } catch {}
 
-    for (const b of passend) {
-      const d = await gql(`query ($code: String!) {
-        reportData { report(code: $code) {
-          fights(translate: false) { id keystoneLevel keystoneTime }
-        } }
-      }`, { code: b.code })
-
-      for (const f of d?.reportData?.report?.fights ?? []) {
-        if (f.keystoneLevel !== lauf.mythic_level) continue
-        if (Math.abs((f.keystoneTime ?? 0) - lauf.clear_time_ms) > 2000) continue
-        return { code: b.code, fight: f.id }
+    if (d) {
+      for (const [i, m] of offen.entries()) {
+        merker.set(schluessel(m), d.characterData?.['c' + i]?.recentReports?.data ?? [])
       }
+    } else {
+      for (const [i, m] of offen.entries()) {
+        const e = await gql(`query ($name: String!, $server: String!, $region: String!) {
+          characterData { character(name: $name, serverSlug: $server, serverRegion: $region) {
+            recentReports(limit: 40) { data { code startTime endTime } }
+          } }
+        }`, { name: m.name, server: m.realm, region: m.region }).catch(() => null)
+        merker.set(schluessel(m), e?.characterData?.character?.recentReports?.data ?? [])
+      }
+    }
+  }
+
+  // Der Lauf endete waehrend des Berichts. Eine Stunde Zugabe, weil der
+  // Zeitpunkt bei Raider.IO auf die Sekunde gerundet in UTC steht und der
+  // Bericht erst nach dem letzten Kampf schliesst.
+  const kandidaten = []
+  for (const m of kader) {
+    for (const b of merker.get(schluessel(m)) ?? []) {
+      if (b.startTime <= ziel && ziel <= b.endTime + 3600000 && !kandidaten.includes(b.code)) {
+        kandidaten.push(b.code)
+      }
+    }
+  }
+  if (!kandidaten.length) return null
+
+  // Auch die Berichte in einem Zug, aus demselben Grund.
+  const kopf = kandidaten.map((c, i) => '$c' + i + ': String!').join(', ')
+  const teile = kandidaten.map((c, i) =>
+    'b' + i + ': report(code: $c' + i + ') { fights(translate: false) { id keystoneLevel keystoneTime } }')
+  const werte = {}
+  for (const [i, c] of kandidaten.entries()) werte['c' + i] = c
+
+  const d = await gql('query (' + kopf + ') { reportData { ' + teile.join(' ') + ' } }', werte)
+    .catch(() => null)
+  if (!d) return null
+
+  for (const [i, c] of kandidaten.entries()) {
+    for (const f of d.reportData?.['b' + i]?.fights ?? []) {
+      if (f.keystoneLevel !== lauf.mythic_level) continue
+      if (Math.abs((f.keystoneTime ?? 0) - lauf.clear_time_ms) > 2000) continue
+      return { code: c, fight: f.id }
     }
   }
   return null

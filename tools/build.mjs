@@ -314,7 +314,12 @@ async function main() {
           region: run.region,
           bracket: run.bracket,
           tier: run.tier,
-          roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
+          // Ohne Realm und Region: die dienen nur dazu, den Bericht des Laufs
+          // auf Warcraftlogs zu finden, und das passiert lange vor dem Paket.
+          // Im Addon steht nur, was dort auch angezeigt wird.
+          roster: run.roster && run.roster.length > 0
+            ? run.roster.map(({ realm, realmRegion, ...rest }) => rest)
+            : undefined,
           enemyForcesRequired: run.enemyForcesRequired,
         })
         rioCount += 1
