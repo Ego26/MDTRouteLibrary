@@ -866,8 +866,34 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
       if (runs.length > 0) {
         const file = join(outDir, `${target.slug}.json`)
+
+        // Schon gebaute Routen uebernehmen.
+        //
+        // Die Rangliste aendert sich taeglich nur an den Raendern; die meisten
+        // Laeufe von gestern stehen morgen noch da. Wer die Datei blind neu
+        // schreibt, wirft ihre Pulls weg - und tools/wcl-toproutes.mjs holt
+        // dieselben Berichte jeden Tag noch einmal von Warcraftlogs. Das waere
+        // eine Stunde Rechenzeit taeglich fuer ein Ergebnis, das sich nicht
+        // geaendert hat.
+        let alt = new Map()
+        try {
+          alt = new Map(JSON.parse(readFileSync(file, 'utf8')).map((r) => [r.id, r]))
+        } catch {}
+
+        let uebernommen = 0
+        for (const run of runs) {
+          const vorher = alt.get(run.id)
+          if (!vorher?.pulls) continue
+          run.wclReport = vorher.wclReport
+          run.wclFight = vorher.wclFight
+          run.pulls = vorher.pulls
+          run.enemyForces = vorher.enemyForces
+          uebernommen += 1
+        }
+
         writeFileSync(file, `${JSON.stringify(runs, null, 2)}\n`)
-        console.log(`   ${runs.length} Läufe -> ${file}`)
+        console.log(`   ${runs.length} Läufe -> ${file}` +
+          (uebernommen ? ` (${uebernommen} Routen uebernommen)` : ''))
         total += runs.length
       } else {
         // Laut sein. Ein leeres Ergebnis heisst, dass dieser Dungeon im

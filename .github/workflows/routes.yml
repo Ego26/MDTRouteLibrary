@@ -97,6 +97,8 @@ jobs:
     env:
       KEYSTONE_API_KEY: ${{ secrets.KEYSTONE_API_KEY }}
       RAIDERIO_API_KEY: ${{ secrets.RAIDERIO_API_KEY }}
+      WCL_CLIENT_ID: ${{ secrets.WCL_CLIENT_ID }}
+      WCL_CLIENT_SECRET: ${{ secrets.WCL_CLIENT_SECRET }}
     steps:
       # Bedenkzeit. Wer sein Issue gerade noch bearbeitet, soll nicht mit
       # jedem Zwischenstand einen Lauf ausloesen. Zusammen mit der Gruppe
@@ -213,6 +215,31 @@ jobs:
           env.RAIDERIO_API_KEY != '' && github.event_name != 'issues' &&
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
         run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 10 --runs 5 --per-cell 2 --low-top 14 --max-runs 28 --out data/raiderio
+
+      # Und jetzt die eigentlichen Routen dazu.
+      #
+      # Raider.IO nennt den Warcraftlogs-Bericht eines Laufs nicht, aber es
+      # nennt Kader, Realm und Zeitpunkt - und darueber findet er sich. Aus dem
+      # Bericht kommt, was Raider.IO fehlt: welcher von neun gleichnamigen
+      # Gegnern fiel und wo ein Pull endete.
+      #
+      # Warcraftlogs vergibt seine Zugangsdaten selbst, ohne Antrag. Fehlen
+      # sie, faellt nur dieser Schritt aus: die Top-Laeufe bleiben dann
+      # Verweise auf keystone.guru, wie vorher.
+      #
+      # Gerechnet wird nur, was noch keine Route hat. Der Abgleich oben
+      # uebernimmt die Pulls der Laeufe, die gestern schon dastanden, also
+      # bleiben taeglich eine Handvoll neue uebrig. Der erste Lauf dauert gut
+      # eine halbe Stunde, jeder weitere ein paar Minuten.
+      #
+      # Das Kontingent ist 3600 Punkte je Stunde und ein Lauf kostet rund 45.
+      # Wird es knapp, wartet das Werkzeug bis zum Zuruecksetzen, statt
+      # abzubrechen.
+      - name: Routen der Top-Läufe aus Warcraftlogs bauen
+        if: >-
+          env.WCL_CLIENT_ID != '' && github.event_name != 'issues' &&
+          (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
+        run: node tools/wcl-toproutes.mjs --mdt .mdt --in data/raiderio
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
