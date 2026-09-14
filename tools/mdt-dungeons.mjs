@@ -104,6 +104,11 @@ export function parseDungeonFile(file) {
             x: Math.round(clone.x),
             y: Math.round(clone.y),
             sublevel: typeof clone.sublevel === 'number' ? clone.sublevel : 1,
+            // Die Packnummer. Klone mit derselben g gehoeren zusammen: MDT
+            // waehlt sie gemeinsam aus, und wer eine Route liest, pullt sie
+            // gemeinsam. Nachgemessen an drei echten Routen - dort sind
+            // Packs ganz drin oder gar nicht, 30 von 30 bei Rubinquell.
+            g: typeof clone.g === 'number' ? clone.g : undefined,
             // Ein Klon darf mehr Kraefte geben als seine Geschwister. MDT
             // macht das in Modules/Pulls.lua ausdruecklich:
             //

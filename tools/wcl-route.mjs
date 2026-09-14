@@ -133,14 +133,14 @@ async function alleEreignisse(gql, code, kampf, typ, aktoren) {
  * sie kam bei einem Stockwerk ein Massstab von -0,078 gegen 0,0162 heraus -
  * eine Anpassung, die rechnerisch passte und geometrisch unmoeglich war.
  */
-function abbildungSuchen(instanzen, kloneJeNpc, toleranz = 45) {
+function abbildungSuchen(instanzen, kloneJeNpc, toleranz = 45, eng = 25) {
   const paare = []
   for (const e of instanzen) {
     for (const k of kloneJeNpc.get(e.npcId) ?? []) paare.push({ e, k })
   }
   if (paare.length < 2) return null
 
-  let beste = null
+  const kandidaten = []
   const schritt = Math.max(1, Math.floor(paare.length / 160))
 
   for (let i = 0; i < paare.length; i += schritt) {
@@ -157,28 +157,67 @@ function abbildungSuchen(instanzen, kloneJeNpc, toleranz = 45) {
       if (Math.sign(dxW) !== Math.sign(dxM) || Math.sign(dyW) !== Math.sign(dyM)) continue
 
       const kandidat = { s, dx: a.k.x - s * a.e.x, dy: a.k.y - s * a.e.y }
-      const gueltig = bewerten(kandidat, instanzen, kloneJeNpc, toleranz)
-      if (!beste || gueltig.treffer > beste.treffer ||
-          (gueltig.treffer === beste.treffer && gueltig.summe < beste.summe)) {
-        beste = { ...kandidat, ...gueltig }
-      }
+      kandidaten.push({ ...kandidat, ...bewerten(kandidat, instanzen, kloneJeNpc, toleranz) })
     }
   }
+  if (!kandidaten.length) return null
 
-  // Nachjustieren: an den Treffern noch einmal rechnen, dann erneut zuordnen.
-  // Zwei Punkte legen eine Abbildung fest, aber sie tragen auch ihren
-  // eigenen Messfehler hinein; ueber dreissig Treffer mittelt er sich weg.
-  for (let runde = 0; beste && runde < 3; runde += 1) {
-    const zuordnung = zuordnen(beste, instanzen, kloneJeNpc, toleranz)
-    if (zuordnung.length < 4) break
-    const verfeinert = ausgleichen(zuordnung)
-    if (!verfeinert) break
-    const gueltig = bewerten(verfeinert, instanzen, kloneJeNpc, toleranz)
-    if (gueltig.treffer < beste.treffer) break
-    beste = { ...verfeinert, ...gueltig }
+  // Die aussichtsreichsten Anfaenge, nach Massstab entdoppelt. Tausende
+  // Kandidaten unterscheiden sich nur in der vierten Stelle; entscheidend
+  // sind die wenigen wirklich verschiedenen Massstaebe.
+  kandidaten.sort((a, b) => b.treffer - a.treffer || a.summe - b.summe)
+  const anfaenge = []
+  const gesehen = new Set()
+  for (const k of kandidaten) {
+    const schluessel = k.s.toFixed(4)
+    if (gesehen.has(schluessel)) continue
+    gesehen.add(schluessel)
+    anfaenge.push(k)
+    if (anfaenge.length >= 12) break
   }
 
-  return beste
+  let beste = null
+  for (const anfang of anfaenge) {
+    let abb = anfang
+    // Nachjustieren: an den Treffern noch einmal rechnen, dann erneut
+    // zuordnen. Zwei Punkte legen eine Abbildung fest, aber sie tragen auch
+    // ihren eigenen Messfehler hinein; ueber dreissig Treffer mittelt er sich
+    // weg.
+    for (let runde = 0; runde < 3; runde += 1) {
+      const zuordnung = zuordnen(abb, instanzen, kloneJeNpc, toleranz)
+      if (zuordnung.length < 4) break
+      const verfeinert = ausgleichen(zuordnung)
+      if (!verfeinert) break
+      const locker = bewerten(verfeinert, instanzen, kloneJeNpc, toleranz)
+      if (locker.treffer < abb.treffer) break
+      abb = { ...verfeinert, ...locker }
+    }
+
+    // Ausgewaehlt wird streng. Das ist der Punkt, an dem sich eine richtige
+    // Abbildung von einer bloss plausiblen trennt: mit falschem Massstab
+    // rutschen beschworene Adds zufaellig auf irgendwelche Vorlagen und
+    // zaehlen bei weiter Toleranz als Treffer. Bei Rubinquell bekam die
+    // falsche Abbildung so 50 Punkte und die richtige 42 - und die richtige
+    // haette 62 von 65 Gegnern in Reichweite gebracht. Eng gemessen dreht
+    // sich das um: was nur zufaellig passt, passt nicht auf 25 Punkte genau.
+    //
+    // Bei Gleichstand entscheidet die lockere Zaehlung. Ein Stockwerk mit
+    // zwoelf Instanzen bringt kaum genug enge Treffer, um zu unterscheiden -
+    // dort zaehlt wieder, wer insgesamt mehr erklaert.
+    const streng = bewerten(abb, instanzen, kloneJeNpc, eng)
+    const punkte = [streng.treffer, abb.treffer, -streng.summe]
+    if (!beste || besser(punkte, beste.punkte)) beste = { ...abb, streng, punkte }
+  }
+
+  return beste ? { ...beste, ...bewerten(beste, instanzen, kloneJeNpc, toleranz) } : null
+}
+
+/** Vergleicht zwei Bewertungen der Reihe nach: erst enge Treffer, dann lockere. */
+function besser(a, b) {
+  for (let i = 0; i < a.length; i += 1) {
+    if (a[i] !== b[i]) return a[i] > b[i]
+  }
+  return false
 }
 
 /** Kleinste Quadrate fuer gemeinsamen Massstab und zwei Verschiebungen. */
@@ -264,10 +303,16 @@ const fightId = args.fight !== undefined ? Number(args.fight) : null
 const cacheDir = String(args.cache ?? 'data/cache/wcl')
 mkdirSync(cacheDir, { recursive: true })
 
-const gql = await anmelden()
-
 // ---- Kampf, Akteure, Pulls
-const kopf = await gql(`query ($code: String!) {
+//
+// Auch der Kopf wird aufgehoben. Er kostet eine Anfrage und aendert sich nie -
+// ein abgeschlossener Lauf bekommt keine neuen Pulls mehr.
+const kopfDatei = join(cacheDir, code + '-kopf.json')
+let kopf
+if (existsSync(kopfDatei)) {
+  kopf = JSON.parse(readFileSync(kopfDatei, 'utf8'))
+} else {
+  kopf = await (await anmelden())(`query ($code: String!) {
   reportData { report(code: $code) {
     title
     masterData { actors(type: "NPC") { id gameID name } }
@@ -281,6 +326,8 @@ const kopf = await gql(`query ($code: String!) {
     }
   } }
 }`, { code })
+  writeFileSync(kopfDatei, JSON.stringify(kopf))
+}
 
 const bericht = kopf.reportData.report
 const kampf = fightId !== null
@@ -300,9 +347,11 @@ console.log(kampf.name + ' +' + kampf.keystoneLevel + ', ' +
   ', ' + (kampf.dungeonPulls ?? []).length + ' Pulls')
 
 // ---- Ereignisse, mit Zwischenspeicher
+let gql = null
 async function geholt(typ) {
   const datei = join(cacheDir, code + '-' + kampf.id + '-' + typ + '.json')
   if (existsSync(datei)) return JSON.parse(readFileSync(datei, 'utf8'))
+  gql = gql ?? await anmelden()
   const daten = await alleEreignisse(gql, code, kampf, typ, aktoren)
   writeFileSync(datei, JSON.stringify(daten))
   return daten
@@ -338,7 +387,7 @@ for (const gegner of dungeon.enemies ?? []) {
     if (!kloneJeNpc.has(gegner.id)) kloneJeNpc.set(gegner.id, [])
     kloneJeNpc.get(gegner.id).push({
       npcId: gegner.id, enemy: gegner.index, clone: Number(idx),
-      x: pos.x, y: pos.y,
+      x: pos.x, y: pos.y, g: pos.g,
       // Ein Klon darf mehr Kraefte geben als seine Geschwister.
       count: pos.count ?? gegner.count,
     })
@@ -349,7 +398,7 @@ for (const gegner of dungeon.enemies ?? []) {
 const abbildungen = new Map()
 for (const mapID of [...new Set([...ort.values()].map((e) => e.mapID))]) {
   const hier = [...ort.values()].filter((e) => e.mapID === mapID)
-  const abb = abbildungSuchen(hier, kloneJeNpc)
+  const abb = abbildungSuchen(hier, kloneJeNpc, Number(args.fit ?? 45), Number(args.eng ?? 25))
   if (!abb) { console.log('Karte ' + mapID + ': keine Abbildung'); continue }
   abbildungen.set(mapID, abb)
   console.log('Karte ' + String(mapID) + ': ' + String(hier.length).padStart(3) +
@@ -368,9 +417,8 @@ for (const [mapID, abb] of abbildungen) {
   }
 }
 
-// ---- Pulls in MDTs Sprache
-const pulls = []
-let kraefte = 0
+// ---- Pulls, zunaechst als blosse Klonlisten
+const rohPulls = []
 
 // Jeder Gegner gehoert in genau einen Pull. Die Instanzbereiche der Pulls
 // ueberschneiden sich naemlich: kommt dieselbe Gegnerart in mehreren Pulls
@@ -417,13 +465,7 @@ for (const p of kampf.dungeonPulls ?? []) {
   let vorige = null
   const abschliessen = () => {
     if (!gruppe.length) return
-    const eintraege = new Map()
-    for (const m of gruppe) {
-      if (!eintraege.has(m.klon.enemy)) eintraege.set(m.klon.enemy, [])
-      eintraege.get(m.klon.enemy).push(m.klon.clone)
-      kraefte += m.klon.count ?? 0
-    }
-    pulls.push({ enemies: [...eintraege.entries()].map(([enemy, clones]) => ({ enemy, clones })) })
+    rohPulls.push(gruppe.map((m) => m.klon))
     gruppe = []
   }
 
@@ -435,9 +477,94 @@ for (const p of kampf.dungeonPulls ?? []) {
   abschliessen()
 }
 
+// ---- Packs vervollstaendigen
+//
+// MDT kennt zu jedem Klon eine Packnummer g. Wer eines dieser Geschwister
+// pullt, pullt alle - sie stehen beieinander und ziehen mit. Die echten
+// Routen bestaetigen das: von 35 Packs in Rubinquell sind 30 vollstaendig
+// drin und keines halb, bei Altar der Reisszaehne 35 von 36.
+//
+// Fuer mich ist das die Rettung der fehlenden Gegner. Wenn Warcraftlogs mir
+// zwei von drei Feuerbeschwoerern liefert, fehlt der dritte nicht, weil er
+// nicht gepullt wurde, sondern weil er zu weit von seiner Vorlage stand oder
+// sein Treffer ohne Ort ankam. Sein Pack sagt mir, wo er hingehoert.
+//
+// Ergaenzt wird aber nur gegen Beleg. Der Beleg ist eine Leiche: im Bericht
+// muss eine Instanz derselben Gegnerart gestorben sein, die ich nirgends
+// unterbringen konnte. Dann fehlt der Klon wirklich nur an der Geometrie.
+//
+// Ohne diese Bedingung erfindet die Ergaenzung. Mordgasse hat Packs aus
+// sieben beschworenen Schergen, von denen einer gepullt wird - vervollstaen-
+// digt kam die Route auf 109 Prozent der Kraefte. Mit Beleg bleibt sie
+// darunter, denn beschworene Adds, die nie kamen, sind auch nie gestorben.
+const packAnteil = Number(args.pack ?? 0.34)
+let ergaenzt = 0
+
+if (packAnteil > 0) {
+  // Gestorben, aber keinem Klon zugeteilt - je Gegnerart ein Vorrat.
+  const uebrig = new Map()
+  for (const schluessel of gestorben) {
+    if (zugeteilt.has(schluessel)) continue
+    const npc = Number(schluessel.split(':')[0])
+    uebrig.set(npc, (uebrig.get(npc) ?? 0) + 1)
+  }
+  const packKlone = new Map()
+  for (const liste of kloneJeNpc.values()) {
+    for (const k of liste) {
+      if (k.g === undefined) continue
+      if (!packKlone.has(k.g)) packKlone.set(k.g, [])
+      packKlone.get(k.g).push(k)
+    }
+  }
+
+  const wo = new Map()
+  for (const [i, liste] of rohPulls.entries()) {
+    for (const k of liste) wo.set(k.enemy + ':' + k.clone, i)
+  }
+
+  for (const klone of packKlone.values()) {
+    const drin = klone.filter((k) => wo.has(k.enemy + ':' + k.clone))
+    if (!drin.length || drin.length === klone.length) continue
+    if (drin.length / klone.length < packAnteil) continue
+
+    // In den Pull, in dem das Pack ohnehin ueberwiegend steht.
+    const zaehler = new Map()
+    for (const k of drin) {
+      const i = wo.get(k.enemy + ':' + k.clone)
+      zaehler.set(i, (zaehler.get(i) ?? 0) + 1)
+    }
+    const ziel = [...zaehler.entries()].sort((a, b) => b[1] - a[1])[0][0]
+
+    for (const k of klone) {
+      if (wo.has(k.enemy + ':' + k.clone)) continue
+      if (!(uebrig.get(k.npcId) > 0)) continue
+      uebrig.set(k.npcId, uebrig.get(k.npcId) - 1)
+      rohPulls[ziel].push(k)
+      wo.set(k.enemy + ':' + k.clone, ziel)
+      ergaenzt += 1
+    }
+  }
+}
+
+// ---- In MDTs Sprache
+const pulls = []
+let kraefte = 0
+let gegnerZahl = 0
+for (const liste of rohPulls) {
+  const eintraege = new Map()
+  for (const klon of liste) {
+    if (!eintraege.has(klon.enemy)) eintraege.set(klon.enemy, [])
+    eintraege.get(klon.enemy).push(klon.clone)
+    kraefte += klon.count ?? 0
+    gegnerZahl += 1
+  }
+  pulls.push({ enemies: [...eintraege.entries()].map(([enemy, clones]) => ({ enemy, clones })) })
+}
+
 const anteil = Math.round(kraefte / dungeon.totalCount * 1000) / 10
 console.log('')
-console.log('Route: ' + pulls.length + ' Pulls, ' + zugeteilt.size + ' Gegner, ' +
+console.log('Route: ' + pulls.length + ' Pulls, ' + gegnerZahl + ' Gegner' +
+  (ergaenzt ? ' (davon ' + ergaenzt + ' aus dem Pack ergaenzt)' : '') + ', ' +
   kraefte + ' von ' + dungeon.totalCount + ' Kraeften (' + anteil + '%)')
 
 const ergebnis = {
@@ -500,6 +627,12 @@ if (args.truth) {
     ' (' + Math.round(gemeinsam.length / A.size * 100) + '%)')
   console.log('  falsch:          ' + [...B.keys()].filter((k) => !A.has(k)).length)
   console.log('  fehlend:         ' + [...A.keys()].filter((k) => !B.has(k)).length)
+  if (args.zeige) {
+    const namen = new Map((dungeon.enemies ?? []).map((e) => [e.index, e.name]))
+    const zeig = (k) => k + ' ' + String(namen.get(Number(k.split(':')[0])) ?? '?').slice(0, 18)
+    console.log('  falsch:          ' + [...B.keys()].filter((k) => !A.has(k)).map(zeig).join(' | '))
+    console.log('  fehlend:         ' + [...A.keys()].filter((k) => !B.has(k)).map(zeig).join(' | '))
+  }
   console.log('  Einteilung:      ' +
     Math.round(genauigkeit * 100) + '% der von mir zusammengelegten gehoeren zusammen, ' +
     Math.round(vollstaendig * 100) + '% der zusammengehoerigen habe ich zusammen  (Guete ' +
