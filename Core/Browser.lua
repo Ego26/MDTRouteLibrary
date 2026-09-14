@@ -321,6 +321,32 @@ local function badgeText(route)
     return table.concat(parts, T:Hex("textMuted") .. " · |r")
 end
 
+---Wer die Route gelaufen ist, so wie es dasteht.
+---
+---Bei einer eingereichten Route ist das ein Spielername, und davor gehoert
+---"von". Bei einem Top-Lauf steht dort die Tank-Spezialisierung - kein Name,
+---sondern eine Eigenschaft der Route. "von Blutritter" liest sich falsch, und
+---die Klassenfarbe sagt ohnehin mehr als das Wort davor.
+---@param route table
+---@return string
+local function authorText(route)
+    if not route.author then return "" end
+
+    if not isTopRun(route) then
+        return ns.L["BY_AUTHOR"]:format(route.author)
+    end
+
+    local tank
+    for _, member in ipairs(route.roster or {}) do
+        if member.role == "tank" then
+            tank = member
+            break
+        end
+    end
+
+    return ("%s%s|r"):format(classHex(tank and tank.class), route.author)
+end
+
 ---Die Gruppe eines Laufs als eine Zeile: Spezialisierungen in Klassenfarbe.
 ---
 ---Nur die Spezialisierung, nicht "Blut Todesritter": zu fuenft waere das
@@ -1963,7 +1989,7 @@ local function updateDetail(route)
     d.dungeon:SetText(route.dungeonEnglishName or "")
     d.title:SetText(route.title or route.id)
 
-    local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
+    local author = authorText(route)
 
     -- Gibt es eine Adresse, wird die Herkunft golden statt grau: sie ist dann
     -- keine Beschriftung mehr, sondern ein Weg dorthin.
@@ -2614,7 +2640,7 @@ function B.Refresh()
                     meta = meta .. T:Hex("textMuted") .. " · " .. route.source .. "|r"
                 end
             else
-                local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
+                local author = authorText(route)
                 local src = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
 
                 -- Das Tempo gehoert in die Zeile, nicht nur in die Details.

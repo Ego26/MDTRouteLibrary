@@ -22,6 +22,8 @@
   run the same route — +18 to +21 are all 30 pulls at 3.2 mobs each — but an
   empty list at +16 reads as "there is nothing for my key", which is worse
   than a little duplication.
+- Top runs now name their tank in the class colour, without a "by" in front —
+  it is a property of the route, not an author.
 - Filter by pace, and see it in the list. The quick/safe distinction was only
   visible after opening a route, so picking one meant clicking through them.
 - The key level filter now only offers levels that exist in the tab you are
