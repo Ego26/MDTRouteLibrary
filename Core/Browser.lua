@@ -93,6 +93,17 @@ local function activeFilterCount()
     return n
 end
 
+---Ist das ein Verweis statt einer Route?
+---
+---Ein Verweis nennt, was belegt ist - Stufe, Zeit, Gruppe, Rang - und
+---zeigt fuer die Route selbst auf keystone.guru. Er hat keine Pulls, also
+---auch keine Karte und keinen Weg nach MDT.
+---@param route table
+---@return boolean
+local function isReference(route)
+    return route.reference == true
+end
+
 ---Stammt die Route aus einem echten Lauf auf Raider.IO?
 ---@param route table
 ---@return boolean
@@ -124,17 +135,22 @@ end
 ---Steht ein Dungeon zur Auswahl, zaehlen nur dessen Laeufe: sonst bietet die
 ---Liste "Druide" an, obwohl in diesem Dungeon keiner vorkommt, und die Auswahl
 ---fuehrt geradewegs in eine leere Liste.
+---Die Spezialisierungen kommen als Paare zurueck, nicht als blosse Namen:
+---"Heilig" gibt es bei Priester und Paladin, "Wiederherstellung" bei Druide
+---und Schamane. Ohne die Klasse dazu filterte ein Klick auf "Heilig" beide
+---zugleich, ohne dass jemand es merkt.
 ---@param forClass string|nil Spezialisierungen auf diese Klasse begrenzen
----@return string[] classes, string[] specs
+---@return string[] classes, table[] specs {spec, class}
 local function rosterChoices(forClass)
-    local classSet, specSet = {}, {}
+    local classSet, specsOfClass = {}, {}
 
     for _, route in ipairs(ns.routes) do
         if not filterDungeon or route.challengeModeId == filterDungeon then
             for _, member in ipairs(route.roster or {}) do
                 if member.class then classSet[member.class] = true end
-                if member.spec and (not forClass or member.class == forClass) then
-                    specSet[member.spec] = true
+                if member.spec and member.class and (not forClass or member.class == forClass) then
+                    specsOfClass[member.class] = specsOfClass[member.class] or {}
+                    specsOfClass[member.class][member.spec] = true
                 end
             end
         end
@@ -142,9 +158,18 @@ local function rosterChoices(forClass)
 
     local classes, specs = {}, {}
     for name in pairs(classSet) do classes[#classes + 1] = name end
-    for name in pairs(specSet) do specs[#specs + 1] = name end
+    for class, set in pairs(specsOfClass) do
+        for spec in pairs(set) do specs[#specs + 1] = { class = class, spec = spec } end
+    end
+
     table.sort(classes)
-    table.sort(specs)
+    -- Nach Klasse, dann nach Spezialisierung: so stehen die Gruppen
+    -- beieinander und innerhalb jeder Gruppe alphabetisch.
+    table.sort(specs, function(a, b)
+        if a.class ~= b.class then return a.class < b.class end
+        return a.spec < b.spec
+    end)
+
     return classes, specs
 end
 
@@ -246,6 +271,15 @@ end
 ---erwartet den Token ohne Leerzeichen. Kennt sie ihn nicht, bleibt es bei der
 ---normalen Textfarbe - eine unbekannte Klasse ist kein Grund, nichts
 ---anzuzeigen.
+---@param name string|nil
+---@return table|nil {r, g, b}
+local function classColour(name)
+    if type(name) ~= "string" then return nil end
+    local token = (name:upper():gsub("[^A-Z]", ""))
+    return RAID_CLASS_COLORS and RAID_CLASS_COLORS[token] or nil
+end
+
+---Farbcode einer Klasse, fuer Text mit |c-Praefix.
 ---@param name string|nil
 ---@return string
 local function classHex(name)
@@ -1970,6 +2004,7 @@ local function updateDetail(route)
         d.issueButton:Hide()
         d.affixes:SetText("")
         d.badgeHit:Hide()
+        d.note:Hide()
         d.group:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
@@ -2021,7 +2056,12 @@ local function updateDetail(route)
     d.issueButton.routeTitle = route.title or route.id
     -- Nur eigene Einreichungen heissen so. Eine Route von keystone.guru
     -- fuehrt zu deren Seite, und die ist keine Einreichung.
-    if top then
+    if route.keystoneUrl then
+        -- Der wichtigere Verweis: dort liegt die Route, nicht nur der Lauf.
+        d.issueButton:SetText(ns.L["DETAIL_ROUTE_BUTTON"])
+        d.issueButton.tooltipText = ns.L["DETAIL_ROUTE_TIP"]
+        d.issueButton.url = route.keystoneUrl
+    elseif top then
         d.issueButton:SetText(ns.L["DETAIL_RIO_BUTTON"])
         d.issueButton.tooltipText = ns.L["DETAIL_RIO_TIP"]
     else
@@ -2029,15 +2069,28 @@ local function updateDetail(route)
             and ns.L["DETAIL_ISSUE_BUTTON"] or ns.L["DETAIL_SOURCE_BUTTON"])
         d.issueButton.tooltipText = ns.L["DETAIL_ISSUE_TIP"]
     end
-    d.issueButton:SetShown(url ~= nil)
+    d.issueButton:SetShown(url ~= nil or route.keystoneUrl ~= nil)
 
     -- Vier Kennzahlen, dieselben wie die Spalten der Liste und in derselben
     -- Reihenfolge.
-    setTile(1, percentText(route), ns.L["TILE_PERCENT"])
-    setTile(2, (route.enemyForces and route.enemyForcesRequired)
-        and ("%d/%d"):format(route.enemyForces, route.enemyForcesRequired)
-        or T:Text("textMuted", "–"), ns.L["COL_FORCES"])
-    setTile(3, tostring(#route.pulls), ns.L["COL_PULLS"])
+    local reference = isReference(route)
+
+    if reference then
+        -- Was ein Verweis belegt: Stufe und Zeit. Kraefte und Pullzahl
+        -- gehoeren zur Route, und die liegt bei keystone.guru.
+        setTile(1, levelText(route) ~= "" and levelText(route) or T:Text("textMuted", "–"),
+            ns.L["COL_LEVEL"])
+        setTile(2, (route.enemyForcesRequired
+            and ("%d"):format(route.enemyForcesRequired)
+            or T:Text("textMuted", "–")), ns.L["COL_FORCES"])
+        setTile(3, T:Text("textMuted", "–"), ns.L["COL_PULLS"])
+    else
+        setTile(1, percentText(route), ns.L["TILE_PERCENT"])
+        setTile(2, (route.enemyForces and route.enemyForcesRequired)
+            and ("%d/%d"):format(route.enemyForces, route.enemyForcesRequired)
+            or T:Text("textMuted", "–"), ns.L["COL_FORCES"])
+        setTile(3, tostring(#route.pulls), ns.L["COL_PULLS"])
+    end
     -- Bei einem Top-Lauf steht die Stufe schon im Titel ("+21 · 32:55"); die
     -- Kachel zeigt stattdessen, was diesen Lauf von den anderen unterscheidet.
     if top and route.clearSeconds then
@@ -2095,6 +2148,24 @@ local function updateDetail(route)
         d.runs:SetText(T:Text("textMuted", ns.L["DETAIL_NO_RUNS"]))
     end
 
+    if reference then
+        -- Hier stand einmal eine rekonstruierte Pull-Liste. Sie sah
+        -- ueberzeugend aus und war es nicht: Raider.IO protokolliert
+        -- weder, welcher von neun gleichnamigen Gegnern fiel, noch wo ein
+        -- Pull endete. Wer einer geratenen Route folgt, pullt an der
+        -- falschen Stelle - also steht hier jetzt, wo die echte liegt.
+        d.section:SetText(ns.L["DETAIL_SECTION_ROUTE"]:upper())
+        d.foldAll:Hide()
+        for _, row in ipairs(d.pullRows) do row:Hide() end
+
+        d.note:SetText(ns.L["DETAIL_REFERENCE_NOTE"])
+        d.note:Show()
+        hidePreview()
+        d.content:SetHeight(1)
+        return
+    end
+
+    d.note:Hide()
     d.section:SetText(ns.L["DETAIL_SECTION_PULLS"]:upper())
 
     local anyOpen = false
@@ -2293,6 +2364,7 @@ function updateDungeonDetail(dungeon)
 
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
     d.badgeHit:Hide()
+    d.note:Hide()
     d.group:SetText("")
     d.runs:SetText("")
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
@@ -2660,9 +2732,18 @@ function B.Refresh()
             row.meta:SetText(meta)
 
             row.level:SetText(levelText(route))
-            row.pulls:SetText(("%d"):format(#route.pulls))
-            row.forces:SetText(("%d/%d"):format(
-                route.enemyForces or 0, route.enemyForcesRequired or 0))
+
+            -- Ein Verweis kennt keine Pulls und keine Kraefte seiner
+            -- Route. Leere Spalten sind hier ehrlicher als Zahlen, die
+            -- wir uns ausdenken muessten.
+            if isReference(route) then
+                row.pulls:SetText(T:Text("textMuted", "–"))
+                row.forces:SetText("")
+            else
+                row.pulls:SetText(("%d"):format(#route.pulls))
+                row.forces:SetText(("%d/%d"):format(
+                    route.enemyForces or 0, route.enemyForcesRequired or 0))
+            end
 
             local fav = isFavourite(route.id)
             row.fav:Show()
@@ -2675,15 +2756,25 @@ function B.Refresh()
             else
                 row.fav.texture:SetVertexColor(0.65, 0.65, 0.65, 0.55)
             end
-            row.percent:SetText(percentText(route))
+            row.percent:SetText(isReference(route) and "" or percentText(route))
 
-            -- Beste eigene Zeit. Gruen, wenn der Lauf in der Zeit war.
-            local best = ns.Runs.Best(route.challengeModeId, ns.Runs.KeyFor(route))
-            row.time:SetText(best
-                and ("%s%s|r"):format(
-                    best.onTime and T:Hex("success") or T:Hex("textSecondary"),
-                    ns.Runs.FormatTime(best.time))
-                or "")
+            if filterMode == "all" then
+                -- Im Reiter "Alle" stehen vier Abschnitte untereinander, jeder
+                -- mit eigenen Dungeongruppen. Wer scrollt, hat die Ueberschrift
+                -- laengst aus dem Bild - und sieht einer Route sonst nicht an,
+                -- wo sie hingehoert. Die eigene Bestzeit steht weiterhin in den
+                -- Details, wo sie ohnehin mehr Platz hat.
+                local dungeon = ns.GetDungeon(route.challengeModeId)
+                row.time:SetText(T:Text("textSecondary", dungeon and dungeon.shortName or ""))
+            else
+                -- Beste eigene Zeit. Gruen, wenn der Lauf in der Zeit war.
+                local best = ns.Runs.Best(route.challengeModeId, ns.Runs.KeyFor(route))
+                row.time:SetText(best
+                    and ("%s%s|r"):format(
+                        best.onTime and T:Hex("success") or T:Hex("textSecondary"),
+                        ns.Runs.FormatTime(best.time))
+                    or "")
+            end
 
             local isSelected = route.id == selectedId
             row.selected:SetShown(isSelected)
@@ -2711,6 +2802,14 @@ function B.Refresh()
     ui.filterButton:SetText(active > 0
         and ("%s (%d)"):format(ns.L["FILTER"], active)
         or ns.L["FILTER"])
+
+    -- Die Spalte ganz rechts wechselt mit dem Reiter, siehe acquireRow().
+    if ui.timeHead then
+        local isAll = filterMode == "all"
+        ui.timeHead.text:SetText(ns.L[isAll and "COL_DUNGEON" or "COL_TIME"])
+        ui.timeHead.tipTitle = ns.L[isAll and "COL_DUNGEON_TIP_TITLE" or "COL_TIME_TIP_TITLE"]
+        ui.timeHead.tipBody = ns.L[isAll and "COL_DUNGEON_TIP" or "COL_TIME_TIP"]
+    end
 
     -- Die Stufenregler richten sich nach dem, was der Reiter hergibt. Bei den
     -- Top-Laeufen faengt das bei +10 an, bei den eigenen Routen ganz unten.
@@ -2945,6 +3044,15 @@ local function buildDetail(parent)
         ns.UI.ShowCopyDialog(self.routeTitle or "", ns.L["DETAIL_ISSUE_HELP"], self.url)
     end)
     d.issueButton:Hide()
+
+    -- Steht anstelle der Pull-Liste, wenn ein Eintrag nur ein Verweis ist.
+    d.note = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    d.note:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", 0, -24)
+    d.note:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+    d.note:SetJustifyH("LEFT")
+    d.note:SetWordWrap(true)
+    d.note:SetTextColor(T:Color("textSecondary"))
+    d.note:Hide()
 
     d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     d.section:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", -2, -10)
@@ -3313,10 +3421,14 @@ local function buildList(parent)
         list.rows = {}
         list.offset = 0
 
+        -- Ein Eintrag ist { value, label, colour } oder eine Ueberschrift
+        -- { header = "Druide", colour = ... }. Ueberschriften lassen sich
+        -- nicht anklicken; sie ordnen die Liste, wenn sonst hundert
+        -- Spezialisierungen ohne Zusammenhang untereinanderstuenden.
         local function draw()
             local options = gather()
             -- "alle" steht immer oben und bedeutet: kein Filter.
-            table.insert(options, 1, false)
+            table.insert(options, 1, { value = nil, label = ns.L["FILTER_ALL"] })
 
             local visible = math.min(#options, CHOICE_ROWS)
             list.offset = math.max(0, math.min(list.offset, #options - visible))
@@ -3341,7 +3453,8 @@ local function buildList(parent)
                     row.text:SetJustifyH("LEFT")
 
                     row:SetScript("OnClick", function(self)
-                        set(self.value or nil)
+                        if not self.option or self.option.header then return end
+                        set(self.option.value, self.option)
                         list:Hide()
                         wipe(pages)
                         B.Refresh()
@@ -3349,11 +3462,35 @@ local function buildList(parent)
                     list.rows[index] = row
                 end
 
-                local value = options[index + list.offset]
-                row.value = value or nil
-                row.text:SetText(value or ns.L["FILTER_ALL"])
-                -- Die gewaehlte Zeile hebt sich ab, sonst sucht man sie.
-                row.text:SetTextColor(T:Color(row.value == get() and "accent" or "textPrimary"))
+                local option = options[index + list.offset] or {}
+                row.option = option
+
+                if option.header then
+                    -- Ueberschrift: eingerueckt wird stattdessen der Inhalt,
+                    -- damit die Gliederung ohne Linien auskommt.
+                    row.text:SetPoint("LEFT", row, "LEFT", 6, 0)
+                    row.text:SetText(option.header)
+                    if option.colour then
+                        row.text:SetTextColor(option.colour.r, option.colour.g, option.colour.b)
+                    else
+                        row.text:SetTextColor(T:Color("textMuted"))
+                    end
+                    row:Disable()
+                else
+                    row.text:SetPoint("LEFT", row, "LEFT", option.indent and 18 or 6, 0)
+                    row.text:SetText(option.label)
+                    -- Die gewaehlte Zeile leuchtet, die uebrigen tragen ihre
+                    -- Klassenfarbe.
+                    if option.value == get() then
+                        row.text:SetTextColor(T:Color("accent"))
+                    elseif option.colour then
+                        row.text:SetTextColor(option.colour.r, option.colour.g, option.colour.b)
+                    else
+                        row.text:SetTextColor(T:Color("textPrimary"))
+                    end
+                    row:Enable()
+                end
+
                 row:Show()
             end
 
@@ -3439,7 +3576,14 @@ local function buildList(parent)
         end)
 
     panel.classChoice = makeChoice(ns.L["FILTER_CLASS_LABEL"], panel.tierChoice,
-        function() return (rosterChoices(nil)) end,
+        function()
+            local classes = rosterChoices(nil)
+            local out = {}
+            for _, name in ipairs(classes) do
+                out[#out + 1] = { value = name, label = name, colour = classColour(name) }
+            end
+            return out
+        end,
         function() return filters.class end,
         function(v)
             filters.class = v
@@ -3454,11 +3598,36 @@ local function buildList(parent)
     panel.specChoice = makeChoice(ns.L["FILTER_SPEC_LABEL"], panel.classChoice,
         function()
             local _, specs = rosterChoices(filters.class)
-            return specs
+            local out, lastClass = {}, nil
+
+            for _, entry in ipairs(specs) do
+                -- Nach Klassen gliedern, solange keine gewaehlt ist. Ist
+                -- eine gewaehlt, stehen ohnehin nur ihre drei bis vier da.
+                if not filters.class and entry.class ~= lastClass then
+                    out[#out + 1] = { header = entry.class, colour = classColour(entry.class) }
+                    lastClass = entry.class
+                end
+                out[#out + 1] = {
+                    value = entry.spec,
+                    label = entry.spec,
+                    colour = classColour(entry.class),
+                    class = entry.class,
+                    indent = not filters.class,
+                }
+            end
+
+            return out
         end,
         function() return filters.spec end,
-        function(v)
+        function(v, option)
             filters.spec = v
+            -- Die Klasse kommt mit. Sonst faende ein Klick auf "Heilig"
+            -- Priester und Paladin zugleich - der Name allein ist nicht
+            -- eindeutig.
+            if option and option.class then
+                filters.class = option.class
+                panel.classChoice.Render()
+            end
             panel.specChoice.Render()
         end)
 
@@ -3528,11 +3697,15 @@ local function buildList(parent)
     -- Erklaerung beim Ueberfahren. "Kraefte" versteht sonst niemand, der
     -- nicht schon weiss, was gemeint ist.
     local function headTooltip(frame, title, body)
+        -- In Feldern, nicht als Abschluss: die Zeitspalte wechselt mit dem
+        -- Reiter ihre Bedeutung und damit auch ihre Erklaerung.
+        frame.tipTitle = title
+        frame.tipBody = body
         frame:EnableMouse(true)
         frame:SetScript("OnEnter", function(self)
             GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-            GameTooltip:AddLine(title, 1, 1, 1)
-            GameTooltip:AddLine(body, 0.8, 0.8, 0.8, true)
+            GameTooltip:AddLine(self.tipTitle, 1, 1, 1)
+            GameTooltip:AddLine(self.tipBody, 0.8, 0.8, 0.8, true)
             GameTooltip:Show()
         end)
         frame:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -3565,7 +3738,8 @@ local function buildList(parent)
         ns.L["COL_PULLS_TIP_TITLE"], ns.L["COL_PULLS_TIP"])
     local hLevel = headLabel(ns.L["COL_LEVEL"], COL_LEVEL, hPulls,
         ns.L["COL_LEVEL_TIP_TITLE"], ns.L["COL_LEVEL_TIP"])
-    headLabel(ns.L["COL_TIME"], COL_TIME, hLevel,
+    -- Beschriftung wechselt mit dem Reiter, siehe B.Refresh().
+    ui.timeHead = headLabel(ns.L["COL_TIME"], COL_TIME, hLevel,
         ns.L["COL_TIME_TIP_TITLE"], ns.L["COL_TIME_TIP"])
 
     local routeBox = CreateFrame("Frame", nil, head)
@@ -3627,7 +3801,7 @@ local function buildList(parent)
     mapButton:SetPoint("BOTTOMLEFT", root, "BOTTOMLEFT", PADDING, 8)
     mapButton:SetScript("OnClick", function()
         local route = selectedId and displayById[selectedId]
-        if route then B.ShowOnMap(route) end
+        if route and not isReference(route) then B.ShowOnMap(route) end
     end)
     ui.mapButton = mapButton
 
@@ -3639,7 +3813,7 @@ local function buildList(parent)
     copyButton:SetPoint("LEFT", mapButton, "RIGHT", 8, 0)
     copyButton:SetScript("OnClick", function()
         local route = selectedId and displayById[selectedId]
-        if not route then return end
+        if not route or isReference(route) then return end
 
         if IsShiftKeyDown() then
             B.CopyString(route)

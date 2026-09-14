@@ -1,4 +1,11 @@
-// Holt Top-Laeufe von Raider.IO und macht Routen daraus.
+// Holt die Top-Laeufe von Raider.IO als Verweise.
+//
+// Nicht als Routen: die API protokolliert, welche Gegner wann gefallen sind -
+// nicht, welcher von neun gleichnamigen es war und wo ein Pull endete. Beides
+// liess sich nur schaetzen, und eine Route, die ungefaehr stimmt, schickt ihre
+// Nutzer an die falsche Stelle. Die echte Route liegt bei keystone.guru, und
+// die Antwort nennt ihren Schluessel (logged_details.route_key) - darauf
+// verweist jeder Eintrag.
 //
 // Warum das erlaubt ist, und unter welchen Bedingungen: die API-Beschreibung
 // (https://raider.io/swagger.json, info.description) sagt es selbst.
@@ -74,14 +81,6 @@ function apiKey() {
 
 const API_KEY = apiKey()
 
-/**
- * Ab dieser Luecke zwischen zwei Toden faengt ein neuer Pull an.
- *
- * Acht Sekunden treffen es gut: innerhalb eines Pulls sterben die Gegner in
- * schneller Folge, zwischen zwei Pulls liegt der Weg dorthin. Zu klein
- * zerfaellt ein Pull in Einzelteile, zu gross verschmelzen zwei zu einem.
- */
-const PULL_GAP_MS = 8000
 
 /**
  * Ruft die API und beachtet dabei die Ratenbegrenzung.
@@ -169,142 +168,6 @@ export async function currentSeason(known = 11) {
   }
 
   return best?.slug ?? null
-}
-
-/**
- * Sondert aus, was nicht auf der Karte steht.
- *
- * Von 157 Todesmeldungen eines Laufs haben typischerweise 89 keinen
- * Kraeftewert. Das sind die Beschworenen: 21 "Faithless Tormentor", 14
- * "Swarming Krolusk", 13 "Snake". Sie entstehen erst im Kampf, haben in MDT
- * keinen Klon und gehoeren in keine Route - wer sie mitzaehlt, sucht
- * Standorte fuer Gegner, die keine haben, und verbraucht dabei die Klone der
- * echten.
- *
- * Der Kraeftewert allein reicht als Merkmal nicht: Bosse stehen ebenfalls auf
- * null und gehoeren sehr wohl dazu.
- *
- * @param {object[]} enemies
- * @param {object} dungeon
- * @returns {object[]}
- */
-function onlyPlaced(enemies, dungeon) {
-  const bosses = new Set(dungeon.enemies.filter((e) => e.isBoss && e.name).map((e) => e.name))
-  const byName = new Map()
-  for (const enemy of dungeon.enemies) {
-    if (enemy.name && !byName.has(enemy.name)) byName.set(enemy.name, enemy)
-  }
-
-  const out = []
-  for (const enemy of enemies) {
-    const value = enemy.enemy_forces_value ?? 0
-
-    if (value > 0) {
-      // Ein Eintrag ist ein Kill-Ereignis, nicht ein Mob. Fallen fuenf
-      // "Unleashed Imp" gemeinsam, steht dort ein Eintrag mit dem Wert 10 -
-      // bei einem Mobwert von 2. Genau daran liess sich das ablesen: derselbe
-      // Name kam im selben Lauf mit 10, 6, 4 und 2 vor, und saemtliche 109
-      // Werte eines Laufs waren glatte Vielfache von MDTs count.
-      //
-      // Jeden Eintrag als einen Mob zu zaehlen kostete rund ein Zehntel der
-      // Gegnerkraefte - Laeufe, die nachweislich abgeschlossen wurden,
-      // erschienen dadurch mit 82 bis 95 Prozent.
-      const mdt = byName.get(enemy.name)
-      const per = mdt?.count ?? 0
-
-      // Einzelne Klone tragen einen eigenen Kraeftewert. Faellt so einer,
-      // meldet die API genau diesen Wert - durch den Gegnerwert geteilt kaeme
-      // eine krumme Zahl heraus und daraus gerundet ein Mob zu viel.
-      const overrides = new Set()
-      for (const clone of Object.values(mdt?.clonePos ?? {})) {
-        if (typeof clone.count === 'number' && clone.count !== per) overrides.add(clone.count)
-      }
-
-      let mobs = 1
-      if (per > 0 && value % per === 0) mobs = value / per
-      else if (overrides.has(value)) mobs = 1
-      else if (per > 0) mobs = Math.max(1, Math.round(value / per))
-
-      out.push({ ...enemy, mobs })
-    } else if (bosses.has(enemy.name)) {
-      // Bosse zaehlen keine Kraefte, gehoeren aber in die Route.
-      out.push({ ...enemy, mobs: 1 })
-    }
-  }
-
-  return out
-}
-
-/**
- * Gruppiert die Todesmeldungen eines Laufs zu Pulls.
- *
- * Die API liefert je Gegner Name, Kraeftewert und Zeitpunkt - keine
- * Koordinaten und keine Klonnummern. Mehr als "was gehoerte zusammen" laesst
- * sich daraus nicht gewinnen, und genau das rechnen wir hier aus.
- *
- * @param {object[]} enemies
- * @returns {Array<{ at: number, enemies: Array<{ name: string, count: number }> }>}
- */
-export function groupIntoPulls(enemies) {
-  const sorted = [...enemies]
-    .filter((e) => typeof e.approximate_relative_ended_at === 'number')
-    .sort((a, b) => a.approximate_relative_ended_at - b.approximate_relative_ended_at)
-
-  const pulls = []
-  let current = null
-  let lastAt = null
-
-  for (const enemy of sorted) {
-    const at = enemy.approximate_relative_ended_at
-
-    if (!current || at - lastAt > PULL_GAP_MS) {
-      current = { at, counts: new Map() }
-      pulls.push(current)
-    }
-    lastAt = at
-    // mobs, nicht 1: siehe onlyPlaced() - ein Eintrag kann mehrere gleichzeitig
-    // gefallene Gegner zusammenfassen.
-    current.counts.set(enemy.name, (current.counts.get(enemy.name) ?? 0) + (enemy.mobs ?? 1))
-  }
-
-  return pulls.map((pull) => ({
-    at: Math.round(pull.at / 1000),
-    enemies: [...pull.counts.entries()]
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
-  }))
-}
-
-/**
- * Bildet die Gegnernamen eines Laufs auf MDTs Gegnertabelle ab.
- *
- * @param {object[]} pulls
- * @param {object} dungeon Dungeon aus mdt-dungeons.mjs
- * @returns {{ pulls: object[], unknown: string[] }}
- */
-export function mapToMdt(pulls, dungeon) {
-  // Ein Name kann mehrere Eintraege haben (MDT trennt Gegner nach Position).
-  // Fuer die Ansicht genuegt der erste; welcher Klon gemeint war, steht in den
-  // Daten ohnehin nicht.
-  const byName = new Map()
-  for (const enemy of dungeon.enemies) {
-    if (enemy.name && !byName.has(enemy.name)) byName.set(enemy.name, enemy)
-  }
-
-  const unknown = new Set()
-  const mapped = pulls.map((pull) => ({
-    at: pull.at,
-    enemies: pull.enemies.map((entry) => {
-      const enemy = byName.get(entry.name)
-      if (!enemy) {
-        unknown.add(entry.name)
-        return null
-      }
-      return { enemy: enemy.index, npc: enemy.id, count: entry.count }
-    }).filter(Boolean),
-  })).filter((pull) => pull.enemies.length > 0)
-
-  return { pulls: mapped, unknown: [...unknown] }
 }
 
 /** Kurzform der Gruppe: Spezialisierung und Klasse je Mitglied. */
@@ -634,7 +497,15 @@ export async function fetchDungeonRuns({
   maxRuns = 40,
   topPages = 15,
   maxPage = 4096,
-  maxDetails = 220,
+  // Etwa jeder fuenfte Spitzenlauf hat eine veroeffentlichte Route. Der
+  // Deckel muss also ein Vielfaches der gesuchten Laeufe sein, sonst
+  // bricht die Suche ab, bevor die Felder gefuellt sind.
+  maxDetails = 900,
+  // Nach so vielen vergeblichen Versuchen gilt ein Bereich als leer.
+  // 60 ist reichlich: bei einer Quote von auch nur fuenf Prozent waere
+  // die Wahrscheinlichkeit, 60 mal daneben zu greifen, unter fuenf
+  // Prozent. Wer nichts findet, findet dort auch nichts.
+  emptyAfter = 60,
   region = 'world',
 }) {
   const { candidates, reader, highest } = await collectCandidates({
@@ -668,6 +539,11 @@ export async function fetchDungeonRuns({
   const cells = new Map()
   const levelSeen = new Map()
   let calls = 0
+  let ohneRoute = 0
+  // Versuche und Treffer je Bereich, um leere fruehzeitig zu verlassen.
+  const tries = new Map()
+  const hits = new Map()
+  const givenUp = new Set()
 
   for (const candidate of candidates) {
     if (calls >= maxDetails || out.length >= maxRuns) break
@@ -703,6 +579,12 @@ export async function fetchDungeonRuns({
     // den Feldern - sie sind der Massstab, an dem alles andere haengt.
     if (out.length >= wanted && used >= perCell) continue
 
+    // Ein Bereich, in dem nach vielen Versuchen keine einzige Route lag,
+    // wird nicht weiter abgefragt. Die Kandidaten stehen nach Stufe
+    // absteigend, also ist das kein Vorgriff: was danach kommt, ist
+    // niedriger und damit noch unwahrscheinlicher.
+    if (givenUp.has(bracket)) continue
+
     calls += 1
     const details = await api('/run-details', { season, id: candidate.id })
     const logged = details.logged_details ?? {}
@@ -711,11 +593,28 @@ export async function fetchDungeonRuns({
     if (logged.showing_route_authorized !== true) continue
     if (!Array.isArray(logged.enemies) || logged.enemies.length === 0) continue
 
-    const { pulls, unknown } = mapToMdt(groupIntoPulls(onlyPlaced(logged.enemies, dungeon)), dungeon)
-    if (pulls.length === 0) continue
-    if (unknown.length > 0) {
-      console.log('     (' + unknown.length + ' unbekannte Namen: ' + unknown.slice(0, 3).join(', ') + ')')
+    // Die Gegnerliste wird nur noch als Nachweis gelesen, dass der Lauf
+    // ueberhaupt protokolliert ist. Was daraus fuer eine Route zu machen
+    // waere, waere geraten - welcher von neun gleichnamigen Gegnern fiel und
+    // wo ein Pull endete, steht dort nicht. Dafuer verweist der Eintrag auf
+    // keystone.guru, wo die tatsaechlich gespielte Route liegt.
+
+    // Und ohne diese Adresse ist der Eintrag wertlos: Stufe, Zeit und
+    // Gruppe stehen auf raider.io besser. Vier von fuenf Spitzenlaeufen
+    // haben keine veroeffentlichte Route - sie hier aussortieren statt
+    // erst beim Bauen laesst den naechsten Kandidaten nachruecken,
+    // genau wie bei fehlender Freigabe.
+    tries.set(bracket, (tries.get(bracket) ?? 0) + 1)
+
+    if (!logged.route_key) {
+      ohneRoute += 1
+      if ((tries.get(bracket) ?? 0) >= emptyAfter && !(hits.get(bracket) ?? 0)) {
+        givenUp.add(bracket)
+      }
+      continue
     }
+
+    hits.set(bracket, (hits.get(bracket) ?? 0) + 1)
 
     out.push({
       id: 'rio-' + candidate.id,
@@ -749,7 +648,18 @@ export async function fetchDungeonRuns({
       // Addon sitzt ausserdem in MDTs Fenster; eine Prozentzahl, die der
       // daneben widerspricht, waere in jedem Fall die falsche.
       enemyForcesRequired: dungeon.totalCount ?? logged.total_enemy_forces,
-      pulls,
+      // Der Schluessel der echten Route bei keystone.guru. Raider.IO bettet
+      // deren Ansicht ein, und beide Seiten teilen sich diese Kennung -
+      // keystone.guru/route/<dungeon>/<key> loest damit auf.
+      //
+      // Er ist die Bruecke zur tatsaechlich gespielten Route: was wir hier
+      // rekonstruieren, ist bestenfalls nah dran. Sobald ein Zugang zu
+      // keystone.guru vorliegt, holt tools/keystone-fetch.mjs damit die
+      // echten Pulls statt sie zu erraten.
+      routeKey: logged.route_key,
+      // Die Adresse der echten Route. Raider.IO bettet keystone.gurus Ansicht
+      // ein, beide teilen sich diese Kennung.
+      keystoneUrl: `https://keystone.guru/route/${dungeonSlug}/${logged.route_key}`,
     })
 
     cells.set(cell, used + 1)
@@ -759,7 +669,11 @@ export async function fetchDungeonRuns({
   const levels = new Map()
   for (const run of out) levels.set(run.keyLevel, (levels.get(run.keyLevel) ?? 0) + 1)
 
-  console.log('   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen')
+  console.log(
+    '   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen' +
+      ' (' + ohneRoute + ' ohne veroeffentlichte Route' +
+      (givenUp.size ? ', ' + [...givenUp].join('/') + ' vorzeitig beendet' : '') + ')'
+  )
   console.log(
     '     Stufen: ' +
       [...levels.entries()]

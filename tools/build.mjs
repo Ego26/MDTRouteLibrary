@@ -29,7 +29,6 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup, readSeasons } from './mdt-dungeons.mjs'
 import { convertRoute, validateRoute } from './keystone-convert.mjs'
-import { convertRun } from './raiderio-convert.mjs'
 import { buildDataAddon, writeDataAddon } from './generate-lua.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -250,10 +249,21 @@ async function main() {
   }
   console.log(`   ${converted} konvertiert`)
 
-  console.log('3b) Top-Laeufe von Raider.IO konvertieren')
+  console.log('3b) Top-Laeufe von Raider.IO')
+  //
+  // Sie kommen als Verweis ins Addon, nicht als Route.
+  //
+  // Raider.IO protokolliert, welche Gegner wann gefallen sind - nicht,
+  // welcher der neun gleichnamigen es war und wo die Grenze zwischen zwei
+  // Pulls lag. Beides liess sich nur schaetzen, und eine Route, die
+  // ungefaehr stimmt, ist fuer ihren Zweck wertlos: wer ihr folgt, pullt an
+  // der falschen Stelle. Ausgeliefert wird deshalb nur, was belegt ist -
+  // Stufe, Zeit, Gruppe, Rang - und fuer die Route selbst der Verweis auf
+  // keystone.guru, wo sie vollstaendig liegt.
   const rioDir = join(ROOT, 'data', 'raiderio')
   let rioCount = 0
-  let rioIncomplete = 0
+  let rioSkipped = 0
+
   if (existsSync(rioDir)) {
     for (const file of readdirSync(rioDir).filter((f) => f.endsWith('.json'))) {
       for (const run of JSON.parse(readFileSync(join(rioDir, file), 'utf8'))) {
@@ -262,56 +272,48 @@ async function main() {
           console.warn(`   ! ${run.id}: Dungeon ${run.challengeModeId} nicht in MDT`)
           continue
         }
-        const { route, report } = convertRun(run, dungeon)
-        if (!route) {
-          console.warn(`   ! ${run.id}: keine Pulls zuzuordnen`)
-          continue
-        }
-        // Nur vollstaendige Laeufe. Jeder Lauf auf der Bestenliste wurde in
-        // der Zeit abgeschlossen und hatte damit die vollen Gegnerkraefte.
-        if (!run.onTime) {
-          console.warn(`   - ${route.id}: nicht in der Zeit`)
-          rioIncomplete += 1
+
+        // Ohne Adresse der echten Route waere der Eintrag eine Sackgasse,
+        // und ein Lauf ausser der Zeit gehoert ohnehin nicht hierher.
+        if (!run.keystoneUrl || !run.onTime) {
+          rioSkipped += 1
           continue
         }
 
-        // Zwei Wege, eine Route zu bestehen - und beide werden gebraucht.
-        //
-        //   * Die Route erreicht die vollen Gegnerkraefte. Das ist der
-        //     Normalfall und die eigentliche Bedingung.
-        //   * Oder unsere Rekonstruktion hat nichts verloren, die Quelle aber
-        //     schon. Raider.IO protokolliert fuer King's Rest durchgaengig 24
-        //     Kraefte zu wenig - in jedem der achtzehn Laeufe dieselben 584
-        //     von 608, obwohl alle in der Zeit fertig wurden. Nur nach den
-        //     Kraeften zu gehen liesse einen ganzen Dungeon ohne Top-Routen.
-        //
-        // Umgekehrt reicht "nichts verloren" allein nicht: in Voidscar Arena
-        // beschwoert der Endboss "Voidminder", von denen MDT sechs Standorte
-        // kennt und das Protokoll zwoelf Tode meldet. Die sechs
-        // uebriggebliebenen sind keine Kraefte wert - die Route ist
-        // vollstaendig, obwohl etwas wegfiel.
-        const percent = report.required > 0 ? (report.forces / report.required) * 100 : 0
-        const lostNothing = report.dropped === 0 && report.shortfall === 0
+        const tank = (run.roster ?? []).find((member) => member.role === 'tank')
+        const minutes = Math.floor((run.clearSeconds ?? 0) / 60)
+        const seconds = String((run.clearSeconds ?? 0) - minutes * 60).padStart(2, '0')
 
-        if (percent < 100 && !lostNothing) {
-          console.warn(
-            `   - ${route.id}: ${percent.toFixed(1)} %, ` +
-              `${report.dropped} verworfen, ${report.shortfall} ohne freien Klon`
-          )
-          rioIncomplete += 1
-          continue
-        }
-
-        if (percent < 100) {
-          console.warn(`   ~ ${route.id}: ${percent.toFixed(1)} % - Protokoll der Quelle unvollstaendig`)
-        }
-        routes.push(route)
+        routes.push({
+          id: run.id,
+          source: 'raider.io',
+          // Kein Weg zur Karte, kein Import nach MDT - dieser Eintrag
+          // behauptet keine Route zu sein.
+          reference: true,
+          title: `+${run.keyLevel} · ${minutes}:${seconds}`,
+          author: tank && tank.spec ? `${tank.spec} ${tank.class}` : null,
+          url: run.url,
+          keystoneUrl: run.keystoneUrl,
+          challengeModeId: run.challengeModeId,
+          dungeonEnglishName: run.dungeonEnglishName,
+          mdtDungeonIdx: run.mdtDungeonIdx,
+          keyLevelMin: run.keyLevel,
+          keyLevel: run.keyLevel,
+          clearSeconds: run.clearSeconds,
+          onTime: true,
+          rank: run.rank,
+          region: run.region,
+          bracket: run.bracket,
+          tier: run.tier,
+          roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
+          enemyForcesRequired: run.enemyForcesRequired,
+        })
         rioCount += 1
       }
     }
   }
-  console.log(`   ${rioCount} Laeufe` + (rioIncomplete > 0 ? `, ${rioIncomplete} unvollstaendig verworfen` : ''))
 
+  console.log(`   ${rioCount} Verweise` + (rioSkipped > 0 ? `, ${rioSkipped} uebersprungen` : ''))
   console.log('4) Routen gegen MDT pruefen und anreichern')
   const accepted = []
   const usedDungeons = new Map()
@@ -347,8 +349,12 @@ async function main() {
       lookup.byChallengeMode.get(route.challengeModeId) ??
       lookup.byName.get((route.dungeonEnglishName ?? '').toLowerCase())
 
-    if (dungeon) {
+    if (dungeon && !route.reference) {
       enrichRoute(route, dungeon, ensureDungeon(dungeon)._npcs)
+    } else if (dungeon) {
+      // Der Dungeon muss trotzdem ins Paket, sonst fehlen Kurzname und
+      // Gegnertabelle fuer seine Verweise.
+      ensureDungeon(dungeon)
     }
 
     accepted.push(route)

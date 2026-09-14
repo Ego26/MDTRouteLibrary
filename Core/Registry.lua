@@ -8,7 +8,7 @@
 
 local _, ns = ...
 
-local REQUIRED = { "id", "title", "challengeModeId", "pulls" }
+local REQUIRED = { "id", "title", "challengeModeId" }
 
 ---Prueft die Pflichtfelder einer Route.
 ---@param route table
@@ -20,7 +20,10 @@ local function validate(route)
     for _, field in ipairs(REQUIRED) do
         if route[field] == nil then return false, "missing field: " .. field end
     end
-    if type(route.pulls) ~= "table" or #route.pulls == 0 then
+    -- Ein Verweis hat keine Pulls, und das ist Absicht: er behauptet keine
+    -- Route zu sein, sondern nennt nur, was belegt ist, und zeigt auf die
+    -- Stelle, an der die echte Route liegt.
+    if not route.reference and (type(route.pulls) ~= "table" or #route.pulls == 0) then
         return false, "no pulls"
     end
     return true

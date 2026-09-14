@@ -9,11 +9,10 @@
 
 ### Top Routes — the routes the best groups actually run
 
-A new tab next to *Community* and *My routes*. It shows what the fastest
-groups in the world ran, pull for pull, on the map, ready to import into
-MDT. The runs come from the Raider.IO leaderboard and are rebuilt into
-real MDT routes — not screenshots, not links: routes you can put on the
-map and follow.
+A new tab next to *Community* and *My routes*, built on the Raider.IO
+leaderboard. It answers the question you would otherwise alt-tab for:
+which composition cleared this dungeon at this key level, how fast, and
+where is the route they ran.
 
 **It is not just the world first.** The top of any leaderboard is a single
 composition on a single key level — in Altar of Fangs, ranks 1 to 21 are
@@ -23,25 +22,28 @@ and no others. So the selection covers what people actually ask:
 - **Every tank specialisation.** The first Guardian Druid in Altar of Fangs
   is rank 28, the first Protection Warrior rank 107, the first Vengeance
   Demon Hunter rank 211. They are all in.
-- **Every key level from +10 up**, with no gaps. A world-first run is not
-  what you play on a +12: it opens with four mobs and takes 28 minutes,
-  where a +12 opens with eleven and is done in 21.
-- **Quick and safe, side by side.** At +14 in Altar of Fangs one Guardian
-  Druid took 23:47 over 22 pulls, another 27:34 over 33. Both are in, and
-  each route says which it is.
+- **A wide spread of key levels**, from +11 up to the current top. A
+  world-first run is not what you play on a +12: it opens with four mobs
+  and takes 28 minutes, where a +12 opens with eleven and is done in 21.
+- **Quick and safe, side by side.** On the same key level a fast run sits
+  next to a careful one, and each entry says which it is.
 
 Filter by key level, pace, class and specialisation; the lists only ever
 offer values that lead somewhere. Every run carries its group in class
 colours, its clear time, its rank, and a link back to raider.io.
 
-**One thing said plainly:** Raider.IO records which enemies died and when,
-not which of the identically named ones it was. The order of the pulls and
-what they contain is exact; the positions are reconstructed from the path
-the group took. Routes say so, and where an enemy had to be added back
-because the log omits it entirely, they say that too.
+**One thing said plainly: these are not routes inside the addon.**
+Raider.IO records which enemies died and when, not which of nine
+identically named ones it was, or where a pull ended. Rebuilding a route
+from that was possible — it looked convincing, and it was not the route
+that was played. Follow it and you pull the wrong pack. So the tab shows
+only what is documented — key level, time, group, world rank — and a
+button to the real route on keystone.guru, whose viewer Raider.IO embeds
+on its own run pages.
 
-Runs are only taken when the owner allows their route to be shown, and
-only when they were timed with the full enemy forces.
+A run is only listed when it was timed with the full enemy forces, its
+owner allows the route to be shown, and a route was actually published.
+Without all three it stays out.
 
 ### Also
 
