@@ -44,6 +44,10 @@ local DETAIL_EXTRA = 130
 local TILE_HEIGHT  = 40
 local TILE_GAP     = 6
 local SPELL_ICON     = 16
+-- Hoehe einer Gruppenzeile und Breite der Spalte fuer die Spezialisierung.
+-- 84 traegt auch "Assassination" und "Beast Mastery", die laengsten.
+local GROUP_ROW = 13
+local GROUP_SPEC_WIDTH = 84
 local PADDING        = 14
 local DUNGEON_BUTTON = 42
 
@@ -381,18 +385,18 @@ local function authorText(route)
     return ("%s%s|r"):format(classHex(tank and tank.class), route.author)
 end
 
----Die Gruppe eines Laufs als eine Zeile: Spezialisierungen in Klassenfarbe.
+---Die Mitglieder eines Laufs, sortiert nach Tank, Heiler, Schaden.
 ---
----Nur die Spezialisierung, nicht "Blut Todesritter": zu fuenft waere das
----dreimal so lang wie die Spalte breit ist. Welche Klasse gemeint ist, sagt
----die Farbe - und genau danach sucht, wer eine Gruppe vergleicht.
+---Gibt die Liste zurueck, keinen Text: die Gruppe wird als Tabelle
+---gezeichnet. Als Fliesstext zerriss der Umbruch die Paare aus
+---Spezialisierung und Name mitten im Wort - "Arcane 日 / 记簿".
 ---@param route table
----@return string
-local function rosterText(route)
+---@return table
+local function rosterMembers(route)
     local order = { tank = 1, healer = 2, dps = 3 }
     local members = {}
     for _, member in ipairs(route.roster or {}) do members[#members + 1] = member end
-    if #members == 0 then return "" end
+    if #members == 0 then return members end
 
     table.sort(members, function(a, b)
         local rankA = order[a.role or ""] or 9
@@ -401,15 +405,35 @@ local function rosterText(route)
         return (a.spec or "") < (b.spec or "")
     end)
 
-    local parts = {}
-    for _, member in ipairs(members) do
-        -- Der Name, wenn wir ihn haben; sonst die Spezialisierung. Beides
-        -- in der Klassenfarbe, denn genau danach sucht, wer eine Gruppe
-        -- vergleicht.
-        local label = member.name or member.spec or member.class or "?"
-        parts[#parts + 1] = ("%s%s|r"):format(classHex(member.class), label)
+    return members
+end
+
+---Zeichnet die Gruppe in den Detailbereich und gibt ihre Hoehe zurueck.
+---
+---Leer heisst Hoehe eins, nicht null: eine Hoehe von null macht WoW zu
+---einer Standardhoehe, und der Block waere sichtbar, obwohl nichts drin
+---steht.
+---@param d table
+---@param route table
+local function fillRoster(d, route)
+    local members = route and rosterMembers(route) or {}
+
+    for i, row in ipairs(d.groupRows) do
+        local member = members[i]
+        if member then
+            -- Die Spezialisierung gedaempft: die Klassenfarbe soll am Namen
+            -- haengen, nicht mit ihm um Aufmerksamkeit ringen.
+            row.spec:SetText(T:Hex("textMuted") .. (member.spec or member.class or "") .. "|r")
+            row.name:SetText(classHex(member.class) .. (member.name or member.spec or "?") .. "|r")
+            row.spec:Show()
+            row.name:Show()
+        else
+            row.spec:Hide()
+            row.name:Hide()
+        end
     end
-    return table.concat(parts, T:Hex("textMuted") .. " · |r")
+
+    d.group:SetHeight(#members > 0 and (#members * GROUP_ROW) or 1)
 end
 
 ---Fasst die Gegner eines Pulls zusammen: "3x Bloodletter, 2x Living Venom".
@@ -2009,7 +2033,7 @@ local function updateDetail(route)
         d.affixes:SetText("")
         d.badgeHit:Hide()
         d.note:Hide()
-        d.group:SetText("")
+        fillRoster(d, nil)
         d.runs:SetText("")
         d.section:SetText("")
         d.foldAll:Hide()
@@ -2129,12 +2153,12 @@ local function updateDetail(route)
         d.affixes:SetText(table.concat(parts, T:Hex("textMuted") .. " · |r"))
         d.badgeHit.route = badge ~= "" and route or nil
         d.badgeHit:SetShown(badge ~= "")
-        d.group:SetText(rosterText(route))
+        fillRoster(d, route)
     else
         local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
         d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
         d.badgeHit:Hide()
-        d.group:SetText("")
+        fillRoster(d, nil)
     end
 
     -- Was du selbst mit dieser Route erreicht hast.
@@ -2369,7 +2393,7 @@ function updateDungeonDetail(dungeon)
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
     d.badgeHit:Hide()
     d.note:Hide()
-    d.group:SetText("")
+    fillRoster(d, nil)
     d.runs:SetText("")
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
     d.foldAll:Hide()
@@ -3013,14 +3037,34 @@ local function buildDetail(parent)
     end)
     d.badgeHit:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-    -- Die Gruppe eines Top-Laufs, in Klassenfarben. Bei eingereichten Routen
-    -- bleibt die Zeile leer und faellt auf null Hoehe zusammen - die Zeilen
-    -- darunter haengen aneinander und ruecken von selbst nach.
-    d.group = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    -- Die Gruppe eines Top-Laufs als Tabelle: Spezialisierung links auf
+    -- fester Breite, Name rechts in Klassenfarbe. Bei eingereichten Routen
+    -- faellt der Block auf eine Zeile Hoehe zusammen - die Zeilen darunter
+    -- haengen aneinander und ruecken von selbst nach.
+    d.group = CreateFrame("Frame", nil, root)
     d.group:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", 0, -4)
     d.group:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
-    d.group:SetJustifyH("LEFT")
-    d.group:SetWordWrap(true)
+    d.group:SetHeight(1)
+
+    -- Fuenf, weil eine Mythisch+-Gruppe nie groesser ist.
+    d.groupRows = {}
+    for i = 1, 5 do
+        local row = {}
+
+        row.spec = d.group:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.spec:SetPoint("TOPLEFT", d.group, "TOPLEFT", 0, -(i - 1) * GROUP_ROW)
+        row.spec:SetWidth(GROUP_SPEC_WIDTH)
+        row.spec:SetJustifyH("LEFT")
+        row.spec:SetWordWrap(false)
+
+        row.name = d.group:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.name:SetPoint("LEFT", row.spec, "RIGHT", 6, 0)
+        row.name:SetPoint("RIGHT", d.group, "RIGHT", 0, 0)
+        row.name:SetJustifyH("LEFT")
+        row.name:SetWordWrap(false)
+
+        d.groupRows[i] = row
+    end
 
     ---------------------------------------------------------- Abschnitt
     d.runs = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
