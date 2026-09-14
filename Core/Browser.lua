@@ -71,7 +71,6 @@ local filterMode = "all" -- "all" | "community" | "mine" | "top"
 -- Filterkriterien. 0 heisst jeweils "egal", nil bei Klasse und Spezialisierung.
 local filters = {
     favourites = false,
-    minPercent = 0,  -- Mindestanteil der feindlichen Kraefte
     minLevel   = 0,  -- Schluesselstufe ab
     maxLevel   = 0,  -- Schluesselstufe bis
     maxPulls   = 0,  -- hoechstens so viele Pulls
@@ -84,7 +83,6 @@ local filters = {
 local function activeFilterCount()
     local n = 0
     if filters.favourites then n = n + 1 end
-    if filters.minPercent > 0 then n = n + 1 end
     if filters.minLevel > 0 then n = n + 1 end
     if filters.maxLevel > 0 then n = n + 1 end
     if filters.maxPulls > 0 then n = n + 1 end
@@ -890,7 +888,6 @@ end
 ---@param needle string Suchtext, bereits kleingeschrieben
 ---@return boolean
 function B.PassesFilters(route, needle)
-    local percent = forcesPercent(route)
     -- Fuer den Filter zaehlt die Obergrenze: eine Route fuer +2 bis +9
     -- soll bei "ab +18" nicht auftauchen, eine fuer +10 bis +20 schon.
     local level = levelCeiling(route)
@@ -898,7 +895,6 @@ function B.PassesFilters(route, needle)
 
     -- Routen ohne Angabe fallen nur raus, wenn nach dem Kriterium
     -- tatsaechlich gefiltert wird.
-    if filters.minPercent > 0 and not (percent and percent >= filters.minPercent) then return false end
     if filters.favourites and not isFavourite(route.id) then return false end
     if filters.minLevel > 0 and not (level and level >= filters.minLevel) then return false end
     if filters.maxLevel > 0 and not (level and level <= filters.maxLevel) then return false end
@@ -985,12 +981,6 @@ local function emptyReason()
             label = ns.L["FILTER_PULLS_LABEL"],
             get = function() return filters.maxPulls end,
             set = function(v) filters.maxPulls = v end,
-            off = 0,
-        },
-        {
-            label = ns.L["FILTER_PERCENT_LABEL"],
-            get = function() return filters.minPercent end,
-            set = function(v) filters.minPercent = v end,
             off = 0,
         },
         {
@@ -1952,9 +1942,17 @@ local function updateDetail(route)
 
     if top then
         -- Affixe kennt ein Lauf nicht - dafuer seinen Platz in der Weltrangliste.
-        d.affixes:SetText(route.rank
-            and (T:Hex("accent") .. ns.L["DETAIL_RANK"]:format(route.rank) .. "|r")
-            or "")
+        -- Ein Rang gilt nur fuer die Rangliste, aus der er stammt. Die
+        -- Laeufe im unteren Bereich kommen notfalls aus einer kuerzeren
+        -- Regionalliste - sie als Weltrang auszugeben waere schlicht falsch.
+        if route.rank and route.region then
+            d.affixes:SetText(T:Hex("accent") ..
+                ns.L["DETAIL_RANK_REGION"]:format(route.rank, route.region:upper()) .. "|r")
+        elseif route.rank then
+            d.affixes:SetText(T:Hex("accent") .. ns.L["DETAIL_RANK"]:format(route.rank) .. "|r")
+        else
+            d.affixes:SetText("")
+        end
         d.group:SetText(rosterText(route))
     else
         local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
@@ -3217,12 +3215,10 @@ local function buildList(parent)
         function(v) filters.maxLevel = v end,
         ns.L["FILTER_ANY"])
 
-    panel.percentSlider = makeSlider(ns.L["FILTER_PERCENT_LABEL"], panel.levelMaxSlider, 120,
-        function() return filters.minPercent end,
-        function(v) filters.minPercent = v end,
-        ns.L["FILTER_ANY"])
-
-    panel.pullsSlider = makeSlider(ns.L["FILTER_PULLS_LABEL"], panel.percentSlider, 60,
+    -- Kein Regler fuer die Gegnerkraefte mehr. Er filterte nichts: eine
+    -- Einreichung unter 100 Prozent wird gar nicht erst aufgenommen, und ein
+    -- Top-Lauf, der die Zeit geschafft hat, hatte sie ohnehin.
+    panel.pullsSlider = makeSlider(ns.L["FILTER_PULLS_LABEL"], panel.levelMaxSlider, 60,
         function() return filters.maxPulls end,
         function(v) filters.maxPulls = v end,
         ns.L["FILTER_ANY"])
@@ -3256,7 +3252,6 @@ local function buildList(parent)
     reset:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -14, 12)
     reset:SetScript("OnClick", function()
         filters.favourites = false
-        filters.minPercent = 0
         filters.minLevel = 0
         filters.maxLevel = 0
         filters.maxPulls = 0
@@ -3266,7 +3261,6 @@ local function buildList(parent)
         panel.favBox:SetChecked(false)
         panel.levelSlider:SetValue(0)
         panel.levelMaxSlider:SetValue(0)
-        panel.percentSlider:SetValue(0)
         panel.pullsSlider:SetValue(0)
         panel.classChoice.list:Hide()
         panel.specChoice.list:Hide()

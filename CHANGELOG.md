@@ -10,12 +10,16 @@
 - New tab "Top Routes": timed runs per dungeon, taken from the Raider.IO
   leaderboard and rebuilt as MDT routes. Every run links back to raider.io,
   and runs whose owners chose not to show their route are excluded.
-- Every tank specialisation is represented, and at two difficulty levels:
-  high keys and the +10 to +14 range. The top of the leaderboard is one
-  composition on one key level — in Altar of Fangs ranks 1 to 21 are all
-  Blood Death Knights at +20. And a world-first run is not what you play on
-  a +12: it opens with four mobs and takes 28 minutes, where a +12 opens
-  with eleven and is done in 21.
+- Every tank specialisation is represented, at two difficulty levels — high
+  keys and the +10 to +14 range — and in the lower range with both a quick
+  and a careful route. The top of the leaderboard is one composition on one
+  key level: in Altar of Fangs ranks 1 to 21 are all Blood Death Knights at
+  +20. A world-first run is also not what you play on a +12; it opens with
+  four mobs and takes 28 minutes, where a +12 opens with eleven and is done
+  in 21. And within one key level the routes differ just as much: at +14 a
+  Guardian Druid took 23:47 over 22 pulls, another 27:34 over 33.
+- Runs that were not timed, or where the reconstruction could not place
+  every enemy, are left out.
 - Filter routes by key level range, class and specialisation. The class and
   specialisation lists are built from the runs that are actually loaded, so
   they never offer a choice that leads nowhere.

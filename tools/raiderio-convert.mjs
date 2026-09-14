@@ -217,6 +217,10 @@ export function convertRun(run, dungeon) {
       clearSeconds: run.clearSeconds,
       onTime: run.onTime || undefined,
       rank: run.rank ?? undefined,
+      // Nur ein Rang aus der Weltrangliste ist ein Weltrang. Der untere
+      // Bereich kommt notfalls aus einer kuerzeren Liste, und das Addon soll
+      // dann nicht das Falsche behaupten.
+      region: run.region && run.region !== 'world' ? run.region : undefined,
       completedAt: run.completedAt ?? undefined,
       roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
       enemyForces: forces,

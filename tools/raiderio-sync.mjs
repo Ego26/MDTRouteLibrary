@@ -31,15 +31,40 @@
 //
 // Ohne --season sucht das Werkzeug die laufende selbst, siehe currentSeason().
 
-import { mkdirSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { pathToFileURL } from 'node:url'
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { readDungeons, readSeasons } from './mdt-dungeons.mjs'
 
 const BASE = 'https://raider.io/api/v1/mythic-plus'
 
 /** Ohne Kennung ruft niemand gern etwas ab. */
 const USER_AGENT = 'MDTRouteLibrary (https://github.com/Ego26/MDTRouteLibrary)'
+
+/**
+ * Der Zugangsschluessel.
+ *
+ * In der CI steht er als Secret in der Umgebung. Auf einem Entwicklerrechner
+ * ist das unpraktisch: eine Zuweisung in der eigenen Shell erbt kein Prozess,
+ * der aus einem anderen Fenster gestartet wird. Deshalb zusaetzlich aus .env
+ * im Wurzelverzeichnis - die Datei steht in .gitignore und geht nirgendwo hin.
+ *
+ * @returns {string|null}
+ */
+function apiKey() {
+  if (process.env.RAIDERIO_API_KEY) return process.env.RAIDERIO_API_KEY
+
+  const file = join(dirname(fileURLToPath(import.meta.url)), '..', '.env')
+  if (!existsSync(file)) return null
+
+  for (const line of readFileSync(file, 'utf8').split('\n')) {
+    const match = line.match(/^\s*RAIDERIO_API_KEY\s*=\s*(.*)$/)
+    if (match) return match[1].trim().replace(/^["']|["']$/g, '') || null
+  }
+  return null
+}
+
+const API_KEY = apiKey()
 
 /**
  * Ab dieser Luecke zwischen zwei Toden faengt ein neuer Pull an.
@@ -62,9 +87,7 @@ async function api(path, params) {
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null) url.searchParams.set(key, String(value))
   }
-  if (process.env.RAIDERIO_API_KEY) {
-    url.searchParams.set('access_key', process.env.RAIDERIO_API_KEY)
-  }
+  if (API_KEY) url.searchParams.set('access_key', API_KEY)
 
   for (let attempt = 1; attempt <= 4; attempt += 1) {
     const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
@@ -408,11 +431,11 @@ function bracketOf(level, highest, lowTop) {
  * @param {object} options
  * @returns {Promise<{ candidates: object[], reader: object, highest: number }>}
  */
-async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPage, topPages, lowTop }) {
+async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPage, topPages, lowTop, lowRegions }) {
   const reader = rankingReader({ season, region, dungeonSlug })
   const byId = new Map()
 
-  const add = (entry) => {
+  const add = (entry, from, tier) => {
     const run = entry.run ?? {}
     const id = run.keystone_run_id
     if (!id || byId.has(id)) return
@@ -420,6 +443,11 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
 
     byId.set(id, {
       id,
+      // Aus welcher Rangliste dieser Lauf stammt. Ein Rang aus tw ist
+      // kein Weltrang, und das Addon darf ihn nicht als solchen zeigen.
+      region: from,
+      // Vorn oder hinten im Rangblock seiner Stufe - siehe gatherLevel().
+      tier,
       rank: typeof entry.rank === 'number' ? entry.rank : undefined,
       level: run.mythic_level,
       // Schon in der Rangliste enthalten - die Auswahl kostet deshalb keine
@@ -435,36 +463,104 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
   for (let page = 0; page < topPages; page += 1) {
     const rankings = await reader.page(page)
     if (!rankings || rankings.length === 0) break
-    for (const entry of rankings) add(entry)
+    for (const entry of rankings) add(entry, region, 'fast')
   }
 
   const highest = await topLevelOf(reader, 0)
   if (highest === null) return { candidates: [], reader, highest: 0 }
 
-  // Stufe fuer Stufe an ihren Anfang springen. Ohne Zugangsschluessel endet
-  // die API bei Seite 100; dann liefert findLevelStart null und der untere
-  // Bereich bleibt eben leer, statt den Lauf scheitern zu lassen.
-  for (let level = highest - 1; level >= minLevel; level -= 1) {
-    if (!bracketOf(level, highest, lowTop)) continue
+  /**
+   * Sammelt eine Stufe aus einer bestimmten Rangliste.
+   * @returns {Promise<number>} wie viele Eintraege gefunden wurden
+   */
+  /**
+   * Sammelt eine Stufe aus einer Rangliste - vorn und aus der Mitte.
+   *
+   * Nur den Anfang zu nehmen hiesse: immer die schnellsten. Auf einer
+   * Stufe gibt es aber beides, zuegige und vorsichtige Routen, und welche
+   * davon die richtige ist, entscheidet nicht die Bestenliste, sondern
+   * wer sie laeuft. Also nehmen wir aus beiden Enden des Blocks.
+   *
+   * Die Grenzen sind bekannt: der Block einer Stufe reicht von ihrem
+   * Anfang bis zum Anfang der naechstniedrigeren.
+   */
+  const gatherLevel = async (from, useReader, level, spread) => {
+    const startPage = await findLevelStart(useReader, level, maxPage)
+    if (startPage === null) return 0
 
-    const startPage = await findLevelStart(reader, level, maxPage)
-    if (startPage === null) continue
+    const readFrom = async (first, tier, pages) => {
+      let seen = 0
+      for (let page = first; page < first + pages; page += 1) {
+        const rankings = await useReader.page(page)
+        if (!rankings || rankings.length === 0) break
 
-    let seenHere = 0
-    for (let page = startPage; page < startPage + 4; page += 1) {
-      const rankings = await reader.page(page)
-      if (!rankings || rankings.length === 0) break
-
-      for (const entry of rankings) {
-        if ((entry.run?.mythic_level ?? 0) !== level) continue
-        add(entry)
-        seenHere += 1
+        for (const entry of rankings) {
+          if ((entry.run?.mythic_level ?? 0) !== level) continue
+          add(entry, from, tier)
+          seen += 1
+        }
+        if (seen >= 60) break
       }
-      if (seenHere >= 60) break
+      return seen
+    }
+
+    let seen = await readFrom(startPage, 'fast', spread ? 2 : 4)
+    if (!spread || seen === 0) return seen
+
+    // Wo endet der Block? Am Anfang der naechstniedrigeren Stufe. Findet
+    // sich die nicht mehr, liegt das Ende jenseits unserer Reichweite -
+    // dann genuegt ein fester Abstand.
+    const nextStart = await findLevelStart(useReader, level - 1, maxPage)
+    const end = nextStart === null ? startPage + 40 : nextStart
+    const middle = Math.floor(startPage + (end - startPage) * 0.5)
+    if (middle > startPage + 1) {
+      seen += await readFrom(middle, 'slow', 2)
+    }
+
+    return seen
+  }
+
+  // Stufe fuer Stufe an ihren Anfang springen.
+  //
+  // Reicht die Weltrangliste nicht so tief, weichen wir auf eine kuerzere
+  // aus. Der Grund ist die Laenge, nicht die Herkunft: bei Altar of Fangs
+  // steht auf Seite 99 in der Welt noch +18, in eu +17, in us +16, in tw
+  // und kr dagegen schon +12. Ohne Zugangsschluessel endet die API bei
+  // Seite 100, und auch mit einem steht nirgends, wie weit sie geht.
+  //
+  // Fuer die Spitze waere das falsch - dort will man die schnellsten
+  // Laeufe der Welt. Fuer einen +12er ist die Region gleichgueltig: der
+  // Dungeon ist derselbe, und die Route, die eine Gruppe dort laeuft,
+  // auch. Woher ein Lauf stammt, haelt der Kandidat trotzdem fest.
+  const fallbacks = new Map()
+
+  for (let level = highest - 1; level >= minLevel; level -= 1) {
+    const bracket = bracketOf(level, highest, lowTop)
+    if (!bracket) continue
+
+    if ((await gatherLevel(region, reader, level, bracket === 'low')) > 0) continue
+    if (bracket !== 'low') continue
+
+    for (const other of lowRegions) {
+      if (other === region) continue
+      if (!fallbacks.has(other)) {
+        fallbacks.set(other, rankingReader({ season, region: other, dungeonSlug }))
+      }
+      if ((await gatherLevel(other, fallbacks.get(other), level, true)) > 0) break
     }
   }
 
-  const candidates = [...byId.values()].sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+  // Erst nach Stufe, dann nach Rang - und die Weltrangliste vor den
+  // kuerzeren. Bloss nach Rang zu sortieren vermischte die Ranglisten: ein
+  // tw-Rang 500 stuende dann vor einem Weltrang 1000, obwohl der Weltlauf
+  // um Klassen besser ist.
+  const candidates = [...byId.values()].sort((a, b) => {
+    if (a.level !== b.level) return b.level - a.level
+    const homeA = a.region === region ? 0 : 1
+    const homeB = b.region === region ? 0 : 1
+    if (homeA !== homeB) return homeA - homeB
+    return (a.rank ?? 0) - (b.rank ?? 0)
+  })
   return { candidates, reader, highest }
 }
 /**
@@ -494,7 +590,9 @@ export async function fetchDungeonRuns({
   wanted,
   perCell = 2,
   lowTop = 14,
-  maxRuns = 28,
+  // Kuerzere Ranglisten fuer den unteren Bereich, in dieser Reihenfolge.
+  lowRegions = ['tw', 'kr', 'us', 'eu'],
+  maxRuns = 32,
   topPages = 15,
   maxPage = 4096,
   maxDetails = 150,
@@ -508,6 +606,7 @@ export async function fetchDungeonRuns({
     maxPage,
     topPages,
     lowTop,
+    lowRegions,
   })
 
   if (candidates.length === 0) return []
@@ -531,10 +630,21 @@ export async function fetchDungeonRuns({
     if (calls >= maxDetails || out.length >= maxRuns) break
 
     const bracket = bracketOf(candidate.level, highest, lowTop)
-    const cell = bracket ? bracket + ':' + tankKey(candidate.roster) : null
-    const used = cell ? cells.get(cell) ?? 0 : Infinity
 
-    if (out.length >= wanted && used >= perCell) continue
+    // Oben zaehlt nur die Spezialisierung - dort will man ohnehin die
+    // schnellsten. Unten kommt das Tempo dazu, damit neben der zuegigen
+    // Route auch eine vorsichtige steht und man die Wahl hat.
+    let cell = null
+    let limit = perCell
+    if (bracket === 'high') {
+      cell = 'high:' + tankKey(candidate.roster)
+    } else if (bracket === 'low') {
+      cell = 'low:' + (candidate.tier ?? 'fast') + ':' + tankKey(candidate.roster)
+      limit = Math.max(1, Math.ceil(perCell / 2))
+    }
+
+    const used = cell ? cells.get(cell) ?? 0 : Infinity
+    if (out.length >= wanted && used >= limit) continue
 
     calls += 1
     const details = await api('/run-details', { season, id: candidate.id })
@@ -563,8 +673,10 @@ export async function fetchDungeonRuns({
       challengeModeId: dungeon.challengeModeId,
       dungeonEnglishName: dungeon.englishName,
       mdtDungeonIdx: dungeon.mdtIndex,
-      // Der Weltrang steht in der Rangliste, nicht in den Laufdetails.
+      // Der Rang steht in der Rangliste, nicht in den Laufdetails - und
+      // gilt nur fuer die, aus der er stammt.
       rank: candidate.rank,
+      region: candidate.region,
       keyLevel: details.mythic_level,
       clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
       onTime: (details.num_chests ?? 0) > 0,
@@ -626,10 +738,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   }
 
   const minLevel = Number(args['min-level'] ?? 10)
-  const wanted = Number(args.runs ?? 10)
+  const wanted = Number(args.runs ?? 5)
   const perCell = Number(args['per-cell'] ?? 2)
   const lowTop = Number(args['low-top'] ?? 14)
-  const maxRuns = Number(args['max-runs'] ?? 28)
+  const maxRuns = Number(args['max-runs'] ?? 32)
   // Die Weltrangliste ist die richtige Quelle. --region dient dem Pruefen:
   // kleinere Regionen haben kuerzere Listen, dort liegen niedrige Stufen
   // auch ohne Zugangsschluessel in Reichweite.
@@ -658,12 +770,14 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
   console.log(`Season ${season}: je Dungeon die besten ${wanted}, dazu ${perCell} je Tank-Spezialisierung` +
     ` in jedem der beiden Bereiche (High Keys, +${minLevel} bis +${lowTop}), höchstens ${maxRuns}`)
-  if (!process.env.RAIDERIO_API_KEY) {
-    console.log('Ohne RAIDERIO_API_KEY - unangemeldet, also stärker begrenzt.')
+  if (!API_KEY) {
+    console.log('Ohne Zugangsschlüssel - unangemeldet, also stärker begrenzt.')
+    console.log('Setze RAIDERIO_API_KEY in der Umgebung oder in .env im Wurzelverzeichnis.')
   }
 
   mkdirSync(outDir, { recursive: true })
   let total = 0
+  let failed = 0
 
   for (const target of targets) {
     console.log(`\n${target.dungeon.englishName} (${target.slug})`)
