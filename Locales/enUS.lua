@@ -20,6 +20,7 @@ ns.RegisterLocale("enUS", {
     ["BROWSER_SHOW_ON_MAP"] = "Open in MDT",
     ["BROWSER_SUBMIT"]      = "Submit a route",
     ["BROWSER_NO_MATCH"]    = "No route matches your search.",
+    ["BROWSER_NO_MATCH_HERE"] = "Not in this dungeon – but here: %s",
     ["BROWSER_NO_DUNGEON"]  = "Your MDT does not know this dungeon.",
     ["BROWSER_NOT_INSTALLED"] = "That route is not in MDT right now. Use \"Show on map\" first.",
     ["BROWSER_WRONG_SEASON"] = "That dungeon is in a different season list. Switch the list in MDT first.",

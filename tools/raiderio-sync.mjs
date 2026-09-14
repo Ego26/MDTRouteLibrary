@@ -228,7 +228,10 @@ function roster(run) {
     return {
       class: c.class?.name ?? null,
       spec: c.spec?.name ?? null,
-      role: c.spec?.role ?? null,
+      // Zwei Stellen, weil zwei Antwortformen: die Rangliste legt die Rolle
+      // neben den Charakter, die Laufdetails in die Spezialisierung. Wer nur
+      // die zweite liest, haelt in der Rangliste jede Gruppe fuer tanklos.
+      role: member.role ?? c.spec?.role ?? null,
     }
   })
 }
@@ -239,71 +242,132 @@ function roster(run) {
  * @param {object} options
  * @returns {Promise<object[]>}
  */
-export async function fetchDungeonRuns({ season, dungeonSlug, dungeon, minLevel, wanted, region = 'world' }) {
-  const out = []
+/** Tank-Spezialisierung einer Gruppe, als Schluessel. */
+function tankKey(members) {
+  const tank = members.find((member) => member.role === 'tank')
+  return tank && tank.spec ? tank.spec + ' ' + tank.class : '?'
+}
+
+/**
+ * Holt die Laeufe eines Dungeons und macht Routen daraus.
+ *
+ * Nicht einfach "die ersten N". Die vorderen Raenge sind fest in der Hand
+ * einer Aufstellung - unter den ersten achtzig Laeufen der Season waren
+ * sechsundsiebzig mit Blutritter-Tank. Wer eine Route fuer seinen
+ * Wildheits-Druiden sucht, faende in den Top 10 nichts, obwohl es solche
+ * Laeufe gibt; der erste stand auf Rang 28.
+ *
+ * Nach Schluesselstufe zu gruppieren geht nicht: die API kennt keinen
+ * Stufenfilter, und die Rangliste ist nach Wertung geordnet. Um die besten
+ * +10er zu sehen, muesste man an saemtlichen +20ern vorbeilesen.
+ *
+ * Also andersherum. Die Rangliste liefert die Gruppe gleich mit, eine Seite
+ * deckt zwanzig Raenge ab. Wir lesen deshalb weit nach unten, kosten fast
+ * nichts dabei, und geben erst dort eine Detailabfrage aus, wo ein Lauf
+ * wirklich gebraucht wird: die besten paar insgesamt, und dazu eine feste
+ * Zahl je Tank-Spezialisierung. Der Tank praegt eine Route am staerksten -
+ * an ihm haengt, wie gross gepullt wird.
+ *
+ * @param {object} options
+ * @returns {Promise<object[]>}
+ */
+export async function fetchDungeonRuns({
+  season,
+  dungeonSlug,
+  dungeon,
+  minLevel,
+  wanted,
+  perTank = 3,
+  scanRanks = 300,
+  maxDetails = 70,
+  region = 'world',
+}) {
+  // ---- 1. Kandidaten sammeln. Eine Anfrage je zwanzig Raenge.
+  const candidates = []
   const seen = new Set()
 
-  for (let page = 0; page < 5 && out.length < wanted; page += 1) {
+  for (let page = 0; page * 20 < scanRanks; page += 1) {
     const list = await api('/runs', { season, region, dungeon: dungeonSlug, page })
     const rankings = list.rankings ?? []
     if (rankings.length === 0) break
 
     for (const entry of rankings) {
-      if (out.length >= wanted) break
-
       const run = entry.run ?? {}
       const id = run.keystone_run_id
       if (!id || seen.has(id)) continue
       if ((run.mythic_level ?? 0) < minLevel) continue
       seen.add(id)
 
-      const details = await api('/run-details', { season, id })
-      const logged = details.logged_details ?? {}
-
-      // Der Spieler hat widersprochen - dann endet es hier.
-      if (logged.showing_route_authorized !== true) {
-        console.log(`   - ${id}: Route nicht freigegeben, übersprungen`)
-        continue
-      }
-      if (!Array.isArray(logged.enemies) || logged.enemies.length === 0) {
-        console.log(`   - ${id}: keine Gegnerdaten`)
-        continue
-      }
-
-      const { pulls, unknown } = mapToMdt(groupIntoPulls(onlyPlaced(logged.enemies, dungeon)), dungeon)
-      if (pulls.length === 0) {
-        console.log(`   - ${id}: keine Gegner zuzuordnen`)
-        continue
-      }
-      if (unknown.length > 0) {
-        console.log(`     (${unknown.length} unbekannte Namen: ${unknown.slice(0, 3).join(', ')})`)
-      }
-
-      out.push({
-        id: `rio-${id}`,
-        source: 'raider.io',
-        // Bedingung ihrer Nutzungsbedingungen, und das Mindeste: jede Route
-        // zeigt, wo sie herkommt.
-        url: `https://raider.io/mythic-plus-runs/${season}/${id}-${details.mythic_level}-${details.dungeon.slug}`,
-        // Aus unseren eigenen Daten, nicht aus der Antwort: Raider.IO nennt
-        // die Kennung anders, und MDTs Katalog ist hier ohnehin massgeblich.
-        challengeModeId: dungeon.challengeModeId,
-        dungeonEnglishName: dungeon.englishName,
-        mdtDungeonIdx: dungeon.mdtIndex,
-        // Der Weltrang steht in der Rangliste, nicht in den Laufdetails.
+      candidates.push({
+        id,
         rank: typeof entry.rank === 'number' ? entry.rank : undefined,
-        keyLevel: details.mythic_level,
-        clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
-        onTime: (details.num_chests ?? 0) > 0,
-        completedAt: details.completed_at ?? null,
-        roster: roster(details),
-        enemyForcesRequired: logged.total_enemy_forces ?? dungeon.totalCount,
-        pulls,
+        level: run.mythic_level,
+        // Schon hier vorhanden - deshalb kostet die Auswahl keine einzige
+        // zusaetzliche Abfrage.
+        roster: roster(run),
       })
-
-      console.log(`   + ${id} +${details.mythic_level} ${Math.round(details.clear_time_ms / 1000)}s, ${pulls.length} Pulls`)
     }
   }
+
+  console.log('   ' + candidates.length + ' Kandidaten bis Rang ' + (candidates[candidates.length - 1]?.rank ?? 0))
+
+  // ---- 2. Auswaehlen und dabei die Details holen.
+  //
+  // Die Quote zaehlt erst, wenn ein Lauf wirklich uebernommen wurde. Faellt
+  // einer wegen fehlender Freigabe aus, rueckt der naechste derselben
+  // Spezialisierung nach, statt eine Luecke zu hinterlassen.
+  const out = []
+  const perSpec = new Map()
+  let calls = 0
+
+  for (const candidate of candidates) {
+    if (calls >= maxDetails) break
+
+    const key = tankKey(candidate.roster)
+    const used = perSpec.get(key) ?? 0
+    if (out.length >= wanted && used >= perTank) continue
+
+    calls += 1
+    const details = await api('/run-details', { season, id: candidate.id })
+    const logged = details.logged_details ?? {}
+
+    // Der Spieler hat widersprochen - dann endet es hier.
+    if (logged.showing_route_authorized !== true) continue
+    if (!Array.isArray(logged.enemies) || logged.enemies.length === 0) continue
+
+    const { pulls, unknown } = mapToMdt(groupIntoPulls(onlyPlaced(logged.enemies, dungeon)), dungeon)
+    if (pulls.length === 0) continue
+    if (unknown.length > 0) {
+      console.log('     (' + unknown.length + ' unbekannte Namen: ' + unknown.slice(0, 3).join(', ') + ')')
+    }
+
+    out.push({
+      id: 'rio-' + candidate.id,
+      source: 'raider.io',
+      // Bedingung ihrer Nutzungsbedingungen, und das Mindeste: jede Route
+      // zeigt, wo sie herkommt.
+      url: 'https://raider.io/mythic-plus-runs/' + season + '/' + candidate.id + '-' + details.mythic_level + '-' + details.dungeon.slug,
+      // Aus unseren eigenen Daten, nicht aus der Antwort: Raider.IO nennt
+      // die Kennung anders, und MDTs Katalog ist hier ohnehin massgeblich.
+      challengeModeId: dungeon.challengeModeId,
+      dungeonEnglishName: dungeon.englishName,
+      mdtDungeonIdx: dungeon.mdtIndex,
+      // Der Weltrang steht in der Rangliste, nicht in den Laufdetails.
+      rank: candidate.rank,
+      keyLevel: details.mythic_level,
+      clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
+      onTime: (details.num_chests ?? 0) > 0,
+      roster: roster(details),
+      enemyForcesRequired: logged.total_enemy_forces ?? dungeon.totalCount,
+      pulls,
+    })
+
+    perSpec.set(key, used + 1)
+    console.log('   + #' + candidate.rank + ' +' + details.mythic_level + ' ' + Math.round(details.clear_time_ms / 1000) + 's, ' + pulls.length + ' Pulls, ' + key)
+  }
+
+  const covered = [...perSpec.entries()].map(([spec, n]) => n + 'x ' + spec).join(', ')
+  console.log('   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen - ' + covered)
 
   return out
 }
@@ -335,8 +399,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1)
   }
 
-  const minLevel = Number(args['min-level'] ?? 15)
-  const wanted = Number(args.runs ?? 20)
+  const minLevel = Number(args['min-level'] ?? 10)
+  const wanted = Number(args.runs ?? 10)
+  const perTank = Number(args['per-tank'] ?? 3)
+  const scanRanks = Number(args.scan ?? 300)
   const outDir = args.out ?? 'data/raiderio'
 
   const { dungeons } = readDungeons(args.mdt)
@@ -359,7 +425,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1)
   }
 
-  console.log(`Season ${season}, ab +${minLevel}, bis zu ${wanted} Läufe je Dungeon`)
+  console.log(`Season ${season}, ab +${minLevel}: die besten ${wanted} je Dungeon,` +
+    ` dazu bis zu ${perTank} je Tank-Spezialisierung aus den ersten ${scanRanks} Rängen`)
   if (!process.env.RAIDERIO_API_KEY) {
     console.log('Ohne RAIDERIO_API_KEY - unangemeldet, also stärker begrenzt.')
   }
@@ -376,6 +443,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         dungeon: target.dungeon,
         minLevel,
         wanted,
+        perTank,
+        scanRanks,
       })
 
       if (runs.length > 0) {

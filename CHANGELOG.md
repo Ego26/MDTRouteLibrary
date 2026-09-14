@@ -7,13 +7,20 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
-- New tab "Top Routes": the fastest timed runs per dungeon, taken from the
-  Raider.IO leaderboard and rebuilt as MDT routes. Every run links back to
-  raider.io, and runs whose owners chose not to show their route are excluded.
+- New tab "Top Routes": timed runs per dungeon, taken from the Raider.IO
+  leaderboard and rebuilt as MDT routes. Every run links back to raider.io,
+  and runs whose owners chose not to show their route are excluded.
+- Every tank specialisation is represented, not just whatever is on top of
+  the leaderboard. In Altar of Fangs ranks 1 to 21 are all Blood Death
+  Knights; the first Guardian Druid is rank 28, the first Protection Warrior
+  rank 107. Looking only at the top ten would show you one route five times.
 - Filter routes by key level range, class and specialisation. The class and
-  specialisation lists are built from the runs that are actually loaded.
-- The detail panel now shows the group of a top run in class colours, its
-  world rank and its clear time.
+  specialisation lists are built from the runs that are actually loaded, so
+  they never offer a choice that leads nowhere.
+- When nothing matches in the selected dungeon, the list now says in which
+  dungeons it would.
+- The detail panel shows the group of a top run in class colours, its world
+  rank and its clear time.
 
 ## 2026.09.09.2
 

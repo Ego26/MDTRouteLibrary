@@ -171,9 +171,20 @@ jobs:
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
         run: node tools/keystone-sync.mjs --out data/cache
 
-      # Ebenfalls nur im 05:00-Lauf. Zehn Laeufe je Dungeon sind rund 170
-      # Anfragen; die Bestenliste aendert sich nicht im Sechsstundentakt, und
-      # oefter zu fragen waere Last ohne Gegenwert.
+      # Ebenfalls nur im 05:00-Lauf. Die Bestenliste aendert sich nicht im
+      # Sechsstundentakt, und oefter zu fragen waere Last ohne Gegenwert.
+      #
+      # Nicht schlicht "die ersten zehn": die vorderen Raenge gehoeren einer
+      # einzigen Aufstellung. In Altar of Fangs haben die Raenge 1 bis 21
+      # ausnahmslos einen Blutritter-Tank; der erste Waechter-Druide steht auf
+      # Rang 28, der erste Schutz-Krieger auf 107, der erste Rachsucht-
+      # Jaeger auf 211. Wer eine Route fuer seine eigene Gruppe sucht, faende
+      # in den Top 10 nie eine.
+      #
+      # Deshalb zehn insgesamt plus bis zu drei je Tank-Spezialisierung aus
+      # den ersten 300 Raengen. Das kostet kaum mehr: die Rangliste liefert
+      # die Gruppe gleich mit, zwanzig Raenge je Anfrage - eine Detailabfrage
+      # faellt erst fuer einen Lauf an, der auch uebernommen wird.
       #
       # Das Ergebnis wird mit eingecheckt (siehe "Aenderungen committen").
       # Sonst laege es nur in diesem einen Lauf vor: die drei anderen baeuten
@@ -184,7 +195,7 @@ jobs:
         if: >-
           env.RAIDERIO_API_KEY != '' && github.event_name != 'issues' &&
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
-        run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 15 --runs 10 --out data/raiderio
+        run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 10 --runs 10 --per-tank 3 --scan 300 --out data/raiderio
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'

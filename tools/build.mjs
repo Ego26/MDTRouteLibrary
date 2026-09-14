@@ -152,7 +152,13 @@ function enrichRoute(route, dungeon, usedNpcs) {
     for (const entry of pull.enemies ?? []) {
       const enemy = byIndex.get(entry.enemy)
       if (!enemy) continue
-      entry.npc = enemy.id
+
+      // Die NPC-Kennung steht schon in den Dungeon-Stammdaten, unter demselben
+      // Gegnerindex. Sie hier zu wiederholen kostete bei zweihundert Laeufen
+      // mit je dreissig Pulls ein Viertel des Datenpakets fuer nichts. Das
+      // Addon schlaegt sie ueber ns.NpcOf() nach; aeltere Pakete, die sie noch
+      // mitbringen, funktionieren unveraendert weiter.
+      delete entry.npc
       usedNpcs.add(enemy.id)
 
       const n = (entry.clones ?? []).length

@@ -121,16 +121,21 @@ end
 ---
 ---Aus den Daten, nicht aus einer eingebackenen Liste: so stehen nur Eintraege
 ---zur Wahl, die auch etwas finden, und ein neuer Spielstand aendert nichts.
+---Steht ein Dungeon zur Auswahl, zaehlen nur dessen Laeufe: sonst bietet die
+---Liste "Druide" an, obwohl in diesem Dungeon keiner vorkommt, und die Auswahl
+---fuehrt geradewegs in eine leere Liste.
 ---@param forClass string|nil Spezialisierungen auf diese Klasse begrenzen
 ---@return string[] classes, string[] specs
 local function rosterChoices(forClass)
     local classSet, specSet = {}, {}
 
     for _, route in ipairs(ns.routes) do
-        for _, member in ipairs(route.roster or {}) do
-            if member.class then classSet[member.class] = true end
-            if member.spec and (not forClass or member.class == forClass) then
-                specSet[member.spec] = true
+        if not filterDungeon or route.challengeModeId == filterDungeon then
+            for _, member in ipairs(route.roster or {}) do
+                if member.class then classSet[member.class] = true end
+                if member.spec and (not forClass or member.class == forClass) then
+                    specSet[member.spec] = true
+                end
             end
         end
     end
@@ -287,7 +292,7 @@ end
 local function pullSummary(route, pull)
     local counts, order = {}, {}
     for _, entry in ipairs(pull.enemies or {}) do
-        local npc = entry.npc
+        local npc = ns.NpcOf(route.challengeModeId, entry)
         if npc then
             if not counts[npc] then
                 counts[npc] = 0
@@ -877,6 +882,91 @@ end
 -- Routenliste
 --------------------------------------------------------------------------
 
+---Erfuellt eine Route alle Kriterien ausser dem Dungeon?
+---
+---Der Dungeon bleibt bewusst draussen: dieselbe Pruefung beantwortet damit
+---auch die Frage "und wo gaebe es so eine Route?", wenn die Liste leer ist.
+---@param route table
+---@param needle string Suchtext, bereits kleingeschrieben
+---@return boolean
+function B.PassesFilters(route, needle)
+    local percent = forcesPercent(route)
+    -- Fuer den Filter zaehlt die Obergrenze: eine Route fuer +2 bis +9
+    -- soll bei "ab +18" nicht auftauchen, eine fuer +10 bis +20 schon.
+    local level = levelCeiling(route)
+    local pulls = #(route.pulls or {})
+
+    -- Routen ohne Angabe fallen nur raus, wenn nach dem Kriterium
+    -- tatsaechlich gefiltert wird.
+    if filters.minPercent > 0 and not (percent and percent >= filters.minPercent) then return false end
+    if filters.favourites and not isFavourite(route.id) then return false end
+    if filters.minLevel > 0 and not (level and level >= filters.minLevel) then return false end
+    if filters.maxLevel > 0 and not (level and level <= filters.maxLevel) then return false end
+    if filters.maxPulls > 0 and pulls > filters.maxPulls then return false end
+
+    -- Nach Klasse und Spezialisierung laesst sich nur filtern, wo eine Gruppe
+    -- bekannt ist. Eingereichte Routen haben keine und verschwinden deshalb,
+    -- sobald jemand danach sucht - das ist richtig so, sie waeren keine
+    -- Antwort auf die Frage.
+    if not rosterMatches(route) then return false end
+
+    if needle and needle ~= "" then
+        local haystack = ((route.title or "") .. " " .. (route.author or "") .. " " ..
+            (route.dungeonEnglishName or "")):lower()
+        if not haystack:find(needle, 1, true) then return false end
+    end
+
+    return true
+end
+
+---Warum ist die Liste leer?
+---
+---"Kein Treffer" allein laesst den Nutzer im Regen stehen: er sieht seine
+---Filter, sieht nichts, und weiss nicht, welcher davon zu weit geht. Steht
+---der Dungeonfilter im Weg, sagen wir, wo es die gesuchte Route gibt.
+---@return string
+local function emptyReason()
+    if not filterDungeon then return ns.L["BROWSER_NO_MATCH"] end
+    -- Im Reiter "Meine Routen" zeigt die Liste, was in MDT liegt. Auf das
+    -- Datenpaket zu verweisen fuehrte dort in die Irre.
+    if filterMode == "mine" then return ns.L["BROWSER_NO_MATCH"] end
+
+    -- Dieselbe Pruefung, nur ohne den Dungeon.
+    local needle = filterText:lower()
+    local found, count = {}, 0
+
+    for _, route in ipairs(ns.routes) do
+        if (filterMode ~= "top" or isTopRun(route))
+            and (filterMode ~= "community" or not isTopRun(route))
+            and B.PassesFilters(route, needle) then
+            local name = route.dungeonEnglishName or "?"
+            if not found[name] then
+                found[name] = 0
+                count = count + 1
+            end
+            found[name] = found[name] + 1
+        end
+    end
+
+    if count == 0 then return ns.L["BROWSER_NO_MATCH"] end
+
+    -- Nach Anzahl, damit der ergiebigste Dungeon vorn steht.
+    local names = {}
+    for name in pairs(found) do names[#names + 1] = name end
+    table.sort(names, function(a, b)
+        if found[a] ~= found[b] then return found[a] > found[b] end
+        return a < b
+    end)
+
+    local parts = {}
+    for index = 1, math.min(#names, 3) do
+        parts[index] = ("%s (%d)"):format(names[index], found[names[index]])
+    end
+    if #names > 3 then parts[#parts + 1] = "…" end
+
+    return ns.L["BROWSER_NO_MATCH_HERE"]:format(table.concat(parts, ", "))
+end
+
 ---Baut die flache Anzeigeliste: pro Dungeon eine Kopfzeile, darunter die Routen.
 local function rebuildEntries()
     wipe(entries)
@@ -936,32 +1026,8 @@ local function rebuildEntries()
 
     for _, route in ipairs(source) do
         local matchesDungeon = not filterDungeon or route.challengeModeId == filterDungeon
-        local haystack = ((route.title or "") .. " " .. (route.author or "") .. " " ..
-            (route.dungeonEnglishName or "")):lower()
 
-        local percent = forcesPercent(route)
-        -- Fuer den Filter zaehlt die Obergrenze: eine Route fuer +2 bis +9
-        -- soll bei "ab +18" nicht auftauchen, eine fuer +10 bis +20 schon.
-        local level = levelCeiling(route)
-        local pulls = #(route.pulls or {})
-
-        -- Routen ohne Angabe fallen nur raus, wenn nach dem Kriterium
-        -- tatsaechlich gefiltert wird.
-        local passesPercent = filters.minPercent == 0
-            or (percent ~= nil and percent >= filters.minPercent)
-        local passesFavourite = not filters.favourites or isFavourite(route.id)
-        local passesLevel = filters.minLevel == 0 or (level ~= nil and level >= filters.minLevel)
-        local passesLevelMax = filters.maxLevel == 0 or (level ~= nil and level <= filters.maxLevel)
-        local passesPulls = filters.maxPulls == 0 or pulls <= filters.maxPulls
-        -- Nach Klasse und Spezialisierung laesst sich nur filtern, wo eine
-        -- Gruppe bekannt ist. Eingereichte Routen haben keine und verschwinden
-        -- deshalb, sobald jemand danach sucht - das ist richtig so, sie waeren
-        -- keine Antwort auf die Frage.
-        local passesRoster = rosterMatches(route)
-
-        if matchesDungeon and passesPercent and passesFavourite and passesLevel
-            and passesLevelMax and passesPulls and passesRoster
-            and (needle == "" or haystack:find(needle, 1, true)) then
+        if matchesDungeon and B.PassesFilters(route, needle) then
             local bucket
             if isFavourite(route.id) then
                 bucket = buckets.favourites
@@ -1877,7 +1943,7 @@ local function updateDetail(route)
         -- Ueberschrift, denn die nennt ihre Anzahl.
         local counts, order = {}, {}
         for _, entry in ipairs(pull.enemies or {}) do
-            local npcId = entry.npc
+            local npcId = ns.NpcOf(route.challengeModeId, entry)
             if npcId then
                 if not counts[npcId] then
                     counts[npcId] = 0
@@ -1974,7 +2040,7 @@ local function dungeonConsensus(challengeModeId)
                 for _, entry in ipairs(pull.enemies or {}) do
                     -- Pro Route nur einmal zaehlen, egal wie oft der Gegner
                     -- in verschiedenen Pulls auftaucht.
-                    local key = entry.npc
+                    local key = ns.NpcOf(challengeModeId, entry)
                     if key and not seenPerRoute[key] then
                         seenPerRoute[key] = true
                         counts[key] = (counts[key] or 0) + 1
@@ -2435,7 +2501,7 @@ function B.Refresh()
     ui.content:SetHeight(math.max(y, 1))
 
     if #entries == 0 then
-        ui.empty:SetText(#ns.routes == 0 and ns.L["LIST_EMPTY"] or ns.L["BROWSER_NO_MATCH"])
+        ui.empty:SetText(#ns.routes == 0 and ns.L["LIST_EMPTY"] or emptyReason())
         ui.empty:Show()
     else
         ui.empty:Hide()
@@ -3035,10 +3101,14 @@ local function buildList(parent)
             draw()
         end)
 
+        -- Zwei offene Listen ueberdecken einander, also weicht die andere.
+        panel.choiceLists = panel.choiceLists or {}
+        panel.choiceLists[#panel.choiceLists + 1] = list
+
         button:SetScript("OnClick", function()
-            if list:IsShown() then
-                list:Hide()
-            else
+            local wasShown = list:IsShown()
+            for _, other in ipairs(panel.choiceLists) do other:Hide() end
+            if not wasShown then
                 list.offset = 0
                 draw()
                 list:Show()

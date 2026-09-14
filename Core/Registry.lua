@@ -221,6 +221,25 @@ function ns.BuildOwnPulls(challengeModeId, pulls)
     return out
 end
 
+---Welcher NPC steckt hinter einem Gegnereintrag einer Route?
+---
+---Die Kennung steht seit jeher in jedem Eintrag - und zugleich in den
+---Dungeon-Stammdaten, wo sie hingehoert. Bei zweihundert Top-Laeufen mit je
+---dreissig Pulls sind das zehntausende Wiederholungen derselben Zahl. Neue
+---Routen bringen sie deshalb nicht mehr mit; aeltere, die schon im Umlauf
+---sind, duerfen sie behalten.
+---@param challengeModeId number
+---@param entry table Gegnereintrag eines Pulls
+---@return number|nil
+function ns.NpcOf(challengeModeId, entry)
+    if type(entry) ~= "table" then return nil end
+    if entry.npc then return entry.npc end
+
+    local enemies = ns.GetDungeonEnemies(challengeModeId)
+    local enemy = enemies and entry.enemy and enemies[entry.enemy]
+    return enemy and enemy.npc or nil
+end
+
 ---Name eines NPCs im Kontext eines Dungeons.
 ---@param challengeModeId number
 ---@param npcId number
