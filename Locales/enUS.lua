@@ -96,6 +96,8 @@ ns.RegisterLocale("enUS", {
     ["DETAIL_ISSUE_TIP"]    = "Click to copy the address. Submitted it yourself? Edit the issue there to change the route, or comment /withdraw to take it out.",
     ["DETAIL_ISSUE_HELP"]   = "Copy the address (Ctrl+C) and open it in your browser.",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
+    ["DETAIL_SECTION_GROUP"] = "Group",
+    ["DETAIL_SECTION_TIMES"] = "Your times",
     ["DETAIL_SECTION_ROUTE"] = "Route",
     ["DETAIL_REFERENCE_NOTE"] = "Raider.IO records which enemies died and when – not which of several identically named ones it was, or where one pull ended. The route itself lives on keystone.guru, where you can view it and copy it as an MDT string.",
     ["DETAIL_ROUTE_BUTTON"] = "View route",

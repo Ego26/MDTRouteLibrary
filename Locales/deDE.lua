@@ -96,6 +96,8 @@ ns.RegisterLocale("deDE", {
     ["DETAIL_ISSUE_TIP"]    = "Klicken kopiert die Adresse. Selbst eingereicht? Dort das Issue bearbeiten ändert die Route, /withdraw als Kommentar nimmt sie heraus.",
     ["DETAIL_ISSUE_HELP"]   = "Adresse kopieren (Strg+C) und im Browser öffnen.",
     ["DETAIL_SECTION_PULLS"] = "Pulls",
+    ["DETAIL_SECTION_GROUP"] = "Gruppe",
+    ["DETAIL_SECTION_TIMES"] = "Deine Zeiten",
     ["DETAIL_SECTION_ROUTE"] = "Route",
     ["DETAIL_REFERENCE_NOTE"] = "Raider.IO protokolliert, welche Gegner wann gefallen sind – nicht, welcher von mehreren gleichnamigen es war oder wo ein Pull endete. Die Route selbst liegt bei keystone.guru; dort lässt sie sich ansehen und als MDT-Code kopieren.",
     ["DETAIL_ROUTE_BUTTON"] = "Route ansehen",

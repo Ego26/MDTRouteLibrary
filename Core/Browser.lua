@@ -335,6 +335,12 @@ local function levelBounds()
         end
     end
 
+    -- Nie unter +10, auch wenn eine Route tiefer anfaengt. Mythisch+ beginnt
+    -- dort, und unterhalb gibt es ohnehin keine veroeffentlichten Routen -
+    -- ein Regler, der bis +2 laeuft, verspricht also Stufen, hinter denen
+    -- nichts steht.
+    if not lowest or lowest < 10 then lowest = 10 end
+
     return lowest, highest or 30
 end
 
@@ -433,7 +439,23 @@ local function fillRoster(d, route)
         end
     end
 
-    d.group:SetHeight(#members > 0 and (#members * GROUP_ROW) or 1)
+    -- Ohne Gruppe keine Ueberschrift: eine leere Ueberschrift mit Linie
+    -- darunter sieht aus wie ein Fehler, nicht wie Gliederung.
+    local any = #members > 0
+    d.groupSection:SetShown(any)
+    d.groupDivider:SetShown(any)
+
+    -- Unsichtbar heisst nicht platzlos: ein verstecktes Element behaelt
+    -- seinen Anker. Ohne Gruppe haengt der Block deshalb wieder direkt
+    -- unter der Marke, sonst klafft die Hoehe des Abschnitts als Luecke.
+    d.group:ClearAllPoints()
+    d.group:SetPoint("TOPLEFT",
+        any and d.groupDivider or d.affixes, "BOTTOMLEFT", any and 2 or 0, any and -6 or 0)
+    d.group:SetPoint("RIGHT", d.group:GetParent(), "RIGHT", -PADDING, 0)
+
+    -- Eins statt null: eine Hoehe von null macht WoW zu einer
+    -- Standardhoehe, und der Block waere sichtbar, obwohl nichts drinsteht.
+    d.group:SetHeight(any and (#members * GROUP_ROW) or 1)
 end
 
 ---Fasst die Gegner eines Pulls zusammen: "3x Bloodletter, 2x Living Venom".
@@ -2035,6 +2057,8 @@ local function updateDetail(route)
         d.note:Hide()
         fillRoster(d, nil)
         d.runs:SetText("")
+        d.runsSection:Hide()
+        d.runsDivider:Hide()
         d.section:SetText("")
         d.foldAll:Hide()
         for _, tile in ipairs(d.tiles) do
@@ -2162,6 +2186,8 @@ local function updateDetail(route)
     end
 
     -- Was du selbst mit dieser Route erreicht hast.
+    d.runsSection:Show()
+    d.runsDivider:Show()
     local key = ns.Runs.KeyFor(route)
     local best = ns.Runs.Best(route.challengeModeId, key)
     if best then
@@ -2395,6 +2421,8 @@ function updateDungeonDetail(dungeon)
     d.note:Hide()
     fillRoster(d, nil)
     d.runs:SetText("")
+    d.runsSection:Hide()
+    d.runsDivider:Hide()
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
     d.foldAll:Hide()
 
@@ -3037,12 +3065,23 @@ local function buildDetail(parent)
     end)
     d.badgeHit:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
+    -- Eigener Abschnitt fuer die Gruppe, mit derselben Ueberschrift und
+    -- Linie wie "ROUTE" weiter unten. Ohne sie lief der ganze Bereich als
+    -- eine Textwand durch: Kacheln, Marke, Gruppe und Hinweis sahen gleich
+    -- aus und gingen ineinander ueber.
+    d.groupSection = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.groupSection:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", -2, -10)
+    d.groupSection:SetTextColor(T:Color("textMuted"))
+    d.groupSection:SetText(ns.L["DETAIL_SECTION_GROUP"]:upper())
+
+    d.groupDivider = T:Divider(root)
+    d.groupDivider:SetPoint("TOPLEFT", d.groupSection, "BOTTOMLEFT", 0, -4)
+    d.groupDivider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+
     -- Die Gruppe eines Top-Laufs als Tabelle: Spezialisierung links auf
-    -- fester Breite, Name rechts in Klassenfarbe. Bei eingereichten Routen
-    -- faellt der Block auf eine Zeile Hoehe zusammen - die Zeilen darunter
-    -- haengen aneinander und ruecken von selbst nach.
+    -- fester Breite, Name rechts in Klassenfarbe. Wo der Block haengt,
+    -- entscheidet fillRoster - ohne Gruppe faellt der Abschnitt weg.
     d.group = CreateFrame("Frame", nil, root)
-    d.group:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", 0, -4)
     d.group:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.group:SetHeight(1)
 
@@ -3067,8 +3106,20 @@ local function buildDetail(parent)
     end
 
     ---------------------------------------------------------- Abschnitt
+    -- Deine eigenen Zeiten, mit derselben Marke wie GRUPPE und ROUTE.
+    -- Ohne sie war dies der einzige Block ohne Ueberschrift, und er sah
+    -- aus, als gehoere er mal zum Abschnitt darueber, mal zu dem darunter.
+    d.runsSection = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.runsSection:SetPoint("TOPLEFT", d.group, "BOTTOMLEFT", -4, -12)
+    d.runsSection:SetTextColor(T:Color("textMuted"))
+    d.runsSection:SetText(ns.L["DETAIL_SECTION_TIMES"]:upper())
+
+    d.runsDivider = T:Divider(root)
+    d.runsDivider:SetPoint("TOPLEFT", d.runsSection, "BOTTOMLEFT", 0, -4)
+    d.runsDivider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+
     d.runs = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    d.runs:SetPoint("TOPLEFT", d.group, "BOTTOMLEFT", 0, -4)
+    d.runs:SetPoint("TOPLEFT", d.runsDivider, "BOTTOMLEFT", 2, -6)
     d.runs:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.runs:SetJustifyH("LEFT")
     d.runs:SetWordWrap(false)
@@ -3095,7 +3146,6 @@ local function buildDetail(parent)
 
     -- Steht anstelle der Pull-Liste, wenn ein Eintrag nur ein Verweis ist.
     d.note = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    d.note:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", 0, -24)
     d.note:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.note:SetJustifyH("LEFT")
     d.note:SetWordWrap(true)
@@ -3109,6 +3159,11 @@ local function buildDetail(parent)
     local divider = T:Divider(root)
     divider:SetPoint("TOPLEFT", d.section, "BOTTOMLEFT", 0, -4)
     divider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+    d.divider = divider
+
+    -- Erst hier, weil die Linie vorher noch nicht existiert: der Hinweis
+    -- haengt an ihr, mit demselben Abstand wie Gruppe und Zeiten an ihren.
+    d.note:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 2, -6)
 
     -- Alles auf oder alles zu. Bei vierzig Pulls einzeln zu klicken waere
     -- Arbeit, die niemand machen will.
