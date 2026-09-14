@@ -70,7 +70,7 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
   // trotzdem nur zehntausend. Und eine Seite kostet zwei Punkte, egal wie
   // voll sie ist: mit 3000 kostete ein Lauf 84 Anfragen, mit 10000 sind es
   // 22. Das ist der Unterschied zwischen "geht nicht taeglich" und "geht".
-  const raus = []
+  const erste = new Map()
   let von = kampf.startTime
   for (let seite = 0; seite < 200 && von < kampf.endTime; seite += 1) {
     const d = await gql(`query ($code: String!, $fight: Int!, $start: Float!, $end: Float!) {
@@ -85,7 +85,19 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
     for (const e of block.data ?? []) {
       const akteur = aktoren.get(e.targetID)
       if (!akteur) continue
-      raus.push({
+      // Nur das erste Ereignis je Gegner behalten. Gebraucht wird ohnehin
+      // nur, wo er stand, als sein Kampf begann - alles danach ist
+      // Wiederholung. Ungefiltert sind das neun Megabyte je Lauf und fast
+      // zwei Gigabyte fuer die ganze Bestenliste; so bleiben ein paar
+      // Kilobyte, und der Zwischenspeicher passt in einen CI-Lauf.
+      // Und zwar das erste MIT Ort. Nicht jeder Treffer bringt Koordinaten
+      // mit; wer einfach den ersten nimmt, wirft bei manchen Gegnern den
+      // einzigen brauchbaren weg - gemessen fielen so bei Rubinquell 18 von
+      // 90 Gegnern aus der Route.
+      const key = akteur.gameID + ':' + (e.targetInstance ?? 1)
+      const bisher = erste.get(key)
+      if (bisher && (bisher.x !== undefined || e.x === undefined)) continue
+      erste.set(key, {
         t: e.timestamp,
         npcId: akteur.gameID,
         instanz: e.targetInstance ?? 1,
@@ -95,7 +107,7 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
     if (!block.nextPageTimestamp) break
     von = block.nextPageTimestamp
   }
-  return raus
+  return [...erste.values()]
 }
 
 /** Ereignisse mit Zwischenspeicher je Bericht und Kampf. */
