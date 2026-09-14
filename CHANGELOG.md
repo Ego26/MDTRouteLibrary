@@ -22,6 +22,8 @@
   run the same route — +18 to +21 are all 30 pulls at 3.2 mobs each — but an
   empty list at +16 reads as "there is nothing for my key", which is worse
   than a little duplication.
+- Filter by pace, and see it in the list. The quick/safe distinction was only
+  visible after opening a route, so picking one meant clicking through them.
 - The key level filter now only offers levels that exist in the tab you are
   looking at, and "Reset" clears the labels it used to leave behind.
 - Runs that were not timed, or where the reconstruction could not place

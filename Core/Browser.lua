@@ -74,6 +74,7 @@ local filters = {
     minLevel   = 0,  -- Schluesselstufe ab
     maxLevel   = 0,  -- Schluesselstufe bis
     maxPulls   = 0,  -- hoechstens so viele Pulls
+    tier       = nil, -- "fast" oder "slow" - nur Top-Laeufe haben ein Tempo
     class      = nil, -- Klasse in der Gruppe (nur Top-Laeufe haben eine)
     spec       = nil, -- Spezialisierung in der Gruppe
 }
@@ -86,6 +87,7 @@ local function activeFilterCount()
     if filters.minLevel > 0 then n = n + 1 end
     if filters.maxLevel > 0 then n = n + 1 end
     if filters.maxPulls > 0 then n = n + 1 end
+    if filters.tier then n = n + 1 end
     if filters.class then n = n + 1 end
     if filters.spec then n = n + 1 end
     return n
@@ -969,6 +971,10 @@ function B.PassesFilters(route, needle)
     -- Antwort auf die Frage.
     if not rosterMatches(route) then return false end
 
+    -- Nach dem Tempo laesst sich nur bei Top-Laeufen filtern; eingereichte
+    -- Routen haben keines und verschwinden, sobald jemand danach sucht.
+    if filters.tier and route.tier ~= filters.tier then return false end
+
     if needle and needle ~= "" then
         local haystack = ((route.title or "") .. " " .. (route.author or "") .. " " ..
             (route.dungeonEnglishName or "")):lower()
@@ -1029,6 +1035,11 @@ local function emptyReason()
             get = function() return filters.minLevel end,
             set = function(v) filters.minLevel = v end,
             off = 0,
+        },
+        {
+            label = ns.L["FILTER_PACE_LABEL"],
+            get = function() return filters.tier end,
+            set = function(v) filters.tier = v end,
         },
         {
             label = ns.L["FILTER_SPEC_LABEL"],
@@ -2607,7 +2618,19 @@ function B.Refresh()
             else
                 local author = route.author and ns.L["BY_AUTHOR"]:format(route.author) or ""
                 local src = route.source and (T:Hex("textMuted") .. " · " .. route.source .. "|r") or ""
-                meta = author .. src
+
+                -- Das Tempo gehoert in die Zeile, nicht nur in die Details.
+                -- Sonst muesste man jede Route einzeln oeffnen, um die sichere
+                -- von der zuegigen zu unterscheiden - und genau danach sucht,
+                -- wer eine Route fuer sich aussucht.
+                local pace = ""
+                if route.tier == "fast" then
+                    pace = T:Hex("textMuted") .. " · " .. T:Hex("success") .. ns.L["BADGE_FAST"] .. "|r"
+                elseif route.tier == "slow" then
+                    pace = T:Hex("textMuted") .. " · " .. T:Hex("warning") .. ns.L["BADGE_SAFE"] .. "|r"
+                end
+
+                meta = author .. src .. pace
             end
             row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", indent, 5)
             row.meta:SetText(meta)
@@ -3140,7 +3163,7 @@ local function buildList(parent)
 
     local panel = T:Panel(root, "bgOverlay")
     -- Gewachsen um den zweiten Stufenregler und die beiden Auswahllisten.
-    panel:SetSize(250, 420)
+    panel:SetSize(250, 466)
     panel:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
     panel:SetFrameLevel(root:GetFrameLevel() + 20)
     panel:EnableMouse(true)
@@ -3374,7 +3397,24 @@ local function buildList(parent)
         function(v) filters.maxPulls = v end,
         ns.L["FILTER_ANY"])
 
-    panel.classChoice = makeChoice(ns.L["FILTER_CLASS_LABEL"], panel.pullsSlider,
+    -- Tempo: die zweite Achse neben der Tank-Spezialisierung, und die
+    -- einzige, die man sonst nur durch Oeffnen jeder einzelnen Route
+    -- herausfaende.
+    panel.tierChoice = makeChoice(ns.L["FILTER_PACE_LABEL"], panel.pullsSlider,
+        function() return { ns.L["BADGE_FAST"], ns.L["BADGE_SAFE"] } end,
+        function()
+            if filters.tier == "fast" then return ns.L["BADGE_FAST"] end
+            if filters.tier == "slow" then return ns.L["BADGE_SAFE"] end
+            return nil
+        end,
+        function(v)
+            if v == ns.L["BADGE_FAST"] then filters.tier = "fast"
+            elseif v == ns.L["BADGE_SAFE"] then filters.tier = "slow"
+            else filters.tier = nil end
+            panel.tierChoice.Render()
+        end)
+
+    panel.classChoice = makeChoice(ns.L["FILTER_CLASS_LABEL"], panel.tierChoice,
         function() return (rosterChoices(nil)) end,
         function() return filters.class end,
         function(v)
@@ -3403,6 +3443,7 @@ local function buildList(parent)
     reset:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -14, 12)
     reset:SetScript("OnClick", function()
         filters.favourites = false
+        filters.tier = nil
         filters.class = nil
         filters.spec = nil
 
@@ -3410,8 +3451,10 @@ local function buildList(parent)
         panel.levelSlider.Reset()
         panel.levelMaxSlider.Reset()
         panel.pullsSlider.Reset()
+        panel.tierChoice.list:Hide()
         panel.classChoice.list:Hide()
         panel.specChoice.list:Hide()
+        panel.tierChoice.Render()
         panel.classChoice.Render()
         panel.specChoice.Render()
         wipe(pages)
@@ -3421,8 +3464,7 @@ local function buildList(parent)
     -- Geht die Filterleiste zu, gehen die aufgeklappten Listen mit. Sonst
     -- stehen sie beim naechsten Oeffnen noch offen und verdecken die Regler.
     panel:SetScript("OnHide", function()
-        panel.classChoice.list:Hide()
-        panel.specChoice.list:Hide()
+        for _, list in ipairs(panel.choiceLists or {}) do list:Hide() end
     end)
 
     filterButton:SetScript("OnClick", function()
