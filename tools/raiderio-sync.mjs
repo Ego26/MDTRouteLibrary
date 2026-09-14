@@ -505,11 +505,17 @@ export async function fetchDungeonRuns({
   // Deckel muss also ein Vielfaches der gesuchten Laeufe sein, sonst
   // bricht die Suche ab, bevor die Felder gefuellt sind.
   maxDetails = 900,
+  // Und zwar je Bereich, nicht insgesamt. Die Kandidaten stehen nach Stufe
+  // absteigend; ein gemeinsamer Deckel gehoert am Ende den hohen Stufen,
+  // und die niedrigen kommen nie dran. Gemessen: je eine Route auf +10 und
+  // +12, keine auf +11 - und 31 auf +19.
+  maxPerBracket = 300,
   // Nach so vielen vergeblichen Versuchen gilt ein Bereich als leer.
-  // 60 ist reichlich: bei einer Quote von auch nur fuenf Prozent waere
-  // die Wahrscheinlichkeit, 60 mal daneben zu greifen, unter fuenf
-  // Prozent. Wer nichts findet, findet dort auch nichts.
-  emptyAfter = 60,
+  // Bei 60 und einer Quote von drei Prozent liegt die Wahrscheinlichkeit,
+  // trotzdem daneben zu greifen, bei einem Sechstel - zu viel, um daraus
+  // "dort gibt es nichts" zu schliessen. Bei 150 sind es unter einem
+  // Prozent. Das Budget je Bereich traegt das jetzt.
+  emptyAfter = 150,
   // Wie viele Detailabfragen gleichzeitig unterwegs sein duerfen. Bei zehn
   // und einer Sekunde Antwortzeit sind das zehn Anfragen je Sekunde - der
   // Schluessel erlaubt gut sechzehn. Genug Abstand, dass ein langsamer
@@ -553,6 +559,8 @@ export async function fetchDungeonRuns({
   const tries = new Map()
   const hits = new Map()
   const givenUp = new Set()
+  // Verbrauchtes Budget je Bereich.
+  const spent = new Map()
 
   // Lohnt sich die Detailabfrage fuer diesen Kandidaten - nach dem Stand
   // von jetzt? Getrennt von der Schleife, weil der Vorausgriff dieselbe
@@ -566,6 +574,9 @@ export async function fetchDungeonRuns({
     // absteigend, also ist das kein Vorgriff: was danach kommt, ist
     // niedriger und damit noch unwahrscheinlicher.
     if (givenUp.has(bracket)) return null
+
+    // Und keiner nimmt dem anderen sein Budget weg.
+    if ((spent.get(bracket) ?? 0) >= maxPerBracket) return null
 
     // Ein Feld je Band, Tempo und Tank-Spezialisierung - das sind die drei
     // Fragen, die jemand stellt, der eine Route sucht. Die Stufe selbst steht
@@ -643,6 +654,7 @@ export async function fetchDungeonRuns({
     if (!answer.ok) throw answer.error
 
     calls += 1
+    spent.set(bracket, (spent.get(bracket) ?? 0) + 1)
     const details = answer.value
     const logged = details.logged_details ?? {}
 
@@ -729,6 +741,7 @@ export async function fetchDungeonRuns({
   console.log(
     '   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen' +
       (sent > calls ? ' (' + sent + ' gestellt)' : '') +
+      ' [' + [...spent.entries()].sort().map(([b, n]) => b + ' ' + n).join(', ') + ']' +
       ' (' + ohneRoute + ' ohne veroeffentlichte Route' +
       (givenUp.size ? ', ' + [...givenUp].join('/') + ' vorzeitig beendet' : '') + ')'
   )
