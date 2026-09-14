@@ -3,18 +3,52 @@
        alt="MDT Route Library — kuratierte Mythic+-Routen, direkt in Mythic Dungeon Tools durchsuchbar">
 </div>
 
-Kuratierte Mythic+-Routen, direkt in **Mythic Dungeon Tools** durchsuchbar –
-ohne Alt-Tab, ohne Copy-Paste.
+Mythic+-Routen direkt in **Mythic Dungeon Tools** durchsuchbar – ohne
+Alt-Tab, ohne Copy-Paste.
 
 Das Addon hängt sich als eigene Sektion in MDTs Fenster: Routen nach Dungeon
 gruppiert, mit Gegnerkräften, Pull-Liste, Gegnervorschau und Zauber-Infos. Ein
 Klick zeigt eine Route auf der Karte, ein weiterer übernimmt sie dauerhaft.
 
+## Top Routes: was die besten Gruppen wirklich laufen
+
+Ein eigener Reiter zeigt die Routen aus der Raider.IO-Bestenliste – nicht
+als Link und nicht als Screenshot, sondern als echte MDT-Route: auf der
+Karte, Pull für Pull, übernehmbar.
+
+Die Spitze einer Bestenliste ist allerdings eine einzige Aufstellung auf
+einer einzigen Stufe. In Altar of Fangs haben die Ränge 1 bis 21 ausnahmslos
+einen Blutritter-Tank auf +20. Zehn solche Routen beantworten eine Frage und
+sonst keine. Die Auswahl deckt deshalb ab, wonach tatsächlich gesucht wird:
+
+- **Jede Tank-Spezialisierung.** Der erste Wächter-Druide in Altar of Fangs
+  steht auf Rang 28, der erste Schutz-Krieger auf 107, der erste
+  Rachsucht-Jäger auf 211. Alle sind dabei.
+- **Jede Schlüsselstufe ab +10**, ohne Lücke. Ein Weltrang-1-Lauf ist nicht,
+  was man auf einem +12er spielt: er fängt mit vier Mobs an und braucht 28
+  Minuten, ein +12er fängt mit elf an und ist in 21 durch.
+- **Zügig und sicher nebeneinander.** Bei +14 in Altar of Fangs brauchte ein
+  Wächter-Druide 23:47 über 22 Pulls, ein anderer 27:34 über 33. Beide sind
+  drin, und jede Route sagt, welche von beiden sie ist.
+
+Filtern nach Stufe, Tempo, Klasse und Spezialisierung; die Listen bieten nur
+Werte an, hinter denen auch etwas steht. Jeder Lauf zeigt seine Gruppe in
+Klassenfarben, Zeit, Rang und einen Rückverlink zu raider.io.
+
+**Offen gesagt:** Raider.IO protokolliert, welche Gegner wann gefallen sind –
+nicht, welcher der gleichnamigen es war. Reihenfolge und Zusammensetzung der
+Pulls stimmen exakt; die Standorte sind aus dem Weg der Gruppe rekonstruiert.
+Die Routen sagen das, und wo ein Gegner nachgetragen werden musste, weil das
+Protokoll ihn gar nicht führt, sagen sie auch das.
+
+Übernommen wird ein Lauf nur, wenn sein Besitzer das Anzeigen der Route
+erlaubt hat und der Schlüssel mit vollen Gegnerkräften in der Zeit
+abgeschlossen wurde.
+
 ## Status
 
-Frühe Entwicklung. Gebaut und geprüft gegen **MDT 6.2.13** (Client 12.0.1).
-Addon, MDT-Anbindung, Einreich-Pfad, Generator und tägliche Pipeline stehen.
-Was fehlt, ist der Inhalt.
+Gebaut und geprüft gegen **MDT 6.2.16** (Client 12.0.1). Addon,
+MDT-Anbindung, Einreich-Pfad, Generator und tägliche Pipeline stehen.
 
 ## Wie es sich in MDT verhält
 

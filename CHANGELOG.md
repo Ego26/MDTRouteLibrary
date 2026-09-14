@@ -7,48 +7,56 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
-- New tab "Top Routes": timed runs per dungeon, taken from the Raider.IO
-  leaderboard and rebuilt as MDT routes. Every run links back to raider.io,
-  and runs whose owners chose not to show their route are excluded.
-- Every tank specialisation is represented, at two difficulty levels — high
-  keys and the +10 to +14 range — and in the lower range with both a quick
-  and a careful route. The top of the leaderboard is one composition on one
-  key level: in Altar of Fangs ranks 1 to 21 are all Blood Death Knights at
-  +20. A world-first run is also not what you play on a +12; it opens with
-  four mobs and takes 28 minutes, where a +12 opens with eleven and is done
-  in 21. And within one key level the routes differ just as much: at +14 a
-  Guardian Druid took 23:47 over 22 pulls, another 27:34 over 33.
-- Every key level from +10 up has routes, with no gaps. Neighbouring levels
-  run the same route — +18 to +21 are all 30 pulls at 3.2 mobs each — but an
-  empty list at +16 reads as "there is nothing for my key", which is worse
-  than a little duplication.
-- Top runs now name their tank in the class colour, without a "by" in front —
-  it is a property of the route, not an author.
-- Filter by pace, and see it in the list. The quick/safe distinction was only
-  visible after opening a route, so picking one meant clicking through them.
-- The key level filter now only offers levels that exist in the tab you are
-  looking at, and "Reset" clears the labels it used to leave behind.
-- Runs that were not timed, or where the reconstruction could not place
-  every enemy, are left out.
-- Every route now carries a badge saying what it is for — "High keys · quick",
-  "Starter keys · safe" — with an explanation on hover.
+### Top Routes — the routes the best groups actually run
+
+A new tab next to *Community* and *My routes*. It shows what the fastest
+groups in the world ran, pull for pull, on the map, ready to import into
+MDT. The runs come from the Raider.IO leaderboard and are rebuilt into
+real MDT routes — not screenshots, not links: routes you can put on the
+map and follow.
+
+**It is not just the world first.** The top of any leaderboard is a single
+composition on a single key level — in Altar of Fangs, ranks 1 to 21 are
+all Blood Death Knights at +20. Ten routes like that answer one question
+and no others. So the selection covers what people actually ask:
+
+- **Every tank specialisation.** The first Guardian Druid in Altar of Fangs
+  is rank 28, the first Protection Warrior rank 107, the first Vengeance
+  Demon Hunter rank 211. They are all in.
+- **Every key level from +10 up**, with no gaps. A world-first run is not
+  what you play on a +12: it opens with four mobs and takes 28 minutes,
+  where a +12 opens with eleven and is done in 21.
+- **Quick and safe, side by side.** At +14 in Altar of Fangs one Guardian
+  Druid took 23:47 over 22 pulls, another 27:34 over 33. Both are in, and
+  each route says which it is.
+
+Filter by key level, pace, class and specialisation; the lists only ever
+offer values that lead somewhere. Every run carries its group in class
+colours, its clear time, its rank, and a link back to raider.io.
+
+**One thing said plainly:** Raider.IO records which enemies died and when,
+not which of the identically named ones it was. The order of the pulls and
+what they contain is exact; the positions are reconstructed from the path
+the group took. Routes say so, and where an enemy had to be added back
+because the log omits it entirely, they say that too.
+
+Runs are only taken when the owner allows their route to be shown, and
+only when they were timed with the full enemy forces.
+
+### Also
+
 - Enemy forces were counted 15 too low in Temple of Sethraliss, for every
   route including your own. A single spawn may award more forces than its
   siblings, and those were being ignored. Percentages now agree with what
   MDT shows next to them.
-- Enemies that Raider.IO omits from its logs are added back. In King's Rest
-  "Shadow of Zul" appears in no run at all, although every group kills it —
-  those routes came out at 96% instead of 101%. MDT knows where it stands, so
-  it is placed where the route passes closest, and the route says so.
+- Filter routes by key level range, pace, class and specialisation. The
+  lists are built from the routes that are actually loaded, so they never
+  offer a choice that leads nowhere.
+- When nothing matches, the list names the filter that is too narrow, and
+  in which dungeons your search would find something.
 - The filter for enemy forces is gone. It filtered nothing: a submission
   below 100% is never accepted, and a timed run had them anyway.
-- Filter routes by key level range, class and specialisation. The class and
-  specialisation lists are built from the runs that are actually loaded, so
-  they never offer a choice that leads nowhere.
-- When nothing matches in the selected dungeon, the list now says in which
-  dungeons it would.
-- The detail panel shows the group of a top run in class colours, its world
-  rank and its clear time.
+- "Reset" in the filter panel no longer leaves old labels behind.
 
 ## 2026.09.09.2
 

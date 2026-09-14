@@ -136,13 +136,46 @@ function Invoke-Sync {
                -ExcludeFiles @("*.md", "*.ps1", "*.mjs", ".gitignore", ".gitattributes", ".pkgmeta", ".luacheckrc", ".editorconfig")
 
     # Mit -Mock stehen die Testdaten schon im Zielordner. Sie von hier aus
-    # zu spiegeln wuerde sie sofort wieder durch den (leeren) Repo-Stand
-    # ersetzen.
-    $dataSource = Join-Path $RepoRoot "MDTRouteLibrary_Data"
-    if (-not $Mock -and (Test-Path $dataSource)) {
-        Sync-Addon -Source $dataSource `
-                   -Target (Join-Path $AddOns "MDTRouteLibrary_Data") `
-                   -ExcludeFiles @("*.md")
+    # zu spiegeln wuerde sie sofort wieder durch den Repo-Stand ersetzen.
+    if (-not $Mock) {
+        $mdtPath = Join-Path $AddOns "MythicDungeonTools"
+
+        if (Test-Path $mdtPath) {
+            # Frisch bauen statt den eingecheckten Ordner zu spiegeln.
+            #
+            # Der im Repository liegende Datenordner stammt vom letzten
+            # Release der CI und kennt weder neu eingereichte Routen noch die
+            # Laeufe in data/raiderio. Ihn hierher zu kopieren hat mehrfach
+            # ein frisch gebautes Paket im Spiel durch ein altes ersetzt -
+            # sichtbar nur daran, dass die Routenzahl im Kopf ploetzlich
+            # wieder klein war.
+            # ErrorActionPreference steht oben auf "Stop". Damit macht
+            # PowerShell aus jeder Zeile, die ein fremdes Programm nach stderr
+            # schreibt, einen abbrechenden Fehler - und build.mjs meldet dort
+            # ganz normale Hinweise ("Protokoll der Quelle unvollstaendig").
+            # Also hier lockern und den Exitcode selbst pruefen.
+            $previous = $ErrorActionPreference
+            $ErrorActionPreference = "Continue"
+            & node (Join-Path $RepoRoot "tools\build.mjs") `
+                --mdt $mdtPath --season "Midnight Season 2" --force `
+                --out (Join-Path $AddOns "MDTRouteLibrary_Data") 2>&1 | Out-Null
+            $code = $LASTEXITCODE
+            $ErrorActionPreference = $previous
+
+            # 0 heisst "Inhalt geaendert", 9 "unveraendert" - beides in Ordnung.
+            if ($code -ne 0 -and $code -ne 9) {
+                throw "Datenaddon liess sich nicht bauen (Exitcode $code)."
+            }
+        }
+        else {
+            # Ohne MDT laesst sich nicht bauen - dann bleibt der Repo-Stand.
+            $dataSource = Join-Path $RepoRoot "MDTRouteLibrary_Data"
+            if (Test-Path $dataSource) {
+                Sync-Addon -Source $dataSource `
+                           -Target (Join-Path $AddOns "MDTRouteLibrary_Data") `
+                           -ExcludeFiles @("*.md")
+            }
+        }
     }
 
     Write-Host "[$stamp] MDTRouteLibrary + MDTRouteLibrary_Data synchronisiert" -ForegroundColor Green
