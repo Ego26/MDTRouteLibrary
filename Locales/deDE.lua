@@ -90,6 +90,7 @@ ns.RegisterLocale("deDE", {
     ["BADGE_TIP_LOW"]       = "Aus dem Bereich +10 bis +14. Größere Pulls, mehr Luft – gedacht für alle, die sich an höhere Schlüssel herantasten.",
     ["BADGE_TIP_FAST"]      = "Vom Anfang ihres Rangblocks: die zügigste Route ihrer Stufe.",
     ["BADGE_TIP_SAFE"]      = "Aus der Mitte ihres Rangblocks: mehr Pulls, mehr Zeit, weniger Risiko.",
+    ["DETAIL_FILLED"]       = "Nachgetragen: %s. Raider.IO führt diesen Gegner in keinem Lauf, obwohl er gespielt werden muss – ohne ihn käme die Route nicht auf 100 %% der Gegnerkräfte.",
     ["DETAIL_RECONSTRUCTED_TITLE"] = "Rekonstruierte Route",
     ["DETAIL_RECONSTRUCTED"] = "Raider.IO nennt nur, welche Gegner wann gefallen sind - nicht, welcher der gleichnamigen es war. Die Reihenfolge der Pulls und ihre Zusammensetzung stimmen; die genauen Standorte sind aus dem Weg der Gruppe errechnet und können abweichen.",
     ["TILE_CLEAR_TIME"]     = "Laufzeit",

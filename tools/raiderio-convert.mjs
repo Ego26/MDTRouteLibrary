@@ -164,6 +164,119 @@ export function assignClones(pulls, dungeon) {
   return { pulls: out, report }
 }
 
+/**
+ * Gegnerkraefte einer Pull-Liste nach MDTs Tabelle.
+ *
+ * @param {object[]} pulls
+ * @param {Map<number,object>} byIndex
+ * @returns {number}
+ */
+function countForces(pulls, byIndex) {
+  let total = 0
+  for (const pull of pulls) {
+    for (const entry of pull.enemies) {
+      const enemy = byIndex.get(entry.enemy)
+      for (const clone of entry.clones) {
+        total += enemy?.clonePos?.[clone]?.count ?? enemy?.count ?? 0
+      }
+    }
+  }
+  return total
+}
+
+/**
+ * Traegt nach, was das Protokoll ausgelassen hat.
+ *
+ * Raider.IO fuehrt nicht jeden Gegner. In King's Rest fehlt "Shadow of Zul"
+ * in saemtlichen Laeufen - er steht in keiner einzigen Meldung, obwohl ihn
+ * jede Gruppe toetet. Dieselben Laeufe kommen dadurch auf 584 von 608
+ * Kraeften, also 96 Prozent, obwohl sie in der Zeit fertig wurden.
+ *
+ * Dass sie ihn gespielt haben, steht fest: ohne die vollen Kraefte laesst
+ * sich ein Schluessel nicht abschliessen. Wo er steht, weiss MDT. Offen
+ * bleibt allein, in welchem Pull er lag - und dafuer nehmen wir die
+ * sparsamste Annahme: ein eigener Pull an der Stelle, an der die Route ihm
+ * am naechsten kommt.
+ *
+ * Ergaenzt wird nur, was die Luecke nicht ueberschreitet, und nur aus
+ * Gegnern, die im ganzen Lauf nicht vorkamen.
+ *
+ * @param {object[]} pulls
+ * @param {object} dungeon
+ * @param {number} required
+ * @returns {string[]} Namen der nachgetragenen Gegner
+ */
+function fillGap(pulls, dungeon, required) {
+  const byIndex = new Map(dungeon.enemies.map((e) => [e.index, e]))
+  let gap = required - countForces(pulls, byIndex)
+  if (gap <= 0) return []
+
+  // Welche Gegner kamen ueberhaupt nicht vor?
+  const used = new Set()
+  for (const pull of pulls) for (const entry of pull.enemies) used.add(entry.enemy)
+
+  const missing = dungeon.enemies
+    .filter((enemy) => !used.has(enemy.index) && !enemy.isBoss)
+    .map((enemy) => {
+      const keys = enemy.cloneKeys ?? []
+      const forces = keys.reduce(
+        (sum, key) => sum + (enemy.clonePos?.[key]?.count ?? enemy.count ?? 0),
+        0
+      )
+      return { enemy, keys, forces }
+    })
+    .filter((candidate) => candidate.forces > 0 && candidate.keys.length > 0)
+    // Der groesste zuerst: eine Luecke von 24 schliesst ein Gegner mit 30
+    // besser als drei mit je acht, und Pulls bleiben so, wie sie waren.
+    .sort((a, b) => b.forces - a.forces)
+
+  const added = []
+
+  for (const candidate of missing) {
+    if (gap <= 0) break
+    // Nur wenn er die Luecke wirklich schliesst. Ein Gegner, der weit
+    // darueber hinausschiesst, war vermutlich nicht dabei.
+    if (candidate.forces > gap * 1.5) continue
+
+    const positions = candidate.keys
+      .map((key) => candidate.enemy.clonePos?.[key])
+      .filter(Boolean)
+    if (positions.length === 0) continue
+
+    // An welcher Stelle der Route liegt er am naechsten?
+    let bestAt = pulls.length
+    let bestDist = Infinity
+
+    pulls.forEach((pull, at) => {
+      for (const entry of pull.enemies) {
+        const enemy = byIndex.get(entry.enemy)
+        for (const clone of entry.clones) {
+          const from = enemy?.clonePos?.[clone]
+          if (!from) continue
+          for (const to of positions) {
+            const d = dist2(from, to) + (from.sublevel === to.sublevel ? 0 : SUBLEVEL_PENALTY)
+            if (d < bestDist) {
+              bestDist = d
+              bestAt = at + 1
+            }
+          }
+        }
+      }
+    })
+
+    pulls.splice(bestAt, 0, {
+      enemies: [{ enemy: candidate.enemy.index, clones: [...candidate.keys].sort((a, b) => a - b) }],
+      // Damit die Oberflaeche sagen kann, woher dieser Pull kommt.
+      filled: true,
+    })
+
+    gap -= candidate.forces
+    added.push(candidate.enemy.name ?? String(candidate.enemy.index))
+  }
+
+  return added
+}
+
 /** mm:ss aus Sekunden. */
 function clock(seconds) {
   const m = Math.floor(seconds / 60)
@@ -184,17 +297,11 @@ export function convertRun(run, dungeon) {
   // Gegnerkraefte nach MDTs Tabelle - dieselbe Rechnung, die das Addon spaeter
   // anzeigt und die MDT selbst anstellt.
   const byIndex = new Map(dungeon.enemies.map((e) => [e.index, e]))
-  let forces = 0
-  for (const pull of pulls) {
-    for (const entry of pull.enemies) {
-      const enemy = byIndex.get(entry.enemy)
-      for (const clone of entry.clones) {
-        forces += enemy?.clonePos?.[clone]?.count ?? enemy?.count ?? 0
-      }
-    }
-  }
-  report.forces = forces
-  report.required = run.enemyForcesRequired ?? dungeon.totalCount
+  const required = run.enemyForcesRequired ?? dungeon.totalCount
+
+  report.filled = fillGap(pulls, dungeon, required)
+  report.forces = countForces(pulls, byIndex)
+  report.required = required
 
   const tank = (run.roster ?? []).find((member) => member.role === 'tank')
 
@@ -230,10 +337,13 @@ export function convertRun(run, dungeon) {
       tier: run.tier,
       completedAt: run.completedAt ?? undefined,
       roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
-      enemyForces: forces,
+      enemyForces: report.forces,
       enemyForcesRequired: run.enemyForcesRequired,
       // Ehrlich bleiben: die Klonzuordnung ist gerechnet, nicht gemessen.
       reconstructed: true,
+      // Gegner, die das Protokoll ausgelassen hat und die wir nachgetragen
+      // haben. Das Addon sagt es dem Nutzer.
+      filledEnemies: report.filled && report.filled.length > 0 ? report.filled : undefined,
       pulls,
     },
     report,

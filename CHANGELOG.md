@@ -26,6 +26,10 @@
   route including your own. A single spawn may award more forces than its
   siblings, and those were being ignored. Percentages now agree with what
   MDT shows next to them.
+- Enemies that Raider.IO omits from its logs are added back. In King's Rest
+  "Shadow of Zul" appears in no run at all, although every group kills it —
+  those routes came out at 96% instead of 101%. MDT knows where it stands, so
+  it is placed where the route passes closest, and the route says so.
 - The filter for enemy forces is gone. It filtered nothing: a submission
   below 100% is never accepted, and a timed run had them anyway.
 - Filter routes by key level range, class and specialisation. The class and

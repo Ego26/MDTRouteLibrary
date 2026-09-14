@@ -1932,6 +1932,15 @@ local function updateDetail(route)
     d.authorHit.tipTitle = top and ns.L["DETAIL_RECONSTRUCTED_TITLE"] or ns.L["DETAIL_ISSUE_TIP_TITLE"]
     d.authorHit.tipText = top and ns.L["DETAIL_RECONSTRUCTED"] or ns.L["DETAIL_ISSUE_TIP"]
 
+    -- Wurde etwas nachgetragen, gehoert das dazugesagt - es ist der einzige
+    -- Teil der Route, den kein Protokoll belegt.
+    if top and route.filledEnemies and #route.filledEnemies > 0 then
+        d.authorHit.tipText = d.authorHit.tipText .. "
+
+" ..
+            ns.L["DETAIL_FILLED"]:format(table.concat(route.filledEnemies, ", "))
+    end
+
     d.issueButton.url = url
     d.issueButton.routeTitle = route.title or route.id
     -- Nur eigene Einreichungen heissen so. Eine Route von keystone.guru

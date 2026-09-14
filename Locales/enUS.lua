@@ -90,6 +90,7 @@ ns.RegisterLocale("enUS", {
     ["BADGE_TIP_LOW"]       = "From the +10 to +14 range. Bigger pulls, more room to breathe – meant for working your way up.",
     ["BADGE_TIP_FAST"]      = "From the front of its rank block: the quickest route at its key level.",
     ["BADGE_TIP_SAFE"]      = "From the middle of its rank block: more pulls, more time, less risk.",
+    ["DETAIL_FILLED"]       = "Added back: %s. Raider.IO lists this enemy in no run at all, although it has to be killed – without it the route would not reach 100 %% of the enemy forces.",
     ["DETAIL_RECONSTRUCTED_TITLE"] = "Reconstructed route",
     ["DETAIL_RECONSTRUCTED"] = "Raider.IO only records which enemies died and when - not which of the identically named ones it was. The order of the pulls and what they contain is accurate; the exact positions are derived from the path the group took and may differ.",
     ["TILE_CLEAR_TIME"]     = "Clear time",
