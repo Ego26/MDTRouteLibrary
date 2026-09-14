@@ -457,7 +457,7 @@ async function findLevelStart(reader, level, maxPage) {
 function bracketOf(level, highest, lowTop) {
   if (level >= highest - 3) return 'high'
   if (level <= lowTop) return 'low'
-  return null
+  return 'mid'
 }
 
 /**
@@ -573,12 +573,6 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
   const fallbacks = new Map()
 
   for (let level = highest - 1; level >= minLevel; level -= 1) {
-    // Die mittleren Stufen bleiben aussen vor. Zwischen benachbarten Stufen
-    // ist kein Unterschied messbar - +18 bis +21 liegen alle bei 30 Pulls und
-    // 3,2 Mobs je Pull, mit demselben ersten Pull. Sie einzeln zu fuehren
-    // hiesse, dieselbe Route mehrfach auszuliefern, und der Platz fehlte dann
-    // bei Tempo und Tank - den beiden Achsen, die tatsaechlich unterscheiden.
-    if (!bracketOf(level, highest, lowTop)) continue
 
     if ((await gatherLevel(region, reader, level, true)) > 0) continue
 
@@ -637,7 +631,7 @@ export async function fetchDungeonRuns({
   maxPerLevel = 2,
   // Kuerzere Ranglisten fuer den unteren Bereich, in dieser Reihenfolge.
   lowRegions = ['us', 'eu', 'tw', 'kr'],
-  maxRuns = 34,
+  maxRuns = 40,
   topPages = 15,
   maxPage = 4096,
   maxDetails = 220,
@@ -689,15 +683,21 @@ export async function fetchDungeonRuns({
     const cell = bracket + ':' + (candidate.tier ?? 'fast') + ':' + tankKey(candidate.roster)
     const used = cells.get(cell) ?? 0
 
-    // Deckel je Stufe, in beiden Baendern. Die Kandidaten stehen nach Stufe
-    // absteigend; ohne ihn besetzten die hoechsten saemtliche Plaetze, bevor
-    // die naechste an die Reihe kam - das obere Band bestand aus neun +21ern
-    // und je einem Rest, das untere ausschliesslich aus +14ern.
-    // Der Deckel zaehlt das Tempo mit. Ohne das fuellten die schnellsten
-    // Laeufe einer Stufe den Deckel auf, und die vorsichtige Variante kam nie
-    // vor - die Kandidaten stehen ja nach Zeit sortiert.
+    // Deckel je Stufe und Tempo. Die Kandidaten stehen nach Stufe absteigend;
+    // ohne ihn besetzten die hoechsten saemtliche Plaetze, bevor die naechste
+    // an die Reihe kam - das obere Band bestand aus neun +21ern, das untere
+    // ausschliesslich aus +14ern. Und ohne das Tempo im Schluessel fuellten
+    // die schnellsten Laeufe einer Stufe den Deckel auf, weil die Kandidaten
+    // nach Zeit sortiert stehen.
+    //
+    // Die mittleren Stufen bekommen die kleinste Quote. Zwischen benachbarten
+    // Stufen ist kein Unterschied messbar - aber ganz auszulassen geht auch
+    // nicht: wer auf +16 filtert und nichts findet, schliesst daraus, dass es
+    // fuer seinen Schluessel keine Routen gibt. Eine je Stufe und Tempo
+    // genuegt, damit keine Einstellung ins Leere laeuft.
     const levelCell = candidate.level + ':' + (candidate.tier ?? 'fast')
-    if ((levelSeen.get(levelCell) ?? 0) >= maxPerLevel) continue
+    const levelCap = bracket === 'mid' ? 1 : maxPerLevel
+    if ((levelSeen.get(levelCell) ?? 0) >= levelCap) continue
 
     // Die schnellsten Laeufe insgesamt kommen immer mit, unabhaengig von
     // den Feldern - sie sind der Massstab, an dem alles andere haengt.
@@ -809,7 +809,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const wanted = Number(args.runs ?? 5)
   const perCell = Number(args['per-cell'] ?? 2)
   const lowTop = Number(args['low-top'] ?? 14)
-  const maxRuns = Number(args['max-runs'] ?? 34)
+  const maxRuns = Number(args['max-runs'] ?? 40)
   // Die Weltrangliste ist die richtige Quelle. --region dient dem Pruefen:
   // kleinere Regionen haben kuerzere Listen, dort liegen niedrige Stufen
   // auch ohne Zugangsschluessel in Reichweite.

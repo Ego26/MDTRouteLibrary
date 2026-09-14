@@ -18,6 +18,10 @@
   four mobs and takes 28 minutes, where a +12 opens with eleven and is done
   in 21. And within one key level the routes differ just as much: at +14 a
   Guardian Druid took 23:47 over 22 pulls, another 27:34 over 33.
+- Every key level from +10 up has routes, with no gaps. Neighbouring levels
+  run the same route — +18 to +21 are all 30 pulls at 3.2 mobs each — but an
+  empty list at +16 reads as "there is nothing for my key", which is worse
+  than a little duplication.
 - The key level filter now only offers levels that exist in the tab you are
   looking at, and "Reset" clears the labels it used to leave behind.
 - Runs that were not timed, or where the reconstruction could not place

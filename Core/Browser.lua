@@ -256,6 +256,20 @@ local function classHex(name)
     return ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
 end
 
+-- Die drei Baender und ihre Beschriftung. Ein viertes gibt es nicht: was
+-- nicht in dieser Tabelle steht, bekommt keine Marke.
+local BADGE_LABEL = {
+    high = "BADGE_HIGH",
+    mid  = "BADGE_MID",
+    low  = "BADGE_LOW",
+}
+
+local BADGE_TIP = {
+    high = "BADGE_TIP_HIGH",
+    mid  = "BADGE_TIP_MID",
+    low  = "BADGE_TIP_LOW",
+}
+
 ---Welche Schluesselstufen liegen im aktuellen Reiter ueberhaupt vor?
 ---
 ---Der Regler soll nur Werte anbieten, hinter denen auch etwas steht. Ohne das
@@ -291,11 +305,10 @@ end
 ---@param route table
 ---@return string
 local function badgeText(route)
-    if route.bracket ~= "high" and route.bracket ~= "low" then return "" end
+    local label = BADGE_LABEL[route.bracket]
+    if not label then return "" end
 
-    local parts = {
-        T:Hex("accent") .. ns.L[route.bracket == "high" and "BADGE_HIGH" or "BADGE_LOW"] .. "|r",
-    }
+    local parts = { T:Hex("accent") .. ns.L[label] .. "|r" }
 
     if route.tier == "fast" then
         parts[#parts + 1] = T:Hex("success") .. ns.L["BADGE_FAST"] .. "|r"
@@ -2840,8 +2853,7 @@ local function buildDetail(parent)
 
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         GameTooltip:AddLine(ns.L["BADGE_TIP_TITLE"], 1, 1, 1)
-        GameTooltip:AddLine(ns.L[route.bracket == "high" and "BADGE_TIP_HIGH" or "BADGE_TIP_LOW"],
-            0.8, 0.8, 0.8, true)
+        GameTooltip:AddLine(ns.L[BADGE_TIP[route.bracket] or "BADGE_TIP_LOW"], 0.8, 0.8, 0.8, true)
         if route.tier == "fast" or route.tier == "slow" then
             GameTooltip:AddLine(" ")
             GameTooltip:AddLine(ns.L[route.tier == "fast" and "BADGE_TIP_FAST" or "BADGE_TIP_SAFE"],
