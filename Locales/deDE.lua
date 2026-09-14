@@ -21,6 +21,7 @@ ns.RegisterLocale("deDE", {
     ["BROWSER_SUBMIT"]      = "Route einreichen",
     ["BROWSER_NO_MATCH"]    = "Keine Route passt zur Suche.",
     ["BROWSER_NO_MATCH_HERE"] = "In diesem Dungeon nicht – aber hier: %s",
+    ["BROWSER_NO_MATCH_FILTER"] = "Der Filter „%s“ ist zu eng – ohne ihn wären es %d Routen.",
     ["BROWSER_NO_DUNGEON"]  = "Dein MDT kennt diesen Dungeon nicht.",
     ["BROWSER_NOT_INSTALLED"] = "Diese Route liegt gerade nicht in MDT. Nutze zuerst „Auf Karte zeigen“.",
     ["BROWSER_WRONG_SEASON"] = "Der Dungeon gehört zu einer anderen Saison-Auswahl. Wechsle sie erst in MDT.",

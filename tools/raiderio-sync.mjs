@@ -249,24 +249,203 @@ function tankKey(members) {
 }
 
 /**
+ * Blaettert die Rangliste eines Dungeons und merkt sich, was schon geholt ist.
+ *
+ * Die Rangliste ist nach Wertung geordnet, und die Wertung haengt zuerst an
+ * der Schluesselstufe. Gleiche Stufen liegen deshalb als zusammenhaengender
+ * Block beieinander, und die Stufe faellt mit dem Rang monoton. Genau das
+ * macht die Binaersuche weiter unten moeglich.
+ *
+ * @param {object} options
+ * @returns {{ page: (n:number)=>Promise<object[]|null>, count: ()=>number }}
+ */
+function rankingReader({ season, region, dungeonSlug }) {
+  const cache = new Map()
+  let calls = 0
+
+  return {
+    async page(n) {
+      if (cache.has(n)) return cache.get(n)
+
+      let rankings = null
+      try {
+        calls += 1
+        const list = await api('/runs', { season, region, dungeon: dungeonSlug, page: n })
+        rankings = list.rankings ?? []
+      } catch {
+        // Jenseits des Seitenlimits antwortet die API mit 400. Ohne
+        // Zugangsschluessel ist bei Seite 100 Schluss, mit einem geht es
+        // weiter - wie weit, sagt sie nicht, also tasten wir uns heran.
+        rankings = null
+      }
+
+      cache.set(n, rankings)
+      return rankings
+    },
+    count() {
+      return calls
+    },
+  }
+}
+
+/** Hoechste Stufe auf einer Seite, oder null wenn es die Seite nicht gibt. */
+async function topLevelOf(reader, page) {
+  const rankings = await reader.page(page)
+  if (!rankings || rankings.length === 0) return null
+  return Math.max(...rankings.map((entry) => entry.run?.mythic_level ?? 0))
+}
+
+/**
+ * Sucht die erste Seite, auf der eine Schluesselstufe auftaucht.
+ *
+ * Der Block einer Stufe kann sehr weit hinten liegen - die +18er eines
+ * Dungeons fangen bei Rang 1050 an, die +2er stehen bei Rang 1,5 Millionen.
+ * Sich dorthin durchzublaettern waere sinnlos; weil die Stufe mit dem Rang
+ * monoton faellt, genuegt eine Binaersuche mit rund einem Dutzend Abfragen.
+ *
+ * @param {object} reader
+ * @param {number} level
+ * @param {number} maxPage
+ * @returns {Promise<number|null>}
+ */
+async function findLevelStart(reader, level, maxPage) {
+  // Erst eine Obergrenze finden: verdoppeln, bis die Seite unter die gesuchte
+  // Stufe faellt oder es sie nicht mehr gibt.
+  let hi = 1
+  while (hi <= maxPage) {
+    const top = await topLevelOf(reader, hi)
+    if (top === null) break
+    if (top <= level) break
+    hi *= 2
+  }
+  hi = Math.min(hi, maxPage)
+
+  let lo = 0
+  let found = null
+
+  while (lo <= hi) {
+    const mid = Math.floor((lo + hi) / 2)
+    const top = await topLevelOf(reader, mid)
+
+    if (top === null) {
+      // Seite jenseits des Limits - nach vorn ausweichen.
+      hi = mid - 1
+      continue
+    }
+
+    if (top <= level) {
+      found = mid
+      hi = mid - 1
+    } else {
+      lo = mid + 1
+    }
+  }
+
+  return found
+}
+
+/**
+ * In welchen Bereich faellt eine Schluesselstufe?
+ *
+ * Zwei, nicht zwoelf. Gemessen an Altar of Fangs aendert eine Stufe Abstand
+ * an der Route nichts - +18 bis +21 liegen bei 30 Pulls und 3,2 Mobs je Pull,
+ * und die Streuung innerhalb einer Stufe ist groesser als die zwischen
+ * zweien. Der Abstand zwischen oben und unten dagegen ist deutlich: ein
+ * Weltrang-1-Lauf faengt mit vier Mobs an, ein +12er mit elf, und ist dabei
+ * sieben Minuten schneller. Wer unten spielt, laeuft eine andere Route -
+ * wer zwei Stufen darueber spielt, nicht.
+ *
+ * @param {number} level
+ * @param {number} highest
+ * @param {number} lowTop Obergrenze des unteren Bereichs
+ * @returns {string|null}
+ */
+function bracketOf(level, highest, lowTop) {
+  if (level > lowTop) return level >= highest - 3 ? 'high' : null
+  return 'low'
+}
+
+/**
+ * Sammelt Kandidaten: die Spitze der Rangliste und den Anfang jeder Stufe,
+ * die in einen der beiden Bereiche faellt.
+ *
+ * @param {object} options
+ * @returns {Promise<{ candidates: object[], reader: object, highest: number }>}
+ */
+async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPage, topPages, lowTop }) {
+  const reader = rankingReader({ season, region, dungeonSlug })
+  const byId = new Map()
+
+  const add = (entry) => {
+    const run = entry.run ?? {}
+    const id = run.keystone_run_id
+    if (!id || byId.has(id)) return
+    if ((run.mythic_level ?? 0) < minLevel) return
+
+    byId.set(id, {
+      id,
+      rank: typeof entry.rank === 'number' ? entry.rank : undefined,
+      level: run.mythic_level,
+      // Schon in der Rangliste enthalten - die Auswahl kostet deshalb keine
+      // einzige zusaetzliche Abfrage.
+      roster: roster(run),
+    })
+  }
+
+  // Die Spitze der Rangliste, und zwar grosszuegig. Nicht nur wegen der
+  // schnellsten Zeiten: die seltenen Tank-Spezialisierungen tauchen erst
+  // hier auf. In Altar of Fangs steht der erste Waechter-Druide auf Rang 28,
+  // der erste Schutz-Krieger auf 107.
+  for (let page = 0; page < topPages; page += 1) {
+    const rankings = await reader.page(page)
+    if (!rankings || rankings.length === 0) break
+    for (const entry of rankings) add(entry)
+  }
+
+  const highest = await topLevelOf(reader, 0)
+  if (highest === null) return { candidates: [], reader, highest: 0 }
+
+  // Stufe fuer Stufe an ihren Anfang springen. Ohne Zugangsschluessel endet
+  // die API bei Seite 100; dann liefert findLevelStart null und der untere
+  // Bereich bleibt eben leer, statt den Lauf scheitern zu lassen.
+  for (let level = highest - 1; level >= minLevel; level -= 1) {
+    if (!bracketOf(level, highest, lowTop)) continue
+
+    const startPage = await findLevelStart(reader, level, maxPage)
+    if (startPage === null) continue
+
+    let seenHere = 0
+    for (let page = startPage; page < startPage + 4; page += 1) {
+      const rankings = await reader.page(page)
+      if (!rankings || rankings.length === 0) break
+
+      for (const entry of rankings) {
+        if ((entry.run?.mythic_level ?? 0) !== level) continue
+        add(entry)
+        seenHere += 1
+      }
+      if (seenHere >= 60) break
+    }
+  }
+
+  const candidates = [...byId.values()].sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0))
+  return { candidates, reader, highest }
+}
+/**
  * Holt die Laeufe eines Dungeons und macht Routen daraus.
  *
- * Nicht einfach "die ersten N". Die vorderen Raenge sind fest in der Hand
- * einer Aufstellung - unter den ersten achtzig Laeufen der Season waren
- * sechsundsiebzig mit Blutritter-Tank. Wer eine Route fuer seinen
- * Wildheits-Druiden sucht, faende in den Top 10 nichts, obwohl es solche
- * Laeufe gibt; der erste stand auf Rang 28.
+ * Die Auswahl folgt der Frage, die jemand tatsaechlich stellt: "Welche Route
+ * laeuft eine Gruppe wie meine auf einem Schluessel wie meinem?" Also eine
+ * Quote je Kombination aus Bereich und Tank-Spezialisierung, dazu die
+ * schnellsten Laeufe ueberhaupt.
  *
- * Nach Schluesselstufe zu gruppieren geht nicht: die API kennt keinen
- * Stufenfilter, und die Rangliste ist nach Wertung geordnet. Um die besten
- * +10er zu sehen, muesste man an saemtlichen +20ern vorbeilesen.
+ * Getrennte Quoten fuer Bereich und Tank waeren zu wenig: sie koennten von
+ * derselben Handvoll Laeufe erfuellt werden und liessen den Waechter-Druiden
+ * auf +12 trotzdem aus.
  *
- * Also andersherum. Die Rangliste liefert die Gruppe gleich mit, eine Seite
- * deckt zwanzig Raenge ab. Wir lesen deshalb weit nach unten, kosten fast
- * nichts dabei, und geben erst dort eine Detailabfrage aus, wo ein Lauf
- * wirklich gebraucht wird: die besten paar insgesamt, und dazu eine feste
- * Zahl je Tank-Spezialisierung. Der Tank praegt eine Route am staerksten -
- * an ihm haengt, wie gross gepullt wird.
+ * Eine Detailabfrage faellt erst an, wenn ein Lauf eine Quote fuellt - die
+ * Auswahl selbst laeuft auf den Ranglistenseiten, die Gruppe und Stufe schon
+ * mitbringen.
  *
  * @param {object} options
  * @returns {Promise<object[]>}
@@ -277,55 +456,49 @@ export async function fetchDungeonRuns({
   dungeon,
   minLevel,
   wanted,
-  perTank = 3,
-  scanRanks = 300,
-  maxDetails = 70,
+  perCell = 2,
+  lowTop = 14,
+  maxRuns = 28,
+  topPages = 15,
+  maxPage = 4096,
+  maxDetails = 150,
   region = 'world',
 }) {
-  // ---- 1. Kandidaten sammeln. Eine Anfrage je zwanzig Raenge.
-  const candidates = []
-  const seen = new Set()
+  const { candidates, reader, highest } = await collectCandidates({
+    season,
+    region,
+    dungeonSlug,
+    minLevel,
+    maxPage,
+    topPages,
+    lowTop,
+  })
 
-  for (let page = 0; page * 20 < scanRanks; page += 1) {
-    const list = await api('/runs', { season, region, dungeon: dungeonSlug, page })
-    const rankings = list.rankings ?? []
-    if (rankings.length === 0) break
+  if (candidates.length === 0) return []
 
-    for (const entry of rankings) {
-      const run = entry.run ?? {}
-      const id = run.keystone_run_id
-      if (!id || seen.has(id)) continue
-      if ((run.mythic_level ?? 0) < minLevel) continue
-      seen.add(id)
+  const levelsSeen = candidates.map((c) => c.level)
+  console.log(
+    '   ' + candidates.length + ' Kandidaten bis Rang ' +
+      (candidates[candidates.length - 1].rank ?? 0) +
+      ', Stufen +' + Math.min(...levelsSeen) + ' bis +' + Math.max(...levelsSeen) +
+      ' (' + reader.count() + ' Ranglistenabfragen)'
+  )
 
-      candidates.push({
-        id,
-        rank: typeof entry.rank === 'number' ? entry.rank : undefined,
-        level: run.mythic_level,
-        // Schon hier vorhanden - deshalb kostet die Auswahl keine einzige
-        // zusaetzliche Abfrage.
-        roster: roster(run),
-      })
-    }
-  }
-
-  console.log('   ' + candidates.length + ' Kandidaten bis Rang ' + (candidates[candidates.length - 1]?.rank ?? 0))
-
-  // ---- 2. Auswaehlen und dabei die Details holen.
-  //
   // Die Quote zaehlt erst, wenn ein Lauf wirklich uebernommen wurde. Faellt
-  // einer wegen fehlender Freigabe aus, rueckt der naechste derselben
-  // Spezialisierung nach, statt eine Luecke zu hinterlassen.
+  // einer wegen fehlender Freigabe aus, rueckt der naechste nach, statt eine
+  // Luecke zu hinterlassen.
   const out = []
-  const perSpec = new Map()
+  const cells = new Map()
   let calls = 0
 
   for (const candidate of candidates) {
-    if (calls >= maxDetails) break
+    if (calls >= maxDetails || out.length >= maxRuns) break
 
-    const key = tankKey(candidate.roster)
-    const used = perSpec.get(key) ?? 0
-    if (out.length >= wanted && used >= perTank) continue
+    const bracket = bracketOf(candidate.level, highest, lowTop)
+    const cell = bracket ? bracket + ':' + tankKey(candidate.roster) : null
+    const used = cell ? cells.get(cell) ?? 0 : Infinity
+
+    if (out.length >= wanted && used >= perCell) continue
 
     calls += 1
     const details = await api('/run-details', { season, id: candidate.id })
@@ -346,9 +519,11 @@ export async function fetchDungeonRuns({
       source: 'raider.io',
       // Bedingung ihrer Nutzungsbedingungen, und das Mindeste: jede Route
       // zeigt, wo sie herkommt.
-      url: 'https://raider.io/mythic-plus-runs/' + season + '/' + candidate.id + '-' + details.mythic_level + '-' + details.dungeon.slug,
-      // Aus unseren eigenen Daten, nicht aus der Antwort: Raider.IO nennt
-      // die Kennung anders, und MDTs Katalog ist hier ohnehin massgeblich.
+      url:
+        'https://raider.io/mythic-plus-runs/' +
+        season + '/' + candidate.id + '-' + details.mythic_level + '-' + details.dungeon.slug,
+      // Aus unseren eigenen Daten, nicht aus der Antwort: Raider.IO nennt die
+      // Kennung anders, und MDTs Katalog ist hier ohnehin massgeblich.
       challengeModeId: dungeon.challengeModeId,
       dungeonEnglishName: dungeon.englishName,
       mdtDungeonIdx: dungeon.mdtIndex,
@@ -362,12 +537,27 @@ export async function fetchDungeonRuns({
       pulls,
     })
 
-    perSpec.set(key, used + 1)
-    console.log('   + #' + candidate.rank + ' +' + details.mythic_level + ' ' + Math.round(details.clear_time_ms / 1000) + 's, ' + pulls.length + ' Pulls, ' + key)
+    if (cell) cells.set(cell, (cells.get(cell) ?? 0) + 1)
   }
 
-  const covered = [...perSpec.entries()].map(([spec, n]) => n + 'x ' + spec).join(', ')
-  console.log('   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen - ' + covered)
+  const levels = new Map()
+  for (const run of out) levels.set(run.keyLevel, (levels.get(run.keyLevel) ?? 0) + 1)
+
+  console.log('   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen')
+  console.log(
+    '     Stufen: ' +
+      [...levels.entries()]
+        .sort((a, b) => b[0] - a[0])
+        .map(([level, n]) => n + 'x +' + level)
+        .join(', ')
+  )
+  console.log(
+    '     Felder: ' +
+      [...cells.entries()]
+        .sort()
+        .map(([cell, n]) => cell + ' (' + n + ')')
+        .join(', ')
+  )
 
   return out
 }
@@ -401,8 +591,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
 
   const minLevel = Number(args['min-level'] ?? 10)
   const wanted = Number(args.runs ?? 10)
-  const perTank = Number(args['per-tank'] ?? 3)
-  const scanRanks = Number(args.scan ?? 300)
+  const perCell = Number(args['per-cell'] ?? 2)
+  const lowTop = Number(args['low-top'] ?? 14)
+  const maxRuns = Number(args['max-runs'] ?? 28)
+  // Die Weltrangliste ist die richtige Quelle. --region dient dem Pruefen:
+  // kleinere Regionen haben kuerzere Listen, dort liegen niedrige Stufen
+  // auch ohne Zugangsschluessel in Reichweite.
+  const region = typeof args.region === 'string' ? args.region : 'world'
   const outDir = args.out ?? 'data/raiderio'
 
   const { dungeons } = readDungeons(args.mdt)
@@ -425,8 +620,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1)
   }
 
-  console.log(`Season ${season}, ab +${minLevel}: die besten ${wanted} je Dungeon,` +
-    ` dazu bis zu ${perTank} je Tank-Spezialisierung aus den ersten ${scanRanks} Rängen`)
+  console.log(`Season ${season}: je Dungeon die besten ${wanted}, dazu ${perCell} je Tank-Spezialisierung` +
+    ` in jedem der beiden Bereiche (High Keys, +${minLevel} bis +${lowTop}), höchstens ${maxRuns}`)
   if (!process.env.RAIDERIO_API_KEY) {
     console.log('Ohne RAIDERIO_API_KEY - unangemeldet, also stärker begrenzt.')
   }
@@ -443,8 +638,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         dungeon: target.dungeon,
         minLevel,
         wanted,
-        perTank,
-        scanRanks,
+        perCell,
+        lowTop,
+        maxRuns,
+        region,
       })
 
       if (runs.length > 0) {

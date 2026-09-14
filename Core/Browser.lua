@@ -919,48 +919,117 @@ function B.PassesFilters(route, needle)
     return true
 end
 
+---Zaehlt, was mit dem aktuellen Filterstand sichtbar waere.
+---@param ignoreDungeon boolean|nil
+---@return number treffer, table jeDungeon
+local function countMatches(ignoreDungeon)
+    local needle = filterText:lower()
+    local perDungeon, total = {}, 0
+
+    for _, route in ipairs(ns.routes) do
+        if (ignoreDungeon or not filterDungeon or route.challengeModeId == filterDungeon)
+            and (filterMode ~= "top" or isTopRun(route))
+            and (filterMode ~= "community" or not isTopRun(route))
+            and B.PassesFilters(route, needle) then
+            local name = route.dungeonEnglishName or "?"
+            perDungeon[name] = (perDungeon[name] or 0) + 1
+            total = total + 1
+        end
+    end
+
+    return total, perDungeon
+end
+
 ---Warum ist die Liste leer?
 ---
----"Kein Treffer" allein laesst den Nutzer im Regen stehen: er sieht seine
----Filter, sieht nichts, und weiss nicht, welcher davon zu weit geht. Steht
----der Dungeonfilter im Weg, sagen wir, wo es die gesuchte Route gibt.
+---"Kein Treffer" allein laesst den Nutzer im Regen stehen: er sieht vier
+---Regler und zwei Listen, sieht nichts, und weiss nicht, welches davon zu
+---weit geht. Also nehmen wir ihm das Raten ab und setzen die Kriterien
+---nacheinander aus. Wo eines allein den Ausschlag gab, wird es benannt.
+---
+---Der Anlass war handfest: alle Top-Laeufe liegen zwischen +19 und +22, weil
+---die Bestenliste nun einmal oben anfaengt. "Schluesselstufe bis 18" trifft
+---damit nichts - und ohne Hinweis sieht das nach einem kaputten Filter aus.
 ---@return string
 local function emptyReason()
-    if not filterDungeon then return ns.L["BROWSER_NO_MATCH"] end
     -- Im Reiter "Meine Routen" zeigt die Liste, was in MDT liegt. Auf das
     -- Datenpaket zu verweisen fuehrte dort in die Irre.
     if filterMode == "mine" then return ns.L["BROWSER_NO_MATCH"] end
 
-    -- Dieselbe Pruefung, nur ohne den Dungeon.
-    local needle = filterText:lower()
-    local found, count = {}, 0
+    -- Reihenfolge nach Wahrscheinlichkeit: was am ehesten zu eng eingestellt
+    -- ist, steht vorn.
+    local probes = {
+        {
+            label = ns.L["FILTER_LEVEL_MAX_LABEL"],
+            get = function() return filters.maxLevel end,
+            set = function(v) filters.maxLevel = v end,
+            off = 0,
+        },
+        {
+            label = ns.L["FILTER_LEVEL_LABEL"],
+            get = function() return filters.minLevel end,
+            set = function(v) filters.minLevel = v end,
+            off = 0,
+        },
+        {
+            label = ns.L["FILTER_SPEC_LABEL"],
+            get = function() return filters.spec end,
+            set = function(v) filters.spec = v end,
+        },
+        {
+            label = ns.L["FILTER_CLASS_LABEL"],
+            get = function() return filters.class end,
+            set = function(v) filters.class = v end,
+        },
+        {
+            label = ns.L["FILTER_PULLS_LABEL"],
+            get = function() return filters.maxPulls end,
+            set = function(v) filters.maxPulls = v end,
+            off = 0,
+        },
+        {
+            label = ns.L["FILTER_PERCENT_LABEL"],
+            get = function() return filters.minPercent end,
+            set = function(v) filters.minPercent = v end,
+            off = 0,
+        },
+        {
+            label = ns.L["FILTER_FAVOURITES"],
+            get = function() return filters.favourites end,
+            set = function(v) filters.favourites = v end,
+            off = false,
+        },
+    }
 
-    for _, route in ipairs(ns.routes) do
-        if (filterMode ~= "top" or isTopRun(route))
-            and (filterMode ~= "community" or not isTopRun(route))
-            and B.PassesFilters(route, needle) then
-            local name = route.dungeonEnglishName or "?"
-            if not found[name] then
-                found[name] = 0
-                count = count + 1
+    for _, probe in ipairs(probes) do
+        local current = probe.get()
+        if current ~= probe.off then
+            probe.set(probe.off)
+            local n = countMatches()
+            probe.set(current)
+            if n > 0 then
+                return ns.L["BROWSER_NO_MATCH_FILTER"]:format(probe.label, n)
             end
-            found[name] = found[name] + 1
         end
     end
 
-    if count == 0 then return ns.L["BROWSER_NO_MATCH"] end
+    -- Kein einzelnes Kriterium allein war schuld. Bleibt der Dungeon.
+    if not filterDungeon then return ns.L["BROWSER_NO_MATCH"] end
+
+    local total, perDungeon = countMatches(true)
+    if total == 0 then return ns.L["BROWSER_NO_MATCH"] end
 
     -- Nach Anzahl, damit der ergiebigste Dungeon vorn steht.
     local names = {}
-    for name in pairs(found) do names[#names + 1] = name end
+    for name in pairs(perDungeon) do names[#names + 1] = name end
     table.sort(names, function(a, b)
-        if found[a] ~= found[b] then return found[a] > found[b] end
+        if perDungeon[a] ~= perDungeon[b] then return perDungeon[a] > perDungeon[b] end
         return a < b
     end)
 
     local parts = {}
     for index = 1, math.min(#names, 3) do
-        parts[index] = ("%s (%d)"):format(names[index], found[names[index]])
+        parts[index] = ("%s (%d)"):format(names[index], perDungeon[names[index]])
     end
     if #names > 3 then parts[#parts + 1] = "…" end
 

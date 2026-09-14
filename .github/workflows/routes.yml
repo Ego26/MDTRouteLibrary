@@ -174,17 +174,25 @@ jobs:
       # Ebenfalls nur im 05:00-Lauf. Die Bestenliste aendert sich nicht im
       # Sechsstundentakt, und oefter zu fragen waere Last ohne Gegenwert.
       #
-      # Nicht schlicht "die ersten zehn": die vorderen Raenge gehoeren einer
-      # einzigen Aufstellung. In Altar of Fangs haben die Raenge 1 bis 21
-      # ausnahmslos einen Blutritter-Tank; der erste Waechter-Druide steht auf
-      # Rang 28, der erste Schutz-Krieger auf 107, der erste Rachsucht-
-      # Jaeger auf 211. Wer eine Route fuer seine eigene Gruppe sucht, faende
-      # in den Top 10 nie eine.
+      # Nicht schlicht "die ersten zehn". Zwei Gruende:
       #
-      # Deshalb zehn insgesamt plus bis zu drei je Tank-Spezialisierung aus
-      # den ersten 300 Raengen. Das kostet kaum mehr: die Rangliste liefert
-      # die Gruppe gleich mit, zwanzig Raenge je Anfrage - eine Detailabfrage
-      # faellt erst fuer einen Lauf an, der auch uebernommen wird.
+      #   * Die vorderen Raenge gehoeren einer einzigen Aufstellung. In Altar
+      #     of Fangs haben die Raenge 1 bis 21 ausnahmslos einen Blutritter-
+      #     Tank; der erste Waechter-Druide steht auf Rang 28, der erste
+      #     Schutz-Krieger auf 107.
+      #   * Und sie stehen alle auf derselben Hoehe. Ein Weltrang-1-Lauf faengt
+      #     mit vier Mobs an und braucht 28 Minuten, ein +12er faengt mit elf
+      #     an und ist in 21 durch. Wer im unteren Bereich spielt, laeuft eine
+      #     andere Route - zwischen +18 und +21 dagegen ist kein Unterschied
+      #     messbar (30 Pulls, 3,2 Mobs je Pull, gleicher erster Pull).
+      #
+      # Deshalb zwei Bereiche - oben und +10 bis +14 - und in jedem zwei Laeufe
+      # je Tank-Spezialisierung, dazu die fuenf schnellsten insgesamt.
+      #
+      # Der Schluessel erlaubt 1000 Anfragen je Minute; der ganze Lauf braucht
+      # rund 800. Die Auswahl selbst laeuft ohnehin auf den Ranglistenseiten,
+      # die Gruppe und Stufe schon mitbringen - eine Detailabfrage faellt erst
+      # fuer einen Lauf an, der auch uebernommen wird.
       #
       # Das Ergebnis wird mit eingecheckt (siehe "Aenderungen committen").
       # Sonst laege es nur in diesem einen Lauf vor: die drei anderen baeuten
@@ -195,7 +203,7 @@ jobs:
         if: >-
           env.RAIDERIO_API_KEY != '' && github.event_name != 'issues' &&
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
-        run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 10 --runs 10 --per-tank 3 --scan 300 --out data/raiderio
+        run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 10 --runs 5 --per-cell 2 --low-top 14 --max-runs 28 --out data/raiderio
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
