@@ -506,6 +506,11 @@ export async function fetchDungeonRuns({
   // die Wahrscheinlichkeit, 60 mal daneben zu greifen, unter fuenf
   // Prozent. Wer nichts findet, findet dort auch nichts.
   emptyAfter = 60,
+  // Wie viele Detailabfragen gleichzeitig unterwegs sein duerfen. Bei zehn
+  // und einer Sekunde Antwortzeit sind das zehn Anfragen je Sekunde - der
+  // Schluessel erlaubt gut sechzehn. Genug Abstand, dass ein langsamer
+  // Moment nicht in die Ratenbegrenzung laeuft.
+  lookahead = 10,
   region = 'world',
 }) {
   const { candidates, reader, highest } = await collectCandidates({
@@ -545,12 +550,18 @@ export async function fetchDungeonRuns({
   const hits = new Map()
   const givenUp = new Set()
 
-  for (const candidate of candidates) {
-    if (calls >= maxDetails || out.length >= maxRuns) break
-
+  // Lohnt sich die Detailabfrage fuer diesen Kandidaten - nach dem Stand
+  // von jetzt? Getrennt von der Schleife, weil der Vorausgriff dieselbe
+  // Frage stellt, bevor er eine Anfrage losschickt.
+  function plan(candidate) {
     const bracket = bracketOf(candidate.level, highest, lowTop)
+    if (!bracket) return null
 
-    if (!bracket) continue
+    // Ein Bereich, in dem nach vielen Versuchen keine einzige Route lag,
+    // wird nicht weiter abgefragt. Die Kandidaten stehen nach Stufe
+    // absteigend, also ist das kein Vorgriff: was danach kommt, ist
+    // niedriger und damit noch unwahrscheinlicher.
+    if (givenUp.has(bracket)) return null
 
     // Ein Feld je Band, Tempo und Tank-Spezialisierung - das sind die drei
     // Fragen, die jemand stellt, der eine Route sucht. Die Stufe selbst steht
@@ -573,20 +584,62 @@ export async function fetchDungeonRuns({
     // genuegt, damit keine Einstellung ins Leere laeuft.
     const levelCell = candidate.level + ':' + (candidate.tier ?? 'fast')
     const levelCap = bracket === 'mid' ? 1 : maxPerLevel
-    if ((levelSeen.get(levelCell) ?? 0) >= levelCap) continue
+    if ((levelSeen.get(levelCell) ?? 0) >= levelCap) return null
 
     // Die schnellsten Laeufe insgesamt kommen immer mit, unabhaengig von
     // den Feldern - sie sind der Massstab, an dem alles andere haengt.
-    if (out.length >= wanted && used >= perCell) continue
+    if (out.length >= wanted && used >= perCell) return null
 
-    // Ein Bereich, in dem nach vielen Versuchen keine einzige Route lag,
-    // wird nicht weiter abgefragt. Die Kandidaten stehen nach Stufe
-    // absteigend, also ist das kein Vorgriff: was danach kommt, ist
-    // niedriger und damit noch unwahrscheinlicher.
-    if (givenUp.has(bracket)) continue
+    return { bracket, cell, used, levelCell }
+  }
+
+  // Die laufenden Abfragen, nach Platz in der Kandidatenliste. Eine
+  // abgewiesene Antwort wird sofort abgefangen und aufgehoben statt
+  // geworfen: sonst meldet Node eine unbehandelte Ablehnung fuer eine
+  // Anfrage, die vielleicht nie jemand abholt.
+  const inFlight = new Map()
+  // Tatsaechlich gestellte Anfragen. Weicht von calls ab, wenn der
+  // Vorausgriff daneben lag - das ist der Preis des Verfahrens, und er
+  // gehoert in den Bericht, nicht unter den Teppich.
+  let sent = 0
+
+  function prefetch(index) {
+    if (index >= candidates.length || inFlight.has(index)) return
+    if (!plan(candidates[index])) return
+    sent += 1
+    inFlight.set(
+      index,
+      api('/run-details', { season, id: candidates[index].id })
+        .then((value) => ({ ok: true, value }))
+        .catch((error) => ({ ok: false, error }))
+    )
+  }
+
+  for (let index = 0; index < candidates.length; index += 1) {
+    if (calls >= maxDetails || out.length >= maxRuns) break
+
+    const candidate = candidates[index]
+    const step = plan(candidate)
+    if (!step) {
+      // Vorab geholt und doch nicht gebraucht: die Antwort verfaellt,
+      // aber der Platz in der Karte darf nicht liegenbleiben.
+      inFlight.delete(index)
+      continue
+    }
+
+    const { bracket, cell, used, levelCell } = step
+
+    // Das Fenster auffuellen, bevor auf die eigene Antwort gewartet wird -
+    // sonst waere der Vorausgriff wirkungslos.
+    for (let ahead = index; ahead < index + lookahead; ahead += 1) prefetch(ahead)
+
+    prefetch(index)
+    const answer = await inFlight.get(index)
+    inFlight.delete(index)
+    if (!answer.ok) throw answer.error
 
     calls += 1
-    const details = await api('/run-details', { season, id: candidate.id })
+    const details = answer.value
     const logged = details.logged_details ?? {}
 
     // Der Spieler hat widersprochen - dann endet es hier.
@@ -671,6 +724,7 @@ export async function fetchDungeonRuns({
 
   console.log(
     '   ' + out.length + ' Laeufe aus ' + calls + ' Detailabfragen' +
+      (sent > calls ? ' (' + sent + ' gestellt)' : '') +
       ' (' + ohneRoute + ' ohne veroeffentlichte Route' +
       (givenUp.size ? ', ' + [...givenUp].join('/') + ' vorzeitig beendet' : '') + ')'
   )
@@ -724,6 +778,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const perCell = Number(args['per-cell'] ?? 2)
   const lowTop = Number(args['low-top'] ?? 14)
   const maxRuns = Number(args['max-runs'] ?? 40)
+  // --lookahead 1 stellt die Anfragen wieder einzeln. Dient dem Vergleich:
+  // parallel und sequenziell muessen dieselbe Auswahl liefern.
+  const lookahead = Number(args.lookahead ?? 10)
   // Die Weltrangliste ist die richtige Quelle. --region dient dem Pruefen:
   // kleinere Regionen haben kuerzere Listen, dort liegen niedrige Stufen
   // auch ohne Zugangsschluessel in Reichweite.
@@ -774,6 +831,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         lowTop,
         maxRuns,
         region,
+        lookahead,
       })
 
       if (runs.length > 0) {
