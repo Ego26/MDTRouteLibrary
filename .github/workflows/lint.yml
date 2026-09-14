@@ -69,6 +69,15 @@ jobs:
         with:
           node-version: '20'
 
+      # Vor allem anderen: eine Zeichenkette, die ueber ein Zeilenende
+      # hinauslaeuft, macht die ganze Datei unlesbar. Im Spiel fehlt dann
+      # wortlos die Sektion - der einzige Hinweis ist ein "unfinished string
+      # near" tief im Fehlerprotokoll. Genau das ist einmal bis ins Spiel
+      # durchgerutscht, weil ein "\n" beim Schreiben der Datei zu einem
+      # echten Umbruch wurde.
+      - name: Zeichenketten prüfen
+        run: node tools/check-lua-strings.mjs Core/*.lua Locales/*.lua
+
       - name: Release-Notes prüfen
         run: node tools/check-changelog.mjs
 

@@ -1987,9 +1987,7 @@ local function updateDetail(route)
     -- Wurde etwas nachgetragen, gehoert das dazugesagt - es ist der einzige
     -- Teil der Route, den kein Protokoll belegt.
     if top and route.filledEnemies and #route.filledEnemies > 0 then
-        d.authorHit.tipText = d.authorHit.tipText .. "
-
-" ..
+        d.authorHit.tipText = d.authorHit.tipText .. "\n\n" ..
             ns.L["DETAIL_FILLED"]:format(table.concat(route.filledEnemies, ", "))
     end
 

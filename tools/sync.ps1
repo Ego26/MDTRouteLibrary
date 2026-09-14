@@ -119,6 +119,17 @@ function Sync-Addon {
 function Invoke-Sync {
     $stamp = Get-Date -Format "HH:mm:ss"
 
+    # Eine Zeichenkette ueber ein Zeilenende hinaus macht die ganze Datei
+    # unlesbar, und im Spiel fehlt dann wortlos die Sektion. Lieber hier
+    # abbrechen als das ins Spiel kopieren.
+    $lua = Get-ChildItem -Path (Join-Path $RepoRoot "Core"), (Join-Path $RepoRoot "Locales") -Filter *.lua |
+        ForEach-Object { $_.FullName }
+    & node (Join-Path $RepoRoot "tools\check-lua-strings.mjs") @lua | Out-Null
+    if ($LASTEXITCODE -ne 0) {
+        & node (Join-Path $RepoRoot "tools\check-lua-strings.mjs") @lua
+        throw "Kaputte Zeichenkette - nicht synchronisiert."
+    }
+
     Sync-Addon -Source $RepoRoot `
                -Target (Join-Path $AddOns "MDTRouteLibrary") `
                -ExcludeDirs  @(".git", ".github", ".release", ".vscode", "docs", "tools", "data", "assets", "branding", "node_modules", "MDTRouteLibrary_Data") `
