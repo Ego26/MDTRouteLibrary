@@ -142,8 +142,19 @@ export function kloneOrdnen(dungeon) {
  * Sucht die Abbildung von Weltkoordinaten auf MDTs Kartenpunkte.
  *
  * Aus je zwei denkbaren Paaren (Instanz, Klon derselben npcID) ergibt sich
- * eine Aehnlichkeitsabbildung; gewaehlt wird die, die die meisten Instanzen
- * dicht an einem eigenen Klon landen laesst.
+ * eine Aehnlichkeitsabbildung. Davon gibt es Tausende; gesucht wird weit und
+ * ausgewaehlt wird eng:
+ *
+ *   1. Alle Kandidaten grob bewerten und die zwoelf verschiedenen Massstaebe
+ *      mit den meisten Treffern als Anfaenge nehmen.
+ *   2. Jeden davon an seinen eigenen Treffern nachjustieren.
+ *   3. Erst dann streng bewerten - und der Beste gewinnt.
+ *
+ * Schritt drei ist der entscheidende. Mit derselben weiten Toleranz zu suchen
+ * und zu bewerten war der Fehler: bei falschem Massstab rutschen beschworene
+ * Adds zufaellig auf irgendwelche Vorlagen und zaehlen mit. Bei Rubinquell
+ * bekam die falsche Abbildung so 50 Punkte und die richtige 42 - obwohl die
+ * richtige 62 von 65 Gegnern in Reichweite gebracht haette.
  *
  * Der Massstab ist auf beiden Achsen derselbe. Das ist keine Vereinfachung,
  * sondern eine Bedingung: eine Karte spiegelt nicht eine Achse allein. Ohne
