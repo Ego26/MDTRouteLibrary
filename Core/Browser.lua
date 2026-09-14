@@ -2094,12 +2094,25 @@ local function updateDetail(route)
 
     -- Der Rueckverlink zu raider.io ist Bedingung ihrer Nutzungsbedingungen,
     -- nicht Schmuck: er steht an jedem uebernommenen Lauf.
-    d.authorHit.tipTitle = top and ns.L["DETAIL_RECONSTRUCTED_TITLE"] or ns.L["DETAIL_ISSUE_TIP_TITLE"]
-    d.authorHit.tipText = top and ns.L["DETAIL_RECONSTRUCTED"] or ns.L["DETAIL_ISSUE_TIP"]
+    --
+    -- Drei Faelle, drei Texte. Ein Top-Lauf mit Pulls ist aus dem
+    -- Kampfprotokoll gebaut; einer ohne ist ein blosser Verweis und hat gar
+    -- keine Route - ihm den Herkunftstext der gebauten anzuhaengen waere
+    -- genau die Behauptung, die hier nicht stehen darf.
+    if top and route.pulls then
+        d.authorHit.tipTitle = ns.L["DETAIL_RECONSTRUCTED_TITLE"]
+        d.authorHit.tipText = ns.L["DETAIL_RECONSTRUCTED"]
+    elseif top then
+        d.authorHit.tipTitle = ns.L["DETAIL_REFERENCE_TITLE"]
+        d.authorHit.tipText = ns.L["DETAIL_REFERENCE_NOTE"]
+    else
+        d.authorHit.tipTitle = ns.L["DETAIL_ISSUE_TIP_TITLE"]
+        d.authorHit.tipText = ns.L["DETAIL_ISSUE_TIP"]
+    end
 
     -- Wurde etwas ergaenzt, gehoert das dazugesagt - es ist der einzige Teil
     -- der Route, den kein Ereignis direkt belegt.
-    if top and (route.filled or 0) > 0 then
+    if top and route.pulls and (route.filled or 0) > 0 then
         d.authorHit.tipText = d.authorHit.tipText .. "\n\n" ..
             ns.L["DETAIL_FILLED"]:format(route.filled)
     end
