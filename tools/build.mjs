@@ -250,6 +250,7 @@ async function main() {
   console.log('3b) Top-Laeufe von Raider.IO konvertieren')
   const rioDir = join(ROOT, 'data', 'raiderio')
   let rioCount = 0
+  let rioIncomplete = 0
   if (existsSync(rioDir)) {
     for (const file of readdirSync(rioDir).filter((f) => f.endsWith('.json'))) {
       for (const run of JSON.parse(readFileSync(join(rioDir, file), 'utf8'))) {
@@ -263,18 +264,50 @@ async function main() {
           console.warn(`   ! ${run.id}: keine Pulls zuzuordnen`)
           continue
         }
-        // Was nicht untergebracht werden konnte, faellt auf. Ein paar
-        // Nachzuegler sind normal; wird es viel, stimmt mit MDTs
-        // Gegnertabelle etwas nicht.
-        if (report.dropped > 0 || report.shortfall > 0) {
-          console.warn(`   ~ ${route.id}: ${report.dropped} verworfen, ${report.shortfall} ohne freien Klon`)
+        // Nur vollstaendige Laeufe. Jeder Lauf auf der Bestenliste wurde in
+        // der Zeit abgeschlossen und hatte damit die vollen Gegnerkraefte.
+        if (!run.onTime) {
+          console.warn(`   - ${route.id}: nicht in der Zeit`)
+          rioIncomplete += 1
+          continue
+        }
+
+        // Zwei Wege, eine Route zu bestehen - und beide werden gebraucht.
+        //
+        //   * Die Route erreicht die vollen Gegnerkraefte. Das ist der
+        //     Normalfall und die eigentliche Bedingung.
+        //   * Oder unsere Rekonstruktion hat nichts verloren, die Quelle aber
+        //     schon. Raider.IO protokolliert fuer King's Rest durchgaengig 24
+        //     Kraefte zu wenig - in jedem der achtzehn Laeufe dieselben 584
+        //     von 608, obwohl alle in der Zeit fertig wurden. Nur nach den
+        //     Kraeften zu gehen liesse einen ganzen Dungeon ohne Top-Routen.
+        //
+        // Umgekehrt reicht "nichts verloren" allein nicht: in Voidscar Arena
+        // beschwoert der Endboss "Voidminder", von denen MDT sechs Standorte
+        // kennt und das Protokoll zwoelf Tode meldet. Die sechs
+        // uebriggebliebenen sind keine Kraefte wert - die Route ist
+        // vollstaendig, obwohl etwas wegfiel.
+        const percent = report.required > 0 ? (report.forces / report.required) * 100 : 0
+        const lostNothing = report.dropped === 0 && report.shortfall === 0
+
+        if (percent < 100 && !lostNothing) {
+          console.warn(
+            `   - ${route.id}: ${percent.toFixed(1)} %, ` +
+              `${report.dropped} verworfen, ${report.shortfall} ohne freien Klon`
+          )
+          rioIncomplete += 1
+          continue
+        }
+
+        if (percent < 100) {
+          console.warn(`   ~ ${route.id}: ${percent.toFixed(1)} % - Protokoll der Quelle unvollstaendig`)
         }
         routes.push(route)
         rioCount += 1
       }
     }
   }
-  console.log(`   ${rioCount} Laeufe`)
+  console.log(`   ${rioCount} Laeufe` + (rioIncomplete > 0 ? `, ${rioIncomplete} unvollstaendig verworfen` : ''))
 
   console.log('4) Routen gegen MDT pruefen und anreichern')
   const accepted = []

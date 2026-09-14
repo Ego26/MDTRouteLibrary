@@ -181,6 +181,18 @@ export function convertRun(run, dungeon) {
   const { pulls, report } = assignClones(run.pulls ?? [], dungeon)
   if (pulls.length === 0) return { route: null, report }
 
+  // Gegnerkraefte nach MDTs Tabelle - dieselbe Rechnung, die das Addon spaeter
+  // anzeigt und die MDT selbst anstellt.
+  const byIndex = new Map(dungeon.enemies.map((e) => [e.index, e]))
+  let forces = 0
+  for (const pull of pulls) {
+    for (const entry of pull.enemies) {
+      forces += (byIndex.get(entry.enemy)?.count ?? 0) * entry.clones.length
+    }
+  }
+  report.forces = forces
+  report.required = run.enemyForcesRequired ?? dungeon.totalCount
+
   const tank = (run.roster ?? []).find((member) => member.role === 'tank')
 
   return {
@@ -207,6 +219,7 @@ export function convertRun(run, dungeon) {
       rank: run.rank ?? undefined,
       completedAt: run.completedAt ?? undefined,
       roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
+      enemyForces: forces,
       enemyForcesRequired: run.enemyForcesRequired,
       // Ehrlich bleiben: die Klonzuordnung ist gerechnet, nicht gemessen.
       reconstructed: true,

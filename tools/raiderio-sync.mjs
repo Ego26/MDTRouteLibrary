@@ -148,7 +148,34 @@ export async function currentSeason(known = 11) {
  */
 function onlyPlaced(enemies, dungeon) {
   const bosses = new Set(dungeon.enemies.filter((e) => e.isBoss && e.name).map((e) => e.name))
-  return enemies.filter((enemy) => (enemy.enemy_forces_value ?? 0) > 0 || bosses.has(enemy.name))
+  const byName = new Map()
+  for (const enemy of dungeon.enemies) {
+    if (enemy.name && !byName.has(enemy.name)) byName.set(enemy.name, enemy)
+  }
+
+  const out = []
+  for (const enemy of enemies) {
+    const value = enemy.enemy_forces_value ?? 0
+
+    if (value > 0) {
+      // Ein Eintrag ist ein Kill-Ereignis, nicht ein Mob. Fallen fuenf
+      // "Unleashed Imp" gemeinsam, steht dort ein Eintrag mit dem Wert 10 -
+      // bei einem Mobwert von 2. Genau daran liess sich das ablesen: derselbe
+      // Name kam im selben Lauf mit 10, 6, 4 und 2 vor, und saemtliche 109
+      // Werte eines Laufs waren glatte Vielfache von MDTs count.
+      //
+      // Jeden Eintrag als einen Mob zu zaehlen kostete rund ein Zehntel der
+      // Gegnerkraefte - Laeufe, die nachweislich abgeschlossen wurden,
+      // erschienen dadurch mit 82 bis 95 Prozent.
+      const per = byName.get(enemy.name)?.count ?? 0
+      out.push({ ...enemy, mobs: per > 0 ? Math.max(1, Math.round(value / per)) : 1 })
+    } else if (bosses.has(enemy.name)) {
+      // Bosse zaehlen keine Kraefte, gehoeren aber in die Route.
+      out.push({ ...enemy, mobs: 1 })
+    }
+  }
+
+  return out
 }
 
 /**
@@ -178,7 +205,9 @@ export function groupIntoPulls(enemies) {
       pulls.push(current)
     }
     lastAt = at
-    current.counts.set(enemy.name, (current.counts.get(enemy.name) ?? 0) + 1)
+    // mobs, nicht 1: siehe onlyPlaced() - ein Eintrag kann mehrere gleichzeitig
+    // gefallene Gegner zusammenfassen.
+    current.counts.set(enemy.name, (current.counts.get(enemy.name) ?? 0) + (enemy.mobs ?? 1))
   }
 
   return pulls.map((pull) => ({
@@ -272,10 +301,17 @@ function rankingReader({ season, region, dungeonSlug }) {
         calls += 1
         const list = await api('/runs', { season, region, dungeon: dungeonSlug, page: n })
         rankings = list.rankings ?? []
-      } catch {
+      } catch (err) {
         // Jenseits des Seitenlimits antwortet die API mit 400. Ohne
         // Zugangsschluessel ist bei Seite 100 Schluss, mit einem geht es
         // weiter - wie weit, sagt sie nicht, also tasten wir uns heran.
+        //
+        // Alles andere ist ein echter Fehler und muss nach oben. Vorher
+        // verschluckte dieses catch auch Netzaussetzer: ein Ruckler auf
+        // Seite 0 sah aus wie "keine Seiten vorhanden", der Dungeon lieferte
+        // null Laeufe, und im Protokoll stand nur sein Name. Genau so ist
+        // Voidscar Arena einmal spurlos aus dem Datenpaket gefallen.
+        if (!/^400\b/.test(err.message ?? '')) throw err
         rankings = null
       }
 
@@ -649,11 +685,27 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
         writeFileSync(file, `${JSON.stringify(runs, null, 2)}\n`)
         console.log(`   ${runs.length} Läufe -> ${file}`)
         total += runs.length
+      } else {
+        // Laut sein. Ein leeres Ergebnis heisst, dass dieser Dungeon im
+        // Addon ohne Top-Routen dasteht - das darf nicht als Leerzeile
+        // durchgehen.
+        failed += 1
+        console.warn('   ! keine Läufe - dieser Dungeon bleibt ohne Top-Routen')
       }
     } catch (err) {
+      failed += 1
       console.warn(`   ! ${err.message}`)
     }
   }
 
   console.log(`\n${total} Läufe insgesamt.`)
+
+  // Mit einem Exitcode ungleich null bricht der CI-Schritt ab, statt ein
+  // Datenpaket zu bauen, in dem still ein Dungeon fehlt. Genau das war
+  // passiert: ein Netzaussetzer, und Voidscar Arena stand ohne Top-Routen da,
+  // ohne dass irgendwo eine Fehlermeldung aufgetaucht waere.
+  if (failed > 0) {
+    console.error(`${failed} von ${targets.length} Dungeons ohne Ergebnis.`)
+    process.exit(1)
+  }
 }
