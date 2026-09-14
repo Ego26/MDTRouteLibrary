@@ -179,6 +179,12 @@ function roster(run) {
       // wegzulassen waere die schlechtere Wahl: wer eine Route zeigt,
       // soll sagen, wer sie gelaufen ist.
       name: c.name ?? null,
+      // Realm und Region stehen genauso oeffentlich daneben. Sie sind die
+      // Adresse, unter der Warcraftlogs denselben Spieler fuehrt - und damit
+      // der einzige Weg vom Ranglisteneintrag zum Bericht des Laufs. Aus der
+      // Rangliste kommen sie nicht mit, nur aus den Laufdetails.
+      realm: c.realm?.slug ?? null,
+      realmRegion: c.region?.slug ?? null,
       class: c.class?.name ?? null,
       spec: c.spec?.name ?? null,
       // Zwei Stellen, weil zwei Antwortformen: die Rangliste legt die Rolle
@@ -708,6 +714,13 @@ export async function fetchDungeonRuns({
       tier: candidate.tier ?? 'fast',
       keyLevel: details.mythic_level,
       clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
+      // Auf die Millisekunde, nicht gerundet: so wird der Kampf im
+      // Warcraftlogs-Bericht bestaetigt. Zwei Laeufe derselben Gruppe
+      // unterscheiden sich darin immer.
+      clearMs: details.clear_time_ms ?? null,
+      // Wann er endete. Zusammen mit dem Kader findet das den Bericht:
+      // wessen Bericht diesen Zeitpunkt umschliesst, ist der gesuchte.
+      completedAt: details.completed_at ?? null,
       onTime: (details.num_chests ?? 0) > 0,
       roster: roster(details),
       // MDTs Soll, nicht das der API. Die beiden weichen ab: fuer Tempel von
