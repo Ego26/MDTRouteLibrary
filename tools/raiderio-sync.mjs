@@ -455,8 +455,9 @@ async function findLevelStart(reader, level, maxPage) {
  * @returns {string|null}
  */
 function bracketOf(level, highest, lowTop) {
-  if (level > lowTop) return level >= highest - 3 ? 'high' : null
-  return 'low'
+  if (level >= highest - 3) return 'high'
+  if (level <= lowTop) return 'low'
+  return null
 }
 
 /**
@@ -572,11 +573,14 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
   const fallbacks = new Map()
 
   for (let level = highest - 1; level >= minLevel; level -= 1) {
-    const bracket = bracketOf(level, highest, lowTop)
-    if (!bracket) continue
+    // Die mittleren Stufen bleiben aussen vor. Zwischen benachbarten Stufen
+    // ist kein Unterschied messbar - +18 bis +21 liegen alle bei 30 Pulls und
+    // 3,2 Mobs je Pull, mit demselben ersten Pull. Sie einzeln zu fuehren
+    // hiesse, dieselbe Route mehrfach auszuliefern, und der Platz fehlte dann
+    // bei Tempo und Tank - den beiden Achsen, die tatsaechlich unterscheiden.
+    if (!bracketOf(level, highest, lowTop)) continue
 
-    if ((await gatherLevel(region, reader, level, bracket === 'low')) > 0) continue
-    if (bracket !== 'low') continue
+    if ((await gatherLevel(region, reader, level, true)) > 0) continue
 
     // Aus allen, nicht aus der erstbesten. Mit Zugangsschluessel reicht us
     // bis +14 und eu bis +15, tw und kr bis +10 - wer nur die erste nimmt,
@@ -630,12 +634,13 @@ export async function fetchDungeonRuns({
   wanted,
   perCell = 2,
   lowTop = 14,
+  maxPerLevel = 2,
   // Kuerzere Ranglisten fuer den unteren Bereich, in dieser Reihenfolge.
   lowRegions = ['us', 'eu', 'tw', 'kr'],
-  maxRuns = 32,
+  maxRuns = 34,
   topPages = 15,
   maxPage = 4096,
-  maxDetails = 150,
+  maxDetails = 220,
   region = 'world',
 }) {
   const { candidates, reader, highest } = await collectCandidates({
@@ -667,6 +672,7 @@ export async function fetchDungeonRuns({
   // Luecke zu hinterlassen.
   const out = []
   const cells = new Map()
+  const levelSeen = new Map()
   let calls = 0
 
   for (const candidate of candidates) {
@@ -674,20 +680,28 @@ export async function fetchDungeonRuns({
 
     const bracket = bracketOf(candidate.level, highest, lowTop)
 
-    // Oben zaehlt nur die Spezialisierung - dort will man ohnehin die
-    // schnellsten. Unten kommt das Tempo dazu, damit neben der zuegigen
-    // Route auch eine vorsichtige steht und man die Wahl hat.
-    let cell = null
-    let limit = perCell
-    if (bracket === 'high') {
-      cell = 'high:' + tankKey(candidate.roster)
-    } else if (bracket === 'low') {
-      cell = 'low:' + (candidate.tier ?? 'fast') + ':' + tankKey(candidate.roster)
-      limit = Math.max(1, Math.ceil(perCell / 2))
-    }
+    if (!bracket) continue
 
-    const used = cell ? cells.get(cell) ?? 0 : Infinity
-    if (out.length >= wanted && used >= limit) continue
+    // Ein Feld je Band, Tempo und Tank-Spezialisierung - das sind die drei
+    // Fragen, die jemand stellt, der eine Route sucht. Die Stufe selbst steht
+    // im Titel; sie zur vierten Achse zu machen hat beim Ausprobieren
+    // Tempo und Tank verdraengt.
+    const cell = bracket + ':' + (candidate.tier ?? 'fast') + ':' + tankKey(candidate.roster)
+    const used = cells.get(cell) ?? 0
+
+    // Deckel je Stufe, in beiden Baendern. Die Kandidaten stehen nach Stufe
+    // absteigend; ohne ihn besetzten die hoechsten saemtliche Plaetze, bevor
+    // die naechste an die Reihe kam - das obere Band bestand aus neun +21ern
+    // und je einem Rest, das untere ausschliesslich aus +14ern.
+    // Der Deckel zaehlt das Tempo mit. Ohne das fuellten die schnellsten
+    // Laeufe einer Stufe den Deckel auf, und die vorsichtige Variante kam nie
+    // vor - die Kandidaten stehen ja nach Zeit sortiert.
+    const levelCell = candidate.level + ':' + (candidate.tier ?? 'fast')
+    if ((levelSeen.get(levelCell) ?? 0) >= maxPerLevel) continue
+
+    // Die schnellsten Laeufe insgesamt kommen immer mit, unabhaengig von
+    // den Feldern - sie sind der Massstab, an dem alles andere haengt.
+    if (out.length >= wanted && used >= perCell) continue
 
     calls += 1
     const details = await api('/run-details', { season, id: candidate.id })
@@ -723,7 +737,7 @@ export async function fetchDungeonRuns({
       // Wofuer diese Route steht. Ohne das muesste der Nutzer aus Stufe und
       // Zeit selbst erschliessen, ob sie zu ihm passt.
       bracket,
-      tier: bracket === 'low' ? candidate.tier ?? 'fast' : undefined,
+      tier: candidate.tier ?? 'fast',
       keyLevel: details.mythic_level,
       clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
       onTime: (details.num_chests ?? 0) > 0,
@@ -738,7 +752,8 @@ export async function fetchDungeonRuns({
       pulls,
     })
 
-    if (cell) cells.set(cell, (cells.get(cell) ?? 0) + 1)
+    cells.set(cell, used + 1)
+    levelSeen.set(levelCell, (levelSeen.get(levelCell) ?? 0) + 1)
   }
 
   const levels = new Map()
@@ -794,7 +809,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const wanted = Number(args.runs ?? 5)
   const perCell = Number(args['per-cell'] ?? 2)
   const lowTop = Number(args['low-top'] ?? 14)
-  const maxRuns = Number(args['max-runs'] ?? 32)
+  const maxRuns = Number(args['max-runs'] ?? 34)
   // Die Weltrangliste ist die richtige Quelle. --region dient dem Pruefen:
   // kleinere Regionen haben kuerzere Listen, dort liegen niedrige Stufen
   // auch ohne Zugangsschluessel in Reichweite.

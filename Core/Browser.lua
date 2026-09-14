@@ -256,6 +256,34 @@ local function classHex(name)
     return ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
 end
 
+---Welche Schluesselstufen liegen im aktuellen Reiter ueberhaupt vor?
+---
+---Der Regler soll nur Werte anbieten, hinter denen auch etwas steht. Ohne das
+---laesst sich "bis +13" einstellen, obwohl die niedrigste Route ein +14 ist -
+---und die Liste bleibt leer, ohne dass jemand ahnt, warum.
+---@return number|nil lowest, number highest
+local function levelBounds()
+    local lowest, highest
+
+    for _, route in ipairs(ns.routes) do
+        if (filterMode ~= "top" or isTopRun(route))
+            and (filterMode ~= "community" or not isTopRun(route))
+            and (not filterDungeon or route.challengeModeId == filterDungeon) then
+            local level = route.keyLevelMin or route.keyLevel
+            if level then
+                if not lowest or level < lowest then lowest = level end
+                if not highest or level > highest then highest = level end
+            end
+            -- Eine Route mit Spanne reicht weiter nach oben, als ihr Anfang
+            -- vermuten laesst.
+            local ceiling = levelCeiling(route)
+            if ceiling and (not highest or ceiling > highest) then highest = ceiling end
+        end
+    end
+
+    return lowest, highest or 30
+end
+
 ---Wofuer eine Route gedacht ist, in zwei Worten.
 ---
 ---"+14 · 23:47" sagt, was passiert ist, aber nicht, ob es zu einem passt. Die
@@ -2624,6 +2652,14 @@ function B.Refresh()
         and ("%s (%d)"):format(ns.L["FILTER"], active)
         or ns.L["FILTER"])
 
+    -- Die Stufenregler richten sich nach dem, was der Reiter hergibt. Bei den
+    -- Top-Laeufen faengt das bei +10 an, bei den eigenen Routen ganz unten.
+    if ui.filterPanel and ui.filterPanel.levelSlider then
+        local lowest, highest = levelBounds()
+        ui.filterPanel.levelSlider.SetBounds(lowest, highest)
+        ui.filterPanel.levelMaxSlider.SetBounds(lowest, highest)
+    end
+
     local route = selectedId and displayById[selectedId]
     if lastDetailId ~= selectedId then
         hideAddSheet()
@@ -3131,8 +3167,23 @@ local function buildList(parent)
         end
 
         slider:SetScript("OnValueChanged", function(self, raw)
+            if self.adjusting then return end
             local v = math.floor(raw + 0.5)
-            if v == get() then return end
+
+            -- Unterhalb der niedrigsten vorhandenen Stufe gibt es nichts zu
+            -- holen. Statt den Nutzer dorthin laufen zu lassen, faengt der
+            -- Regler ihn ab - egal bleibt darunter erreichbar.
+            if v > 0 and self.floor and v < self.floor then
+                v = self.floor
+                self.adjusting = true
+                self:SetValue(v)
+                self.adjusting = false
+            end
+
+            if v == get() then
+                render(v)
+                return
+            end
             set(v)
             render(v)
             -- Nach einer Filteraenderung wieder auf Seite eins.
@@ -3142,6 +3193,25 @@ local function buildList(parent)
 
         slider:SetValue(get())
         render(get())
+
+        -- Zuruecksetzen muss die Beschriftung mitnehmen. Ueber SetValue(0)
+        -- allein ging das schief: wer vorher filters.maxLevel auf 0 setzte,
+        -- bekam in OnValueChanged "v == get()" und damit den fruehen
+        -- Ausstieg - der Regler sprang zurueck, daneben stand weiter "13".
+        ---Grenzen aus den geladenen Daten.
+        ---@param floor number|nil niedrigste vorhandene Stufe
+        ---@param ceiling number hoechste
+        slider.SetBounds = function(floor, ceiling)
+            slider.floor = floor
+            slider:SetMinMaxValues(0, math.max(ceiling, 1))
+        end
+
+        slider.Reset = function()
+            set(0)
+            slider:SetValue(0)
+            render(0)
+        end
+
         slider.caption = caption
         return slider
     end
@@ -3270,6 +3340,7 @@ local function buildList(parent)
     end)
     panel.favBox = favBox
 
+    -- Die Obergrenze wird gleich aus den Daten gesetzt, siehe B.Refresh().
     panel.levelSlider = makeSlider(ns.L["FILTER_LEVEL_LABEL"], favBox, 30,
         function() return filters.minLevel end,
         function(v) filters.minLevel = v end,
@@ -3320,16 +3391,13 @@ local function buildList(parent)
     reset:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -14, 12)
     reset:SetScript("OnClick", function()
         filters.favourites = false
-        filters.minLevel = 0
-        filters.maxLevel = 0
-        filters.maxPulls = 0
         filters.class = nil
         filters.spec = nil
 
         panel.favBox:SetChecked(false)
-        panel.levelSlider:SetValue(0)
-        panel.levelMaxSlider:SetValue(0)
-        panel.pullsSlider:SetValue(0)
+        panel.levelSlider.Reset()
+        panel.levelMaxSlider.Reset()
+        panel.pullsSlider.Reset()
         panel.classChoice.list:Hide()
         panel.specChoice.list:Hide()
         panel.classChoice.Render()

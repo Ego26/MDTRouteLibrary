@@ -18,6 +18,8 @@
   four mobs and takes 28 minutes, where a +12 opens with eleven and is done
   in 21. And within one key level the routes differ just as much: at +14 a
   Guardian Druid took 23:47 over 22 pulls, another 27:34 over 33.
+- The key level filter now only offers levels that exist in the tab you are
+  looking at, and "Reset" clears the labels it used to leave behind.
 - Runs that were not timed, or where the reconstruction could not place
   every enemy, are left out.
 - Every route now carries a badge saying what it is for — "High keys · quick",
