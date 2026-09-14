@@ -189,10 +189,19 @@ jobs:
       # Deshalb zwei Bereiche - oben und +10 bis +14 - und in jedem zwei Laeufe
       # je Tank-Spezialisierung, dazu die fuenf schnellsten insgesamt.
       #
-      # Der Schluessel erlaubt 1000 Anfragen je Minute; der ganze Lauf braucht
-      # rund 800. Die Auswahl selbst laeuft ohnehin auf den Ranglistenseiten,
-      # die Gruppe und Stufe schon mitbringen - eine Detailabfrage faellt erst
-      # fuer einen Lauf an, der auch uebernommen wird.
+      # Uebernommen wird nur, wer eine veroeffentlichte Route hat: ohne sie
+      # zeigt der Eintrag nichts, was auf raider.io nicht besser stuende.
+      # Vier von fuenf Spitzenlaeufen haben keine, die Ranglistenseiten sagen
+      # aber nicht welche - das steht erst in den Laufdetails. Der Lauf
+      # braucht deshalb rund 4500 Anfragen fuer etwa 140 Eintraege und
+      # dauert gut 20 Minuten.
+      #
+      # Das ist das Missverhaeltnis, um dessen Behebung Raider.IO gebeten
+      # wurde: ihre Rangliste zeigt ein "Route Available"-Symbol je Lauf, die
+      # API liefert die Flagge nicht mit. Mit ihr waeren es rund 900.
+      #
+      # Der Schluessel erlaubt 1000 Anfragen je Minute. Zehn Detailabfragen
+      # laufen gleichzeitig, also gut zehn je Sekunde - reichlich Abstand.
       #
       # Das Ergebnis wird mit eingecheckt (siehe "Aenderungen committen").
       # Sonst laege es nur in diesem einen Lauf vor: die drei anderen baeuten

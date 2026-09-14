@@ -403,7 +403,11 @@ local function rosterText(route)
 
     local parts = {}
     for _, member in ipairs(members) do
-        parts[#parts + 1] = ("%s%s|r"):format(classHex(member.class), member.spec or member.class or "?")
+        -- Der Name, wenn wir ihn haben; sonst die Spezialisierung. Beides
+        -- in der Klassenfarbe, denn genau danach sucht, wer eine Gruppe
+        -- vergleicht.
+        local label = member.name or member.spec or member.class or "?"
+        parts[#parts + 1] = ("%s%s|r"):format(classHex(member.class), label)
     end
     return table.concat(parts, T:Hex("textMuted") .. " · |r")
 end

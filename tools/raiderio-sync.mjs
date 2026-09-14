@@ -175,6 +175,10 @@ function roster(run) {
   return (run.roster ?? []).map((member) => {
     const c = member.character ?? {}
     return {
+      // Der Name steht auf raider.io oeffentlich neben dem Lauf. Ihn
+      // wegzulassen waere die schlechtere Wahl: wer eine Route zeigt,
+      // soll sagen, wer sie gelaufen ist.
+      name: c.name ?? null,
       class: c.class?.name ?? null,
       spec: c.spec?.name ?? null,
       // Zwei Stellen, weil zwei Antwortformen: die Rangliste legt die Rolle
