@@ -7,6 +7,14 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+- New tab "Top Routes": the fastest timed runs per dungeon, taken from the
+  Raider.IO leaderboard and rebuilt as MDT routes. Every run links back to
+  raider.io, and runs whose owners chose not to show their route are excluded.
+- Filter routes by key level range, class and specialisation. The class and
+  specialisation lists are built from the runs that are actually loaded.
+- The detail panel now shows the group of a top run in class colours, its
+  world rank and its clear time.
+
 ## 2026.09.09.2
 
 - Route authors can now change or withdraw their own routes: edit the

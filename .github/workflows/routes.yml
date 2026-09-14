@@ -41,7 +41,14 @@ on:
   schedule:
     # Alle sechs Stunden veroeffentlichen. Ohne Inhaltsaenderung passiert
     # nichts, ein ruhiger Tag erzeugt also weiterhin kein einziges Release.
-    - cron: '0 5,11,17,23 * * *'
+    #
+    # Zwei Eintraege statt eines, obwohl "0 5,11,17,23 * * *" dasselbe tut:
+    # github.event.schedule enthaelt den Cron-Ausdruck, der den Lauf ausgeloest
+    # hat - nicht die Uhrzeit. Bei einem einzigen Eintrag ist er in allen vier
+    # Laeufen gleich, und die Schritte, die "nur um 05:00" laufen sollen,
+    # liefen in Wahrheit jedes Mal. Getrennt stimmt der Vergleich.
+    - cron: '0 5 * * *'
+    - cron: '0 11,17,23 * * *'
   issues:
     # Beim Anlegen und bei jeder Aenderung neu pruefen - so bessert der
     # Einreichende selbst nach, ohne dass jemand ein Label setzen muss.
@@ -89,6 +96,7 @@ jobs:
     # deshalb hier einmal in die Job-Umgebung heben.
     env:
       KEYSTONE_API_KEY: ${{ secrets.KEYSTONE_API_KEY }}
+      RAIDERIO_API_KEY: ${{ secrets.RAIDERIO_API_KEY }}
     steps:
       # Bedenkzeit. Wer sein Issue gerade noch bearbeitet, soll nicht mit
       # jedem Zwischenstand einen Lauf ausloesen. Zusammen mit der Gruppe
@@ -160,8 +168,23 @@ jobs:
       - name: Routen von keystone.guru holen
         if: >-
           env.KEYSTONE_API_KEY != '' && github.event_name != 'issues' &&
-          (github.event_name != 'schedule' || github.event.schedule == '0 5,11,17,23 * * *')
+          (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
         run: node tools/keystone-sync.mjs --out data/cache
+
+      # Ebenfalls nur im 05:00-Lauf. Zehn Laeufe je Dungeon sind rund 170
+      # Anfragen; die Bestenliste aendert sich nicht im Sechsstundentakt, und
+      # oefter zu fragen waere Last ohne Gegenwert.
+      #
+      # Das Ergebnis wird mit eingecheckt (siehe "Aenderungen committen").
+      # Sonst laege es nur in diesem einen Lauf vor: die drei anderen baeuten
+      # ein Paket ohne Top-Laeufe, der Inhaltshash spraenge hin und her, und
+      # jeder Nutzer bekaeme zweimal taeglich ein Update, das dieselben Routen
+      # abwechselnd entfernt und wieder einsetzt.
+      - name: Top-Läufe von Raider.IO holen
+        if: >-
+          env.RAIDERIO_API_KEY != '' && github.event_name != 'issues' &&
+          (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
+        run: node tools/raiderio-sync.mjs --mdt .mdt --min-level 15 --runs 10 --out data/raiderio
 
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
@@ -232,7 +255,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MDTRouteLibrary_Data data/build-state.json data/routes CHANGELOG.md
+          git add MDTRouteLibrary_Data data/build-state.json data/routes data/raiderio CHANGELOG.md
 
           # Mit "force" meldet der Build eine Aenderung, auch wenn der Inhalt
           # derselbe ist - dann gibt es nichts zu committen und "git commit"

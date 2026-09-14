@@ -67,13 +67,16 @@ local entries = {} -- flache Liste aus Kopfzeilen und Routen
 local selectedId
 local filterText = ""
 local filterDungeon -- challengeModeId oder nil fuer "alle"
-local filterMode = "all" -- "all" | "community" | "mine"
--- Filterkriterien. 0 heisst jeweils "egal".
+local filterMode = "all" -- "all" | "community" | "mine" | "top"
+-- Filterkriterien. 0 heisst jeweils "egal", nil bei Klasse und Spezialisierung.
 local filters = {
     favourites = false,
     minPercent = 0,  -- Mindestanteil der feindlichen Kraefte
     minLevel   = 0,  -- Schluesselstufe ab
+    maxLevel   = 0,  -- Schluesselstufe bis
     maxPulls   = 0,  -- hoechstens so viele Pulls
+    class      = nil, -- Klasse in der Gruppe (nur Top-Laeufe haben eine)
+    spec       = nil, -- Spezialisierung in der Gruppe
 }
 
 ---Wie viele Kriterien sind gesetzt? Steht als Zahl am Filterknopf.
@@ -83,8 +86,61 @@ local function activeFilterCount()
     if filters.favourites then n = n + 1 end
     if filters.minPercent > 0 then n = n + 1 end
     if filters.minLevel > 0 then n = n + 1 end
+    if filters.maxLevel > 0 then n = n + 1 end
     if filters.maxPulls > 0 then n = n + 1 end
+    if filters.class then n = n + 1 end
+    if filters.spec then n = n + 1 end
     return n
+end
+
+---Stammt die Route aus einem echten Lauf auf Raider.IO?
+---@param route table
+---@return boolean
+local function isTopRun(route)
+    return route.source == "raider.io"
+end
+
+---Spielt die gesuchte Klasse oder Spezialisierung in dieser Gruppe mit?
+---
+---Ein Lauf zaehlt, wenn ein Mitglied beides erfuellt - nicht, wenn der eine
+---die Klasse und ein anderer die Spezialisierung hat.
+---@param route table
+---@return boolean
+local function rosterMatches(route)
+    if not filters.class and not filters.spec then return true end
+
+    for _, member in ipairs(route.roster or {}) do
+        local okClass = not filters.class or member.class == filters.class
+        local okSpec = not filters.spec or member.spec == filters.spec
+        if okClass and okSpec then return true end
+    end
+    return false
+end
+
+---Alle Klassen und Spezialisierungen, die in den geladenen Laeufen vorkommen.
+---
+---Aus den Daten, nicht aus einer eingebackenen Liste: so stehen nur Eintraege
+---zur Wahl, die auch etwas finden, und ein neuer Spielstand aendert nichts.
+---@param forClass string|nil Spezialisierungen auf diese Klasse begrenzen
+---@return string[] classes, string[] specs
+local function rosterChoices(forClass)
+    local classSet, specSet = {}, {}
+
+    for _, route in ipairs(ns.routes) do
+        for _, member in ipairs(route.roster or {}) do
+            if member.class then classSet[member.class] = true end
+            if member.spec and (not forClass or member.class == forClass) then
+                specSet[member.spec] = true
+            end
+        end
+    end
+
+    local classes, specs = {}, {}
+    for name in pairs(classSet) do classes[#classes + 1] = name end
+    for name in pairs(specSet) do specs[#specs + 1] = name end
+    table.sort(classes)
+    table.sort(specs)
+    return classes, specs
 end
 
 -- Eingeklappte Bereiche und Dungeongruppen, Schluessel wie "section:community".
@@ -177,6 +233,51 @@ end
 ---@return number|nil
 local function levelCeiling(route)
     return route.keyLevelMax or route.keyLevelMin or route.keyLevel or route.difficulty
+end
+
+---Farbcode einer Klasse.
+---
+---Raider.IO nennt Klassen ausgeschrieben ("Death Knight"), WoWs Farbtabelle
+---erwartet den Token ohne Leerzeichen. Kennt sie ihn nicht, bleibt es bei der
+---normalen Textfarbe - eine unbekannte Klasse ist kein Grund, nichts
+---anzuzeigen.
+---@param name string|nil
+---@return string
+local function classHex(name)
+    if type(name) ~= "string" then return T:Hex("textPrimary") end
+
+    local token = (name:upper():gsub("[^A-Z]", ""))
+    local color = RAID_CLASS_COLORS and RAID_CLASS_COLORS[token]
+    if not color then return T:Hex("textPrimary") end
+
+    return ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
+end
+
+---Die Gruppe eines Laufs als eine Zeile: Spezialisierungen in Klassenfarbe.
+---
+---Nur die Spezialisierung, nicht "Blut Todesritter": zu fuenft waere das
+---dreimal so lang wie die Spalte breit ist. Welche Klasse gemeint ist, sagt
+---die Farbe - und genau danach sucht, wer eine Gruppe vergleicht.
+---@param route table
+---@return string
+local function rosterText(route)
+    local order = { tank = 1, healer = 2, dps = 3 }
+    local members = {}
+    for _, member in ipairs(route.roster or {}) do members[#members + 1] = member end
+    if #members == 0 then return "" end
+
+    table.sort(members, function(a, b)
+        local rankA = order[a.role or ""] or 9
+        local rankB = order[b.role or ""] or 9
+        if rankA ~= rankB then return rankA < rankB end
+        return (a.spec or "") < (b.spec or "")
+    end)
+
+    local parts = {}
+    for _, member in ipairs(members) do
+        parts[#parts + 1] = ("%s%s|r"):format(classHex(member.class), member.spec or member.class or "?")
+    end
+    return table.concat(parts, T:Hex("textMuted") .. " · |r")
 end
 
 ---Fasst die Gegner eines Pulls zusammen: "3x Bloodletter, 2x Living Venom".
@@ -795,12 +896,27 @@ local function rebuildEntries()
     local source = {}
     for _, route in ipairs(ns.routes) do
         route.saved = byOrigin[route.id]
-        if filterMode ~= "mine" or route.saved then
-            source[#source + 1] = route
+
+        -- Welcher Reiter zeigt welche Herkunft. "Community" meint eingereichte
+        -- Routen, "Top Routes" die nachgebauten Laeufe von Raider.IO - beides
+        -- kommt aus demselben Datenpaket und muss hier getrennt werden.
+        local wanted
+        if filterMode == "mine" then
+            wanted = route.saved ~= nil
+        elseif filterMode == "top" then
+            wanted = isTopRun(route)
+        elseif filterMode == "community" then
+            wanted = not isTopRun(route)
+        else
+            wanted = true
         end
+
+        if wanted then source[#source + 1] = route end
     end
 
-    if filterMode ~= "community" then
+    -- Eigene Routen aus MDT gehoeren weder zu "Community" noch zu den
+    -- Top-Laeufen.
+    if filterMode == "all" or filterMode == "mine" then
         for _, route in ipairs(ownRoutes) do
             -- Kopien nicht doppelt: die stecken schon im Original.
             if not route.originId then source[#source + 1] = route end
@@ -814,6 +930,7 @@ local function rebuildEntries()
     local buckets = {
         favourites = {},
         community = {},
+        top = {},
         mine = {},
     }
 
@@ -834,15 +951,24 @@ local function rebuildEntries()
             or (percent ~= nil and percent >= filters.minPercent)
         local passesFavourite = not filters.favourites or isFavourite(route.id)
         local passesLevel = filters.minLevel == 0 or (level ~= nil and level >= filters.minLevel)
+        local passesLevelMax = filters.maxLevel == 0 or (level ~= nil and level <= filters.maxLevel)
         local passesPulls = filters.maxPulls == 0 or pulls <= filters.maxPulls
+        -- Nach Klasse und Spezialisierung laesst sich nur filtern, wo eine
+        -- Gruppe bekannt ist. Eingereichte Routen haben keine und verschwinden
+        -- deshalb, sobald jemand danach sucht - das ist richtig so, sie waeren
+        -- keine Antwort auf die Frage.
+        local passesRoster = rosterMatches(route)
 
-        if matchesDungeon and passesPercent and passesFavourite and passesLevel and passesPulls
+        if matchesDungeon and passesPercent and passesFavourite and passesLevel
+            and passesLevelMax and passesPulls and passesRoster
             and (needle == "" or haystack:find(needle, 1, true)) then
             local bucket
             if isFavourite(route.id) then
                 bucket = buckets.favourites
             elseif route.own then
                 bucket = buckets.mine
+            elseif isTopRun(route) then
+                bucket = buckets.top
             else
                 bucket = buckets.community
             end
@@ -855,15 +981,18 @@ local function rebuildEntries()
     ---@param key string
     ---@param label string
     ---@param list table
-    local function addSection(key, label, list)
+    ---@param sorter function|nil eigene Ordnung innerhalb eines Dungeons
+    local function addSection(key, label, list, sorter)
         if #list == 0 then return end
 
         -- Erst den ganzen Abschnitt sortieren, dann die Seite herausschneiden.
-        -- Andersherum liefen die Seiten quer durch die Dungeongruppen.
+        -- Andersherum liefen die Seiten quer durch die Dungeongruppen. Der
+        -- Dungeonname steht immer vorn, sonst zerfielen die Gruppen.
         table.sort(list, function(a, b)
             local nameA = a.dungeonEnglishName or ""
             local nameB = b.dungeonEnglishName or ""
             if nameA ~= nameB then return nameA < nameB end
+            if sorter then return sorter(a, b) end
             return (forcesPercent(a) or 0) > (forcesPercent(b) or 0)
         end)
 
@@ -935,11 +1064,22 @@ local function rebuildEntries()
         end
     end
 
+    ---Ordnung der Top-Laeufe: hohe Stufe zuerst, bei gleicher Stufe die
+    ---schnellere Zeit. Genau die Rangfolge der Bestenliste auf raider.io.
+    local function byRun(a, b)
+        local levelA, levelB = a.keyLevel or 0, b.keyLevel or 0
+        if levelA ~= levelB then return levelA > levelB end
+        return (a.clearSeconds or math.huge) < (b.clearSeconds or math.huge)
+    end
+
     addSection("favourites", ns.L["SECTION_FAVOURITES"], buckets.favourites)
-    if filterMode ~= "mine" then
+    if filterMode == "all" or filterMode == "community" then
         addSection("community", ns.L["SECTION_COMMUNITY"], buckets.community)
     end
-    if filterMode ~= "community" then
+    if filterMode == "all" or filterMode == "top" then
+        addSection("top", ns.L["SECTION_TOP"], buckets.top, byRun)
+    end
+    if filterMode == "all" or filterMode == "mine" then
         addSection("mine", ns.L["SECTION_MINE"], buckets.mine)
     end
 end
@@ -1604,6 +1744,7 @@ local function updateDetail(route)
         d.authorHit:Hide()
         d.issueButton:Hide()
         d.affixes:SetText("")
+        d.group:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
         d.foldAll:Hide()
@@ -1636,12 +1777,25 @@ local function updateDetail(route)
     d.authorHit.routeTitle = route.title or route.id
     d.authorHit:SetShown(url ~= nil)
 
+    local top = isTopRun(route)
+
+    -- Der Rueckverlink zu raider.io ist Bedingung ihrer Nutzungsbedingungen,
+    -- nicht Schmuck: er steht an jedem uebernommenen Lauf.
+    d.authorHit.tipTitle = top and ns.L["DETAIL_RECONSTRUCTED_TITLE"] or ns.L["DETAIL_ISSUE_TIP_TITLE"]
+    d.authorHit.tipText = top and ns.L["DETAIL_RECONSTRUCTED"] or ns.L["DETAIL_ISSUE_TIP"]
+
     d.issueButton.url = url
     d.issueButton.routeTitle = route.title or route.id
     -- Nur eigene Einreichungen heissen so. Eine Route von keystone.guru
     -- fuehrt zu deren Seite, und die ist keine Einreichung.
-    d.issueButton:SetText(route.source == "community"
-        and ns.L["DETAIL_ISSUE_BUTTON"] or ns.L["DETAIL_SOURCE_BUTTON"])
+    if top then
+        d.issueButton:SetText(ns.L["DETAIL_RIO_BUTTON"])
+        d.issueButton.tooltipText = ns.L["DETAIL_RIO_TIP"]
+    else
+        d.issueButton:SetText(route.source == "community"
+            and ns.L["DETAIL_ISSUE_BUTTON"] or ns.L["DETAIL_SOURCE_BUTTON"])
+        d.issueButton.tooltipText = ns.L["DETAIL_ISSUE_TIP"]
+    end
     d.issueButton:SetShown(url ~= nil)
 
     -- Vier Kennzahlen, dieselben wie die Spalten der Liste und in derselben
@@ -1651,10 +1805,27 @@ local function updateDetail(route)
         and ("%d/%d"):format(route.enemyForces, route.enemyForcesRequired)
         or T:Text("textMuted", "–"), ns.L["COL_FORCES"])
     setTile(3, tostring(#route.pulls), ns.L["COL_PULLS"])
-    setTile(4, levelText(route) ~= "" and levelText(route) or T:Text("textMuted", "–"), ns.L["COL_LEVEL"])
+    -- Bei einem Top-Lauf steht die Stufe schon im Titel ("+21 · 32:55"); die
+    -- Kachel zeigt stattdessen, was diesen Lauf von den anderen unterscheidet.
+    if top and route.clearSeconds then
+        setTile(4, ("%s%s|r"):format(
+            route.onTime and T:Hex("success") or T:Hex("warning"),
+            ns.Runs.FormatTime(route.clearSeconds)), ns.L["TILE_CLEAR_TIME"])
+    else
+        setTile(4, levelText(route) ~= "" and levelText(route) or T:Text("textMuted", "–"), ns.L["COL_LEVEL"])
+    end
 
-    local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
-    d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
+    if top then
+        -- Affixe kennt ein Lauf nicht - dafuer seinen Platz in der Weltrangliste.
+        d.affixes:SetText(route.rank
+            and (T:Hex("accent") .. ns.L["DETAIL_RANK"]:format(route.rank) .. "|r")
+            or "")
+        d.group:SetText(rosterText(route))
+    else
+        local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
+        d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
+        d.group:SetText("")
+    end
 
     -- Was du selbst mit dieser Route erreicht hast.
     local key = ns.Runs.KeyFor(route)
@@ -1868,6 +2039,7 @@ function updateDungeonDetail(dungeon)
     setTile(4, tostring(routeCount), ns.L["TILE_ROUTES"])
 
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
+    d.group:SetText("")
     d.runs:SetText("")
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
     d.foldAll:Hide()
@@ -2138,7 +2310,9 @@ function B.Refresh()
                 if presetIdx and presetIdx > 1 then deletableIds[#deletableIds + 1] = id end
             end
 
-            local showCheck = filterMode ~= "community" and #deletableIds > 0
+            -- Angehakt und geloescht wird nur, was in MDT liegt. Weder
+            -- Community-Routen noch Top-Laeufe gehoeren dem Nutzer.
+            local showCheck = (filterMode == "all" or filterMode == "mine") and #deletableIds > 0
             row.check:SetShown(showCheck)
             row.groupIds = deletableIds
             if showCheck then
@@ -2286,7 +2460,7 @@ function B.Refresh()
     local n = countChecked()
 
 
-    ui.deleteButton:SetShown(filterMode ~= "community")
+    ui.deleteButton:SetShown(filterMode == "all" or filterMode == "mine")
     ui.deleteButton:SetEnabled(n > 0)
     ui.deleteButton:SetText(n > 0 and ns.L["DELETE_N"]:format(n) or ns.L["DELETE"])
 
@@ -2386,8 +2560,8 @@ local function buildDetail(parent)
     d.authorHit:SetScript("OnEnter", function(self)
         if not self.url then return end
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        GameTooltip:AddLine(ns.L["DETAIL_ISSUE_TIP_TITLE"], 1, 1, 1)
-        GameTooltip:AddLine(ns.L["DETAIL_ISSUE_TIP"], 0.8, 0.8, 0.8, true)
+        GameTooltip:AddLine(self.tipTitle or ns.L["DETAIL_ISSUE_TIP_TITLE"], 1, 1, 1)
+        GameTooltip:AddLine(self.tipText or ns.L["DETAIL_ISSUE_TIP"], 0.8, 0.8, 0.8, true)
         GameTooltip:Show()
     end)
     d.authorHit:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -2440,9 +2614,18 @@ local function buildDetail(parent)
     d.affixes:SetJustifyH("LEFT")
     d.affixes:SetWordWrap(true)
 
+    -- Die Gruppe eines Top-Laufs, in Klassenfarben. Bei eingereichten Routen
+    -- bleibt die Zeile leer und faellt auf null Hoehe zusammen - die Zeilen
+    -- darunter haengen aneinander und ruecken von selbst nach.
+    d.group = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    d.group:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", 0, -4)
+    d.group:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
+    d.group:SetJustifyH("LEFT")
+    d.group:SetWordWrap(true)
+
     ---------------------------------------------------------- Abschnitt
     d.runs = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    d.runs:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", 0, -4)
+    d.runs:SetPoint("TOPLEFT", d.group, "BOTTOMLEFT", 0, -4)
     d.runs:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.runs:SetJustifyH("LEFT")
     d.runs:SetWordWrap(false)
@@ -2672,12 +2855,15 @@ local function buildList(parent)
     local modes = {
         { key = "all",       label = ns.L["TAB_ALL"] },
         { key = "community", label = ns.L["TAB_COMMUNITY"] },
+        { key = "top",       label = ns.L["TAB_TOP"] },
         { key = "mine",      label = ns.L["TAB_MINE"] },
     }
 
     local previous
     for _, mode in ipairs(modes) do
-        local tab = T:Tab(root, mode.label, 110)
+        -- Schmaler als frueher: zu dritt passten 110 Pixel, zu viert nicht
+        -- mehr - die Leiste lief sonst unter dem Suchfeld hindurch.
+        local tab = T:Tab(root, mode.label, 92)
         tab:SetHeight(22)
         if previous then
             tab:SetPoint("LEFT", previous, "RIGHT", 4, 0)
@@ -2704,7 +2890,8 @@ local function buildList(parent)
     ui.filterButton = filterButton
 
     local panel = T:Panel(root, "bgOverlay")
-    panel:SetSize(250, 252)
+    -- Gewachsen um den zweiten Stufenregler und die beiden Auswahllisten.
+    panel:SetSize(250, 420)
     panel:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
     panel:SetFrameLevel(root:GetFrameLevel() + 20)
     panel:EnableMouse(true)
@@ -2758,6 +2945,115 @@ local function buildList(parent)
         return slider
     end
 
+    -- Hoechstens so viele Zeilen zeigt eine Auswahlliste auf einmal. Bei
+    -- vierzig Spezialisierungen reichte die Liste sonst weit unter MDTs
+    -- Fenster hinaus; der Rest kommt ueber das Mausrad.
+    local CHOICE_ROWS = 12
+    local CHOICE_HEIGHT = 18
+
+    ---Auswahlliste mit Beschriftung. Zeigt den gewaehlten Wert, klappt bei
+    ---Klick eine Liste auf.
+    ---
+    ---Keine der eingebauten Dropdown-Vorlagen: die sehen in diesem Fenster
+    ---fremd aus, und ihre Schnittstelle hat sich in den letzten Erweiterungen
+    ---zweimal geaendert.
+    ---@param label string
+    ---@param anchor table
+    ---@param gather function liefert die Werte zur Auswahl
+    ---@param get function
+    ---@param set function
+    local function makeChoice(label, anchor, gather, get, set)
+        local caption = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        caption:SetPoint("TOP", anchor, "BOTTOM", 0, -16)
+        caption:SetPoint("LEFT", panel, "LEFT", 14, 0)
+        caption:SetJustifyH("LEFT")
+        caption:SetText(label)
+
+        local button = T:Button(panel, ns.L["FILTER_ALL"], 200)
+        button:SetHeight(20)
+        button:SetPoint("TOPLEFT", caption, "BOTTOMLEFT", 2, -6)
+
+        local list = T:Panel(panel, "bgOverlay")
+        list:SetFrameLevel(panel:GetFrameLevel() + 10)
+        list:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 0, -2)
+        list:SetWidth(200)
+        list:EnableMouse(true)
+        list:EnableMouseWheel(true)
+        list:Hide()
+        list.rows = {}
+        list.offset = 0
+
+        local function draw()
+            local options = gather()
+            -- "alle" steht immer oben und bedeutet: kein Filter.
+            table.insert(options, 1, false)
+
+            local visible = math.min(#options, CHOICE_ROWS)
+            list.offset = math.max(0, math.min(list.offset, #options - visible))
+            list:SetHeight(visible * CHOICE_HEIGHT + 10)
+
+            for index = 1, visible do
+                local row = list.rows[index]
+                if not row then
+                    row = CreateFrame("Button", nil, list)
+                    row:SetHeight(CHOICE_HEIGHT)
+                    row:SetPoint("LEFT", list, "LEFT", 5, 0)
+                    row:SetPoint("RIGHT", list, "RIGHT", -5, 0)
+                    row:SetPoint("TOP", list, "TOP", 0, -5 - (index - 1) * CHOICE_HEIGHT)
+
+                    row.hover = T:Fill(row, "accent", 0.18)
+                    row.hover:Hide()
+                    row:SetScript("OnEnter", function(self) self.hover:Show() end)
+                    row:SetScript("OnLeave", function(self) self.hover:Hide() end)
+
+                    row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                    row.text:SetPoint("LEFT", row, "LEFT", 6, 0)
+                    row.text:SetJustifyH("LEFT")
+
+                    row:SetScript("OnClick", function(self)
+                        set(self.value or nil)
+                        list:Hide()
+                        wipe(pages)
+                        B.Refresh()
+                    end)
+                    list.rows[index] = row
+                end
+
+                local value = options[index + list.offset]
+                row.value = value or nil
+                row.text:SetText(value or ns.L["FILTER_ALL"])
+                -- Die gewaehlte Zeile hebt sich ab, sonst sucht man sie.
+                row.text:SetTextColor(T:Color(row.value == get() and "accent" or "textPrimary"))
+                row:Show()
+            end
+
+            for index = visible + 1, #list.rows do list.rows[index]:Hide() end
+        end
+
+        list:SetScript("OnMouseWheel", function(self, delta)
+            self.offset = self.offset - delta
+            draw()
+        end)
+
+        button:SetScript("OnClick", function()
+            if list:IsShown() then
+                list:Hide()
+            else
+                list.offset = 0
+                draw()
+                list:Show()
+            end
+        end)
+
+        button.Render = function()
+            button:SetText(get() or ns.L["FILTER_ALL"])
+            if list:IsShown() then draw() end
+        end
+        button.list = list
+        button.caption = caption
+        return button
+    end
+
     -- Keine Breite setzen: UICheckButtonTemplate zieht seine Textur mit und
     -- wuerde zu einer breiten Ellipse. Die Beschriftung steht daneben.
     local favBox = T:Checkbox(panel, ns.L["FILTER_FAVOURITES"])
@@ -2774,7 +3070,15 @@ local function buildList(parent)
         function(v) filters.minLevel = v end,
         ns.L["FILTER_ANY"])
 
-    panel.percentSlider = makeSlider(ns.L["FILTER_PERCENT_LABEL"], panel.levelSlider, 120,
+    -- Zwei Regler statt eines: die Bestenliste reicht von +15 bis weit ueber
+    -- +25, und wer eine Route fuer seinen naechsten Schluessel sucht, will
+    -- keinen +30-Lauf sehen, dem er nicht folgen kann.
+    panel.levelMaxSlider = makeSlider(ns.L["FILTER_LEVEL_MAX_LABEL"], panel.levelSlider, 40,
+        function() return filters.maxLevel end,
+        function(v) filters.maxLevel = v end,
+        ns.L["FILTER_ANY"])
+
+    panel.percentSlider = makeSlider(ns.L["FILTER_PERCENT_LABEL"], panel.levelMaxSlider, 120,
         function() return filters.minPercent end,
         function(v) filters.minPercent = v end,
         ns.L["FILTER_ANY"])
@@ -2784,6 +3088,30 @@ local function buildList(parent)
         function(v) filters.maxPulls = v end,
         ns.L["FILTER_ANY"])
 
+    panel.classChoice = makeChoice(ns.L["FILTER_CLASS_LABEL"], panel.pullsSlider,
+        function() return (rosterChoices(nil)) end,
+        function() return filters.class end,
+        function(v)
+            filters.class = v
+            -- Die Spezialisierung gehoert zur Klasse. Bleibt "Wiederherstellung"
+            -- stehen, waehrend die Klasse auf Krieger wechselt, findet der
+            -- Filter nichts mehr und niemand sieht, warum.
+            filters.spec = nil
+            panel.classChoice.Render()
+            panel.specChoice.Render()
+        end)
+
+    panel.specChoice = makeChoice(ns.L["FILTER_SPEC_LABEL"], panel.classChoice,
+        function()
+            local _, specs = rosterChoices(filters.class)
+            return specs
+        end,
+        function() return filters.spec end,
+        function(v)
+            filters.spec = v
+            panel.specChoice.Render()
+        end)
+
     local reset = T:Button(panel, ns.L["FILTER_RESET"], 120)
     reset:SetHeight(22)
     reset:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT", -14, 12)
@@ -2791,13 +3119,29 @@ local function buildList(parent)
         filters.favourites = false
         filters.minPercent = 0
         filters.minLevel = 0
+        filters.maxLevel = 0
         filters.maxPulls = 0
+        filters.class = nil
+        filters.spec = nil
 
         panel.favBox:SetChecked(false)
         panel.levelSlider:SetValue(0)
+        panel.levelMaxSlider:SetValue(0)
         panel.percentSlider:SetValue(0)
         panel.pullsSlider:SetValue(0)
+        panel.classChoice.list:Hide()
+        panel.specChoice.list:Hide()
+        panel.classChoice.Render()
+        panel.specChoice.Render()
+        wipe(pages)
         B.Refresh()
+    end)
+
+    -- Geht die Filterleiste zu, gehen die aufgeklappten Listen mit. Sonst
+    -- stehen sie beim naechsten Oeffnen noch offen und verdecken die Regler.
+    panel:SetScript("OnHide", function()
+        panel.classChoice.list:Hide()
+        panel.specChoice.list:Hide()
     end)
 
     filterButton:SetScript("OnClick", function()

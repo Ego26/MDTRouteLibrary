@@ -43,18 +43,25 @@ function toLua(value, indent = 0) {
 
   const keys = Object.keys(value).filter((k) => value[k] !== undefined && value[k] !== null)
   if (keys.length === 0) return '{}'
-  const items = keys
-    .map((k) => {
-      // JavaScript kennt nur Stringschluessel. Eine reine Zahl muss in Lua
-      // aber ein Zahlenschluessel werden, sonst schlaegt npcs[270306] fehl.
-      let key
-      if (/^\d+$/.test(k)) key = `[${k}]`
-      else if (IDENT.test(k)) key = k
-      else key = `["${k}"]`
-      return `${padInner}${key} = ${toLua(value[k], indent + 1)},`
-    })
-    .join('\n')
-  return `{\n${items}\n${pad}}`
+
+  const parts = keys.map((k) => {
+    // JavaScript kennt nur Stringschluessel. Eine reine Zahl muss in Lua
+    // aber ein Zahlenschluessel werden, sonst schlaegt npcs[270306] fehl.
+    let key
+    if (/^\d+$/.test(k)) key = `[${k}]`
+    else if (IDENT.test(k)) key = k
+    else key = `["${k}"]`
+    return `${key} = ${toLua(value[k], indent + 1)}`
+  })
+
+  // Was in eine Zeile passt, bekommt auch nur eine. Ein Gegnereintrag
+  // ({ enemy, npc, clones }) stand sonst ueber fuenf Zeilen - bei achtzig
+  // Laeufen mit je dreissig Pulls macht das den Unterschied zwischen einem
+  // Datenpaket von 1,3 MB und einem von einem knappen halben.
+  const inline = `{ ${parts.join(', ')} }`
+  if (inline.length <= 100 && !inline.includes('\n')) return inline
+
+  return `{\n${parts.map((p) => `${padInner}${p},`).join('\n')}\n${pad}}`
 }
 
 /** Dateiname aus dem englischen Dungeonnamen. */

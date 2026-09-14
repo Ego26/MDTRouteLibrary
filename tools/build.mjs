@@ -29,6 +29,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { readDungeons, buildLookup, readSeasons } from './mdt-dungeons.mjs'
 import { convertRoute, validateRoute } from './keystone-convert.mjs'
+import { convertRun } from './raiderio-convert.mjs'
 import { buildDataAddon, writeDataAddon } from './generate-lua.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -167,6 +168,12 @@ function enrichRoute(route, dungeon, usedNpcs) {
     pull.cumulative = running
     if (boss) pull.boss = true
   }
+
+  // Eingereichte Routen bringen ihre Summe mit, weil MDTs Exportstring sie
+  // nennt. Rekonstruierte Laeufe tun das nicht - fuer sie ist die Summe
+  // genau das, was hier gerade zusammengekommen ist. Ohne sie zeigte die
+  // Prozentspalte in der Liste nur ein Fragezeichen.
+  if (route.enemyForces == null) route.enemyForces = running
 }
 
 function parseArgs(argv) {
@@ -233,6 +240,35 @@ async function main() {
     }
   }
   console.log(`   ${converted} konvertiert`)
+
+  console.log('3b) Top-Laeufe von Raider.IO konvertieren')
+  const rioDir = join(ROOT, 'data', 'raiderio')
+  let rioCount = 0
+  if (existsSync(rioDir)) {
+    for (const file of readdirSync(rioDir).filter((f) => f.endsWith('.json'))) {
+      for (const run of JSON.parse(readFileSync(join(rioDir, file), 'utf8'))) {
+        const dungeon = lookup.byChallengeMode.get(run.challengeModeId)
+        if (!dungeon) {
+          console.warn(`   ! ${run.id}: Dungeon ${run.challengeModeId} nicht in MDT`)
+          continue
+        }
+        const { route, report } = convertRun(run, dungeon)
+        if (!route) {
+          console.warn(`   ! ${run.id}: keine Pulls zuzuordnen`)
+          continue
+        }
+        // Was nicht untergebracht werden konnte, faellt auf. Ein paar
+        // Nachzuegler sind normal; wird es viel, stimmt mit MDTs
+        // Gegnertabelle etwas nicht.
+        if (report.dropped > 0 || report.shortfall > 0) {
+          console.warn(`   ~ ${route.id}: ${report.dropped} verworfen, ${report.shortfall} ohne freien Klon`)
+        }
+        routes.push(route)
+        rioCount += 1
+      }
+    }
+  }
+  console.log(`   ${rioCount} Laeufe`)
 
   console.log('4) Routen gegen MDT pruefen und anreichern')
   const accepted = []

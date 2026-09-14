@@ -26,8 +26,10 @@
 // langsamer: unangemeldete Anfragen sind staerker begrenzt.
 //
 // Aufruf:
-//   node tools/raiderio-sync.mjs --mdt <MDT-Pfad> --season season-mn-2 \
+//   node tools/raiderio-sync.mjs --mdt <MDT-Pfad> [--season season-mn-2] \
 //        [--dungeon temple-of-sethraliss] [--min-level 15] [--runs 20] --out data/raiderio
+//
+// Ohne --season sucht das Werkzeug die laufende selbst, siehe currentSeason().
 
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -80,6 +82,73 @@ async function api(path, params) {
   }
 
   throw new Error(`Ratenbegrenzung bei ${path} auch nach vier Versuchen`)
+}
+
+/**
+ * Findet die laufende Season.
+ *
+ * "season=current" nimmt die API nicht an (500), und ein eingetragenes
+ * "season-mn-2" waere beim naechsten Wechsel still falsch: die Abfrage liefe
+ * weiter, nur eben mit den Laeufen der vorigen Season.
+ *
+ * static-data verlangt eine expansion_id und kennt keine in der Zukunft, also
+ * tasten wir uns von der bekannten aufwaerts, bis eine nicht mehr existiert.
+ * Im Normalfall sind das zwei Anfragen.
+ *
+ * Nebensaisons wie "season-mn-1-break-the-meta" laufen parallel zur
+ * eigentlichen und haetten dieselbe Pruefung bestanden - deshalb nur Slugs der
+ * Form "season-<kuerzel>-<nummer>".
+ *
+ * @param {number} known Zuletzt bekannte Erweiterung
+ * @returns {Promise<string|null>}
+ */
+export async function currentSeason(known = 11) {
+  const now = Date.now()
+  let best = null
+
+  for (let expansion = known; expansion < known + 10; expansion += 1) {
+    let data
+    try {
+      data = await api('/static-data', { expansion_id: expansion })
+    } catch {
+      break // Diese Erweiterung gibt es noch nicht - damit sind wir durch.
+    }
+
+    for (const season of data.seasons ?? []) {
+      if (!/^season-[a-z]+-\d+$/.test(season.slug ?? '')) continue
+
+      const starts = Date.parse(season.starts?.us ?? '')
+      const ends = Date.parse(season.ends?.us ?? '')
+      if (!Number.isFinite(starts) || starts > now) continue
+      if (Number.isFinite(ends) && ends <= now) continue
+
+      if (!best || starts > best.starts) best = { slug: season.slug, starts }
+    }
+  }
+
+  return best?.slug ?? null
+}
+
+/**
+ * Sondert aus, was nicht auf der Karte steht.
+ *
+ * Von 157 Todesmeldungen eines Laufs haben typischerweise 89 keinen
+ * Kraeftewert. Das sind die Beschworenen: 21 "Faithless Tormentor", 14
+ * "Swarming Krolusk", 13 "Snake". Sie entstehen erst im Kampf, haben in MDT
+ * keinen Klon und gehoeren in keine Route - wer sie mitzaehlt, sucht
+ * Standorte fuer Gegner, die keine haben, und verbraucht dabei die Klone der
+ * echten.
+ *
+ * Der Kraeftewert allein reicht als Merkmal nicht: Bosse stehen ebenfalls auf
+ * null und gehoeren sehr wohl dazu.
+ *
+ * @param {object[]} enemies
+ * @param {object} dungeon
+ * @returns {object[]}
+ */
+function onlyPlaced(enemies, dungeon) {
+  const bosses = new Set(dungeon.enemies.filter((e) => e.isBoss && e.name).map((e) => e.name))
+  return enemies.filter((enemy) => (enemy.enemy_forces_value ?? 0) > 0 || bosses.has(enemy.name))
 }
 
 /**
@@ -201,7 +270,7 @@ export async function fetchDungeonRuns({ season, dungeonSlug, dungeon, minLevel,
         continue
       }
 
-      const { pulls, unknown } = mapToMdt(groupIntoPulls(logged.enemies), dungeon)
+      const { pulls, unknown } = mapToMdt(groupIntoPulls(onlyPlaced(logged.enemies, dungeon)), dungeon)
       if (pulls.length === 0) {
         console.log(`   - ${id}: keine Gegner zuzuordnen`)
         continue
@@ -221,6 +290,8 @@ export async function fetchDungeonRuns({ season, dungeonSlug, dungeon, minLevel,
         challengeModeId: dungeon.challengeModeId,
         dungeonEnglishName: dungeon.englishName,
         mdtDungeonIdx: dungeon.mdtIndex,
+        // Der Weltrang steht in der Rangliste, nicht in den Laufdetails.
+        rank: typeof entry.rank === 'number' ? entry.rank : undefined,
         keyLevel: details.mythic_level,
         clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
         onTime: (details.num_chests ?? 0) > 0,
@@ -251,8 +322,16 @@ function parseArgs(argv) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = parseArgs(process.argv.slice(2))
-  if (!args.mdt || !args.season) {
-    console.error('Aufruf: node tools/raiderio-sync.mjs --mdt <MDT-Pfad> --season season-mn-2 [--dungeon slug] [--min-level 15] [--runs 20] [--out data/raiderio]')
+  if (!args.mdt) {
+    console.error('Aufruf: node tools/raiderio-sync.mjs --mdt <MDT-Pfad> [--season season-mn-2] [--dungeon slug] [--min-level 15] [--runs 20] [--out data/raiderio]')
+    process.exit(1)
+  }
+
+  // Ohne Angabe die laufende Season - so haelt der taegliche Lauf auch ueber
+  // einen Seasonwechsel hinweg.
+  const season = typeof args.season === 'string' ? args.season : await currentSeason()
+  if (!season) {
+    console.error('Keine laufende Season gefunden.')
     process.exit(1)
   }
 
@@ -280,7 +359,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(1)
   }
 
-  console.log(`Season ${args.season}, ab +${minLevel}, bis zu ${wanted} Läufe je Dungeon`)
+  console.log(`Season ${season}, ab +${minLevel}, bis zu ${wanted} Läufe je Dungeon`)
   if (!process.env.RAIDERIO_API_KEY) {
     console.log('Ohne RAIDERIO_API_KEY - unangemeldet, also stärker begrenzt.')
   }
@@ -292,7 +371,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     console.log(`\n${target.dungeon.englishName} (${target.slug})`)
     try {
       const runs = await fetchDungeonRuns({
-        season: args.season,
+        season,
         dungeonSlug: target.slug,
         dungeon: target.dungeon,
         minLevel,
