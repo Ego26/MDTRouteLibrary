@@ -139,6 +139,20 @@ function ns.GetDungeonEnemies(challengeModeId)
     return dungeon and dungeon.enemies or nil
 end
 
+---Kraeftewert eines einzelnen Klons.
+---
+---Ein Klon darf mehr geben als seine Geschwister; MDT nimmt dann seinen Wert
+---statt dem des Gegners (Modules/Pulls.lua). In Tempel von Sethraliss sind es
+---drei solche Klone, zusammen 15 Kraefte - genau der Betrag, um den unsere
+---Prozentzahlen dort unter denen von MDT lagen.
+---@param enemy table Eintrag aus GetDungeonEnemies
+---@param cloneIdx number
+---@return number
+local function cloneForces(enemy, cloneIdx)
+    local override = enemy.counts and enemy.counts[cloneIdx]
+    return override or enemy.count or 0
+end
+
 ---Rechnet die Gegnerkraefte einer MDT-Pull-Tabelle aus.
 ---MDT legt pro Pull { color = "...", [enemyIdx] = { cloneIdx, ... } } ab.
 ---@param challengeModeId number
@@ -156,7 +170,9 @@ function ns.CountForces(challengeModeId, pulls)
             for enemyIdx, clones in pairs(pull) do
                 local enemy = type(enemyIdx) == "number" and enemies[enemyIdx]
                 if enemy and type(clones) == "table" then
-                    total = total + (enemy.count or 0) * #clones
+                    for _, cloneIdx in ipairs(clones) do
+                        total = total + cloneForces(enemy, cloneIdx)
+                    end
                 end
             end
         end
@@ -197,7 +213,9 @@ function ns.BuildOwnPulls(challengeModeId, pulls)
                     for k, cloneIdx in ipairs(clones) do copy[k] = cloneIdx end
                     table.sort(copy)
 
-                    forces = forces + (enemy.count or 0) * #copy
+                    for _, cloneIdx in ipairs(copy) do
+                        forces = forces + cloneForces(enemy, cloneIdx)
+                    end
                     list[#list + 1] = { enemy = enemyIdx, npc = enemy.npc, clones = copy }
 
                     local npc = ns.GetNpc(challengeModeId, enemy.npc)

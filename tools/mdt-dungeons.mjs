@@ -104,6 +104,15 @@ export function parseDungeonFile(file) {
             x: Math.round(clone.x),
             y: Math.round(clone.y),
             sublevel: typeof clone.sublevel === 'number' ? clone.sublevel : 1,
+            // Ein Klon darf mehr Kraefte geben als seine Geschwister. MDT
+            // macht das in Modules/Pulls.lua ausdruecklich:
+            //
+            //     return clone and clone.count or enemy.count
+            //
+            // In Tempel von Sethraliss sind es drei Klone, und wer sie
+            // uebergeht, rechnet jede Route um 15 Kraefte zu niedrig - dort
+            // genau der Unterschied zwischen 98,3 und 100,4 Prozent.
+            count: typeof clone.count === 'number' ? clone.count : undefined,
           }
         }
       }

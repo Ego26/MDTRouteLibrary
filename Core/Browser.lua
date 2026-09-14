@@ -256,6 +256,28 @@ local function classHex(name)
     return ("|cff%02x%02x%02x"):format(color.r * 255, color.g * 255, color.b * 255)
 end
 
+---Wofuer eine Route gedacht ist, in zwei Worten.
+---
+---"+14 · 23:47" sagt, was passiert ist, aber nicht, ob es zu einem passt. Die
+---Marke sagt es: High Keys oder Einsteiger-Keys, zuegig oder sicher.
+---@param route table
+---@return string
+local function badgeText(route)
+    if route.bracket ~= "high" and route.bracket ~= "low" then return "" end
+
+    local parts = {
+        T:Hex("accent") .. ns.L[route.bracket == "high" and "BADGE_HIGH" or "BADGE_LOW"] .. "|r",
+    }
+
+    if route.tier == "fast" then
+        parts[#parts + 1] = T:Hex("success") .. ns.L["BADGE_FAST"] .. "|r"
+    elseif route.tier == "slow" then
+        parts[#parts + 1] = T:Hex("warning") .. ns.L["BADGE_SAFE"] .. "|r"
+    end
+
+    return table.concat(parts, T:Hex("textMuted") .. " · |r")
+end
+
 ---Die Gruppe eines Laufs als eine Zeile: Spezialisierungen in Klassenfarbe.
 ---
 ---Nur die Spezialisierung, nicht "Blut Todesritter": zu fuenft waere das
@@ -1869,6 +1891,7 @@ local function updateDetail(route)
         d.authorHit:Hide()
         d.issueButton:Hide()
         d.affixes:SetText("")
+        d.badgeHit:Hide()
         d.group:SetText("")
         d.runs:SetText("")
         d.section:SetText("")
@@ -1945,18 +1968,30 @@ local function updateDetail(route)
         -- Ein Rang gilt nur fuer die Rangliste, aus der er stammt. Die
         -- Laeufe im unteren Bereich kommen notfalls aus einer kuerzeren
         -- Regionalliste - sie als Weltrang auszugeben waere schlicht falsch.
+        local parts = {}
+
+        -- Die Marke steht vorn, denn sie beantwortet die erste Frage: wofuer
+        -- ist diese Route gedacht? Stufe und Zeit stehen ohnehin im Titel -
+        -- daraus aber selbst zu erschliessen, ob sie zu einem passt, ist
+        -- Arbeit, die das Addon abnehmen kann.
+        local badge = badgeText(route)
+        if badge ~= "" then parts[#parts + 1] = badge end
+
         if route.rank and route.region then
-            d.affixes:SetText(T:Hex("accent") ..
-                ns.L["DETAIL_RANK_REGION"]:format(route.rank, route.region:upper()) .. "|r")
+            parts[#parts + 1] = T:Hex("textMuted") ..
+                ns.L["DETAIL_RANK_REGION"]:format(route.rank, route.region:upper()) .. "|r"
         elseif route.rank then
-            d.affixes:SetText(T:Hex("accent") .. ns.L["DETAIL_RANK"]:format(route.rank) .. "|r")
-        else
-            d.affixes:SetText("")
+            parts[#parts + 1] = T:Hex("textMuted") .. ns.L["DETAIL_RANK"]:format(route.rank) .. "|r"
         end
+
+        d.affixes:SetText(table.concat(parts, T:Hex("textMuted") .. " · |r"))
+        d.badgeHit.route = badge ~= "" and route or nil
+        d.badgeHit:SetShown(badge ~= "")
         d.group:SetText(rosterText(route))
     else
         local affixes = (route.affixes and #route.affixes > 0) and table.concat(route.affixes, ", ") or "–"
         d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_AFFIXES"]:format(affixes) .. "|r")
+        d.badgeHit:Hide()
         d.group:SetText("")
     end
 
@@ -2172,6 +2207,7 @@ function updateDungeonDetail(dungeon)
     setTile(4, tostring(routeCount), ns.L["TILE_ROUTES"])
 
     d.affixes:SetText(T:Hex("textMuted") .. ns.L["DETAIL_CONSENSUS"]:format(routeCount) .. "|r")
+    d.badgeHit:Hide()
     d.group:SetText("")
     d.runs:SetText("")
     d.section:SetText(ns.L["DETAIL_SECTION_OVERVIEW"]:upper())
@@ -2746,6 +2782,29 @@ local function buildDetail(parent)
     d.affixes:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.affixes:SetJustifyH("LEFT")
     d.affixes:SetWordWrap(true)
+
+    -- Die Marke ist kurz - was sie bedeutet, sagt der Tooltip. Ein eigener
+    -- Rahmen darueber, weil eine FontString keine Maus annimmt.
+    d.badgeHit = CreateFrame("Frame", nil, root)
+    d.badgeHit:SetAllPoints(d.affixes)
+    d.badgeHit:EnableMouse(true)
+    d.badgeHit:Hide()
+    d.badgeHit:SetScript("OnEnter", function(self)
+        local route = self.route
+        if not route then return end
+
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        GameTooltip:AddLine(ns.L["BADGE_TIP_TITLE"], 1, 1, 1)
+        GameTooltip:AddLine(ns.L[route.bracket == "high" and "BADGE_TIP_HIGH" or "BADGE_TIP_LOW"],
+            0.8, 0.8, 0.8, true)
+        if route.tier == "fast" or route.tier == "slow" then
+            GameTooltip:AddLine(" ")
+            GameTooltip:AddLine(ns.L[route.tier == "fast" and "BADGE_TIP_FAST" or "BADGE_TIP_SAFE"],
+                0.8, 0.8, 0.8, true)
+        end
+        GameTooltip:Show()
+    end)
+    d.badgeHit:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
     -- Die Gruppe eines Top-Laufs, in Klassenfarben. Bei eingereichten Routen
     -- bleibt die Zeile leer und faellt auf null Hoehe zusammen - die Zeilen

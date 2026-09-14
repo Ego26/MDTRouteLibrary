@@ -187,7 +187,10 @@ export function convertRun(run, dungeon) {
   let forces = 0
   for (const pull of pulls) {
     for (const entry of pull.enemies) {
-      forces += (byIndex.get(entry.enemy)?.count ?? 0) * entry.clones.length
+      const enemy = byIndex.get(entry.enemy)
+      for (const clone of entry.clones) {
+        forces += enemy?.clonePos?.[clone]?.count ?? enemy?.count ?? 0
+      }
     }
   }
   report.forces = forces
@@ -221,6 +224,10 @@ export function convertRun(run, dungeon) {
       // Bereich kommt notfalls aus einer kuerzeren Liste, und das Addon soll
       // dann nicht das Falsche behaupten.
       region: run.region && run.region !== 'world' ? run.region : undefined,
+      // Schwierigkeitsbereich und Tempo - das Addon macht daraus die Marke,
+      // an der man erkennt, wofuer die Route gedacht ist.
+      bracket: run.bracket,
+      tier: run.tier,
       completedAt: run.completedAt ?? undefined,
       roster: run.roster && run.roster.length > 0 ? run.roster : undefined,
       enemyForces: forces,

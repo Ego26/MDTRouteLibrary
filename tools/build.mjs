@@ -162,7 +162,10 @@ function enrichRoute(route, dungeon, usedNpcs) {
       usedNpcs.add(enemy.id)
 
       const n = (entry.clones ?? []).length
-      forces += enemy.count * n
+      // Klone duerfen einen eigenen Kraeftewert tragen, siehe mdt-dungeons.mjs.
+      for (const clone of entry.clones ?? []) {
+        forces += enemy.clonePos?.[clone]?.count ?? enemy.count
+      }
       if (enemy.isBoss) boss = true
       counts.set(enemy.id, (counts.get(enemy.id) ?? 0) + n)
     }
@@ -388,14 +391,21 @@ async function main() {
       // Kartenvorschau eine Route, ohne MDTs Karte zu oeffnen. Die Zahlen
       // liegen in MDTs eigenem Kartenraum (840 x 555).
       const pos = {}
+      // Abweichende Kraeftewerte einzelner Klone. Nur die Ausnahmen, nicht
+      // jeder Klon - in einem Dungeon sind das eine Handvoll Eintraege.
+      const counts = {}
       for (const [key, clone] of Object.entries(enemy.clonePos ?? {})) {
         pos[key] = [clone.x, clone.y, clone.sublevel]
+        if (typeof clone.count === 'number' && clone.count !== enemy.count) {
+          counts[key] = clone.count
+        }
       }
       enemies[enemy.index] = {
         npc: enemy.id,
         count: enemy.count,
         clones: enemy.clones,
         pos: Object.keys(pos).length > 0 ? pos : undefined,
+        counts: Object.keys(counts).length > 0 ? counts : undefined,
       }
     }
 

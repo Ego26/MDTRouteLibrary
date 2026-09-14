@@ -8,6 +8,7 @@
     "mdtDungeonIdx": 160,
     "rank": 1,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 1881,
     "onTime": true,
@@ -561,6 +562,7 @@
     "mdtDungeonIdx": 160,
     "rank": 4,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 1919,
     "onTime": true,
@@ -1044,6 +1046,7 @@
     "mdtDungeonIdx": 160,
     "rank": 7,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 1957,
     "onTime": true,
@@ -1552,6 +1555,7 @@
     "mdtDungeonIdx": 160,
     "rank": 9,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 1980,
     "onTime": true,
@@ -2070,6 +2074,7 @@
     "mdtDungeonIdx": 160,
     "rank": 11,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 1985,
     "onTime": true,
@@ -2633,6 +2638,7 @@
     "mdtDungeonIdx": 160,
     "rank": 22,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 21,
     "clearSeconds": 2027,
     "onTime": true,
@@ -3186,6 +3192,7 @@
     "mdtDungeonIdx": 160,
     "rank": 32,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1772,
     "onTime": true,
@@ -3739,6 +3746,7 @@
     "mdtDungeonIdx": 160,
     "rank": 75,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1888,
     "onTime": true,
@@ -4272,6 +4280,7 @@
     "mdtDungeonIdx": 160,
     "rank": 109,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1921,
     "onTime": true,
@@ -4830,6 +4839,7 @@
     "mdtDungeonIdx": 160,
     "rank": 110,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1922,
     "onTime": true,
@@ -5358,6 +5368,7 @@
     "mdtDungeonIdx": 160,
     "rank": 123,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1933,
     "onTime": true,
@@ -5881,6 +5892,7 @@
     "mdtDungeonIdx": 160,
     "rank": 217,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1983,
     "onTime": true,
@@ -6464,6 +6476,7 @@
     "mdtDungeonIdx": 160,
     "rank": 221,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 1985,
     "onTime": true,
@@ -7052,6 +7065,7 @@
     "mdtDungeonIdx": 160,
     "rank": 276,
     "region": "world",
+    "bracket": "high",
     "keyLevel": 20,
     "clearSeconds": 2018,
     "onTime": true,
@@ -7617,441 +7631,20 @@
     ]
   },
   {
-    "id": "rio-8961274",
+    "id": "rio-9934376",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8961274-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/9934376-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 682,
-    "region": "tw",
+    "rank": 11604,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
     "keyLevel": 14,
-    "clearSeconds": 1433,
+    "clearSeconds": 1342,
     "onTime": true,
     "roster": [
-      {
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "class": "Warrior",
-        "spec": "Protection",
-        "role": "tank"
-      },
-      {
-        "class": "Demon Hunter",
-        "spec": "Havoc",
-        "role": "dps"
-      },
-      {
-        "class": "Warlock",
-        "spec": "Demonology",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 24,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 35,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 5,
-            "npc": 252529,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 71,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 132,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 154,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 203,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 5
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 229,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 385,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 508,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          },
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 622,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 666,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 718,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 12
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 776,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 832,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 985,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1007,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1018,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1054,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1074,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1142,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 3
-          },
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1155,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1199,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1223,
-        "enemies": [
-          {
-            "enemy": 19,
-            "npc": 235322,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1401,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-8851769",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8851769-14-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 685,
-    "region": "tw",
-    "keyLevel": 14,
-    "clearSeconds": 1464,
-    "onTime": true,
-    "roster": [
-      {
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
       {
         "class": "Warrior",
         "spec": "Arms",
@@ -8059,8 +7652,13 @@
       },
       {
         "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
+        "spec": "Balance",
+        "role": "dps"
+      },
+      {
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
       },
       {
         "class": "Shaman",
@@ -8068,55 +7666,15 @@
         "role": "healer"
       },
       {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 37,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 5,
-            "npc": 252529,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 74,
-        "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 118,
+        "at": 31,
         "enemies": [
           {
             "enemy": 1,
@@ -8131,6 +7689,46 @@
           {
             "enemy": 2,
             "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 100,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
             "count": 2
           },
           {
@@ -8146,7 +7744,7 @@
         ]
       },
       {
-        "at": 197,
+        "at": 178,
         "enemies": [
           {
             "enemy": 1,
@@ -8176,37 +7774,7 @@
         ]
       },
       {
-        "at": 300,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 309,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 325,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 410,
+        "at": 375,
         "enemies": [
           {
             "enemy": 21,
@@ -8216,7 +7784,7 @@
         ]
       },
       {
-        "at": 531,
+        "at": 478,
         "enemies": [
           {
             "enemy": 9,
@@ -8226,22 +7794,12 @@
           {
             "enemy": 10,
             "npc": 236897,
-            "count": 1
+            "count": 2
           }
         ]
       },
       {
-        "at": 561,
-        "enemies": [
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 653,
+        "at": 600,
         "enemies": [
           {
             "enemy": 22,
@@ -8251,27 +7809,17 @@
         ]
       },
       {
-        "at": 691,
+        "at": 647,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 1
+            "count": 3
           }
         ]
       },
       {
-        "at": 699,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 713,
+        "at": 659,
         "enemies": [
           {
             "enemy": 12,
@@ -8296,13 +7844,23 @@
         ]
       },
       {
-        "at": 769,
+        "at": 713,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
             "count": 12
           },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 743,
+        "enemies": [
           {
             "enemy": 15,
             "npc": 235265,
@@ -8311,12 +7869,12 @@
         ]
       },
       {
-        "at": 819,
+        "at": 779,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
-            "count": 4
+            "count": 8
           },
           {
             "enemy": 13,
@@ -8324,9 +7882,14 @@
             "count": 2
           },
           {
-            "enemy": 14,
-            "npc": 235267,
+            "enemy": 12,
+            "npc": 235261,
             "count": 2
+          },
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
           },
           {
             "enemy": 17,
@@ -8336,52 +7899,7 @@
         ]
       },
       {
-        "at": 851,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 866,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 888,
-        "enemies": [
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 896,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1039,
+        "at": 964,
         "enemies": [
           {
             "enemy": 20,
@@ -8391,42 +7909,12 @@
         ]
       },
       {
-        "at": 1096,
+        "at": 1011,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 5
-          }
-        ]
-      },
-      {
-        "at": 1105,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1119,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 3
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
+            "count": 12
           },
           {
             "enemy": 13,
@@ -8436,22 +7924,32 @@
         ]
       },
       {
-        "at": 1159,
+        "at": 1040,
         "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
           {
             "enemy": 14,
             "npc": 235267,
-            "count": 1
+            "count": 2
           }
         ]
       },
       {
-        "at": 1195,
+        "at": 1088,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
             "count": 3
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
           },
           {
             "enemy": 17,
@@ -8461,17 +7959,7 @@
         ]
       },
       {
-        "at": 1216,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1249,
+        "at": 1141,
         "enemies": [
           {
             "enemy": 13,
@@ -8481,32 +7969,22 @@
         ]
       },
       {
-        "at": 1262,
+        "at": 1162,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1277,
-        "enemies": [
+            "count": 2
+          },
           {
             "enemy": 19,
             "npc": 235322,
             "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
           }
         ]
       },
       {
-        "at": 1448,
+        "at": 1325,
         "enemies": [
           {
             "enemy": 24,
@@ -8518,88 +7996,80 @@
     ]
   },
   {
-    "id": "rio-8926524",
+    "id": "rio-6970628",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8926524-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/6970628-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 686,
-    "region": "tw",
+    "rank": 11608,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
     "keyLevel": 14,
-    "clearSeconds": 1464,
+    "clearSeconds": 1355,
     "onTime": true,
     "roster": [
       {
-        "class": "Mage",
-        "spec": "Arcane",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "class": "Shaman",
+        "spec": "Enhancement",
         "role": "dps"
       },
       {
-        "class": "Priest",
-        "spec": "Holy",
-        "role": "healer"
+        "class": "Monk",
+        "spec": "Brewmaster",
+        "role": "tank"
+      },
+      {
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
       },
       {
         "class": "Druid",
         "spec": "Balance",
         "role": "dps"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Protection",
-        "role": "tank"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 32,
+        "at": 21,
         "enemies": [
           {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 8
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
+            "enemy": 8,
+            "npc": 236091,
             "count": 4
           },
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 64,
-        "enemies": [
+            "count": 3
+          },
           {
-            "enemy": 3,
-            "npc": 236084,
+            "enemy": 1,
+            "npc": 236085,
+            "count": 3
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
             "count": 2
           },
           {
             "enemy": 5,
             "npc": 252529,
             "count": 1
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
           }
         ]
       },
       {
-        "at": 117,
+        "at": 75,
         "enemies": [
           {
             "enemy": 1,
@@ -8624,7 +8094,7 @@
         ]
       },
       {
-        "at": 148,
+        "at": 101,
         "enemies": [
           {
             "enemy": 4,
@@ -8639,7 +8109,467 @@
         ]
       },
       {
-        "at": 210,
+        "at": 145,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 6
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 208,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 222,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 3
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 353,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 469,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          },
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 498,
+        "enemies": [
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 615,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 664,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 698,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 715,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 771,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 834,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 994,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1032,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1054,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1107,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1115,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1128,
+        "enemies": [
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1162,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1171,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1184,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1197,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1340,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-11102467",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11102467-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 11613,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
+    "keyLevel": 14,
+    "clearSeconds": 1364,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Hunter",
+        "spec": "Beast Mastery",
+        "role": "dps"
+      },
+      {
+        "class": "Warlock",
+        "spec": "Demonology",
+        "role": "dps"
+      },
+      {
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 31,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 8
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 4
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 69,
+        "enemies": [
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 102,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          }
+        ]
+      },
+      {
+        "at": 116,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 171,
         "enemies": [
           {
             "enemy": 1,
@@ -8669,7 +8599,27 @@
         ]
       },
       {
-        "at": 366,
+        "at": 257,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 275,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 376,
         "enemies": [
           {
             "enemy": 21,
@@ -8679,7 +8629,7 @@
         ]
       },
       {
-        "at": 489,
+        "at": 490,
         "enemies": [
           {
             "enemy": 9,
@@ -8699,7 +8649,7 @@
         ]
       },
       {
-        "at": 620,
+        "at": 619,
         "enemies": [
           {
             "enemy": 22,
@@ -8709,8 +8659,23 @@
         ]
       },
       {
-        "at": 667,
+        "at": 656,
         "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 681,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
           {
             "enemy": 12,
             "npc": 235261,
@@ -8722,14 +8687,9 @@
             "count": 3
           },
           {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 3
-          },
-          {
             "enemy": 14,
             "npc": 235267,
-            "count": 3
+            "count": 2
           },
           {
             "enemy": 17,
@@ -8739,13 +8699,28 @@
         ]
       },
       {
-        "at": 731,
+        "at": 717,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 729,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
-            "count": 12
-          },
+            "count": 8
+          }
+        ]
+      },
+      {
+        "at": 740,
+        "enemies": [
           {
             "enemy": 14,
             "npc": 235267,
@@ -8754,7 +8729,7 @@
         ]
       },
       {
-        "at": 765,
+        "at": 759,
         "enemies": [
           {
             "enemy": 15,
@@ -8764,27 +8739,22 @@
         ]
       },
       {
-        "at": 805,
+        "at": 795,
         "enemies": [
           {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 819,
-        "enemies": [
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
           },
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 1
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
           },
           {
             "enemy": 17,
@@ -8794,57 +8764,22 @@
         ]
       },
       {
-        "at": 840,
+        "at": 865,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 853,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 862,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
+            "count": 2
           },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 890,
-        "enemies": [
           {
             "enemy": 18,
             "npc": 236905,
             "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
           }
         ]
       },
       {
-        "at": 1051,
+        "at": 1023,
         "enemies": [
           {
             "enemy": 20,
@@ -8854,7 +8789,7 @@
         ]
       },
       {
-        "at": 1098,
+        "at": 1041,
         "enemies": [
           {
             "enemy": 11,
@@ -8864,8 +8799,48 @@
         ]
       },
       {
-        "at": 1127,
+        "at": 1060,
         "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1068,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1093,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1114,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 12
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
           {
             "enemy": 14,
             "npc": 235267,
@@ -8879,57 +8854,37 @@
         ]
       },
       {
-        "at": 1153,
+        "at": 1163,
         "enemies": [
           {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1182,
-        "enemies": [
-          {
-            "enemy": 6,
-            "npc": 236082,
+            "enemy": 17,
+            "npc": 235465,
             "count": 1
           }
         ]
       },
       {
-        "at": 1201,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 3
-          },
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1245,
+        "at": 1202,
         "enemies": [
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 2
+            "count": 1
           }
         ]
       },
       {
-        "at": 1262,
+        "at": 1213,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1232,
         "enemies": [
           {
             "enemy": 12,
@@ -8939,7 +8894,7 @@
         ]
       },
       {
-        "at": 1277,
+        "at": 1241,
         "enemies": [
           {
             "enemy": 19,
@@ -8949,7 +8904,7 @@
         ]
       },
       {
-        "at": 1448,
+        "at": 1363,
         "enemies": [
           {
             "enemy": 24,
@@ -8961,22 +8916,24 @@
     ]
   },
   {
-    "id": "rio-10551068",
+    "id": "rio-11049499",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/10551068-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11049499-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 688,
-    "region": "tw",
+    "rank": 11617,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
     "keyLevel": 14,
-    "clearSeconds": 1470,
+    "clearSeconds": 1378,
     "onTime": true,
     "roster": [
       {
         "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
+        "spec": "Elemental",
+        "role": "dps"
       },
       {
         "class": "Warrior",
@@ -8984,45 +8941,50 @@
         "role": "dps"
       },
       {
-        "class": "Death Knight",
-        "spec": "Blood",
+        "class": "Evoker",
+        "spec": "Preservation",
+        "role": "healer"
+      },
+      {
+        "class": "Druid",
+        "spec": "Feral",
+        "role": "dps"
+      },
+      {
+        "class": "Paladin",
+        "spec": "Protection",
         "role": "tank"
-      },
-      {
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
-      {
-        "class": "Demon Hunter",
-        "spec": "Havoc",
-        "role": "dps"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 24,
+        "at": 25,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 37,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 5
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
             "count": 3
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 36,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
+            "count": 2
           },
           {
             "enemy": 8,
@@ -9035,15 +8997,910 @@
             "count": 1
           },
           {
-            "enemy": 2,
-            "npc": 236073,
+            "enemy": 4,
+            "npc": 236071,
             "count": 1
           }
         ]
       },
       {
-        "at": 57,
+        "at": 108,
         "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 2
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 132,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 148,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 3
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 205,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 398,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 525,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 552,
+        "enemies": [
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 646,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 680,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 691,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 729,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 12
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 780,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 815,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          }
+        ]
+      },
+      {
+        "at": 828,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 975,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 994,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1028,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1036,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1058,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1084,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1116,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1156,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 3
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1187,
+        "enemies": [
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1198,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1220,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1233,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1362,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-7792596",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7792596-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 11623,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
+    "keyLevel": 14,
+    "clearSeconds": 1391,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
+      },
+      {
+        "class": "Rogue",
+        "spec": "Outlaw",
+        "role": "dps"
+      },
+      {
+        "class": "Monk",
+        "spec": "Mistweaver",
+        "role": "healer"
+      },
+      {
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "class": "Demon Hunter",
+        "spec": "Vengeance",
+        "role": "tank"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 39,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 6
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 69,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 114,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 6
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 161,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 183,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 5
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 3
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 357,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 471,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          },
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 599,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 648,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 670,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 685,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 4
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 714,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 12
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 740,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 761,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 770,
+        "enemies": [
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 800,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 837,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 986,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1028,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1044,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1052,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 3
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1109,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 3
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1179,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1190,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1210,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1376,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-9494283",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/9494283-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 11629,
+    "region": "us",
+    "bracket": "low",
+    "tier": "fast",
+    "keyLevel": 14,
+    "clearSeconds": 1399,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Druid",
+        "spec": "Feral",
+        "role": "dps"
+      },
+      {
+        "class": "Warrior",
+        "spec": "Protection",
+        "role": "tank"
+      },
+      {
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "class": "Warlock",
+        "spec": "Demonology",
+        "role": "dps"
+      },
+      {
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 25,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 54,
+        "enemies": [
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          },
           {
             "enemy": 4,
             "npc": 236071,
@@ -9072,21 +9929,31 @@
         ]
       },
       {
-        "at": 129,
+        "at": 138,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
-            "count": 6
+            "count": 7
+          }
+        ]
+      },
+      {
+        "at": 150,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 3
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 4
+            "count": 2
           },
           {
-            "enemy": 3,
-            "npc": 236084,
+            "enemy": 8,
+            "npc": 236091,
             "count": 2
           },
           {
@@ -9097,38 +9964,18 @@
         ]
       },
       {
-        "at": 187,
+        "at": 201,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
             "count": 5
-          }
-        ]
-      },
-      {
-        "at": 206,
-        "enemies": [
+          },
           {
             "enemy": 2,
             "npc": 236073,
             "count": 4
           },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 218,
-        "enemies": [
           {
             "enemy": 3,
             "npc": 236084,
@@ -9137,32 +9984,17 @@
           {
             "enemy": 8,
             "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
             "count": 1
           }
         ]
       },
       {
-        "at": 279,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 290,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 388,
+        "at": 390,
         "enemies": [
           {
             "enemy": 21,
@@ -9172,18 +10004,13 @@
         ]
       },
       {
-        "at": 499,
+        "at": 501,
         "enemies": [
           {
             "enemy": 9,
             "npc": 236893,
             "count": 6
-          }
-        ]
-      },
-      {
-        "at": 512,
-        "enemies": [
+          },
           {
             "enemy": 10,
             "npc": 236897,
@@ -9192,7 +10019,7 @@
         ]
       },
       {
-        "at": 652,
+        "at": 601,
         "enemies": [
           {
             "enemy": 22,
@@ -9202,13 +10029,18 @@
         ]
       },
       {
-        "at": 704,
+        "at": 643,
         "enemies": [
           {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          },
+            "enemy": 11,
+            "npc": 234849,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 658,
+        "enemies": [
           {
             "enemy": 13,
             "npc": 235268,
@@ -9220,11 +10052,6 @@
             "count": 2
           },
           {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          },
-          {
             "enemy": 14,
             "npc": 235267,
             "count": 2
@@ -9233,22 +10060,52 @@
             "enemy": 17,
             "npc": 235465,
             "count": 1
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 1
           }
         ]
       },
       {
-        "at": 775,
+        "at": 683,
         "enemies": [
           {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          },
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 695,
+        "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
             "count": 2
           },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 712,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          }
+        ]
+      },
+      {
+        "at": 739,
+        "enemies": [
           {
             "enemy": 14,
             "npc": 235267,
@@ -9262,16 +10119,21 @@
         ]
       },
       {
-        "at": 835,
+        "at": 772,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
-            "count": 8
+            "count": 4
           },
           {
             "enemy": 13,
             "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
             "count": 2
           },
           {
@@ -9280,8 +10142,98 @@
             "count": 2
           },
           {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 825,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          }
+        ]
+      },
+      {
+        "at": 842,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
             "enemy": 18,
             "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1002,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1045,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 12
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1069,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1120,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 1134,
+        "enemies": [
+          {
+            "enemy": 15,
+            "npc": 235265,
             "count": 1
           },
           {
@@ -9292,7 +10244,357 @@
         ]
       },
       {
-        "at": 1036,
+        "at": 1174,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1211,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1383,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-8258064",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8258064-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 12001,
+    "region": "us",
+    "bracket": "low",
+    "tier": "slow",
+    "keyLevel": 14,
+    "clearSeconds": 1532,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
+      },
+      {
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 29,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 9
+          }
+        ]
+      },
+      {
+        "at": 48,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 5
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 128,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 5
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 202,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 292,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 308,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 408,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 536,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          },
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 683,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 730,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 4
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 3
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 3
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 816,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 825,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 871,
+        "enemies": [
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 914,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          }
+        ]
+      },
+      {
+        "at": 931,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1072,
         "enemies": [
           {
             "enemy": 20,
@@ -9302,18 +10604,28 @@
         ]
       },
       {
-        "at": 1053,
+        "at": 1120,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
             "count": 6
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
           }
         ]
       },
       {
-        "at": 1067,
+        "at": 1141,
         "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          },
           {
             "enemy": 14,
             "npc": 235267,
@@ -9322,27 +10634,7 @@
         ]
       },
       {
-        "at": 1080,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1102,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1114,
+        "at": 1161,
         "enemies": [
           {
             "enemy": 12,
@@ -9352,11 +10644,966 @@
           {
             "enemy": 14,
             "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1181,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1214,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 1228,
+        "enemies": [
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1277,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1290,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1307,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1322,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1502,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-9376916",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/9376916-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 12006,
+    "region": "us",
+    "bracket": "low",
+    "tier": "slow",
+    "keyLevel": 14,
+    "clearSeconds": 1533,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "class": "Death Knight",
+        "spec": "Frost",
+        "role": "dps"
+      },
+      {
+        "class": "Paladin",
+        "spec": "Protection",
+        "role": "tank"
+      },
+      {
+        "class": "Priest",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "class": "Evoker",
+        "spec": "Devastation",
+        "role": "dps"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 25,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 7
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 3
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 83,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          }
+        ]
+      },
+      {
+        "at": 103,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 112,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 121,
+        "enemies": [
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 135,
+        "enemies": [
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 213,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 5
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 255,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 438,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 556,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 583,
+        "enemies": [
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 689,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 733,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 752,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 6
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 772,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 785,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 798,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 842,
+        "enemies": [
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 856,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 874,
+        "enemies": [
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 894,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 910,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 6
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 939,
+        "enemies": [
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1095,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1161,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
             "count": 2
           },
           {
             "enemy": 13,
             "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1170,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1190,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 12
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1260,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 3
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1274,
+        "enemies": [
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1324,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1364,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1532,
+        "enemies": [
+          {
+            "enemy": 24,
+            "npc": 234763,
+            "count": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rio-6137741",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/6137741-14-murder-row",
+    "challengeModeId": 587,
+    "dungeonEnglishName": "Murder Row",
+    "mdtDungeonIdx": 160,
+    "rank": 12012,
+    "region": "us",
+    "bracket": "low",
+    "tier": "slow",
+    "keyLevel": 14,
+    "clearSeconds": 1535,
+    "onTime": true,
+    "roster": [
+      {
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      }
+    ],
+    "enemyForcesRequired": 655,
+    "pulls": [
+      {
+        "at": 34,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 8
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 59,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 3
+          },
+          {
+            "enemy": 5,
+            "npc": 252529,
+            "count": 1
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 98,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 117,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 6
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 159,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 5
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 4
+          },
+          {
+            "enemy": 7,
+            "npc": 236902,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 179,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 236,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 414,
+        "enemies": [
+          {
+            "enemy": 21,
+            "npc": 234648,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 531,
+        "enemies": [
+          {
+            "enemy": 9,
+            "npc": 236893,
+            "count": 6
+          },
+          {
+            "enemy": 10,
+            "npc": 236897,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 664,
+        "enemies": [
+          {
+            "enemy": 22,
+            "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 708,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 719,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 4
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 3
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 3
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 785,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 12
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 836,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 855,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 878,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 906,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          }
+        ]
+      },
+      {
+        "at": 921,
+        "enemies": [
+          {
+            "enemy": 18,
+            "npc": 236905,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 935,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1088,
+        "enemies": [
+          {
+            "enemy": 20,
+            "npc": 234647,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1136,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 12
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1163,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
             "count": 1
           }
         ]
@@ -9367,6 +11614,16 @@
           {
             "enemy": 12,
             "npc": 235261,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 1208,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
             "count": 3
           },
           {
@@ -9378,11 +11635,16 @@
             "enemy": 17,
             "npc": 235465,
             "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
           }
         ]
       },
       {
-        "at": 1207,
+        "at": 1262,
         "enemies": [
           {
             "enemy": 13,
@@ -9392,7 +11654,7 @@
         ]
       },
       {
-        "at": 1245,
+        "at": 1292,
         "enemies": [
           {
             "enemy": 12,
@@ -9407,7 +11669,7 @@
         ]
       },
       {
-        "at": 1439,
+        "at": 1489,
         "enemies": [
           {
             "enemy": 24,
@@ -9419,510 +11681,69 @@
     ]
   },
   {
-    "id": "rio-4948997",
+    "id": "rio-7637296",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/4948997-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7637296-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 707,
-    "region": "tw",
+    "rank": 12014,
+    "region": "us",
+    "bracket": "low",
+    "tier": "slow",
     "keyLevel": 14,
-    "clearSeconds": 1519,
+    "clearSeconds": 1535,
     "onTime": true,
     "roster": [
-      {
-        "class": "Mage",
-        "spec": "Fire",
-        "role": "dps"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "class": "Demon Hunter",
-        "spec": "Vengeance",
-        "role": "tank"
-      },
       {
         "class": "Warlock",
         "spec": "Demonology",
         "role": "dps"
       },
       {
-        "class": "Shaman",
-        "spec": "Elemental",
+        "class": "Paladin",
+        "spec": "Retribution",
         "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 22,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 8
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 4
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
       },
       {
-        "at": 76,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          }
-        ]
+        "class": "Evoker",
+        "spec": "Devastation",
+        "role": "dps"
       },
-      {
-        "at": 91,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 104,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 114,
-        "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 164,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 194,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 214,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 391,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 508,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          },
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 660,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 703,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 4
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 3
-          },
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 3
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 3
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 766,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 12
-          }
-        ]
-      },
-      {
-        "at": 781,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 797,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 831,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 846,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 884,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 906,
-        "enemies": [
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1079,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1122,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 12
-          }
-        ]
-      },
-      {
-        "at": 1136,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1168,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1199,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 3
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1240,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1284,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1319,
-        "enemies": [
-          {
-            "enemy": 19,
-            "npc": 235322,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1518,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-11826818",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11826818-14-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 962,
-    "region": "tw",
-    "keyLevel": 14,
-    "clearSeconds": 1778,
-    "onTime": true,
-    "roster": [
       {
         "class": "Monk",
         "spec": "Mistweaver",
         "role": "healer"
       },
       {
-        "class": "Paladin",
-        "spec": "Protection",
+        "class": "Demon Hunter",
+        "spec": "Vengeance",
         "role": "tank"
-      },
-      {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
-      {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 36,
+        "at": 24,
         "enemies": [
           {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 8
+            "enemy": 8,
+            "npc": 236091,
+            "count": 6
           },
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 2
+            "count": 3
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 3
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 68,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
             "count": 2
           },
           {
@@ -9933,62 +11754,32 @@
         ]
       },
       {
-        "at": 83,
-        "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 153,
+        "at": 90,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 168,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
+            "count": 6
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 2
+            "count": 4
           },
           {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
+            "enemy": 3,
+            "npc": 236084,
             "count": 2
           },
           {
             "enemy": 4,
             "npc": 236071,
             "count": 1
-          },
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 1
           }
         ]
       },
       {
-        "at": 257,
+        "at": 151,
         "enemies": [
           {
             "enemy": 1,
@@ -10001,11 +11792,6 @@
             "count": 4
           },
           {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
             "enemy": 7,
             "npc": 236902,
             "count": 1
@@ -10013,37 +11799,57 @@
         ]
       },
       {
-        "at": 295,
+        "at": 174,
         "enemies": [
           {
-            "enemy": 8,
-            "npc": 236091,
+            "enemy": 3,
+            "npc": 236084,
             "count": 2
           }
         ]
       },
       {
-        "at": 357,
+        "at": 225,
         "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 4
+          },
           {
             "enemy": 2,
             "npc": 236073,
             "count": 2
-          }
-        ]
-      },
-      {
-        "at": 379,
-        "enemies": [
+          },
           {
-            "enemy": 8,
-            "npc": 236091,
+            "enemy": 6,
+            "npc": 236082,
             "count": 1
           }
         ]
       },
       {
-        "at": 488,
+        "at": 243,
+        "enemies": [
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
+            "enemy": 4,
+            "npc": 236071,
+            "count": 1
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 412,
         "enemies": [
           {
             "enemy": 21,
@@ -10053,7 +11859,7 @@
         ]
       },
       {
-        "at": 631,
+        "at": 522,
         "enemies": [
           {
             "enemy": 9,
@@ -10068,11 +11874,66 @@
         ]
       },
       {
-        "at": 747,
+        "at": 656,
         "enemies": [
           {
             "enemy": 22,
             "npc": 234649,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 706,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 3
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 3
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 734,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 4
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 2
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 774,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 12
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
             "count": 1
           }
         ]
@@ -10083,37 +11944,27 @@
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 827,
-        "enemies": [
+            "count": 2
+          },
           {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 838,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 4
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
           },
           {
             "enemy": 14,
             "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
             "count": 1
+          }
+        ]
+      },
+      {
+        "at": 821,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
           }
         ]
       },
@@ -10121,65 +11972,40 @@
         "at": 862,
         "enemies": [
           {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 907,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 12
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 942,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
             "enemy": 15,
             "npc": 235265,
-            "count": 1
+            "count": 2
           }
         ]
       },
       {
-        "at": 984,
+        "at": 915,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
-            "count": 4
-          },
+            "count": 8
+          }
+        ]
+      },
+      {
+        "at": 932,
+        "enemies": [
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
+            "count": 1
           }
         ]
       },
       {
-        "at": 1015,
+        "at": 940,
         "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          },
           {
             "enemy": 17,
             "npc": 235465,
@@ -10188,17 +12014,7 @@
         ]
       },
       {
-        "at": 1044,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 1061,
+        "at": 989,
         "enemies": [
           {
             "enemy": 12,
@@ -10213,7 +12029,7 @@
         ]
       },
       {
-        "at": 1233,
+        "at": 1128,
         "enemies": [
           {
             "enemy": 20,
@@ -10223,46 +12039,16 @@
         ]
       },
       {
-        "at": 1252,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1271,
+        "at": 1177,
         "enemies": [
           {
             "enemy": 14,
             "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1295,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1315,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
+            "count": 4
           },
           {
-            "enemy": 14,
-            "npc": 235267,
+            "enemy": 12,
+            "npc": 235261,
             "count": 2
           },
           {
@@ -10273,12 +12059,42 @@
         ]
       },
       {
-        "at": 1341,
+        "at": 1204,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
             "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1220,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1233,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1279,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
           },
           {
             "enemy": 12,
@@ -10288,53 +12104,8 @@
         ]
       },
       {
-        "at": 1380,
+        "at": 1300,
         "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1418,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1489,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1512,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
           {
             "enemy": 19,
             "npc": 235322,
@@ -10343,7 +12114,7 @@
         ]
       },
       {
-        "at": 1702,
+        "at": 1505,
         "enemies": [
           {
             "enemy": 24,
@@ -10355,32 +12126,24 @@
     ]
   },
   {
-    "id": "rio-12046656",
+    "id": "rio-8627416",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/12046656-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8627416-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 964,
-    "region": "tw",
+    "rank": 12040,
+    "region": "us",
+    "bracket": "low",
+    "tier": "slow",
     "keyLevel": 14,
-    "clearSeconds": 1781,
+    "clearSeconds": 1540,
     "onTime": true,
     "roster": [
       {
-        "class": "Paladin",
-        "spec": "Holy",
+        "class": "Shaman",
+        "spec": "Restoration",
         "role": "healer"
-      },
-      {
-        "class": "Warlock",
-        "spec": "Demonology",
-        "role": "dps"
-      },
-      {
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
       },
       {
         "class": "Paladin",
@@ -10388,36 +12151,46 @@
         "role": "dps"
       },
       {
-        "class": "Shaman",
-        "spec": "Elemental",
+        "class": "Demon Hunter",
+        "spec": "Havoc",
+        "role": "dps"
+      },
+      {
+        "class": "Monk",
+        "spec": "Brewmaster",
+        "role": "tank"
+      },
+      {
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 33,
+        "at": 25,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
-            "count": 8
+            "count": 7
           },
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 4
+            "count": 3
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 67,
-        "enemies": [
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          },
           {
             "enemy": 4,
             "npc": 236071,
@@ -10426,17 +12199,7 @@
         ]
       },
       {
-        "at": 88,
-        "enemies": [
-          {
-            "enemy": 5,
-            "npc": 252529,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 131,
+        "at": 91,
         "enemies": [
           {
             "enemy": 1,
@@ -10444,9 +12207,14 @@
             "count": 4
           },
           {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 2
+          },
+          {
             "enemy": 2,
             "npc": 236073,
-            "count": 4
+            "count": 2
           },
           {
             "enemy": 6,
@@ -10456,18 +12224,8 @@
         ]
       },
       {
-        "at": 157,
+        "at": 127,
         "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          },
           {
             "enemy": 4,
             "npc": 236071,
@@ -10476,22 +12234,17 @@
         ]
       },
       {
-        "at": 211,
+        "at": 170,
         "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          },
           {
             "enemy": 2,
             "npc": 236073,
             "count": 4
           },
           {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 4
+            "enemy": 1,
+            "npc": 236085,
+            "count": 3
           },
           {
             "enemy": 7,
@@ -10501,17 +12254,57 @@
         ]
       },
       {
-        "at": 251,
+        "at": 194,
         "enemies": [
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 3
+            "count": 2
+          },
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 2
+          },
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
           }
         ]
       },
       {
-        "at": 443,
+        "at": 251,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 264,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 277,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 366,
         "enemies": [
           {
             "enemy": 21,
@@ -10521,7 +12314,7 @@
         ]
       },
       {
-        "at": 561,
+        "at": 501,
         "enemies": [
           {
             "enemy": 9,
@@ -10531,7 +12324,7 @@
         ]
       },
       {
-        "at": 581,
+        "at": 522,
         "enemies": [
           {
             "enemy": 10,
@@ -10541,7 +12334,7 @@
         ]
       },
       {
-        "at": 691,
+        "at": 627,
         "enemies": [
           {
             "enemy": 22,
@@ -10551,36 +12344,11 @@
         ]
       },
       {
-        "at": 756,
+        "at": 672,
         "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 770,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 4
-          },
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 3
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 3
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
             "count": 1
           },
           {
@@ -10591,67 +12359,7 @@
         ]
       },
       {
-        "at": 827,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 12
-          }
-        ]
-      },
-      {
-        "at": 850,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 895,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 926,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 951,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 977,
+        "at": 693,
         "enemies": [
           {
             "enemy": 16,
@@ -10659,34 +12367,99 @@
             "count": 8
           },
           {
-            "enemy": 12,
-            "npc": 235261,
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
             "count": 1
           }
         ]
       },
       {
-        "at": 1002,
+        "at": 737,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 4
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 2
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 788,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 3
+          },
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 856,
+        "enemies": [
+          {
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          }
+        ]
+      },
+      {
+        "at": 873,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1014,
-        "enemies": [
+            "count": 4
+          },
           {
             "enemy": 18,
             "npc": 236905,
             "count": 1
+          },
+          {
+            "enemy": 17,
+            "npc": 235465,
+            "count": 1
           }
         ]
       },
       {
-        "at": 1186,
+        "at": 1040,
         "enemies": [
           {
             "enemy": 20,
@@ -10696,12 +12469,67 @@
         ]
       },
       {
-        "at": 1233,
+        "at": 1095,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 12
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1103,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 5
+          },
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1137,
+        "enemies": [
+          {
+            "enemy": 14,
+            "npc": 235267,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1157,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1177,
+        "enemies": [
+          {
+            "enemy": 11,
+            "npc": 234849,
+            "count": 6
+          }
+        ]
+      },
+      {
+        "at": 1193,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
           },
           {
             "enemy": 14,
@@ -10712,106 +12540,76 @@
             "enemy": 13,
             "npc": 235268,
             "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
           }
         ]
       },
       {
-        "at": 1282,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1307,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1344,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1356,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1374,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 1397,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1408,
+        "at": 1259,
         "enemies": [
           {
             "enemy": 15,
             "npc": 235265,
             "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1506,
-        "enemies": [
+          },
           {
-            "enemy": 19,
-            "npc": 235322,
+            "enemy": 12,
+            "npc": 235261,
             "count": 1
           }
         ]
       },
       {
-        "at": 1750,
+        "at": 1286,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1304,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 2
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1320,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1332,
+        "enemies": [
+          {
+            "enemy": 19,
+            "npc": 235322,
+            "count": 1
+          },
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1510,
         "enemies": [
           {
             "enemy": 24,
@@ -10823,16 +12621,18 @@
     ]
   },
   {
-    "id": "rio-7503471",
+    "id": "rio-7835856",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7503471-14-murder-row",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7835856-14-murder-row",
     "challengeModeId": 587,
     "dungeonEnglishName": "Murder Row",
     "mdtDungeonIdx": 160,
-    "rank": 965,
-    "region": "tw",
+    "rank": 791,
+    "region": "kr",
+    "bracket": "low",
+    "tier": "slow",
     "keyLevel": 14,
-    "clearSeconds": 1782,
+    "clearSeconds": 1764,
     "onTime": true,
     "roster": [
       {
@@ -10841,13 +12641,13 @@
         "role": "dps"
       },
       {
-        "class": "Priest",
-        "spec": "Holy",
-        "role": "healer"
+        "class": "Demon Hunter",
+        "spec": "Havoc",
+        "role": "dps"
       },
       {
-        "class": "Warlock",
-        "spec": "Destruction",
+        "class": "Shaman",
+        "spec": "Elemental",
         "role": "dps"
       },
       {
@@ -10856,30 +12656,45 @@
         "role": "tank"
       },
       {
-        "class": "Death Knight",
-        "spec": "Unholy",
-        "role": "dps"
+        "class": "Evoker",
+        "spec": "Preservation",
+        "role": "healer"
       }
     ],
     "enemyForcesRequired": 655,
     "pulls": [
       {
-        "at": 38,
+        "at": 27,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
-            "count": 8
+            "count": 4
           },
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 4
+            "count": 2
+          },
+          {
+            "enemy": 6,
+            "npc": 236082,
+            "count": 2
           },
           {
             "enemy": 2,
             "npc": 236073,
-            "count": 4
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 49,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
           }
         ]
       },
@@ -10899,37 +12714,27 @@
         ]
       },
       {
-        "at": 126,
+        "at": 117,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
-            "count": 5
+            "count": 6
           },
           {
             "enemy": 3,
             "npc": 236084,
-            "count": 3
+            "count": 2
           },
           {
             "enemy": 2,
             "npc": 236073,
             "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
           }
         ]
       },
       {
-        "at": 168,
+        "at": 146,
         "enemies": [
           {
             "enemy": 4,
@@ -10939,21 +12744,61 @@
         ]
       },
       {
-        "at": 223,
+        "at": 176,
+        "enemies": [
+          {
+            "enemy": 1,
+            "npc": 236085,
+            "count": 1
+          },
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 185,
+        "enemies": [
+          {
+            "enemy": 2,
+            "npc": 236073,
+            "count": 3
+          }
+        ]
+      },
+      {
+        "at": 194,
+        "enemies": [
+          {
+            "enemy": 8,
+            "npc": 236091,
+            "count": 4
+          },
+          {
+            "enemy": 3,
+            "npc": 236084,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 220,
         "enemies": [
           {
             "enemy": 1,
             "npc": 236085,
             "count": 5
-          },
+          }
+        ]
+      },
+      {
+        "at": 238,
+        "enemies": [
           {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
+            "enemy": 3,
+            "npc": 236084,
             "count": 2
           },
           {
@@ -10964,37 +12809,7 @@
         ]
       },
       {
-        "at": 255,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 382,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 397,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 558,
+        "at": 429,
         "enemies": [
           {
             "enemy": 21,
@@ -11004,7 +12819,7 @@
         ]
       },
       {
-        "at": 718,
+        "at": 545,
         "enemies": [
           {
             "enemy": 9,
@@ -11019,7 +12834,7 @@
         ]
       },
       {
-        "at": 820,
+        "at": 703,
         "enemies": [
           {
             "enemy": 22,
@@ -11029,33 +12844,38 @@
         ]
       },
       {
-        "at": 871,
+        "at": 751,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 3
+            "count": 2
           }
         ]
       },
       {
-        "at": 894,
+        "at": 765,
         "enemies": [
           {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 4
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 3
+            "enemy": 16,
+            "npc": 235257,
+            "count": 8
           },
           {
             "enemy": 14,
             "npc": 235267,
-            "count": 3
+            "count": 2
           },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 792,
+        "enemies": [
           {
             "enemy": 17,
             "npc": 235465,
@@ -11064,23 +12884,28 @@
         ]
       },
       {
-        "at": 955,
+        "at": 833,
         "enemies": [
           {
             "enemy": 16,
             "npc": 235257,
-            "count": 12
-          }
-        ]
-      },
-      {
-        "at": 983,
-        "enemies": [
+            "count": 4
+          },
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 2
+          },
           {
             "enemy": 14,
             "npc": 235267,
             "count": 2
-          },
+          }
+        ]
+      },
+      {
+        "at": 865,
+        "enemies": [
           {
             "enemy": 15,
             "npc": 235265,
@@ -11089,28 +12914,8 @@
         ]
       },
       {
-        "at": 1027,
+        "at": 879,
         "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1041,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
           {
             "enemy": 17,
             "npc": 235465,
@@ -11119,7 +12924,7 @@
         ]
       },
       {
-        "at": 1085,
+        "at": 916,
         "enemies": [
           {
             "enemy": 16,
@@ -11129,32 +12934,22 @@
         ]
       },
       {
-        "at": 1108,
+        "at": 944,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1118,
-        "enemies": [
+            "count": 2
+          },
           {
             "enemy": 18,
             "npc": 236905,
             "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
           }
         ]
       },
       {
-        "at": 1304,
+        "at": 1103,
         "enemies": [
           {
             "enemy": 20,
@@ -11164,7 +12959,7 @@
         ]
       },
       {
-        "at": 1349,
+        "at": 1125,
         "enemies": [
           {
             "enemy": 11,
@@ -11174,47 +12969,7 @@
         ]
       },
       {
-        "at": 1363,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1373,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1395,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1406,
+        "at": 1162,
         "enemies": [
           {
             "enemy": 14,
@@ -11224,345 +12979,32 @@
         ]
       },
       {
-        "at": 1425,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1443,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1466,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1520,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1533,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1549,
+        "at": 1193,
         "enemies": [
           {
             "enemy": 19,
             "npc": 235322,
             "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1767,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-11308462",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11308462-14-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 967,
-    "region": "tw",
-    "keyLevel": 14,
-    "clearSeconds": 1782,
-    "onTime": true,
-    "roster": [
-      {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "class": "Priest",
-        "spec": "Shadow",
-        "role": "dps"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "class": "Priest",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 23,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 40,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 51,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
           },
           {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          },
-          {
-            "enemy": 5,
-            "npc": 252529,
+            "enemy": 14,
+            "npc": 235267,
             "count": 1
           }
         ]
       },
       {
-        "at": 86,
+        "at": 1217,
         "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 110,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 130,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 142,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 164,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 211,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 242,
-        "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 282,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 5
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 543,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 663,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          },
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 791,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 839,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
           {
             "enemy": 11,
             "npc": 234849,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
+            "count": 12
           }
         ]
       },
       {
-        "at": 871,
+        "at": 1242,
         "enemies": [
           {
             "enemy": 12,
@@ -11573,115 +13015,10 @@
             "enemy": 14,
             "npc": 235267,
             "count": 2
-          }
-        ]
-      },
-      {
-        "at": 915,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          }
-        ]
-      },
-      {
-        "at": 929,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
           },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 953,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 992,
-        "enemies": [
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1005,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1054,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          }
-        ]
-      },
-      {
-        "at": 1076,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1260,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
             "count": 1
           }
         ]
@@ -11697,63 +13034,13 @@
         ]
       },
       {
-        "at": 1317,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1344,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1373,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1382,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1398,
+        "at": 1309,
         "enemies": [
           {
             "enemy": 11,
             "npc": 234849,
             "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1452,
-        "enemies": [
+          },
           {
             "enemy": 12,
             "npc": 235261,
@@ -11762,13 +13049,8 @@
         ]
       },
       {
-        "at": 1468,
+        "at": 1341,
         "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          },
           {
             "enemy": 17,
             "npc": 235465,
@@ -11777,27 +13059,57 @@
         ]
       },
       {
-        "at": 1516,
+        "at": 1350,
+        "enemies": [
+          {
+            "enemy": 15,
+            "npc": 235265,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1441,
         "enemies": [
           {
             "enemy": 13,
             "npc": 235268,
-            "count": 2
+            "count": 1
           }
         ]
       },
       {
-        "at": 1538,
+        "at": 1450,
+        "enemies": [
+          {
+            "enemy": 13,
+            "npc": 235268,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1467,
         "enemies": [
           {
             "enemy": 12,
             "npc": 235261,
-            "count": 2
+            "count": 1
           }
         ]
       },
       {
-        "at": 1568,
+        "at": 1478,
+        "enemies": [
+          {
+            "enemy": 12,
+            "npc": 235261,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "at": 1497,
         "enemies": [
           {
             "enemy": 19,
@@ -11807,1511 +13119,7 @@
         ]
       },
       {
-        "at": 1751,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-11585256",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11585256-14-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 983,
-    "region": "tw",
-    "keyLevel": 14,
-    "clearSeconds": 1792,
-    "onTime": true,
-    "roster": [
-      {
-        "class": "Demon Hunter",
-        "spec": "Havoc",
-        "role": "dps"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "class": "Hunter",
-        "spec": "Survival",
-        "role": "dps"
-      },
-      {
-        "class": "Druid",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "class": "Monk",
-        "spec": "Brewmaster",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 37,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 8
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 59,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 67,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 5,
-            "npc": 252529,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 85,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 96,
-        "enemies": [
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 140,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 168,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 230,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 246,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 289,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 354,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 378,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 483,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 623,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 639,
-        "enemies": [
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 752,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 797,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 815,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 847,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 878,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 12
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 935,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 969,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 990,
-        "enemies": [
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1040,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          }
-        ]
-      },
-      {
-        "at": 1073,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1255,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1274,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1302,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1338,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 12
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1387,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 12
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1428,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1481,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1507,
-        "enemies": [
-          {
-            "enemy": 19,
-            "npc": 235322,
-            "count": 1
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1686,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-11110913",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/11110913-13-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 1262,
-    "region": "tw",
-    "keyLevel": 13,
-    "clearSeconds": 1399,
-    "onTime": true,
-    "roster": [
-      {
-        "class": "Warlock",
-        "spec": "Demonology",
-        "role": "dps"
-      },
-      {
-        "class": "Shaman",
-        "spec": "Enhancement",
-        "role": "dps"
-      },
-      {
-        "class": "Monk",
-        "spec": "Brewmaster",
-        "role": "tank"
-      },
-      {
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 28,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 8
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 59,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 102,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 167,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 6
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 3
-          },
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 265,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 279,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 369,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 487,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          },
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 605,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 653,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 2
-          },
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 674,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 3
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          },
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 714,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 740,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          },
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 771,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 780,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 4
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 835,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 8
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 969,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1016,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1036,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 19,
-            "npc": 235322,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1064,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1084,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1103,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1126,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1144,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1153,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1194,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1214,
-        "enemies": [
-          {
-            "enemy": 19,
-            "npc": 235322,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1368,
-        "enemies": [
-          {
-            "enemy": 24,
-            "npc": 234763,
-            "count": 1
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "rio-8281611",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/8281611-13-murder-row",
-    "challengeModeId": 587,
-    "dungeonEnglishName": "Murder Row",
-    "mdtDungeonIdx": 160,
-    "rank": 1666,
-    "region": "tw",
-    "keyLevel": 13,
-    "clearSeconds": 1699,
-    "onTime": true,
-    "roster": [
-      {
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "class": "Druid",
-        "spec": "Balance",
-        "role": "dps"
-      },
-      {
-        "class": "Mage",
-        "spec": "Frost",
-        "role": "dps"
-      },
-      {
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "class": "Demon Hunter",
-        "spec": "Vengeance",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 655,
-    "pulls": [
-      {
-        "at": 30,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 9
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 5
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          },
-          {
-            "enemy": 5,
-            "npc": 252529,
-            "count": 1
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 110,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 4
-          },
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          },
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 4,
-            "npc": 236071,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 182,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 211,
-        "enemies": [
-          {
-            "enemy": 1,
-            "npc": 236085,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 231,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 4
-          },
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 254,
-        "enemies": [
-          {
-            "enemy": 7,
-            "npc": 236902,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 274,
-        "enemies": [
-          {
-            "enemy": 3,
-            "npc": 236084,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 336,
-        "enemies": [
-          {
-            "enemy": 2,
-            "npc": 236073,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 354,
-        "enemies": [
-          {
-            "enemy": 8,
-            "npc": 236091,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 466,
-        "enemies": [
-          {
-            "enemy": 21,
-            "npc": 234648,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 581,
-        "enemies": [
-          {
-            "enemy": 9,
-            "npc": 236893,
-            "count": 6
-          },
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 595,
-        "enemies": [
-          {
-            "enemy": 10,
-            "npc": 236897,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 725,
-        "enemies": [
-          {
-            "enemy": 22,
-            "npc": 234649,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 772,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 3
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 797,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 808,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 827,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 7
-          }
-        ]
-      },
-      {
-        "at": 848,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 5
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 873,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 929,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 5
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 2
-          },
-          {
-            "enemy": 6,
-            "npc": 236082,
-            "count": 2
-          },
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          },
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 962,
-        "enemies": [
-          {
-            "enemy": 16,
-            "npc": 235257,
-            "count": 3
-          }
-        ]
-      },
-      {
-        "at": 995,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1008,
-        "enemies": [
-          {
-            "enemy": 18,
-            "npc": 236905,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1152,
-        "enemies": [
-          {
-            "enemy": 20,
-            "npc": 234647,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1175,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1194,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1202,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1236,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 12
-          },
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1267,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 2
-          }
-        ]
-      },
-      {
-        "at": 1300,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1319,
-        "enemies": [
-          {
-            "enemy": 13,
-            "npc": 235268,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1335,
-        "enemies": [
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1353,
-        "enemies": [
-          {
-            "enemy": 12,
-            "npc": 235261,
-            "count": 3
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1372,
-        "enemies": [
-          {
-            "enemy": 17,
-            "npc": 235465,
-            "count": 1
-          },
-          {
-            "enemy": 14,
-            "npc": 235267,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1393,
-        "enemies": [
-          {
-            "enemy": 11,
-            "npc": 234849,
-            "count": 6
-          }
-        ]
-      },
-      {
-        "at": 1403,
-        "enemies": [
-          {
-            "enemy": 15,
-            "npc": 235265,
-            "count": 1
-          }
-        ]
-      },
-      {
-        "at": 1578,
+        "at": 1703,
         "enemies": [
           {
             "enemy": 24,

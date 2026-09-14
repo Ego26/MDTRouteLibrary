@@ -20,6 +20,14 @@
   Guardian Druid took 23:47 over 22 pulls, another 27:34 over 33.
 - Runs that were not timed, or where the reconstruction could not place
   every enemy, are left out.
+- Every route now carries a badge saying what it is for — "High keys · quick",
+  "Starter keys · safe" — with an explanation on hover.
+- Enemy forces were counted 15 too low in Temple of Sethraliss, for every
+  route including your own. A single spawn may award more forces than its
+  siblings, and those were being ignored. Percentages now agree with what
+  MDT shows next to them.
+- The filter for enemy forces is gone. It filtered nothing: a submission
+  below 100% is never accepted, and a timed run had them anyway.
 - Filter routes by key level range, class and specialisation. The class and
   specialisation lists are built from the runs that are actually loaded, so
   they never offer a choice that leads nowhere.

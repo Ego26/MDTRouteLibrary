@@ -57,7 +57,15 @@ function apiKey() {
   const file = join(dirname(fileURLToPath(import.meta.url)), '..', '.env')
   if (!existsSync(file)) return null
 
-  for (const line of readFileSync(file, 'utf8').split('\n')) {
+  // Zeilenenden vereinheitlichen und eine Bytefolgemarkierung abschneiden.
+  // PowerShell schreibt CRLF und mit -Encoding utf8 ausserdem eine BOM; das
+  // "\r" am Zeilenende liess den Anker "$" ins Leere laufen, und der
+  // Schluessel galt als nicht vorhanden. Auffaellig wurde das erst daran, dass
+  // die Suche bei Seite 128 abbrach - der ersten Zweierpotenz oberhalb von
+  // 100, dem Seitenlimit fuer unangemeldete Abfragen.
+  const text = readFileSync(file, 'utf8').replace(/^﻿/, '').replace(/\r\n?/g, '\n')
+
+  for (const line of text.split('\n')) {
     const match = line.match(/^\s*RAIDERIO_API_KEY\s*=\s*(.*)$/)
     if (match) return match[1].trim().replace(/^["']|["']$/g, '') || null
   }
@@ -96,6 +104,17 @@ async function api(path, params) {
       // Warten, was sie sagen - nicht, was uns passt.
       const wait = Number(response.headers.get('retry-after')) || attempt * 5
       console.warn(`   Ratenbegrenzung, warte ${wait}s`)
+      await new Promise((done) => setTimeout(done, wait * 1000))
+      continue
+    }
+
+    // Ein 502 oder 504 ist der Server, nicht die Anfrage. Beim ersten Versuch
+    // aufzugeben hiesse, wegen eines Schluckaufs einen ganzen Dungeon ohne
+    // Routen zu lassen - und genau das soll der Abbruch weiter unten ja
+    // verhindern.
+    if (response.status >= 500 && attempt < 4) {
+      const wait = attempt * 3
+      console.warn(`   ${response.status} vom Server, neuer Versuch in ${wait}s`)
       await new Promise((done) => setTimeout(done, wait * 1000))
       continue
     }
@@ -190,8 +209,23 @@ function onlyPlaced(enemies, dungeon) {
       // Jeden Eintrag als einen Mob zu zaehlen kostete rund ein Zehntel der
       // Gegnerkraefte - Laeufe, die nachweislich abgeschlossen wurden,
       // erschienen dadurch mit 82 bis 95 Prozent.
-      const per = byName.get(enemy.name)?.count ?? 0
-      out.push({ ...enemy, mobs: per > 0 ? Math.max(1, Math.round(value / per)) : 1 })
+      const mdt = byName.get(enemy.name)
+      const per = mdt?.count ?? 0
+
+      // Einzelne Klone tragen einen eigenen Kraeftewert. Faellt so einer,
+      // meldet die API genau diesen Wert - durch den Gegnerwert geteilt kaeme
+      // eine krumme Zahl heraus und daraus gerundet ein Mob zu viel.
+      const overrides = new Set()
+      for (const clone of Object.values(mdt?.clonePos ?? {})) {
+        if (typeof clone.count === 'number' && clone.count !== per) overrides.add(clone.count)
+      }
+
+      let mobs = 1
+      if (per > 0 && value % per === 0) mobs = value / per
+      else if (overrides.has(value)) mobs = 1
+      else if (per > 0) mobs = Math.max(1, Math.round(value / per))
+
+      out.push({ ...enemy, mobs })
     } else if (bosses.has(enemy.name)) {
       // Bosse zaehlen keine Kraefte, gehoeren aber in die Route.
       out.push({ ...enemy, mobs: 1 })
@@ -378,6 +412,7 @@ async function findLevelStart(reader, level, maxPage) {
     hi *= 2
   }
   hi = Math.min(hi, maxPage)
+  if (process.env.RIO_DEBUG) console.log("       [suche] Stufe " + level + ": Obergrenze " + hi)
 
   let lo = 0
   let found = null
@@ -450,6 +485,8 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
       tier,
       rank: typeof entry.rank === 'number' ? entry.rank : undefined,
       level: run.mythic_level,
+      // Die Zeit ist ueber Ranglisten hinweg vergleichbar, der Rang nicht.
+      seconds: Math.round((run.clear_time_ms ?? 0) / 1000),
       // Schon in der Rangliste enthalten - die Auswahl kostet deshalb keine
       // einzige zusaetzliche Abfrage.
       roster: roster(run),
@@ -541,12 +578,18 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
     if ((await gatherLevel(region, reader, level, bracket === 'low')) > 0) continue
     if (bracket !== 'low') continue
 
+    // Aus allen, nicht aus der erstbesten. Mit Zugangsschluessel reicht us
+    // bis +14 und eu bis +15, tw und kr bis +10 - wer nur die erste nimmt,
+    // die etwas liefert, holt den ganzen unteren Bereich aus Taiwan. Dort
+    // wird anders gespielt, und das waere dann die einzige Vorlage, die ein
+    // Spieler auf +12 zu sehen bekommt.
     for (const other of lowRegions) {
       if (other === region) continue
       if (!fallbacks.has(other)) {
         fallbacks.set(other, rankingReader({ season, region: other, dungeonSlug }))
       }
-      if ((await gatherLevel(other, fallbacks.get(other), level, true)) > 0) break
+      const got = await gatherLevel(other, fallbacks.get(other), level, true)
+      if (process.env.RIO_DEBUG) console.log("     [debug] +" + level + " aus " + other + ": " + got)
     }
   }
 
@@ -556,10 +599,7 @@ async function collectCandidates({ season, region, dungeonSlug, minLevel, maxPag
   // um Klassen besser ist.
   const candidates = [...byId.values()].sort((a, b) => {
     if (a.level !== b.level) return b.level - a.level
-    const homeA = a.region === region ? 0 : 1
-    const homeB = b.region === region ? 0 : 1
-    if (homeA !== homeB) return homeA - homeB
-    return (a.rank ?? 0) - (b.rank ?? 0)
+    return (a.seconds || Infinity) - (b.seconds || Infinity)
   })
   return { candidates, reader, highest }
 }
@@ -591,7 +631,7 @@ export async function fetchDungeonRuns({
   perCell = 2,
   lowTop = 14,
   // Kuerzere Ranglisten fuer den unteren Bereich, in dieser Reihenfolge.
-  lowRegions = ['tw', 'kr', 'us', 'eu'],
+  lowRegions = ['us', 'eu', 'tw', 'kr'],
   maxRuns = 32,
   topPages = 15,
   maxPage = 4096,
@@ -612,6 +652,9 @@ export async function fetchDungeonRuns({
   if (candidates.length === 0) return []
 
   const levelsSeen = candidates.map((c) => c.level)
+  const poolByRegion = new Map()
+  for (const c of candidates) poolByRegion.set(c.region, (poolByRegion.get(c.region) ?? 0) + 1)
+  console.log("   Kandidatenpool: " + [...poolByRegion].map(([r, n]) => n + "x " + r).join(", "))
   console.log(
     '   ' + candidates.length + ' Kandidaten bis Rang ' +
       (candidates[candidates.length - 1].rank ?? 0) +
@@ -677,11 +720,21 @@ export async function fetchDungeonRuns({
       // gilt nur fuer die, aus der er stammt.
       rank: candidate.rank,
       region: candidate.region,
+      // Wofuer diese Route steht. Ohne das muesste der Nutzer aus Stufe und
+      // Zeit selbst erschliessen, ob sie zu ihm passt.
+      bracket,
+      tier: bracket === 'low' ? candidate.tier ?? 'fast' : undefined,
       keyLevel: details.mythic_level,
       clearSeconds: Math.round((details.clear_time_ms ?? 0) / 1000),
       onTime: (details.num_chests ?? 0) > 0,
       roster: roster(details),
-      enemyForcesRequired: logged.total_enemy_forces ?? dungeon.totalCount,
+      // MDTs Soll, nicht das der API. Die beiden weichen ab: fuer Tempel von
+      // Sethraliss nennt Raider.IO 649, MDT 687. Gegen 649 gemessen kaemen
+      // die Laeufe auf 106 Prozent, gegen 687 auf 99,7 bis 100,7 - und das
+      // ist der Bereich, in dem ein abgeschlossener Schluessel liegt. Das
+      // Addon sitzt ausserdem in MDTs Fenster; eine Prozentzahl, die der
+      // daneben widerspricht, waere in jedem Fall die falsche.
+      enemyForcesRequired: dungeon.totalCount ?? logged.total_enemy_forces,
       pulls,
     })
 
