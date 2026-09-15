@@ -164,7 +164,9 @@ export async function ereignisseHolen(gql, code, kampf, aktoren, cacheDir, typ) 
   const leben = typ === 'DamageTaken' ? new Map() : null
   // Wer bei welcher Ereignisart der Gegner ist: bei erlittenem Schaden und
   // beim Tod das Ziel, bei Zaubern und ausgeteiltem Schaden der Verursacher.
-  const rolle = typ === 'DamageTaken' || typ === 'Deaths' ? 'ziel' : 'quelle'
+  // Bei Bedrohung ist der Gegner ebenfalls das Ziel: ein Spieler wirkt auf
+  // ihn, und er kommt dadurch in den Kampf.
+  const rolle = typ === 'DamageTaken' || typ === 'Deaths' || typ === 'Threat' ? 'ziel' : 'quelle'
   const daten = await alleEreignisse(gql, code, kampf, typ, aktoren, leben, rolle)
   writeFileSync(datei, JSON.stringify(daten))
   if (leben) {
@@ -386,21 +388,23 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
 
   // Wann geriet ein Gegner in den Kampf?
   //
-  // Bisher: als er das erste Mal Schaden bekam. Das ist zu spaet. In einem
-  // grossen Pull werden die hinteren Gegner erst getroffen, wenn die vorderen
-  // schon liegen - und dann meldet die Chainpull-Erkennung eine Trennung, wo
-  // in Wahrheit alles auf einen Schlag gepullt wurde. Bei Rubinquell zerfiel
-  // so ein echter Pull mit 32 Gegnern in drei.
+  // Der frueheste Treffer, den er einsteckt - und nur der. Nicht der erste,
+  // der zufaellig auch Koordinaten trug.
   //
-  // Sein erster Zauber ist der bessere Zeuge, und innerhalb des Schadens der
-  // frueheste Treffer - nicht der erste, der auch Koordinaten trug.
+  // Drei andere Quellen wurden probiert und sind alle wieder draussen:
   //
-  // Sein erster ausgeteilter Schlag waere der beste, sollte man meinen. Ist er
-  // nicht: gemessen an sechzehn Vergleichsrouten aendert er die Einteilung um
-  // keinen einzigen Punkt. Gegner werden offenbar getroffen, bevor sie
-  // zurueckschlagen. Die Abfrage ist deshalb wieder draussen.
+  //   Sein erster ausgeteilter Schlag: aendert an sechzehn Vergleichsrouten
+  //   keinen einzigen Punkt. Gegner werden getroffen, bevor sie zurueckschlagen.
+  //
+  //   Sein erstes Bedrohungsereignis: ebenso wirkungslos.
+  //
+  //   Sein erster Zauber: schaedlich. Ein Gegner wirkt auch, bevor jemand ihn
+  //   anfasst, und der frueh gesetzte Zeitpunkt wirft die Reihenfolge der
+  //   Packs durcheinander. Mordgasse fiel dadurch von 93 auf 61, das Mittel
+  //   ueber alle sechzehn von 91 auf 87. Als Ortsquelle bleiben die Zauber
+  //   trotzdem - dort sind sie unverzichtbar.
   const frueh = new Map()
-  for (const liste of [schaden, zauber ?? []]) {
+  for (const liste of [schaden]) {
     for (const ereignis of liste) {
       const key = ereignis.npcId + ':' + ereignis.instanz
       if (!frueh.has(key) || ereignis.t < frueh.get(key)) frueh.set(key, ereignis.t)
@@ -481,8 +485,19 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
   // nachmessen, statt ihr zu vertrauen.
   const kette = e.kette ?? 0.30
 
+  // Alle beruehrten Gegner in einer Folge, nicht je Warcraftlogs-Pull.
+  //
+  // Warcraftlogs teilt den Lauf selbst in Pulls, und lange habe ich innerhalb
+  // dieser Grenzen getrennt. Das setzt an jeder ihrer Grenzen eine eigene,
+  // ungeprueft: faellt eine Gruppe kurz aus dem Kampf und pullt sofort weiter,
+  // trennt Warcraftlogs, keystone.guru aber nicht.
+  //
+  // Deren Bauer kennt diese Grenzen gar nicht. Er arbeitet die Anpullungen in
+  // einer durchgehenden Folge ab und entscheidet allein am Kampfzustand. Genau
+  // das wird hier nachgebaut - die Warcraftlogs-Pulls liefern nur noch, welche
+  // Gegner ueberhaupt zum Lauf gehoeren.
+  const alleMitglieder = []
   for (const p of kampf.dungeonPulls ?? []) {
-    const mitglieder = []
     for (const n of p.enemyNPCs ?? []) {
       const von = n.minimumInstanceID ?? 1
       const bis = n.maximumInstanceID ?? von
@@ -494,14 +509,14 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
 
         // Wo es nur eine Moeglichkeit gibt, braucht es keine Geometrie.
         //
-        // Kennt MDT zu dieser Gegnerart genau eine Vorlage, ist sie noch
-        // frei, und ist der Gegner in diesem Pull gestorben - dann ist er
-        // diese Vorlage. Es gibt keine andere.
+        // Kennt MDT zu dieser Gegnerart genau eine Vorlage, ist sie noch frei,
+        // und ist der Gegner gestorben - dann ist er diese Vorlage. Es gibt
+        // keine andere.
         //
         // Ohne das haengen solche Gegner an der Toleranzgrenze. In Der
-        // blendende Hain kippte eine "Potatoad Matriarch" aus der Route,
-        // weil eine zusaetzliche Ortsangabe den Massstab um drei Promille
-        // verschob - und mit ihr sechzig Kraefte, ein Elftel des Dungeons.
+        // blendende Hain kippte eine "Potatoad Matriarch" aus der Route, weil
+        // eine zusaetzliche Ortsangabe den Massstab um drei Promille verschob -
+        // und mit ihr sechzig Kraefte, ein Elftel des Dungeons.
         if (!klon && gestorben.has(schluessel)) {
           const nurEine = (kloneJeNpc.get(n.gameID) ?? []).length === 1
           const einzige = (kloneJeNpc.get(n.gameID) ?? [])[0]
@@ -521,7 +536,7 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
         if (!klon) continue
         belegteKlone.add(klon.enemy + ':' + klon.clone)
         vergebeneInstanzen.add(schluessel)
-        mitglieder.push({
+        alleMitglieder.push({
           klon,
           schluessel,
           t: frueh.get(schluessel) ?? ort.get(schluessel)?.t ?? p.startTime,
@@ -529,89 +544,64 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
         })
       }
     }
-
-    mitglieder.sort((a, b) => a.t - b.t)
-
-    // Erst zu Packs bundeln, dann Packs zu Pulls.
-    //
-    // Eine Route besteht nicht aus einzelnen Gegnern, sondern aus Packs: MDT
-    // nummeriert sie mit g, und die echten Routen nehmen sie ganz oder gar
-    // nicht - gemessen 30 von 30 bei Rubinquell, 35 von 36 bei Altar. Wer
-    // quer durch ein Pack hindurch trennt, zerreisst es: ein Pack wird ueber
-    // mehrere Sekunden bekaempft.
-    const packs = new Map()
-    for (const m of mitglieder) {
-      const schluessel = m.klon.g ?? ('e' + m.klon.enemy + ':' + m.klon.clone)
-      if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [], mitglieder: [] })
-      const pack = packs.get(schluessel)
-      pack.klone.push(m.klon)
-      pack.mitglieder.push(m)
-      if (m.t < pack.t) pack.t = m.t
-    }
-
-    const reihe = [...packs.values()].sort((a, b) => a.t - b.t)
-
-    // Und dann trennen wie keystone.guru, nicht nach der Uhr.
-    //
-    // Deren Auto Route Creator ist quelloffen (RaiderIO/keystone.guru,
-    // DungeonRouteBuilder). Er kennt zwei Gruende fuer einen neuen Pull:
-    //
-    //   1. Der laufende ist abgeschlossen - alles, was daran beteiligt war,
-    //      ist tot.
-    //   2. Chainpull: beim Anpullen des naechsten Gegners stehen die
-    //      Lebenspunkte der laufenden Gruppe im Mittel bei hoechstens 30
-    //      Prozent (CHAIN_PULL_DETECTION_HP_PERCENT).
-    //
-    // Die Uhr kommt darin gar nicht vor, und das ist der Punkt: ob ein Pull
-    // endet, entscheidet der Kampf, nicht die Zeit. Ein langsamer Pull auf
-    // +14 dauert dreimal so lange wie derselbe auf +21.
-    //
-    // Die Lebenspunkte im Verlauf habe ich nicht - nur Erstkontakt und
-    // Todeszeitpunkt je Gegner. Dazwischen nehme ich sie als gleichmaessig
-    // fallend an. Das ist grob, aber es trifft, worauf es ankommt: ob eine
-    // Gruppe schon fast liegt, wenn die naechste kommt.
-    const anteilLeben = (m, zeit) => {
-      const tod = m.tod
-      if (tod !== undefined && zeit >= tod) return 0
-
-      // Der abgelesene Wert schlaegt die Schaetzung: der letzte Messpunkt,
-      // der nicht nach dem gefragten Zeitpunkt liegt.
-      const reihe = verlauf.get(m.schluessel)
-      if (reihe && reihe.length) {
-        let wert = null
-        for (const [zp, anteil] of reihe) {
-          if (zp > zeit) break
-          wert = anteil
-        }
-        if (wert !== null) return wert
-        // Vor dem ersten Messpunkt: noch unberuehrt.
-        return 1
-      }
-
-      if (tod === undefined) return 1
-      const spanne = tod - m.t
-      if (spanne <= 0) return 0
-      return Math.max(0, Math.min(1, (tod - zeit) / spanne))
-    }
-
-    let gruppe = []
-    const abschliessen = () => {
-      if (!gruppe.length) return
-      rohPulls.push(gruppe.flatMap((x) => x.klone))
-      gruppe = []
-    }
-
-    for (const pack of reihe) {
-      if (gruppe.length) {
-        const laufend = gruppe.flatMap((x) => x.mitglieder)
-        const alleTot = laufend.every((m) => m.tod !== undefined && m.tod <= pack.t)
-        const leben = laufend.reduce((s, m) => s + anteilLeben(m, pack.t), 0) / laufend.length
-        if (alleTot || leben <= kette) abschliessen()
-      }
-      gruppe.push(pack)
-    }
-    abschliessen()
   }
+
+  // Zu Packs bundeln. Eine Route besteht nicht aus einzelnen Gegnern, sondern
+  // aus Packs: MDT nummeriert sie mit g, und in den echten Routen liegt ein
+  // Pack zu 96 Prozent in genau einem Pull - nachgemessen an sechzehn
+  // Vergleichsrouten, 510 von 534 Packs.
+  const packs = new Map()
+  for (const m of alleMitglieder) {
+    const schluessel = m.klon.g ?? ('e' + m.klon.enemy + ':' + m.klon.clone)
+    if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [], mitglieder: [] })
+    const pack = packs.get(schluessel)
+    pack.klone.push(m.klon)
+    pack.mitglieder.push(m)
+    if (m.t < pack.t) pack.t = m.t
+  }
+  const reihe = [...packs.values()].sort((a, b) => a.t - b.t)
+
+  // Und trennen wie keystone.guru: ein neuer Pull beginnt, wenn der laufende
+  // abgeschlossen ist - alles daran Beteiligte tot - oder wenn beim Anpullen
+  // des naechsten Packs die Lebenspunkte der laufenden Gruppe im Mittel bei
+  // hoechstens 30 Prozent stehen (CHAIN_PULL_DETECTION_HP_PERCENT).
+  //
+  // Tote zaehlen dabei mit null im Zaehler und voll im Nenner, genau wie in
+  // deren ActivePull::getAverageHPPercentAt.
+  const anteilLeben = (m, zeit) => {
+    const tod = m.tod
+    if (tod !== undefined && zeit >= tod) return 0
+    const reihe2 = verlauf.get(m.schluessel)
+    if (reihe2 && reihe2.length) {
+      let wert = null
+      for (const [zp, anteil] of reihe2) {
+        if (zp > zeit) break
+        wert = anteil
+      }
+      return wert === null ? 1 : wert
+    }
+    if (tod === undefined) return 1
+    const spanne = tod - m.t
+    if (spanne <= 0) return 0
+    return Math.max(0, Math.min(1, (tod - zeit) / spanne))
+  }
+
+  let gruppe = []
+  const abschliessen = () => {
+    if (!gruppe.length) return
+    rohPulls.push(gruppe.flatMap((x) => x.klone))
+    gruppe = []
+  }
+  for (const pack of reihe) {
+    if (gruppe.length) {
+      const laufend = gruppe.flatMap((x) => x.mitglieder)
+      const alleTot = laufend.every((m) => m.tod !== undefined && m.tod <= pack.t)
+      const leben = laufend.reduce((s, m) => s + anteilLeben(m, pack.t), 0) / laufend.length
+      if (alleTot || leben <= kette) abschliessen()
+    }
+    gruppe.push(pack)
+  }
+  abschliessen()
 
   // ---- Packs vervollstaendigen
   //
