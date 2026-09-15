@@ -45,6 +45,7 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
     const kopfDatei = join(cacheDir, lauf.wclReport + '-kopf.json')
     const schadenDatei = join(cacheDir, lauf.wclReport + '-' + lauf.wclFight + '-DamageTaken.json')
     const todDatei = join(cacheDir, lauf.wclReport + '-' + lauf.wclFight + '-Deaths.json')
+    const zauberDatei = join(cacheDir, lauf.wclReport + '-' + lauf.wclFight + '-Casts.json')
     if (!existsSync(kopfDatei) || !existsSync(schadenDatei) || !existsSync(todDatei)) {
       ohneSpeicher += 1
       continue
@@ -58,6 +59,7 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
       kampf,
       schaden: JSON.parse(readFileSync(schadenDatei, 'utf8')),
       tode: JSON.parse(readFileSync(todDatei, 'utf8')),
+      zauber: existsSync(zauberDatei) ? JSON.parse(readFileSync(zauberDatei, 'utf8')) : [],
       dungeon,
       kloneJeNpc: kloneOrdnen(dungeon),
     })

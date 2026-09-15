@@ -102,9 +102,10 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
       const aktoren = new Map(bericht.masterData.actors.map((a) => [a.id, a]))
       const schaden = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'DamageTaken')
       const tode = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'Deaths')
+      const zauber = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'Casts')
 
       const ergebnis = routeBauen({
-        kampf, schaden, tode, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
+        kampf, schaden, tode, zauber, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
       })
 
       const anteil = ergebnis.kraefte / (dungeon.totalCount || 1)
@@ -117,6 +118,18 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
         magerer.push(lauf.id + ' ' + dungeon.englishName + ' +' + lauf.keyLevel +
           ' nur ' + Math.round(anteil * 100) + '%')
         process.stdout.write('!')
+
+        // Beim Neubau muss das Verwerfen auch das Alte mitnehmen. Sonst
+        // bliebe eine Route stehen, die der Code, der sie gerade geprueft
+        // hat, selbst ablehnt - und niemand sieht es ihr an.
+        if (lauf.pulls) {
+          delete lauf.pulls
+          delete lauf.enemyForces
+          delete lauf.filled
+          delete lauf.wclReport
+          delete lauf.wclFight
+          writeFileSync(pfad, JSON.stringify(laeufe, null, 2) + '\n')
+        }
         continue
       }
 

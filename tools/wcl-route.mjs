@@ -83,7 +83,19 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
 
     const block = d.reportData.report.events
     for (const e of block.data ?? []) {
-      const akteur = aktoren.get(e.targetID)
+      // Wem gehoeren die Koordinaten? resourceActor sagt es: 1 heisst dem
+      // Verursacher, 2 dem Ziel. Bei erlittenem Schaden ist der Gegner das
+      // Ziel, und es steht fast immer 2 - in Mordgasse gab es unter 214 000
+      // Ereignissen vier Ausnahmen. Vier falsch gesetzte Gegner sind wenig,
+      // aber sie kosten nichts zu vermeiden.
+      //
+      // Bei Zaubern ist der Gegner der Verursacher. Dieselbe Regel traegt
+      // also beide Quellen, und wessen Ereignis auf einen Spieler zeigt,
+      // faellt von selbst heraus: Spieler stehen nicht in aktoren.
+      const ortlos = e.x === undefined
+      const wer = ortlos || e.resourceActor !== 1 ? e.targetID : e.sourceID
+      const welche = (ortlos || e.resourceActor !== 1 ? e.targetInstance : e.sourceInstance) ?? 1
+      const akteur = aktoren.get(wer)
       if (!akteur) continue
       // Nur das erste Ereignis je Gegner behalten. Gebraucht wird ohnehin
       // nur, wo er stand, als sein Kampf begann - alles danach ist
@@ -94,13 +106,13 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
       // mit; wer einfach den ersten nimmt, wirft bei manchen Gegnern den
       // einzigen brauchbaren weg - gemessen fielen so bei Rubinquell 18 von
       // 90 Gegnern aus der Route.
-      const key = akteur.gameID + ':' + (e.targetInstance ?? 1)
+      const key = akteur.gameID + ':' + welche
       const bisher = erste.get(key)
       if (bisher && (bisher.x !== undefined || e.x === undefined)) continue
       erste.set(key, {
         t: e.timestamp,
         npcId: akteur.gameID,
-        instanz: e.targetInstance ?? 1,
+        instanz: welche,
         x: e.x, y: e.y, mapID: e.mapID,
       })
     }
@@ -127,7 +139,7 @@ export function kloneOrdnen(dungeon) {
       if (!raus.has(gegner.id)) raus.set(gegner.id, [])
       raus.get(gegner.id).push({
         npcId: gegner.id, enemy: gegner.index, clone: Number(idx),
-        x: pos.x, y: pos.y, g: pos.g,
+        x: pos.x, y: pos.y, g: pos.g, boss: gegner.isBoss === true,
         // Ein Klon darf mehr Kraefte geben als seine Geschwister.
         count: pos.count ?? gegner.count,
       })
@@ -318,10 +330,26 @@ function vergeben(abb, instanzen, kloneJeNpc, toleranz) {
  * Rechnerei ueber Zahlen, die schon da sind. Deshalb laesst sich das gegen
  * echte Routen halten, ohne Warcraftlogs noch einmal zu fragen.
  */
-export function routeBauen({ kampf, schaden, tode, dungeon, kloneJeNpc, ...e }) {
+export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, ...e }) {
   // Wo stand jede Instanz, als ihr Kampf begann?
   const ort = new Map()
   for (const ereignis of schaden) {
+    if (ereignis.x === undefined || ereignis.y === undefined) continue
+    const key = ereignis.npcId + ':' + ereignis.instanz
+    if (!ort.has(key)) ort.set(key, ereignis)
+  }
+
+  // Zweite Quelle fuer die, die aus dem Schaden keinen Ort mitbekamen.
+  //
+  // Es gibt solche Gegner: in Koenigsruh sterben siebzehn "Diener Zuls", ohne
+  // dass ein einziger ihrer erlittenen Treffer Koordinaten traegt. Sie fehlten
+  // damit in jeder Route dieses Dungeons - deshalb lagen dessen neun Laeufe
+  // alle bei 81 bis 89 Prozent, waehrend der Rest bei 98 liegt.
+  //
+  // Ihre eigenen Zauber tragen den Ort. Die Seite kostet zwei Punkte. Der
+  // Schaden bleibt trotzdem die erste Wahl: ein Zauber kommt oft spaeter als
+  // der erste Treffer, und der Zeitpunkt entscheidet mit ueber die Pull-Grenzen.
+  for (const ereignis of zauber ?? []) {
     if (ereignis.x === undefined || ereignis.y === undefined) continue
     const key = ereignis.npcId + ':' + ereignis.instanz
     if (!ort.has(key)) ort.set(key, ereignis)
@@ -356,6 +384,11 @@ export function routeBauen({ kampf, schaden, tode, dungeon, kloneJeNpc, ...e }) 
   // 117 Prozent, obwohl nur zwei Klone falsch sind.
   const vergebeneInstanzen = new Set()
 
+  // Und jeder Klon nur an einen Gegner. Die geometrische Zuordnung achtet
+  // schon darauf; der Eindeutigkeitsgriff weiter unten braucht die Liste,
+  // um ihr nicht dazwischenzufunken.
+  const belegteKlone = new Set([...zugeteilt.values()].map((k) => k.enemy + ':' + k.clone))
+
   // Warcraftlogs fasst Chainpulls zusammen: wer weiterzieht, ohne aus dem
   // Kampf zu fallen, bekommt dort einen einzigen Pull. keystone.guru trennt
   // sie - und wer eine Route liest, will diese Trennung, denn sie sagt, wo
@@ -373,7 +406,7 @@ export function routeBauen({ kampf, schaden, tode, dungeon, kloneJeNpc, ...e }) 
   //
   // Drei Routen sind wenig, um eine Zahl festzuzurren - wer mehr hat, sollte
   // nachmessen, statt ihr zu vertrauen.
-  const teilen = e.split ?? 45000
+  const teilen = e.split ?? 30000
 
   for (const p of kampf.dungeonPulls ?? []) {
     const mitglieder = []
@@ -383,8 +416,37 @@ export function routeBauen({ kampf, schaden, tode, dungeon, kloneJeNpc, ...e }) 
       for (let inst = von; inst <= bis; inst += 1) {
         const schluessel = n.gameID + ':' + inst
         if (vergebeneInstanzen.has(schluessel)) continue
-        const klon = zugeteilt.get(schluessel)
+
+        let klon = zugeteilt.get(schluessel)
+
+        // Wo es nur eine Moeglichkeit gibt, braucht es keine Geometrie.
+        //
+        // Kennt MDT zu dieser Gegnerart genau eine Vorlage, ist sie noch
+        // frei, und ist der Gegner in diesem Pull gestorben - dann ist er
+        // diese Vorlage. Es gibt keine andere.
+        //
+        // Ohne das haengen solche Gegner an der Toleranzgrenze. In Der
+        // blendende Hain kippte eine "Potatoad Matriarch" aus der Route,
+        // weil eine zusaetzliche Ortsangabe den Massstab um drei Promille
+        // verschob - und mit ihr sechzig Kraefte, ein Elftel des Dungeons.
+        if (!klon && gestorben.has(schluessel)) {
+          const nurEine = (kloneJeNpc.get(n.gameID) ?? []).length === 1
+          const einzige = (kloneJeNpc.get(n.gameID) ?? [])[0]
+          // Und nur, wenn der Gegner Kraefte gibt oder ein Boss ist. Wer null
+          // zaehlt und kein Boss ist, ist ein beschworenes Add - die stehen in
+          // keiner Route, und sie hereinzuholen bringt nicht einmal Prozente.
+          // In Altar der Reisszaehne war das ein "Hatchling".
+          //
+          // Bosse geben ebenfalls null Kraefte, gehoeren aber in jede Route.
+          // Ohne die Ausnahme fehlten in Tempel von Sethraliss Adderis, Aspix,
+          // Merektha, Galvazzt und der Avatar - eine Route ohne ihre Bosse
+          // sieht in MDT aus wie ein Fehler, und sie ist auch einer.
+          if (nurEine && (einzige.count > 0 || einzige.boss) &&
+              !belegteKlone.has(einzige.enemy + ':' + einzige.clone)) klon = einzige
+        }
+
         if (!klon) continue
+        belegteKlone.add(klon.enemy + ':' + klon.clone)
         vergebeneInstanzen.add(schluessel)
         mitglieder.push({ klon, t: ort.get(schluessel)?.t ?? p.startTime })
       }
@@ -392,17 +454,39 @@ export function routeBauen({ kampf, schaden, tode, dungeon, kloneJeNpc, ...e }) 
 
     mitglieder.sort((a, b) => a.t - b.t)
 
+    // Erst zu Packs bundeln, dann Packs zu Pulls.
+    //
+    // Eine Route besteht nicht aus einzelnen Gegnern, sondern aus Packs: MDT
+    // nummeriert sie mit g, und die echten Routen nehmen sie ganz oder gar
+    // nicht - gemessen 30 von 30 bei Rubinquell, 35 von 36 bei Altar.
+    //
+    // Vorher habe ich quer durch die Packs hindurch nach Zeit getrennt. Das
+    // konnte gar nicht aufgehen: ein Pack wird ueber mehrere Sekunden
+    // angegriffen, und wer mitten darin schneidet, zerreisst es. Jetzt
+    // bekommt jedes Pack den Zeitpunkt seines ersten beruehrten Mitglieds,
+    // und getrennt wird nur zwischen Packs.
+    const packs = new Map()
+    for (const m of mitglieder) {
+      const schluessel = m.klon.g ?? ('e' + m.klon.enemy + ':' + m.klon.clone)
+      if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [] })
+      const pack = packs.get(schluessel)
+      pack.klone.push(m.klon)
+      if (m.t < pack.t) pack.t = m.t
+    }
+
+    const reihe = [...packs.values()].sort((a, b) => a.t - b.t)
+
     let gruppe = []
     let vorige = null
     const abschliessen = () => {
       if (!gruppe.length) return
-      rohPulls.push(gruppe.map((m) => m.klon))
+      rohPulls.push(gruppe.flatMap((x) => x.klone))
       gruppe = []
     }
-    for (const m of mitglieder) {
-      if (vorige !== null && m.t - vorige > teilen) abschliessen()
-      gruppe.push(m)
-      vorige = m.t
+    for (const pack of reihe) {
+      if (vorige !== null && pack.t - vorige.t > teilen) abschliessen()
+      gruppe.push(pack)
+      vorige = pack
     }
     abschliessen()
   }
@@ -544,6 +628,7 @@ if (process.argv[1] && process.argv[1].endsWith('wcl-route.mjs')) {
 
   const schaden = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'DamageTaken')
   const tode = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'Deaths')
+  const zauber = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'Casts')
 
   const { dungeons } = readDungeons(String(args.mdt))
   const lookup = buildLookup(dungeons)
@@ -555,7 +640,7 @@ if (process.argv[1] && process.argv[1].endsWith('wcl-route.mjs')) {
   }
 
   const gebaut = routeBauen({
-    kampf, schaden, tode, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
+    kampf, schaden, tode, zauber, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
     fit: args.fit !== undefined ? Number(args.fit) : undefined,
     eng: args.eng !== undefined ? Number(args.eng) : undefined,
     toleranz: args.toleranz !== undefined ? Number(args.toleranz) : undefined,
