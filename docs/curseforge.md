@@ -46,9 +46,13 @@ fell, where it stood, when it was first hit. Measured against three real
 keystone.guru routes, the result matches 96, 100 and 98 per cent of the
 enemies.
 
-Where no report turns up, the entry stays a link to keystone.guru rather than
-becoming a guess. Every rebuilt route names the Warcraftlogs report it came
-from, so you can watch the run it describes.
+Where no report turns up, the run is left out — an entry that only links
+elsewhere gives you nothing you did not already have.
+
+Said just as plainly: they are not identical copies. Against the three
+comparison routes, between zero and six enemies differ, and the pull
+boundaries land less reliably than the choice of enemies. Every route names
+the Warcraftlogs report it came from, so you can check.
 
 A run is only listed when it was timed with the full enemy forces, its owner
 allows the route to be shown, and a route was actually published.

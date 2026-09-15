@@ -44,12 +44,21 @@ the report — but it names the roster, the realm and the time, and that is
 enough to find it. Measured against three real keystone.guru routes, the
 result matches 96, 100 and 98 per cent of the enemies.
 
-Where no report turns up, the entry stays a link to keystone.guru rather
-than becoming a guess. And every rebuilt route names the Warcraftlogs report
-it came from, so you can watch the run it describes.
+Where no report turns up, the run is left out. An entry that only links to
+keystone.guru gives you nothing you did not already have — you would leave
+the window, open the route there, copy the MDT string and switch back, which
+is the exact detour this addon exists to remove.
+
+Said just as plainly: **they are not identical copies.** Against the three
+comparison routes, between zero and six enemies differ, and the boundaries
+between pulls land less reliably than the choice of enemies. What is in a
+route is in the log; where exactly one pull ends is inferred from the gaps
+between first contacts, not read off. Every route names the Warcraftlogs
+report it came from, so you can check.
 
 A run is only listed when it was timed with the full enemy forces, its
-owner allows the route to be shown, and a route was actually published.
+owner allows the route to be shown, a route was actually published, and its
+combat log could be found.
 Without all three it stays out.
 
 ### Also

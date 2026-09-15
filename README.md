@@ -48,13 +48,22 @@ Bericht zwar nirgends – aber es nennt Kader, Realm und Zeitpunkt, und darüber
 findet er sich. Gegen drei echte keystone.guru-Routen gemessen trifft das
 Ergebnis 96, 100 und 98 Prozent der Gegner.
 
-Wo sich kein Bericht findet, bleibt der Eintrag ein Verweis auf keystone.guru
-statt einer geratenen Route. Und wer nachsehen will, wie ein Lauf wirklich
-aussah: der Eintrag nennt seinen Warcraftlogs-Bericht.
+Wo sich kein Bericht findet, fällt der Lauf weg. Ein Eintrag, der nur auf
+keystone.guru zeigt, bringt nichts, was du nicht schon hast – du müsstest das
+Fenster verlassen, die Route dort öffnen, den MDT-Code kopieren und
+zurückwechseln. Genau diesen Weg soll das Addon ersparen.
+
+Ehrlich bleibt trotzdem zu sagen: **deckungsgleich sind sie nicht.** Gegen die
+drei Vergleichsrouten fehlen oder stimmen je 0 bis 6 Gegner nicht, und die
+Grenzen zwischen den Pulls treffen seltener als die Gegnerauswahl. Was drin
+steht, steht so im Protokoll – aber wo genau ein Pull endet, ist aus den
+Zeitabständen erschlossen, nicht abgelesen. Jeder Eintrag nennt seinen
+Warcraftlogs-Bericht, damit sich das nachsehen lässt.
 
 Aufgenommen wird ein Lauf nur, wenn er in der Zeit mit vollen Gegnerkräften
-abgeschlossen wurde, sein Besitzer das Anzeigen der Route erlaubt hat und
-eine Route tatsächlich veröffentlicht ist. Ohne die drei bleibt er draußen.
+abgeschlossen wurde, sein Besitzer das Anzeigen der Route erlaubt hat, eine
+Route veröffentlicht ist und sich sein Kampfprotokoll finden ließ. Ohne die
+vier bleibt er draußen.
 
 ## Status
 
