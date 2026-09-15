@@ -16,7 +16,7 @@
 //   node tools/wcl-toproutes.mjs --mdt <MDT-Pfad> [--in data/raiderio]
 //        [--cache data/cache/wcl] [--nur murder-row] [--neu] [--max 40]
 
-import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { readDungeons, buildLookup } from './mdt-dungeons.mjs'
 import { anmelden, berichtFinden } from './wcl-api.mjs'
@@ -103,9 +103,11 @@ for (const datei of readdirSync(inDir).filter((f) => f.endsWith('.json'))) {
       const schaden = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'DamageTaken')
       const tode = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'Deaths')
       const zauber = await ereignisseHolen(gql, treffer.code, kampf, aktoren, cacheDir, 'Casts')
+      const lebenDatei = join(cacheDir, treffer.code + '-' + kampf.id + '-Leben.json')
+      const leben = existsSync(lebenDatei) ? JSON.parse(readFileSync(lebenDatei, 'utf8')) : null
 
       const ergebnis = routeBauen({
-        kampf, schaden, tode, zauber, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
+        kampf, schaden, tode, zauber, leben, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
       })
 
       const anteil = ergebnis.kraefte / (dungeon.totalCount || 1)

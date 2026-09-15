@@ -65,7 +65,7 @@ export async function berichtHolen(gql, code, cacheDir) {
  * ein langer Lauf hat mehr. Abgeschnitten fehlten die letzten Pulls
  * vollstaendig, ohne dass es auffiel - die Zahlen sahen nur etwas mager aus.
  */
-export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
+export async function alleEreignisse(gql, code, kampf, typ, aktoren, leben = null, rolle = 'ziel') {
   // Zehntausend je Seite ist die Obergrenze - darueber liefert Warcraftlogs
   // trotzdem nur zehntausend. Und eine Seite kostet zwei Punkte, egal wie
   // voll sie ist: mit 3000 kostete ein Lauf 84 Anfragen, mit 10000 sind es
@@ -93,10 +93,19 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
       // also beide Quellen, und wessen Ereignis auf einen Spieler zeigt,
       // faellt von selbst heraus: Spieler stehen nicht in aktoren.
       const ortlos = e.x === undefined
-      const wer = ortlos || e.resourceActor !== 1 ? e.targetID : e.sourceID
-      const welche = (ortlos || e.resourceActor !== 1 ? e.targetInstance : e.sourceInstance) ?? 1
+      const quelle = rolle === 'quelle'
+      const wer = quelle ? e.sourceID : e.targetID
+      const welche = (quelle ? e.sourceInstance : e.targetInstance) ?? 1
       const akteur = aktoren.get(wer)
       if (!akteur) continue
+
+      // Der Ort gehoert dem, den resourceActor nennt: 1 der Verursacher,
+      // 2 dem Ziel. Steht dort ein anderer als unser Gegner, taugt der Ort
+      // nicht - dann bleibt nur der Zeitpunkt.
+      const eigenerOrt = quelle ? e.resourceActor === 1 : e.resourceActor === 2
+      const x = !ortlos && eigenerOrt ? e.x : undefined
+      const y = !ortlos && eigenerOrt ? e.y : undefined
+      const karte = !ortlos && eigenerOrt ? e.mapID : undefined
       // Nur das erste Ereignis je Gegner behalten. Gebraucht wird ohnehin
       // nur, wo er stand, als sein Kampf begann - alles danach ist
       // Wiederholung. Ungefiltert sind das neun Megabyte je Lauf und fast
@@ -107,13 +116,37 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
       // einzigen brauchbaren weg - gemessen fielen so bei Rubinquell 18 von
       // 90 Gegnern aus der Route.
       const key = akteur.gameID + ':' + welche
+
+      // Nebenbei den Lebensverlauf mitschreiben, wenn jemand ihn haben will.
+      //
+      // keystone.guru trennt Chainpulls an den Lebenspunkten der laufenden
+      // Gruppe - und Warcraftlogs haengt sie an jedes Ereignis. Sie nicht
+      // aufzuheben hiess, sie zwischen Erstkontakt und Tod zu schaetzen, und
+      // das ging bei Rubinquell daneben: wer angepullt, aber nicht fokussiert
+      // wird, galt zu frueh als sterbend.
+      //
+      // Hoechstens alle zwei Sekunden ein Wert je Gegner. Das reicht, um zu
+      // sagen, ob eine Gruppe schon liegt, und haelt den Zwischenspeicher
+      // klein - die Trennung wird ohnehin nur an den Erstkontakten gefragt.
+      if (leben && !quelle && e.hitPoints !== undefined && e.maxHitPoints > 0) {
+        if (!leben.has(key)) leben.set(key, [])
+        const reihe = leben.get(key)
+        const letzter = reihe[reihe.length - 1]
+        if (!letzter || e.timestamp - letzter[0] >= 2000) {
+          reihe.push([e.timestamp, Math.round(e.hitPoints / e.maxHitPoints * 1000) / 1000])
+        }
+      }
+
       const bisher = erste.get(key)
-      if (bisher && (bisher.x !== undefined || e.x === undefined)) continue
+      if (bisher && (bisher.x !== undefined || x === undefined)) continue
       erste.set(key, {
-        t: e.timestamp,
+        // Der frueheste Zeitpunkt zaehlt, auch wenn der Ort von spaeter kommt:
+        // wann ein Gegner in den Kampf geriet, ist eine andere Frage als, wo er
+        // dabei stand.
+        t: Math.min(bisher?.t ?? Infinity, e.timestamp),
         npcId: akteur.gameID,
         instanz: welche,
-        x: e.x, y: e.y, mapID: e.mapID,
+        x, y, mapID: karte,
       })
     }
     if (!block.nextPageTimestamp) break
@@ -126,8 +159,18 @@ export async function alleEreignisse(gql, code, kampf, typ, aktoren) {
 export async function ereignisseHolen(gql, code, kampf, aktoren, cacheDir, typ) {
   const datei = join(cacheDir, code + '-' + kampf.id + '-' + typ + '.json')
   if (existsSync(datei)) return JSON.parse(readFileSync(datei, 'utf8'))
-  const daten = await alleEreignisse(gql, code, kampf, typ, aktoren)
+  // Der Lebensverlauf faellt beim erlittenen Schaden nebenbei mit ab. Er
+  // kostet keine einzige zusaetzliche Anfrage, nur ein paar Kilobyte.
+  const leben = typ === 'DamageTaken' ? new Map() : null
+  // Wer bei welcher Ereignisart der Gegner ist: bei erlittenem Schaden und
+  // beim Tod das Ziel, bei Zaubern und ausgeteiltem Schaden der Verursacher.
+  const rolle = typ === 'DamageTaken' || typ === 'Deaths' ? 'ziel' : 'quelle'
+  const daten = await alleEreignisse(gql, code, kampf, typ, aktoren, leben, rolle)
   writeFileSync(datei, JSON.stringify(daten))
+  if (leben) {
+    writeFileSync(join(cacheDir, code + '-' + kampf.id + '-Leben.json'),
+      JSON.stringify([...leben.entries()]))
+  }
   return daten
 }
 
@@ -330,13 +373,38 @@ function vergeben(abb, instanzen, kloneJeNpc, toleranz) {
  * Rechnerei ueber Zahlen, die schon da sind. Deshalb laesst sich das gegen
  * echte Routen halten, ohne Warcraftlogs noch einmal zu fragen.
  */
-export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, ...e }) {
+export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, kloneJeNpc, ...e }) {
+  // Lebensverlauf je Gegner, falls vorhanden: "npcId:instanz" -> [[t, anteil]]
+  const verlauf = new Map(leben ?? [])
   // Wo stand jede Instanz, als ihr Kampf begann?
   const ort = new Map()
   for (const ereignis of schaden) {
     if (ereignis.x === undefined || ereignis.y === undefined) continue
     const key = ereignis.npcId + ':' + ereignis.instanz
     if (!ort.has(key)) ort.set(key, ereignis)
+  }
+
+  // Wann geriet ein Gegner in den Kampf?
+  //
+  // Bisher: als er das erste Mal Schaden bekam. Das ist zu spaet. In einem
+  // grossen Pull werden die hinteren Gegner erst getroffen, wenn die vorderen
+  // schon liegen - und dann meldet die Chainpull-Erkennung eine Trennung, wo
+  // in Wahrheit alles auf einen Schlag gepullt wurde. Bei Rubinquell zerfiel
+  // so ein echter Pull mit 32 Gegnern in drei.
+  //
+  // Sein erster Zauber ist der bessere Zeuge, und innerhalb des Schadens der
+  // frueheste Treffer - nicht der erste, der auch Koordinaten trug.
+  //
+  // Sein erster ausgeteilter Schlag waere der beste, sollte man meinen. Ist er
+  // nicht: gemessen an sechzehn Vergleichsrouten aendert er die Einteilung um
+  // keinen einzigen Punkt. Gegner werden offenbar getroffen, bevor sie
+  // zurueckschlagen. Die Abfrage ist deshalb wieder draussen.
+  const frueh = new Map()
+  for (const liste of [schaden, zauber ?? []]) {
+    for (const ereignis of liste) {
+      const key = ereignis.npcId + ':' + ereignis.instanz
+      if (!frueh.has(key) || ereignis.t < frueh.get(key)) frueh.set(key, ereignis.t)
+    }
   }
 
   // Zweite Quelle fuer die, die aus dem Schaden keinen Ort mitbekamen.
@@ -455,7 +523,8 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
         vergebeneInstanzen.add(schluessel)
         mitglieder.push({
           klon,
-          t: ort.get(schluessel)?.t ?? p.startTime,
+          schluessel,
+          t: frueh.get(schluessel) ?? ort.get(schluessel)?.t ?? p.startTime,
           tod: todesZeit.get(schluessel),
         })
       }
@@ -503,8 +572,23 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
     // Gruppe schon fast liegt, wenn die naechste kommt.
     const anteilLeben = (m, zeit) => {
       const tod = m.tod
+      if (tod !== undefined && zeit >= tod) return 0
+
+      // Der abgelesene Wert schlaegt die Schaetzung: der letzte Messpunkt,
+      // der nicht nach dem gefragten Zeitpunkt liegt.
+      const reihe = verlauf.get(m.schluessel)
+      if (reihe && reihe.length) {
+        let wert = null
+        for (const [zp, anteil] of reihe) {
+          if (zp > zeit) break
+          wert = anteil
+        }
+        if (wert !== null) return wert
+        // Vor dem ersten Messpunkt: noch unberuehrt.
+        return 1
+      }
+
       if (tod === undefined) return 1
-      if (zeit >= tod) return 0
       const spanne = tod - m.t
       if (spanne <= 0) return 0
       return Math.max(0, Math.min(1, (tod - zeit) / spanne))
@@ -667,6 +751,8 @@ if (process.argv[1] && process.argv[1].endsWith('wcl-route.mjs')) {
   const schaden = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'DamageTaken')
   const tode = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'Deaths')
   const zauber = await ereignisseHolen(await zugang(), code, kampf, aktoren, cacheDir, 'Casts')
+  const lebenDatei = join(cacheDir, code + '-' + kampf.id + '-Leben.json')
+  const leben = existsSync(lebenDatei) ? JSON.parse(readFileSync(lebenDatei, 'utf8')) : null
 
   const { dungeons } = readDungeons(String(args.mdt))
   const lookup = buildLookup(dungeons)
@@ -678,7 +764,7 @@ if (process.argv[1] && process.argv[1].endsWith('wcl-route.mjs')) {
   }
 
   const gebaut = routeBauen({
-    kampf, schaden, tode, zauber, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
+    kampf, schaden, tode, zauber, leben, dungeon, kloneJeNpc: kloneOrdnen(dungeon),
     fit: args.fit !== undefined ? Number(args.fit) : undefined,
     eng: args.eng !== undefined ? Number(args.eng) : undefined,
     toleranz: args.toleranz !== undefined ? Number(args.toleranz) : undefined,
