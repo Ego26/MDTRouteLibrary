@@ -355,6 +355,11 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
     if (!ort.has(key)) ort.set(key, ereignis)
   }
   const gestorben = new Set(tode.map((x) => x.npcId + ':' + x.instanz))
+  const todesZeit = new Map()
+  for (const x of tode) {
+    const key = x.npcId + ':' + x.instanz
+    if (!todesZeit.has(key) || x.t < todesZeit.get(key)) todesZeit.set(key, x.t)
+  }
 
   // ---- Abbildung je Stockwerk
   const abbildungen = new Map()
@@ -406,7 +411,7 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
   //
   // Drei Routen sind wenig, um eine Zahl festzuzurren - wer mehr hat, sollte
   // nachmessen, statt ihr zu vertrauen.
-  const teilen = e.split ?? 30000
+  const kette = e.kette ?? 0.30
 
   for (const p of kampf.dungeonPulls ?? []) {
     const mitglieder = []
@@ -448,7 +453,11 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
         if (!klon) continue
         belegteKlone.add(klon.enemy + ':' + klon.clone)
         vergebeneInstanzen.add(schluessel)
-        mitglieder.push({ klon, t: ort.get(schluessel)?.t ?? p.startTime })
+        mitglieder.push({
+          klon,
+          t: ort.get(schluessel)?.t ?? p.startTime,
+          tod: todesZeit.get(schluessel),
+        })
       }
     }
 
@@ -458,35 +467,64 @@ export function routeBauen({ kampf, schaden, tode, zauber, dungeon, kloneJeNpc, 
     //
     // Eine Route besteht nicht aus einzelnen Gegnern, sondern aus Packs: MDT
     // nummeriert sie mit g, und die echten Routen nehmen sie ganz oder gar
-    // nicht - gemessen 30 von 30 bei Rubinquell, 35 von 36 bei Altar.
-    //
-    // Vorher habe ich quer durch die Packs hindurch nach Zeit getrennt. Das
-    // konnte gar nicht aufgehen: ein Pack wird ueber mehrere Sekunden
-    // angegriffen, und wer mitten darin schneidet, zerreisst es. Jetzt
-    // bekommt jedes Pack den Zeitpunkt seines ersten beruehrten Mitglieds,
-    // und getrennt wird nur zwischen Packs.
+    // nicht - gemessen 30 von 30 bei Rubinquell, 35 von 36 bei Altar. Wer
+    // quer durch ein Pack hindurch trennt, zerreisst es: ein Pack wird ueber
+    // mehrere Sekunden bekaempft.
     const packs = new Map()
     for (const m of mitglieder) {
       const schluessel = m.klon.g ?? ('e' + m.klon.enemy + ':' + m.klon.clone)
-      if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [] })
+      if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [], mitglieder: [] })
       const pack = packs.get(schluessel)
       pack.klone.push(m.klon)
+      pack.mitglieder.push(m)
       if (m.t < pack.t) pack.t = m.t
     }
 
     const reihe = [...packs.values()].sort((a, b) => a.t - b.t)
 
+    // Und dann trennen wie keystone.guru, nicht nach der Uhr.
+    //
+    // Deren Auto Route Creator ist quelloffen (RaiderIO/keystone.guru,
+    // DungeonRouteBuilder). Er kennt zwei Gruende fuer einen neuen Pull:
+    //
+    //   1. Der laufende ist abgeschlossen - alles, was daran beteiligt war,
+    //      ist tot.
+    //   2. Chainpull: beim Anpullen des naechsten Gegners stehen die
+    //      Lebenspunkte der laufenden Gruppe im Mittel bei hoechstens 30
+    //      Prozent (CHAIN_PULL_DETECTION_HP_PERCENT).
+    //
+    // Die Uhr kommt darin gar nicht vor, und das ist der Punkt: ob ein Pull
+    // endet, entscheidet der Kampf, nicht die Zeit. Ein langsamer Pull auf
+    // +14 dauert dreimal so lange wie derselbe auf +21.
+    //
+    // Die Lebenspunkte im Verlauf habe ich nicht - nur Erstkontakt und
+    // Todeszeitpunkt je Gegner. Dazwischen nehme ich sie als gleichmaessig
+    // fallend an. Das ist grob, aber es trifft, worauf es ankommt: ob eine
+    // Gruppe schon fast liegt, wenn die naechste kommt.
+    const anteilLeben = (m, zeit) => {
+      const tod = m.tod
+      if (tod === undefined) return 1
+      if (zeit >= tod) return 0
+      const spanne = tod - m.t
+      if (spanne <= 0) return 0
+      return Math.max(0, Math.min(1, (tod - zeit) / spanne))
+    }
+
     let gruppe = []
-    let vorige = null
     const abschliessen = () => {
       if (!gruppe.length) return
       rohPulls.push(gruppe.flatMap((x) => x.klone))
       gruppe = []
     }
+
     for (const pack of reihe) {
-      if (vorige !== null && pack.t - vorige.t > teilen) abschliessen()
+      if (gruppe.length) {
+        const laufend = gruppe.flatMap((x) => x.mitglieder)
+        const alleTot = laufend.every((m) => m.tod !== undefined && m.tod <= pack.t)
+        const leben = laufend.reduce((s, m) => s + anteilLeben(m, pack.t), 0) / laufend.length
+        if (alleTot || leben <= kette) abschliessen()
+      }
       gruppe.push(pack)
-      vorige = pack
     }
     abschliessen()
   }
