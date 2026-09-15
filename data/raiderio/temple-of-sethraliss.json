@@ -66,6 +66,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               8,
@@ -78,12 +84,6 @@
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -105,13 +105,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -125,9 +118,10 @@
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 5,
             "clones": [
-              1
+              10,
+              5
             ]
           },
           {
@@ -137,15 +131,21 @@
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 31,
             "clones": [
-              13
+              1
             ]
           },
           {
             "enemy": 1,
             "clones": [
               20
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              13
             ]
           }
         ]
@@ -206,6 +206,12 @@
       {
         "enemies": [
           {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               3
@@ -215,12 +221,6 @@
             "enemy": 7,
             "clones": [
               3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
             ]
           },
           {
@@ -254,20 +254,16 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              19
-            ]
-          },
-          {
-            "enemy": 11,
+            "enemy": 6,
             "clones": [
               6
             ]
           },
           {
-            "enemy": 6,
+            "enemy": 7,
             "clones": [
+              4,
+              5,
               6
             ]
           },
@@ -278,11 +274,15 @@
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 11,
             "clones": [
-              4,
-              5,
               6
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              19
             ]
           }
         ]
@@ -319,13 +319,13 @@
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -352,17 +352,17 @@
       },
       {
         "enemies": [
+          {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
           {
             "enemy": 15,
             "clones": [
               6,
               5
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -433,12 +433,6 @@
             ]
           },
           {
-            "enemy": 17,
-            "clones": [
-              6
-            ]
-          },
-          {
             "enemy": 35,
             "clones": [
               3,
@@ -446,17 +440,17 @@
               1,
               2
             ]
+          },
+          {
+            "enemy": 17,
+            "clones": [
+              6
+            ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
           {
             "enemy": 38,
             "clones": [
@@ -469,7 +463,11 @@
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
@@ -477,6 +475,16 @@
               2,
               4,
               3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
+              1
             ]
           },
           {
@@ -597,12 +605,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7
@@ -615,13 +617,19 @@
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 5,
+            "clones": [
+              10
+            ]
+          },
+          {
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -630,18 +638,6 @@
       },
       {
         "enemies": [
-          {
-            "enemy": 5,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13
-            ]
-          },
           {
             "enemy": 3,
             "clones": [
@@ -653,6 +649,18 @@
             "clones": [
               20
             ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              5
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              13
+            ]
           }
         ]
       },
@@ -662,6 +670,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -681,12 +695,6 @@
             "clones": [
               13
             ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
-            ]
           }
         ]
       },
@@ -695,8 +703,8 @@
           {
             "enemy": 2,
             "clones": [
-              9,
-              10
+              10,
+              9
             ]
           },
           {
@@ -712,6 +720,12 @@
             ]
           },
           {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               3
@@ -721,12 +735,6 @@
             "enemy": 7,
             "clones": [
               3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
             ]
           },
           {
@@ -742,8 +750,7 @@
           {
             "enemy": 12,
             "clones": [
-              1,
-              5
+              1
             ]
           },
           {
@@ -785,25 +792,26 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              19
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
               6
             ]
           },
           {
-            "enemy": 6,
+            "enemy": 1,
             "clones": [
-              6
+              19
             ]
           },
           {
             "enemy": 12,
+            "clones": [
+              5,
+              6
+            ]
+          },
+          {
+            "enemy": 6,
             "clones": [
               6
             ]
@@ -855,8 +863,8 @@
           {
             "enemy": 15,
             "clones": [
-              4,
-              1
+              1,
+              4
             ]
           }
         ]
@@ -864,16 +872,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               6,
               5
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -1078,11 +1086,17 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               8,
-              24,
-              23
+              23,
+              24
             ]
           },
           {
@@ -1090,12 +1104,6 @@
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -1118,13 +1126,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -1138,9 +1139,10 @@
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 5,
             "clones": [
-              1
+              10,
+              5
             ]
           },
           {
@@ -1150,15 +1152,21 @@
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 31,
             "clones": [
-              13
+              1
             ]
           },
           {
             "enemy": 1,
             "clones": [
               20
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              13
             ]
           }
         ]
@@ -1169,6 +1177,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -1187,12 +1201,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
             ]
           }
         ]
@@ -1261,17 +1269,17 @@
             ]
           },
           {
+            "enemy": 7,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               4,
               8,
               5
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4
             ]
           },
           {
@@ -1297,18 +1305,18 @@
             ]
           },
           {
-            "enemy": 8,
-            "clones": [
-              6,
-              7
-            ]
-          },
-          {
             "enemy": 7,
             "clones": [
               7,
               6,
               5
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              6,
+              7
             ]
           },
           {
@@ -1322,13 +1330,13 @@
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -1366,16 +1374,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               5,
               6
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -1459,10 +1467,58 @@
           {
             "enemy": 35,
             "clones": [
-              2,
               1,
+              2,
               3,
               4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              1,
+              4,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              3
             ]
           }
         ]
@@ -1473,28 +1529,6 @@
             "enemy": 36,
             "clones": [
               1
-            ]
-          },
-          {
-            "enemy": 38,
-            "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 40,
-            "clones": [
-              1,
-              4,
-              2,
-              3
             ]
           },
           {
@@ -1576,6 +1610,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
@@ -1588,12 +1628,6 @@
               8,
               24,
               23
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -1615,10 +1649,9 @@
       {
         "enemies": [
           {
-            "enemy": 5,
+            "enemy": 4,
             "clones": [
-              10,
-              5
+              3
             ]
           },
           {
@@ -1629,15 +1662,10 @@
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 5,
             "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13
+              10,
+              5
             ]
           },
           {
@@ -1645,19 +1673,25 @@
             "clones": [
               21
             ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              13
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -1679,15 +1713,15 @@
             ]
           },
           {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 1,
             "clones": [
               13
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              1
             ]
           },
           {
@@ -1701,16 +1735,16 @@
       {
         "enemies": [
           {
+            "enemy": 9,
+            "clones": [
+              1
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               10,
               9
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
             ]
           },
           {
@@ -1720,9 +1754,9 @@
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 1,
             "clones": [
-              3
+              18
             ]
           },
           {
@@ -1732,9 +1766,9 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 8,
             "clones": [
-              18
+              3
             ]
           }
         ]
@@ -1748,16 +1782,16 @@
             ]
           },
           {
-            "enemy": 12,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
               1,
               6
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              1
             ]
           },
           {
@@ -1784,17 +1818,17 @@
             ]
           },
           {
+            "enemy": 6,
+            "clones": [
+              7
+            ]
+          },
+          {
             "enemy": 7,
             "clones": [
               7,
               5,
               6
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              7
             ]
           },
           {
@@ -1808,9 +1842,15 @@
       {
         "enemies": [
           {
-            "enemy": 12,
+            "enemy": 6,
             "clones": [
-              5
+              6
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              4
             ]
           },
           {
@@ -1821,15 +1861,9 @@
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 12,
             "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              6
+              5
             ]
           }
         ]
@@ -1881,16 +1915,16 @@
       {
         "enemies": [
           {
-            "enemy": 15,
-            "clones": [
-              6,
-              5
-            ]
-          },
-          {
             "enemy": 14,
             "clones": [
               2
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              5,
+              6
             ]
           }
         ]
@@ -1950,9 +1984,57 @@
             "enemy": 35,
             "clones": [
               1,
-              2,
               3,
+              2,
               4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              4,
+              3
             ]
           }
         ]
@@ -1963,28 +2045,6 @@
             "enemy": 36,
             "clones": [
               1
-            ]
-          },
-          {
-            "enemy": 38,
-            "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 40,
-            "clones": [
-              1,
-              2,
-              4,
-              3
             ]
           },
           {
@@ -2127,16 +2187,16 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -2167,13 +2227,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -2187,13 +2240,20 @@
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 5,
+            "clones": [
+              10,
+              5
+            ]
+          },
+          {
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -2221,9 +2281,9 @@
             ]
           },
           {
-            "enemy": 5,
+            "enemy": 4,
             "clones": [
-              4
+              7
             ]
           },
           {
@@ -2233,9 +2293,9 @@
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 5,
             "clones": [
-              7
+              4
             ]
           }
         ]
@@ -2289,16 +2349,16 @@
             ]
           },
           {
+            "enemy": 7,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               4,
               5
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4
             ]
           },
           {
@@ -2356,12 +2416,6 @@
       {
         "enemies": [
           {
-            "enemy": 43,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 13,
             "clones": [
               1
@@ -2372,6 +2426,12 @@
             "clones": [
               2
             ]
+          },
+          {
+            "enemy": 43,
+            "clones": [
+              1
+            ]
           }
         ]
       },
@@ -2395,17 +2455,17 @@
       },
       {
         "enemies": [
+          {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
           {
             "enemy": 15,
             "clones": [
               6,
               5
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -2491,8 +2551,36 @@
             "clones": [
               1,
               2,
-              3,
-              4
+              4,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              1,
+              4,
+              3
             ]
           }
         ]
@@ -2508,22 +2596,16 @@
           {
             "enemy": 38,
             "clones": [
-              2,
               1
             ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
-              1,
-              3,
-              4,
               2
             ]
           },
@@ -2667,16 +2749,16 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -2706,13 +2788,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -2726,9 +2801,10 @@
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 5,
             "clones": [
-              13
+              10,
+              5
             ]
           },
           {
@@ -2736,19 +2812,25 @@
             "clones": [
               21
             ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              13
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -2776,22 +2858,15 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              13
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               5
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 1,
             "clones": [
-              9,
-              10
+              13
             ]
           },
           {
@@ -2805,15 +2880,22 @@
             "clones": [
               1
             ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              9,
+              10
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 8,
+            "enemy": 1,
             "clones": [
-              3
+              18
             ]
           },
           {
@@ -2823,9 +2905,9 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 8,
             "clones": [
-              18
+              3
             ]
           },
           {
@@ -2859,27 +2941,27 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              19
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
               6
             ]
           },
           {
-            "enemy": 12,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 7,
             "clones": [
               4
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              19
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              5
             ]
           },
           {
@@ -2901,12 +2983,6 @@
             ]
           },
           {
-            "enemy": 12,
-            "clones": [
-              6
-            ]
-          },
-          {
             "enemy": 8,
             "clones": [
               7,
@@ -2917,6 +2993,12 @@
             "enemy": 6,
             "clones": [
               7
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              6
             ]
           }
         ]
@@ -2964,16 +3046,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               5,
               6
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -3057,9 +3139,38 @@
             "enemy": 35,
             "clones": [
               1,
+              2,
               4,
-              3,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
               2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              1,
+              3,
+              2,
+              4
             ]
           }
         ]
@@ -3075,23 +3186,7 @@
           {
             "enemy": 38,
             "clones": [
-              2,
               1
-            ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 40,
-            "clones": [
-              1,
-              3,
-              2,
-              4
             ]
           },
           {
@@ -3172,6 +3267,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
@@ -3184,12 +3285,6 @@
               8,
               24,
               23
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -3211,12 +3306,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7
@@ -3229,13 +3318,19 @@
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 5,
+            "clones": [
+              10
+            ]
+          },
+          {
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -3245,15 +3340,15 @@
       {
         "enemies": [
           {
-            "enemy": 2,
-            "clones": [
-              13
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               6
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              20
             ]
           },
           {
@@ -3263,9 +3358,9 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 2,
             "clones": [
-              20
+              13
             ]
           }
         ]
@@ -3276,6 +3371,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -3294,12 +3395,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
             ]
           },
           {
@@ -3326,6 +3421,12 @@
       {
         "enemies": [
           {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               3
@@ -3335,12 +3436,6 @@
             "enemy": 7,
             "clones": [
               3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
             ]
           },
           {
@@ -3374,11 +3469,23 @@
           {
             "enemy": 8,
             "clones": [
-              8,
               6,
-              7,
               5,
+              7,
+              8
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              7,
               4
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              6
             ]
           },
           {
@@ -3388,25 +3495,37 @@
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 6,
             "clones": [
-              7,
-              4,
-              5,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 6,
+            "clones": [
               6
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              4
             ]
           },
           {
             "enemy": 12,
             "clones": [
-              6,
               5
             ]
           },
           {
-            "enemy": 6,
+            "enemy": 7,
             "clones": [
-              7,
+              5,
               6
             ]
           }
@@ -3440,8 +3559,8 @@
           {
             "enemy": 15,
             "clones": [
-              1,
-              4
+              4,
+              1
             ]
           }
         ]
@@ -3523,9 +3642,9 @@
               6,
               5,
               10,
-              11,
               9,
-              12
+              12,
+              11
             ]
           },
           {
@@ -3658,6 +3777,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               8,
@@ -3670,12 +3795,6 @@
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -3697,13 +3816,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -3714,6 +3826,13 @@
             "enemy": 4,
             "clones": [
               3
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              10,
+              5
             ]
           },
           {
@@ -3733,13 +3852,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -3755,9 +3874,9 @@
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 3,
             "clones": [
-              1
+              5
             ]
           },
           {
@@ -3767,15 +3886,15 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 8,
             "clones": [
-              13
+              1
             ]
           },
           {
-            "enemy": 3,
+            "enemy": 1,
             "clones": [
-              5
+              13
             ]
           }
         ]
@@ -3812,13 +3931,13 @@
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 7,
             "clones": [
               3
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 8,
             "clones": [
               3
             ]
@@ -3850,10 +3969,9 @@
           {
             "enemy": 8,
             "clones": [
-              8,
               6,
-              4,
-              5
+              8,
+              4
             ]
           },
           {
@@ -3863,17 +3981,16 @@
             ]
           },
           {
-            "enemy": 7,
-            "clones": [
-              7,
-              4
-            ]
-          },
-          {
             "enemy": 6,
             "clones": [
               6,
               7
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              4
             ]
           }
         ]
@@ -3884,7 +4001,15 @@
             "enemy": 7,
             "clones": [
               5,
-              6
+              6,
+              7
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              5,
+              7
             ]
           },
           {
@@ -3892,25 +4017,19 @@
             "clones": [
               6
             ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              7
-            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -3946,8 +4065,8 @@
           {
             "enemy": 15,
             "clones": [
-              6,
-              5
+              5,
+              6
             ]
           },
           {
@@ -4038,20 +4157,14 @@
             "clones": [
               3,
               2,
-              1,
-              4
+              4,
+              1
             ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
           {
             "enemy": 38,
             "clones": [
@@ -4064,7 +4177,11 @@
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
@@ -4072,6 +4189,16 @@
               2,
               3,
               4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
+              1
             ]
           },
           {
@@ -4160,19 +4287,19 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              2,
+              8,
+              9
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
               16,
               15
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2,
-              9,
-              8
             ]
           },
           {
@@ -4192,13 +4319,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              4,
-              5
-            ]
-          },
-          {
             "enemy": 1,
             "clones": [
               20,
@@ -4209,6 +4329,13 @@
             "enemy": 4,
             "clones": [
               7
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              4,
+              5
             ]
           },
           {
@@ -4228,13 +4355,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -4247,6 +4374,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -4266,17 +4399,17 @@
             "clones": [
               13
             ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
-            ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
           {
             "enemy": 8,
             "clones": [
@@ -4290,16 +4423,10 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              18
-            ]
-          },
-          {
             "enemy": 2,
             "clones": [
-              9,
-              10
+              10,
+              9
             ]
           },
           {
@@ -4328,8 +4455,7 @@
           {
             "enemy": 12,
             "clones": [
-              1,
-              5
+              1
             ]
           },
           {
@@ -4342,8 +4468,8 @@
           {
             "enemy": 8,
             "clones": [
-              5,
               4,
+              5,
               8
             ]
           },
@@ -4372,13 +4498,7 @@
           {
             "enemy": 12,
             "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              7,
+              5,
               6
             ]
           },
@@ -4389,19 +4509,26 @@
               6,
               7
             ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              7,
+              6
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -4443,8 +4570,8 @@
           {
             "enemy": 15,
             "clones": [
-              6,
-              5
+              5,
+              6
             ]
           }
         ]
@@ -4512,10 +4639,10 @@
               7,
               8,
               5,
-              10,
               9,
               12,
-              11
+              11,
+              10
             ]
           },
           {
@@ -4527,10 +4654,10 @@
           {
             "enemy": 35,
             "clones": [
-              3,
+              2,
               4,
-              1,
-              2
+              3,
+              1
             ]
           }
         ]
@@ -4546,16 +4673,13 @@
           {
             "enemy": 38,
             "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
@@ -4563,6 +4687,22 @@
               3,
               2,
               4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
             ]
           },
           {
@@ -4683,10 +4823,9 @@
       {
         "enemies": [
           {
-            "enemy": 5,
+            "enemy": 4,
             "clones": [
-              10,
-              5
+              3
             ]
           },
           {
@@ -4697,9 +4836,10 @@
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 5,
             "clones": [
-              3
+              10,
+              5
             ]
           },
           {
@@ -4719,13 +4859,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -4753,22 +4893,15 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              13
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               5
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 1,
             "clones": [
-              10,
-              9
+              13
             ]
           },
           {
@@ -4781,6 +4914,13 @@
             "enemy": 10,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              9,
+              10
             ]
           }
         ]
@@ -4834,34 +4974,21 @@
           {
             "enemy": 6,
             "clones": [
-              7,
-              6
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              5,
-              6
+              7
             ]
           },
           {
             "enemy": 8,
             "clones": [
               5,
-              4,
               6,
-              8,
               7
             ]
           },
           {
             "enemy": 7,
             "clones": [
-              4,
-              7,
-              5,
-              6
+              7
             ]
           },
           {
@@ -4874,6 +5001,43 @@
             "enemy": 11,
             "clones": [
               6
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              6
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 6,
+            "clones": [
+              6
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              4,
+              8
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              5
             ]
           }
         ]
@@ -4921,16 +5085,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               5,
               6
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -5001,7 +5165,35 @@
             "clones": [
               3,
               2,
+              1,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
               4,
+              2,
               1
             ]
           }
@@ -5018,22 +5210,16 @@
           {
             "enemy": 38,
             "clones": [
-              2,
               1
             ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
-              4,
-              2,
-              1,
               3
             ]
           },
@@ -5115,6 +5301,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               8,
@@ -5130,16 +5322,10 @@
             ]
           },
           {
-            "enemy": 3,
-            "clones": [
-              2
-            ]
-          },
-          {
             "enemy": 5,
             "clones": [
-              3,
               2,
+              3,
               12
             ]
           },
@@ -5154,13 +5340,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -5171,6 +5350,13 @@
             "enemy": 4,
             "clones": [
               3
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              10,
+              5
             ]
           },
           {
@@ -5190,13 +5376,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -5209,6 +5395,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -5227,12 +5419,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
             ]
           },
           {
@@ -5299,12 +5485,6 @@
       {
         "enemies": [
           {
-            "enemy": 12,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 8,
             "clones": [
               4,
@@ -5325,15 +5505,21 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 12,
             "clones": [
-              19
+              5
             ]
           },
           {
             "enemy": 11,
             "clones": [
               6
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              19
             ]
           }
         ]
@@ -5372,13 +5558,13 @@
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -5403,8 +5589,8 @@
           {
             "enemy": 15,
             "clones": [
-              1,
-              4
+              4,
+              1
             ]
           }
         ]
@@ -5412,16 +5598,16 @@
       {
         "enemies": [
           {
-            "enemy": 15,
-            "clones": [
-              6,
-              5
-            ]
-          },
-          {
             "enemy": 14,
             "clones": [
               2
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              5,
+              6
             ]
           }
         ]
@@ -5500,9 +5686,9 @@
           {
             "enemy": 35,
             "clones": [
-              2,
               3,
               4,
+              2,
               1
             ]
           }
@@ -5510,12 +5696,6 @@
       },
       {
         "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
           {
             "enemy": 38,
             "clones": [
@@ -5528,7 +5708,11 @@
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
@@ -5536,6 +5720,16 @@
               2,
               1,
               3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
+              1
             ]
           },
           {
@@ -5656,13 +5850,6 @@
       {
         "enemies": [
           {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               7,
@@ -5673,6 +5860,13 @@
             "enemy": 4,
             "clones": [
               3
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              10,
+              5
             ]
           },
           {
@@ -5692,13 +5886,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -5738,16 +5932,16 @@
             ]
           },
           {
+            "enemy": 10,
+            "clones": [
+              1
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               10,
               9
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
             ]
           },
           {
@@ -5807,6 +6001,12 @@
             ]
           },
           {
+            "enemy": 1,
+            "clones": [
+              19
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               8,
@@ -5815,21 +6015,9 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              19
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
               6
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              5
             ]
           },
           {
@@ -5851,6 +6039,7 @@
           {
             "enemy": 12,
             "clones": [
+              5,
               6
             ]
           },
@@ -5910,8 +6099,8 @@
           {
             "enemy": 15,
             "clones": [
-              5,
-              6
+              6,
+              5
             ]
           },
           {
@@ -6000,10 +6189,38 @@
           {
             "enemy": 35,
             "clones": [
+              3,
               1,
               2,
-              3,
               4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              4,
+              1,
+              2
             ]
           }
         ]
@@ -6019,22 +6236,16 @@
           {
             "enemy": 38,
             "clones": [
-              2,
               1
             ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
-              4,
-              1,
-              2,
               3
             ]
           },
@@ -6155,9 +6366,9 @@
       {
         "enemies": [
           {
-            "enemy": 5,
+            "enemy": 4,
             "clones": [
-              10
+              3
             ]
           },
           {
@@ -6167,19 +6378,19 @@
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 5,
             "clones": [
-              3
+              10
             ]
           },
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -6189,27 +6400,27 @@
       {
         "enemies": [
           {
-            "enemy": 2,
-            "clones": [
-              13
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               6
             ]
           },
           {
-            "enemy": 5,
+            "enemy": 2,
             "clones": [
-              4
+              13
             ]
           },
           {
             "enemy": 1,
             "clones": [
               20
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              4
             ]
           }
         ]
@@ -6223,9 +6434,9 @@
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 1,
             "clones": [
-              1
+              13
             ]
           },
           {
@@ -6235,9 +6446,9 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 8,
             "clones": [
-              13
+              1
             ]
           },
           {
@@ -6247,16 +6458,16 @@
             ]
           },
           {
+            "enemy": 9,
+            "clones": [
+              1
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               9,
               10
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
             ]
           },
           {
@@ -6270,6 +6481,12 @@
       {
         "enemies": [
           {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               3,
@@ -6281,12 +6498,6 @@
             "clones": [
               3,
               7
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
             ]
           },
           {
@@ -6323,8 +6534,8 @@
             "enemy": 8,
             "clones": [
               7,
-              8,
               5,
+              8,
               4
             ]
           },
@@ -6394,8 +6605,8 @@
           {
             "enemy": 15,
             "clones": [
-              1,
-              4
+              4,
+              1
             ]
           }
         ]
@@ -6403,16 +6614,16 @@
       {
         "enemies": [
           {
-            "enemy": 14,
-            "clones": [
-              2
-            ]
-          },
-          {
             "enemy": 15,
             "clones": [
               5,
               6
+            ]
+          },
+          {
+            "enemy": 14,
+            "clones": [
+              2
             ]
           }
         ]
@@ -6465,8 +6676,8 @@
           {
             "enemy": 45,
             "clones": [
-              4,
-              3
+              3,
+              4
             ]
           }
         ]
@@ -6616,6 +6827,12 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               8,
@@ -6628,12 +6845,6 @@
             "clones": [
               8,
               17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
             ]
           },
           {
@@ -6655,10 +6866,9 @@
       {
         "enemies": [
           {
-            "enemy": 5,
+            "enemy": 4,
             "clones": [
-              10,
-              5
+              3
             ]
           },
           {
@@ -6669,9 +6879,10 @@
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 5,
             "clones": [
-              3
+              10,
+              5
             ]
           },
           {
@@ -6691,13 +6902,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -6719,6 +6930,12 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              5
+            ]
+          },
+          {
             "enemy": 7,
             "clones": [
               1
@@ -6728,12 +6945,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
             ]
           }
         ]
@@ -6788,13 +6999,13 @@
             ]
           },
           {
-            "enemy": 12,
+            "enemy": 11,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 11,
+            "enemy": 12,
             "clones": [
               1
             ]
@@ -6816,13 +7027,6 @@
       {
         "enemies": [
           {
-            "enemy": 8,
-            "clones": [
-              8,
-              4
-            ]
-          },
-          {
             "enemy": 1,
             "clones": [
               19
@@ -6835,9 +7039,10 @@
             ]
           },
           {
-            "enemy": 12,
+            "enemy": 8,
             "clones": [
-              5
+              8,
+              4
             ]
           },
           {
@@ -6850,6 +7055,12 @@
             "enemy": 6,
             "clones": [
               6
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              5
             ]
           }
         ]
@@ -6864,12 +7075,6 @@
             ]
           },
           {
-            "enemy": 12,
-            "clones": [
-              6
-            ]
-          },
-          {
             "enemy": 8,
             "clones": [
               7
@@ -6880,19 +7085,25 @@
             "clones": [
               7
             ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              6
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 43,
+            "enemy": 13,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 13,
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -6945,16 +7156,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               5,
               6
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -7037,22 +7248,16 @@
           {
             "enemy": 35,
             "clones": [
-              4,
+              2,
               3,
               1,
-              2
+              4
             ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
           {
             "enemy": 38,
             "clones": [
@@ -7065,13 +7270,27 @@
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
               3,
               2,
               4,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
               1
             ]
           },
@@ -7193,6 +7412,12 @@
       {
         "enemies": [
           {
+            "enemy": 4,
+            "clones": [
+              7
+            ]
+          },
+          {
             "enemy": 5,
             "clones": [
               4,
@@ -7204,12 +7429,6 @@
             "clones": [
               20,
               21
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              7
             ]
           },
           {
@@ -7229,13 +7448,13 @@
       {
         "enemies": [
           {
-            "enemy": 31,
+            "enemy": 30,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 30,
+            "enemy": 31,
             "clones": [
               1
             ]
@@ -7275,6 +7494,12 @@
             ]
           },
           {
+            "enemy": 10,
+            "clones": [
+              1
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               10,
@@ -7286,17 +7511,17 @@
             "clones": [
               1
             ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              18
+            ]
+          },
           {
             "enemy": 8,
             "clones": [
@@ -7307,12 +7532,6 @@
             "enemy": 7,
             "clones": [
               3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
             ]
           },
           {
@@ -7435,16 +7654,16 @@
       {
         "enemies": [
           {
+            "enemy": 14,
+            "clones": [
+              2
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               5,
               6
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2
             ]
           }
         ]
@@ -7480,8 +7699,8 @@
           {
             "enemy": 45,
             "clones": [
-              2,
-              1
+              1,
+              2
             ]
           }
         ]
@@ -7529,8 +7748,36 @@
             "clones": [
               3,
               1,
-              4,
+              2,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
               2
+            ]
+          },
+          {
+            "enemy": 39,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              4,
+              2,
+              1
             ]
           }
         ]
@@ -7546,22 +7793,16 @@
           {
             "enemy": 38,
             "clones": [
-              2,
               1
             ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 40,
             "clones": [
-              4,
-              2,
-              1,
               3
             ]
           },

@@ -659,35 +659,28 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
     }
   }
 
-  // Zu Packs bundeln. Eine Route besteht nicht aus einzelnen Gegnern, sondern
-  // aus Packs: MDT nummeriert sie mit g, und in den echten Routen liegt ein
-  // Pack zu 96 Prozent in genau einem Pull - nachgemessen an sechzehn
-  // Vergleichsrouten, 510 von 534 Packs.
-  const packs = new Map()
-  for (const m of alleMitglieder) {
-    const schluessel = m.klon.g ?? ('e' + m.klon.enemy + ':' + m.klon.clone)
-    if (!packs.has(schluessel)) packs.set(schluessel, { t: m.t, klone: [], mitglieder: [] })
-    const pack = packs.get(schluessel)
-    pack.klone.push(m.klon)
-    pack.mitglieder.push(m)
-    if (m.t < pack.t) pack.t = m.t
-  }
-  const reihe = [...packs.values()].sort((a, b) => a.t - b.t)
-
-  // Und trennen wie keystone.guru: ein neuer Pull beginnt, wenn der laufende
-  // abgeschlossen ist - alles daran Beteiligte tot - oder wenn beim Anpullen
-  // des naechsten Packs die Lebenspunkte der laufenden Gruppe im Mittel bei
-  // hoechstens 30 Prozent stehen (CHAIN_PULL_DETECTION_HP_PERCENT).
+  // Die Gegner der Reihe nach, wie sie beruehrt wurden.
   //
-  // Tote zaehlen dabei mit null im Zaehler und voll im Nenner, genau wie in
-  // deren ActivePull::getAverageHPPercentAt.
+  // keystone.guru ordnet einzelne Gegner zu, nicht Packs. Ich hatte zunaechst
+  // zu Packs gebuendelt, weil in den echten Routen ein Pack fast immer in
+  // genau einem Pull liegt - nachgemessen 510 von 534. Fast immer ist aber
+  // nicht immer: in Rubinquell verteilt eine Route ein Pack ueber drei Pulls,
+  // und gebuendelt ist das unerreichbar.
+  //
+  // Beides gemessen hielt sich die Waage - gebuendelt gewann eine
+  // Rubinquell-Route und verlor zwei, ungebuendelt umgekehrt. Deshalb der
+  // Mittelweg: die Folge laeuft ueber einzelne Gegner, aber ein Pack, das
+  // gerade im Kampf ist, wird nicht mittendrin getrennt. Es kann nur zerfallen,
+  // wenn zwischendurch etwas anderes den Pull beendet hat.
+  const reihe = alleMitglieder.slice().sort((a, b) => a.t - b.t)
+
   const anteilLeben = (m, zeit) => {
     const tod = m.tod
     if (tod !== undefined && zeit >= tod) return 0
-    const reihe2 = verlauf.get(m.schluessel)
-    if (reihe2 && reihe2.length) {
+    const messwerte = verlauf.get(m.schluessel)
+    if (messwerte && messwerte.length) {
       let wert = null
-      for (const [zp, anteil] of reihe2) {
+      for (const [zp, anteil] of messwerte) {
         if (zp > zeit) break
         wert = anteil
       }
@@ -699,20 +692,26 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
     return Math.max(0, Math.min(1, (tod - zeit) / spanne))
   }
 
+  // Getrennt wird wie bei keystone.guru: ein neuer Pull beginnt, wenn der
+  // laufende abgeschlossen ist - alles daran Beteiligte tot - oder wenn beim
+  // Anpullen des naechsten Gegners die Lebenspunkte der laufenden Gruppe im
+  // Mittel bei hoechstens 30 Prozent stehen. Tote zaehlen dabei mit null im
+  // Zaehler und voll im Nenner, genau wie in deren getAverageHPPercentAt.
   let gruppe = []
   const abschliessen = () => {
     if (!gruppe.length) return
-    rohPulls.push(gruppe.flatMap((x) => x.klone))
+    rohPulls.push(gruppe.map((m) => m.klon))
     gruppe = []
   }
-  for (const pack of reihe) {
-    if (gruppe.length) {
-      const laufend = gruppe.flatMap((x) => x.mitglieder)
-      const alleTot = laufend.every((m) => m.tod !== undefined && m.tod <= pack.t)
-      const leben = laufend.reduce((s, m) => s + anteilLeben(m, pack.t), 0) / laufend.length
+  for (const m of reihe) {
+    const schonDa = m.klon.g !== undefined &&
+      gruppe.some((x) => x.klon.g === m.klon.g)
+    if (gruppe.length && !schonDa) {
+      const alleTot = gruppe.every((x) => x.tod !== undefined && x.tod <= m.t)
+      const leben = gruppe.reduce((s, x) => s + anteilLeben(x, m.t), 0) / gruppe.length
       if (alleTot || leben <= kette) abschliessen()
     }
-    gruppe.push(pack)
+    gruppe.push(m)
   }
   abschliessen()
 
