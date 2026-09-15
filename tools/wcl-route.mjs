@@ -339,12 +339,13 @@ function bewerten(abb, instanzen, kloneJeNpc, toleranz) {
  * werden erst alle Abstaende gesammelt und dann die kuerzesten zuerst
  * vergeben - wer sicher ist, kommt zuerst.
  */
-function vergeben(abb, instanzen, kloneJeNpc, toleranz) {
+function vergeben(abb, instanzen, kloneJeNpc, toleranz, erlaubt = null) {
   const kandidaten = []
   for (const e of instanzen) {
     const x = abb.s * e.x + abb.dx
     const y = abb.s * e.y + abb.dy
     for (const k of kloneJeNpc.get(e.npcId) ?? []) {
+      if (erlaubt && !erlaubt(e, k)) continue
       const abstand = Math.hypot(x - k.x, y - k.y)
       if (abstand <= toleranz) kandidaten.push({ e, k, abstand })
     }
@@ -363,6 +364,101 @@ function vergeben(abb, instanzen, kloneJeNpc, toleranz) {
     raus.push(kandidat)
   }
   return raus
+}
+
+
+// ------------------------------------------------- Gegner, die verschwinden
+
+/**
+ * Gegner, die nicht sterben, sondern sich aufloesen - und die Leiche, an der
+ * man sie trotzdem erkennt.
+ *
+ * Das ganze Verfahren haengt an Todesereignissen: platziert wird, wer gefallen
+ * ist. Manche Gegner fallen aber nie. Geister verschwinden, wenn sie besiegt
+ * sind; die statischen Anomalien in Tempel von Sethraliss verwandeln sich in
+ * eine Kugel; der Avatar von Sethraliss wird geheilt statt getoetet. Fuer
+ * keinen von ihnen gibt es irgendwo ein Todesereignis - nicht bei
+ * Warcraftlogs, nicht bei Raider.IO, nicht im rohen Protokoll.
+ *
+ * keystone.guru loest das ueber Nachbarn: jeder dieser Gegner hat einen, der
+ * regulaer stirbt, und dessen Tod belegt ihn mit. Die Zuordnungen stehen
+ * offen in deren Quelltext (RaiderIO/keystone.guru, Builders/Rules) und sind
+ * hier uebernommen, nicht nachempfunden.
+ *
+ * Gemessen fehlten dadurch in Koenigsruh der dritte Boss, ein Pflicht-Trashpull
+ * und der Endboss; in Tempel von Sethraliss sechs Anomalien und der Avatar.
+ */
+/**
+ * Der blendende Hain: die Bruecke und der Weg darunter.
+ *
+ * Beide liegen bei fast denselben Koordinaten - die Bruecke oben, der Weg
+ * darunter - und sie teilen sich dieselben Gegnerarten. Eine Hoehenachse gibt
+ * es nicht, also kann keine Geometrie der Welt sie auseinanderhalten.
+ *
+ * Getrennt werden sie allein durch den Ablauf: die Gruppe geht ueber die
+ * Bruecke zu Ikuzz, und erst wenn Lichtwaechterin Ruia liegt, darunter
+ * hindurch zu Ziekket. Vorher existieren die Gegner unter der Bruecke fuer
+ * die Route nicht, nachher die auf ihr nicht mehr.
+ *
+ * Ausgeschlossen wird, nicht bevorzugt. keystone.guru merkt dazu an, dass
+ * eine Bevorzugung den Abstand ueberstimmt und damit richtige Zuordnungen
+ * kaputtmacht: ein Kill genau auf einem Gegner unter der Bruecke landete auf
+ * einem fuenfzehn Meter entfernten oben. Wer die Nichtexistierenden entfernt,
+ * statt die anderen vorzuziehen, hat diesen Fehlerfall nicht.
+ *
+ * Die Schluessel sind npcID-Klon und stammen unveraendert aus deren
+ * TheBlindingValeBridgeRule; nachgeprueft liegen sie in MDTs Gruppen 44 bis 46
+ * beziehungsweise 47 bis 50 und 54.
+ */
+const BRUECKE = {
+  wache: 245912,
+  oben: new Set([
+    '245339-11', '245339-12', '245345-25', '254850-10',
+    '245410-90', '245410-91', '245410-92', '245410-93', '245410-94',
+    '245346-5', '245473-9', '245484-16',
+  ]),
+  unten: new Set([
+    '245410-107', '245410-108', '245410-109', '245410-110', '245410-111',
+    '245345-28', '245410-112', '245410-113',
+    '245346-6',
+    '245336-1', '245339-1', '245345-26', '245345-27',
+    '245410-104', '245410-105', '245410-106',
+    '245345-10', '245410-15', '245410-16', '245410-17', '245410-18', '245410-19',
+    // Die Lichtfeder-Bluetenfluegel, die MDT je nach Kartenstand gruppiert
+    // oder nicht.
+    '245484-5', '245484-6', '245484-7',
+  ]),
+}
+
+const VERSCHWINDER = {
+  "King's Rest": [
+    // Der Rat der Stämme sind drei Geister. Von Zanazals Totems bekommen wir
+    // Tode - das erste gefallene Totem belegt die anderen beiden gleich mit,
+    // damit der Kampf in einem Pull landet statt in zweien.
+    {
+      ausloeser: [135761, 135764, 135765],
+      verleiht: [135761, 135764, 135765, 269808, 269810, 269811],
+    },
+    // Der Schatten Zuls, ueber einen Diener Zuls aus seinem eigenen Pack -
+    // aber erst, wenn der Rat liegt. Vorher ist die Gruppe nicht in seiner
+    // Naehe, und ein frueher Trashkill duerfte ihn nicht belegen.
+    //
+    // 138493 ist der Diener aus seinem Pack; die gleichnamigen 133943 aus den
+    // fruehen Packs sind ausdruecklich nicht gemeint.
+    { ausloeser: [138493], verleiht: [138489], erst: [269808, 269810, 269811] },
+    // Koenig Dazar und T'zala ueber Reban, das letzte Add vor dem Kampf. Der
+    // Schatten steht mit in der Liste: wer bis hierher kam, ist an ihm vorbei.
+    { ausloeser: [136984], verleiht: [138489, 136976, 136160] },
+  ],
+  'Temple of Sethraliss': [
+    // Galvazzt erscheint erst, wenn alle Anomalien weg sind - sein Tod ist
+    // also der Beleg fuer sie alle. Er traegt zwei Kennungen ueber die
+    // Kartenstaende hinweg, beide gelten.
+    { ausloeser: [133389, 263658], verleiht: [134691] },
+    // Der Avatar wird gesundgepflegt, nicht erschlagen. Nur der Umstand, dass
+    // der Lauf zu Ende ging, belegt ihn - also der letzte Tod ueberhaupt.
+    { amEnde: true, verleiht: [133392] },
+  ],
 }
 
 
@@ -442,11 +538,28 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
   }
 
   // ---- Zuordnung, nach Karten getrennt und nur fuer Gestorbene
+  //
+  // Im blendenden Hain haengt daran, wann ein Gegner beruehrt wurde: vor
+  // Ruias Tod existieren die unter der Bruecke noch nicht, danach die auf ihr
+  // nicht mehr.
+  const ruiaTot = dungeon.englishName === 'The Blinding Vale'
+    ? [...todesZeit.entries()].filter(([k]) => Number(k.split(':')[0]) === BRUECKE.wache)
+      .reduce((a, [, zeit]) => Math.min(a, zeit), Infinity)
+    : Infinity
+
+  const erlaubt = Number.isFinite(ruiaTot)
+    ? (instanz, klon) => {
+      const schluessel = klon.npcId + '-' + klon.clone
+      const vorher = (frueh.get(instanz.npcId + ':' + instanz.instanz) ?? instanz.t) < ruiaTot
+      return vorher ? !BRUECKE.unten.has(schluessel) : !BRUECKE.oben.has(schluessel)
+    }
+    : null
+
   const zugeteilt = new Map()
   for (const [mapID, abb] of abbildungen) {
     const hier = [...ort.values()].filter((x) => x.mapID === mapID &&
       gestorben.has(x.npcId + ':' + x.instanz))
-    for (const t of vergeben(abb, hier, kloneJeNpc, e.toleranz ?? 60)) {
+    for (const t of vergeben(abb, hier, kloneJeNpc, e.toleranz ?? 60, erlaubt)) {
       zugeteilt.set(t.e.npcId + ':' + t.e.instanz, t.k)
     }
   }
@@ -603,6 +716,56 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
   }
   abschliessen()
 
+  // ---- Gegner nachtragen, die sich aufgeloest haben
+  //
+  // Erst hier, nachdem die Pulls stehen: der verliehene Gegner gehoert in den
+  // Pull dessen, der ihn belegt.
+  const regeln = VERSCHWINDER[dungeon.englishName] ?? []
+  let verliehen = 0
+
+  if (regeln.length) {
+    const wo = new Map()
+    for (const [i, liste] of rohPulls.entries()) {
+      for (const k of liste) wo.set(k.enemy + ':' + k.clone, i)
+    }
+    const belegt = (npc) => (kloneJeNpc.get(npc) ?? []).some((k) => wo.has(k.enemy + ':' + k.clone))
+
+    const eintragen = (npcIds, ziel) => {
+      for (const npc of npcIds) {
+        for (const k of kloneJeNpc.get(npc) ?? []) {
+          const schluessel = k.enemy + ':' + k.clone
+          if (wo.has(schluessel)) continue
+          rohPulls[ziel].push(k)
+          wo.set(schluessel, ziel)
+          verliehen += 1
+        }
+      }
+    }
+
+    // Die Tode der Reihe nach - eine Regel gilt ab dem Moment, in dem ihr
+    // Ausloeser faellt, und nur wenn ihre Vorbedingung schon erfuellt ist.
+    const reihenfolge = [...todesZeit.entries()]
+      .map(([schluessel, zeit]) => ({ npc: Number(schluessel.split(':')[0]), schluessel, zeit }))
+      .sort((a, b) => a.zeit - b.zeit)
+
+    for (const tod of reihenfolge) {
+      for (const regel of regeln) {
+        if (regel.amEnde || !regel.ausloeser.includes(tod.npc)) continue
+        if (regel.erst && !regel.erst.every(belegt)) continue
+        const klon = zugeteilt.get(tod.schluessel)
+        const ziel = klon ? wo.get(klon.enemy + ':' + klon.clone) : undefined
+        if (ziel === undefined) continue
+        eintragen(regel.verleiht, ziel)
+      }
+    }
+
+    // Was das blosse Ende des Laufs belegt, kommt in den letzten Pull.
+    for (const regel of regeln) {
+      if (!regel.amEnde || !rohPulls.length) continue
+      eintragen(regel.verleiht, rohPulls.length - 1)
+    }
+  }
+
   // ---- Packs vervollstaendigen
   //
   // MDT kennt zu jedem Klon eine Packnummer g. Wer eines dieser Geschwister
@@ -690,7 +853,7 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
 
   return {
     pulls, kraefte, gegnerZahl, ergaenzt, abbildungen,
-    orte: ort.size, tote: gestorben.size,
+    orte: ort.size, tote: gestorben.size, verliehen,
   }
 }
 
