@@ -7,6 +7,10 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.09.22.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.2.19.
+
 ## 2026.09.21.1
 
 Dungeon data rebuilt against Mythic Dungeon Tools 6.2.18.
