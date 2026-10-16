@@ -76,6 +76,34 @@ Without all three it stays out.
   below 100% is never accepted, and a timed run had them anyway.
 - "Reset" in the filter panel no longer leaves old labels behind.
 
+## 2026.10.08.2
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.3.5.
+
+## 2026.10.08.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.3.4.
+
+## 2026.10.07.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.3.2.
+
+## 2026.09.25.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.2.20.
+
+## 2026.09.22.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.2.19.
+
+## 2026.09.21.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.2.18.
+
+## 2026.09.09.2
+
+Maintenance release. No changes to routes or dungeon data.
+
 ## 2026.09.09.2
 
 - Route authors can now change or withdraw their own routes: edit the
