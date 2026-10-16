@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.10.16.1
+
 ### Top Routes — the routes the best groups actually run
 
 A new tab next to *Community* and *My routes*, built on the Raider.IO
