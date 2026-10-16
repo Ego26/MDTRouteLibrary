@@ -6,7 +6,7 @@
 --
 -- WICHTIG: Diese Tabelle altert. Blizzard verschiebt Bannzauber zwischen
 -- Spezialisierungen, und die Angaben unten gelten fuer Retail zum Zeitpunkt
--- des letzten Abgleichs (MDT 6.2.13, Client 12.0.1). Wenn etwas nicht mehr
+-- des letzten Abgleichs (MDT 6.3.7, Client 12.1.5). Wenn etwas nicht mehr
 -- stimmt, ist genau diese Datei der einzige Ort, der angefasst werden muss.
 --
 -- Zwei Richtungen sind zu unterscheiden:

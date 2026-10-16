@@ -58,8 +58,7 @@ report it came from, so you can check.
 
 A run is only listed when it was timed with the full enemy forces, its
 owner allows the route to be shown, a route was actually published, and its
-combat log could be found.
-Without all three it stays out.
+combat log could be found. Without all four it stays out.
 
 ### Also
 
@@ -75,6 +74,7 @@ Without all three it stays out.
 - The filter for enemy forces is gone. It filtered nothing: a submission
   below 100% is never accepted, and a timed run had them anyway.
 - "Reset" in the filter panel no longer leaves old labels behind.
+- Updated for World of Warcraft 12.1.5.
 
 ## 2026.10.08.2
 

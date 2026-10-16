@@ -106,7 +106,7 @@ not use the command.
 ## Requirements
 
 [Mythic Dungeon Tools](https://www.curseforge.com/wow/addons/mythic-dungeon-tools).
-Built and tested against MDT 6.2.16.
+Built against MDT 6.3.7 (World of Warcraft 12.1.5).
 
 Not affiliated with Blizzard Entertainment, and not an official part of Mythic
 Dungeon Tools. Run data from [Raider.IO](https://raider.io), used under their

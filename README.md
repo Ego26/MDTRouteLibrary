@@ -67,7 +67,7 @@ vier bleibt er draußen.
 
 ## Status
 
-Gebaut und geprüft gegen **MDT 6.2.16** (Client 12.0.1). Addon,
+Gebaut gegen **MDT 6.3.7** (Client 12.1.5). Addon,
 MDT-Anbindung, Einreich-Pfad, Generator und tägliche Pipeline stehen.
 
 ## Wie es sich in MDT verhält

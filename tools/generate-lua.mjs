@@ -73,7 +73,7 @@ function dungeonKey(name) {
  * Baut alle Dateien des Datenaddons im Speicher.
  *
  * @param {object[]} routes Normalisierte Routen
- * @param {object} meta { build, season, mdtVersion, sources }
+ * @param {object} meta { build, season, mdtVersion, interface, sources }
  * @returns {{ files: Map<string,string>, hash: string, stats: object }}
  */
 export function buildDataAddon(routes, meta) {
@@ -118,7 +118,7 @@ export function buildDataAddon(routes, meta) {
   files.set('Manifest.lua', `${HEADER}\nlocal R = MDTRouteLibrary\n\nR:SetManifest(${toLua(manifest, 0)})\n`)
 
   const toc = [
-    '## Interface: ' + (meta.interface ?? '120100'),
+    '## Interface: ' + (meta.interface ?? '120105'),
     '## Title: MDT Route Library |cff8a8a8aDaten|r',
     '## Notes: Route data for MDT Route Library. Loads on demand.',
     '## Notes-deDE: Routendaten für MDT Route Library. Wird bei Bedarf geladen.',

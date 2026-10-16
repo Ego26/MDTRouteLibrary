@@ -71,6 +71,16 @@ function hashAddonSources(hash) {
   }
 }
 
+/**
+ * Die Interface-Version aus der Haupt-TOC. Das Datenaddon uebernimmt sie, damit
+ * nach einem Patch nur eine Stelle angehoben werden muss.
+ */
+function readInterface() {
+  const toc = join(ROOT, 'MDTRouteLibrary.toc')
+  if (!existsSync(toc)) return undefined
+  return readFileSync(toc, 'utf8').match(/^## Interface:\s*(.+?)\s*$/m)?.[1]
+}
+
 /** Liest alle JSON-Routen eines Ordners. */
 function readRouteFiles(dir) {
   if (!existsSync(dir)) return []
@@ -459,6 +469,7 @@ async function main() {
     build,
     season: args.season ?? null,
     mdtVersion,
+    interface: readInterface(),
     sources: [...new Set(accepted.map((r) => r.source).filter(Boolean))],
     dungeons: dungeonMeta,
   })
