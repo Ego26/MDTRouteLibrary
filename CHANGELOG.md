@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.10.20.1
+
 - Russian translation, contributed by Hollicsh.
 
 ## 2026.10.19.1
