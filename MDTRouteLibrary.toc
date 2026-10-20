@@ -1,8 +1,10 @@
 ## Interface: 120105
 ## Title: MDT Route Library
 ## Title-deDE: MDT Route Library
+## Title-ruRU: Библиотека маршрутов MDT
 ## Notes: Curated Mythic+ routes, ready to use in MDT. Type /routes.
 ## Notes-deDE: Kuratierte Mythic+-Routen, direkt in MDT nutzbar. Tippe /routes.
+## Notes-ruRU: Подборка маршрутов М+, готовых к использованию в MDT. Введите /routes.
 ## Author: Ego26
 ## Version: @project-version@
 ## SavedVariables: MDTRouteLibraryDB
@@ -23,6 +25,7 @@ Core\Locale.lua
 # --- Sprachen: enUS ist die Basis und muss zuerst geladen werden ---
 Locales\enUS.lua
 Locales\deDE.lua
+Locales\ruRU.lua
 
 # --- Kern, Teil 2 ---
 Core\Theme.lua
