@@ -3,7 +3,7 @@
 *Die Beschreibung für die CurseForge-Projektseite. Dort einfügen, wenn sie
 sich ändert — CurseForge speichert sie nur auf der Website, nicht im
 Repository. Englisch, weil die Seite international gelesen wird; das Addon
-selbst spricht Deutsch und Englisch.*
+selbst spricht Deutsch, Englisch und Russisch.*
 
 ---
 

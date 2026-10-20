@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+- Russian translation, contributed by Hollicsh.
+
 ## 2026.10.19.1
 
 Maintenance release. No changes to routes or dungeon data.
