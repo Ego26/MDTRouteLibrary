@@ -241,6 +241,22 @@ jobs:
           (github.event_name != 'schedule' || github.event.schedule == '0 5 * * *')
         run: node tools/wcl-toproutes.mjs --mdt .mdt --in data/raiderio --max 60
 
+      # Die Abgleiche oben dauern im 05:00-Lauf Stunden. Was in der Zeit auf
+      # main gelandet ist, muss vor dem Bauen herein: sonst schreibt
+      # changelog.mjs seine Release-Notes aus einem veralteten CHANGELOG.md,
+      # und der Rebase vor dem Push laeuft in einen Konflikt, sobald jemand
+      # inzwischen unter "Unreleased" etwas ergaenzt hat (20.10.2026: drei
+      # Stunden Abgleich verworfen). Und der Inhaltshash deckte sonst nicht
+      # den Code, der hinterher im Paket landet.
+      #
+      # Danach bleiben zwischen Bauen und Push nur Sekunden.
+      - name: Auf den Stand von main bringen
+        if: github.event_name != 'issues'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin main
+
       - name: Datenaddon bauen
         if: github.event_name != 'issues'
         id: build
@@ -329,6 +345,9 @@ jobs:
               pushed=yes
               break
             fi
+            # Ein gescheiterter Rebase bleibt sonst stehen, und jeder weitere
+            # Versuch bricht nur mit "unmerged files" ab.
+            git rebase --abort 2>/dev/null || true
             sleep $((attempt * 5))
           done
           [ "$pushed" = yes ] || exit 1
