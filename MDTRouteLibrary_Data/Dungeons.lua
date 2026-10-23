@@ -18,14 +18,14 @@ R:RegisterDungeon({
             count = 0,
             isBoss = true,
             spells = {
-                { id = 1296050 },
-                { id = 1296058 },
-                { id = 1296069, disease = true },
-                { id = 1296216 },
+                { id = 1296058, disease = true },
                 { id = 1296219 },
                 { id = 1296220 },
-                { id = 1297876 },
-                { id = 1298221 },
+                { id = 1298223 },
+                { id = 1298683 },
+                { id = 1306345 },
+                { id = 1307700 },
+                { id = 1307703 },
             },
         },
         [259446] = {
@@ -41,10 +41,10 @@ R:RegisterDungeon({
                 { id = 1287811 },
                 { id = 1298949 },
                 { id = 1299053 },
-                { id = 1299080 },
                 { id = 1299130 },
-                { id = 1299135 },
                 { id = 1299154 },
+                { id = 1299940 },
+                { id = 1300044 },
             },
         },
         [259447] = {
@@ -57,13 +57,12 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1300876 },
-                { id = 1300886 },
                 { id = 1300888 },
-                { id = 1300892 },
                 { id = 1300894 },
-                { id = 1300901 },
                 { id = 1301111 },
-                { id = 1301114 },
+                { id = 1301217 },
+                { id = 1301350 },
+                { id = 1301413 },
             },
         },
         [261550] = {
@@ -75,11 +74,7 @@ R:RegisterDungeon({
             count = 1,
             spells = {
                 { id = 1294432 },
-                { id = 1305637 },
-                { id = 1306232 },
-                { id = 1306235 },
                 { id = 1307098 },
-                { id = 1307144 },
             },
         },
         [261552] = {
@@ -90,7 +85,6 @@ R:RegisterDungeon({
             health = 3243255,
             count = 5,
             spells = {
-                { id = 1221063 },
                 { id = 1307526 },
             },
         },
@@ -102,10 +96,8 @@ R:RegisterDungeon({
             health = 3567581,
             count = 5,
             spells = {
-                { id = 1221063 },
                 { id = 1306308, enrage = true },
                 { id = 1306333 },
-                { id = 1306338 },
             },
         },
         [261554] = {
@@ -116,14 +108,9 @@ R:RegisterDungeon({
             health = 5513534,
             count = 25,
             spells = {
-                { id = 1221063 },
-                { id = 1294567 },
-                { id = 1294568 },
-                { id = 1294569, magic = true },
-                { id = 1294570 },
+                { id = 1294567, magic = true },
                 { id = 1294572 },
                 { id = 1306668 },
-                { id = 1306669 },
             },
         },
         [261556] = {
@@ -134,7 +121,6 @@ R:RegisterDungeon({
             health = 972977,
             count = 0,
             spells = {
-                { id = 1221063 },
                 { id = 1306383 },
             },
         },
@@ -146,13 +132,11 @@ R:RegisterDungeon({
             health = 2918930,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1287544 },
                 { id = 1289416, interruptible = true, poison = true },
                 { id = 1292904 },
                 { id = 1306385 },
                 { id = 1307567, interruptible = true },
-                { id = 1307571, poison = true },
                 { id = 1307602 },
             },
         },
@@ -164,7 +148,6 @@ R:RegisterDungeon({
             health = 2918930,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1294557, interruptible = true },
                 { id = 1306381 },
             },
@@ -177,14 +160,11 @@ R:RegisterDungeon({
             health = 8173003,
             count = 30,
             spells = {
-                { id = 1221063 },
                 { id = 1293420 },
                 { id = 1294934 },
-                { id = 1294958 },
                 { id = 1295055 },
-                { id = 1295073 },
                 { id = 1308864 },
-                { id = 1308865 },
+                { id = 1309416 },
             },
         },
         [262011] = {
@@ -195,10 +175,8 @@ R:RegisterDungeon({
             health = 5513534,
             count = 25,
             spells = {
-                { id = 1221063 },
                 { id = 1294845, poison = true },
                 { id = 1294849 },
-                { id = 1294859 },
             },
         },
         [262398] = {
@@ -209,9 +187,7 @@ R:RegisterDungeon({
             health = 33783904,
             count = 0,
             spells = {
-                { id = 1221063 },
                 { id = 1300503 },
-                { id = 1300618 },
                 { id = 1300698 },
                 { id = 1305368, poison = true },
                 { id = 1305393 },
@@ -229,10 +205,8 @@ R:RegisterDungeon({
                 { id = 1289416, interruptible = true, poison = true },
                 { id = 1292892 },
                 { id = 1306852 },
-                { id = 1306853 },
                 { id = 1306856 },
                 { id = 1307567, interruptible = true },
-                { id = 1307571, poison = true },
             },
         },
         [263112] = {
@@ -243,8 +217,7 @@ R:RegisterDungeon({
             health = 1297302,
             count = 1,
             spells = {
-                { id = 1303366 },
-                { id = 1306230, poison = true },
+                { id = 1303366, poison = true },
             },
         },
         [264798] = {
@@ -256,7 +229,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1293059 },
-                { id = 1293079 },
             },
         },
         [268358] = {
@@ -278,10 +250,7 @@ R:RegisterDungeon({
             health = 5189208,
             count = 25,
             spells = {
-                { id = 1221063 },
                 { id = 1306517 },
-                { id = 1306550 },
-                { id = 1306641 },
                 { id = 1306844 },
                 { id = 1306893 },
                 { id = 1306911 },
@@ -306,7 +275,6 @@ R:RegisterDungeon({
             health = 32432550,
             count = 0,
             spells = {
-                { id = 1300618 },
                 { id = 1300698 },
                 { id = 1305393 },
             },
@@ -319,7 +287,6 @@ R:RegisterDungeon({
             health = 3243255,
             count = 5,
             spells = {
-                { id = 1221063 },
                 { id = 1308518 },
             },
         },
@@ -575,7 +542,6 @@ R:RegisterDungeon({
             health = 3729743,
             count = 8,
             spells = {
-                { id = 1221063 },
                 { id = 1238053, enrage = true },
                 { id = 1241219 },
             },
@@ -600,14 +566,14 @@ R:RegisterDungeon({
             count = 0,
             isBoss = true,
             spells = {
-                { id = 1221063 },
                 { id = 1232012 },
                 { id = 1234021 },
                 { id = 1234233 },
                 { id = 1234681 },
-                { id = 1234734 },
                 { id = 1234846, poison = true },
                 { id = 1235072 },
+                { id = 1235079 },
+                { id = 1235105 },
             },
         },
         [241813] = {
@@ -618,7 +584,6 @@ R:RegisterDungeon({
             health = 3243255,
             count = 5,
             spells = {
-                { id = 1221063 },
                 { id = 1241217 },
                 { id = 1297699, disease = true },
                 { id = 1297701 },
@@ -632,7 +597,6 @@ R:RegisterDungeon({
             health = 3729743,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1241214, interruptible = true },
                 { id = 1297696, interruptible = true, magic = true },
             },
@@ -645,9 +609,7 @@ R:RegisterDungeon({
             health = 2918930,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1238439, bleed = true },
-                { id = 1238440 },
             },
         },
         [241869] = {
@@ -658,10 +620,8 @@ R:RegisterDungeon({
             health = 6486510,
             count = 28,
             spells = {
-                { id = 1221063 },
                 { id = 1240280 },
                 { id = 1241463 },
-                { id = 1241464 },
             },
         },
         [241872] = {
@@ -672,7 +632,6 @@ R:RegisterDungeon({
             health = 3567581,
             count = 9,
             spells = {
-                { id = 1221063 },
                 { id = 1309919, interruptible = true },
             },
         },
@@ -684,10 +643,8 @@ R:RegisterDungeon({
             health = 2789199,
             count = 5,
             spells = {
-                { id = 1221063 },
                 { id = 1241226 },
                 { id = 1265400 },
-                { id = 1265402 },
             },
         },
         [241876] = {
@@ -698,9 +655,7 @@ R:RegisterDungeon({
             health = 3081092,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1239860, magic = true },
-                { id = 1239871 },
                 { id = 1266178 },
             },
         },
@@ -712,9 +667,7 @@ R:RegisterDungeon({
             health = 2918930,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1296518 },
-                { id = 1296519 },
             },
         },
         [244100] = {
@@ -726,14 +679,11 @@ R:RegisterDungeon({
             count = 0,
             isBoss = true,
             spells = {
-                { id = 1235548 },
-                { id = 1235549, magic = true },
+                { id = 1235548, magic = true },
                 { id = 1235623 },
-                { id = 1235635 },
                 { id = 1235656 },
-                { id = 1235658 },
                 { id = 1235783 },
-                { id = 1235795 },
+                { id = 1236289 },
             },
         },
         [244696] = {
@@ -744,7 +694,6 @@ R:RegisterDungeon({
             health = 428857,
             count = 0,
             spells = {
-                { id = 1235638 },
                 { id = 1235641 },
             },
         },
@@ -770,13 +719,10 @@ R:RegisterDungeon({
             health = 7783812,
             count = 35,
             spells = {
-                { id = 1247366 },
-                { id = 1247367 },
                 { id = 1251027 },
                 { id = 1264753 },
                 { id = 1290205, interruptible = true },
                 { id = 1296722 },
-                { id = 1309924 },
                 { id = 1309925 },
             },
         },
@@ -799,7 +745,6 @@ R:RegisterDungeon({
             health = 2918930,
             count = 7,
             spells = {
-                { id = 1221063 },
                 { id = 1246687, interruptible = true },
                 { id = 1297778, interruptible = true },
             },
@@ -824,7 +769,6 @@ R:RegisterDungeon({
             count = 6,
             spells = {
                 { id = 1246847, interruptible = true },
-                { id = 1246860 },
                 { id = 1246865, enrage = true },
                 { id = 1246877 },
                 { id = 1266207 },
@@ -838,7 +782,6 @@ R:RegisterDungeon({
             health = 5513534,
             count = 25,
             spells = {
-                { id = 1221063 },
                 { id = 1246957 },
                 { id = 1246986 },
             },
@@ -875,7 +818,6 @@ R:RegisterDungeon({
             health = 589867,
             count = 0,
             spells = {
-                { id = 1221063 },
                 { id = 1238801, curse = true },
             },
         },
@@ -889,7 +831,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 110960 },
                 { id = 1238439, bleed = true },
-                { id = 1238440 },
                 { id = 1239394, interruptible = true },
             },
         },
@@ -901,11 +842,8 @@ R:RegisterDungeon({
             health = 4864883,
             count = 25,
             spells = {
-                { id = 1221063 },
                 { id = 1238687 },
-                { id = 1238725 },
                 { id = 1238760 },
-                { id = 1249737 },
             },
         },
         [246404] = {
@@ -917,14 +855,13 @@ R:RegisterDungeon({
             count = 0,
             isBoss = true,
             spells = {
-                { id = 1221063 },
                 { id = 1242860 },
-                { id = 1242869 },
-                { id = 1242887 },
                 { id = 1243002 },
-                { id = 1243011 },
-                { id = 1243273 },
                 { id = 1243408 },
+                { id = 1254622 },
+                { id = 1297792 },
+                { id = 1297796 },
+                { id = 1297797 },
             },
         },
         [246409] = {
@@ -937,11 +874,9 @@ R:RegisterDungeon({
             spells = {
                 { id = 1243018 },
                 { id = 1243078 },
-                { id = 1243856 },
                 { id = 1249186 },
                 { id = 1261776 },
                 { id = 1262253 },
-                { id = 1270826 },
             },
         },
         [247301] = {
@@ -954,9 +889,7 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1242976 },
-                { id = 1255570 },
                 { id = 1255577 },
-                { id = 1262577 },
             },
         },
         [248666] = {
@@ -967,7 +900,6 @@ R:RegisterDungeon({
             health = 589867,
             count = 0,
             spells = {
-                { id = 1246821 },
                 { id = 1246825 },
             },
         },
@@ -979,9 +911,7 @@ R:RegisterDungeon({
             health = 3243255,
             count = 50,
             spells = {
-                { id = 1221063 },
                 { id = 1309947 },
-                { id = 1309964 },
             },
         },
         [251189] = {
@@ -1404,7 +1334,6 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 270889 },
-                { id = 270891 },
                 { id = 1296671, magic = true },
                 { id = 1296719 },
             },
@@ -1449,7 +1378,6 @@ R:RegisterDungeon({
             count = 22,
             spells = {
                 { id = 270482 },
-                { id = 270485 },
                 { id = 1301851, bleed = true },
             },
         },
@@ -1461,9 +1389,7 @@ R:RegisterDungeon({
             health = 3243255,
             count = 5,
             spells = {
-                { id = 270500 },
                 { id = 270502 },
-                { id = 270503 },
             },
         },
         [135204] = {
@@ -1512,13 +1438,10 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 265773 },
-                { id = 265781 },
                 { id = 265910 },
                 { id = 265923 },
                 { id = 265991 },
-                { id = 1306736 },
                 { id = 1311987 },
-                { id = 1311988 },
             },
         },
         [135406] = {
@@ -1579,13 +1502,11 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 268586 },
-                { id = 268587 },
-                { id = 268589 },
-                { id = 268590 },
-                { id = 268591 },
-                { id = 269503 },
                 { id = 1302945 },
                 { id = 1303105 },
+                { id = 1303267 },
+                { id = 1303372 },
+                { id = 1303396 },
             },
         },
         [136256] = {
@@ -1606,12 +1527,8 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1303324 },
-                { id = 1303326 },
-                { id = 1303327 },
                 { id = 1303396 },
-                { id = 1303399 },
                 { id = 1303488 },
-                { id = 1303490 },
             },
         },
         [136984] = {
@@ -1622,11 +1539,8 @@ R:RegisterDungeon({
             health = 3783798,
             count = 0,
             spells = {
-                { id = 269230 },
-                { id = 269231 },
                 { id = 269232 },
                 { id = 269369, interruptible = true },
-                { id = 1303039 },
             },
         },
         [137473] = {
@@ -1649,10 +1563,8 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 270927 },
-                { id = 270928 },
                 { id = 1297326 },
                 { id = 1306049 },
-                { id = 1306056 },
             },
         },
         [137478] = {
@@ -1699,11 +1611,9 @@ R:RegisterDungeon({
             health = 5189208,
             count = 25,
             spells = {
-                { id = 270931 },
                 { id = 1294883 },
                 { id = 1297763, enrage = true },
                 { id = 1305982 },
-                { id = 1306761 },
                 { id = 1306763, poison = true },
             },
         },
@@ -1715,9 +1625,7 @@ R:RegisterDungeon({
             health = 3243255,
             count = 10,
             spells = {
-                { id = 270500 },
                 { id = 270502 },
-                { id = 270503 },
                 { id = 1297763, enrage = true },
             },
         },
@@ -1739,7 +1647,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 271555 },
                 { id = 271561 },
-                { id = 271562 },
                 { id = 1310755 },
                 { id = 1312569 },
             },
@@ -1791,8 +1698,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 266237 },
                 { id = 266951 },
-                { id = 267494 },
-                { id = 1310761 },
             },
         },
         [269810] = {
@@ -2002,12 +1907,9 @@ R:RegisterDungeon({
             spells = {
                 { id = 473898 },
                 { id = 474197 },
-                { id = 474231 },
                 { id = 474234 },
-                { id = 1214637 },
                 { id = 1214641 },
-                { id = 1214647 },
-                { id = 1214663 },
+                { id = 1295453 },
             },
         },
         [234648] = {
@@ -2020,13 +1922,11 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 474238 },
-                { id = 474240 },
                 { id = 1214959 },
-                { id = 1217464 },
                 { id = 1217989 },
-                { id = 1221063 },
                 { id = 1223906 },
                 { id = 1230298 },
+                { id = 1264095 },
             },
         },
         [234649] = {
@@ -2039,13 +1939,10 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 474478 },
-                { id = 474483 },
                 { id = 474515, poison = true },
-                { id = 474545 },
-                { id = 474740, bleed = true },
-                { id = 474763 },
-                { id = 734276, interruptible = true },
-                { id = 1214352 },
+                { id = 1214357 },
+                { id = 1218347, interruptible = true, bleed = true },
+                { id = 1222795, poison = true },
             },
         },
         [234660] = {
@@ -2058,12 +1955,9 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1217464 },
-                { id = 1221063 },
                 { id = 1228198, magic = true },
-                { id = 1230289 },
                 { id = 1230304 },
                 { id = 1253811 },
-                { id = 1253813 },
             },
         },
         [234763] = {
@@ -2077,12 +1971,12 @@ R:RegisterDungeon({
             spells = {
                 { id = 474375, interruptible = true },
                 { id = 474408 },
-                { id = 474457 },
                 { id = 474462 },
                 { id = 1214675 },
-                { id = 1214730 },
-                { id = 1214740 },
-                { id = 1216945, interruptible = true },
+                { id = 1217345 },
+                { id = 1217415 },
+                { id = 1217881 },
+                { id = 1226469 },
             },
         },
         [234799] = {
@@ -2093,7 +1987,6 @@ R:RegisterDungeon({
             health = 1621628,
             count = 0,
             spells = {
-                { id = 1217881 },
                 { id = 1293101 },
             },
         },
@@ -2117,7 +2010,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1217099, interruptible = true },
-                { id = 1219631 },
                 { id = 1222598 },
                 { id = 1266241 },
             },
@@ -2155,7 +2047,6 @@ R:RegisterDungeon({
             health = 1621628,
             count = 1,
             spells = {
-                { id = 1221063 },
                 { id = 1293022 },
             },
         },
@@ -2167,9 +2058,7 @@ R:RegisterDungeon({
             health = 3405418,
             count = 5,
             spells = {
-                { id = 1217881 },
                 { id = 1217930, magic = true },
-                { id = 1221063 },
                 { id = 1293101 },
             },
         },
@@ -2182,12 +2071,8 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1217973, curse = true },
-                { id = 1221063 },
-                { id = 1294789 },
                 { id = 1297682 },
-                { id = 1297683 },
                 { id = 1297684 },
-                { id = 1297686 },
             },
         },
         [235267] = {
@@ -2199,8 +2084,6 @@ R:RegisterDungeon({
             count = 5,
             spells = {
                 { id = 1214922, interruptible = true, enrage = true },
-                { id = 1221063 },
-                { id = 1295426 },
                 { id = 1295427 },
             },
         },
@@ -2213,10 +2096,7 @@ R:RegisterDungeon({
             count = 7,
             spells = {
                 { id = 1214980, interruptible = true },
-                { id = 1221063 },
                 { id = 1297693 },
-                { id = 1297695 },
-                { id = 1309970 },
             },
         },
         [235322] = {
@@ -2227,14 +2107,10 @@ R:RegisterDungeon({
             health = 8432463,
             count = 35,
             spells = {
-                { id = 1215872 },
                 { id = 1215961 },
-                { id = 1215985 },
-                { id = 1218187 },
-                { id = 1221063 },
                 { id = 1294824 },
-                { id = 1294827 },
                 { id = 1294836 },
+                { id = 1294870 },
             },
         },
         [235465] = {
@@ -2246,7 +2122,6 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1294770 },
-                { id = 1294774 },
                 { id = 1297676 },
                 { id = 1297691 },
             },
@@ -2283,7 +2158,6 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1216529 },
-                { id = 1221063 },
                 { id = 1295035 },
             },
         },
@@ -2296,7 +2170,6 @@ R:RegisterDungeon({
             count = 3,
             spells = {
                 { id = 1216300, bleed = true },
-                { id = 1221063 },
             },
         },
         [236082] = {
@@ -2318,9 +2191,7 @@ R:RegisterDungeon({
             health = 2854064,
             count = 7,
             spells = {
-                { id = 1216570 },
                 { id = 1216571, interruptible = true },
-                { id = 1221063 },
                 { id = 1229433, magic = true },
             },
         },
@@ -2334,7 +2205,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 1214966 },
                 { id = 1216538, magic = true },
-                { id = 1221063 },
             },
         },
         [236088] = {
@@ -2357,9 +2227,7 @@ R:RegisterDungeon({
             count = 3,
             spells = {
                 { id = 1216284 },
-                { id = 1216589 },
-                { id = 1216590, poison = true },
-                { id = 1221063 },
+                { id = 1216589, poison = true },
             },
         },
         [236525] = {
@@ -2421,11 +2289,9 @@ R:RegisterDungeon({
             count = 30,
             spells = {
                 { id = 1216954 },
-                { id = 1216955 },
                 { id = 1217930, magic = true },
                 { id = 1217937 },
                 { id = 1302007 },
-                { id = 1302010 },
             },
         },
         [237626] = {
@@ -2436,7 +2302,6 @@ R:RegisterDungeon({
             health = 459705,
             count = 0,
             spells = {
-                { id = 1221063 },
                 { id = 1223204, interruptible = true },
                 { id = 1226469 },
             },
@@ -2449,10 +2314,8 @@ R:RegisterDungeon({
             health = 202703433,
             count = 0,
             spells = {
-                { id = 1221063 },
                 { id = 1231256 },
                 { id = 1231262 },
-                { id = 1231353 },
             },
         },
         [240289] = {
@@ -2475,7 +2338,6 @@ R:RegisterDungeon({
             count = 35,
             spells = {
                 { id = 1216529 },
-                { id = 1221063 },
                 { id = 1256276 },
                 { id = 1295035 },
             },
@@ -2512,7 +2374,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1264106, interruptible = true },
-                { id = 1264110, interruptible = true },
             },
         },
         [255604] = {
@@ -2913,8 +2774,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 372047 },
                 { id = 372087 },
-                { id = 372794 },
-                { id = 1309705 },
             },
         },
         [187969] = {
@@ -2952,8 +2811,6 @@ R:RegisterDungeon({
                 { id = 371489 },
                 { id = 371984, interruptible = true },
                 { id = 372743, interruptible = true },
-                { id = 372749 },
-                { id = 384933, interruptible = true },
             },
         },
         [188244] = {
@@ -2967,7 +2824,6 @@ R:RegisterDungeon({
                 { id = 372730 },
                 { id = 372793 },
                 { id = 1305201 },
-                { id = 1305213 },
                 { id = 1310489 },
             },
         },
@@ -2985,9 +2841,9 @@ R:RegisterDungeon({
                 { id = 372988 },
                 { id = 373046 },
                 { id = 373680 },
-                { id = 373688 },
                 { id = 373727 },
-                { id = 383925 },
+                { id = 384024 },
+                { id = 396044 },
             },
         },
         [189232] = {
@@ -3000,11 +2856,8 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 372107 },
-                { id = 372811 },
-                { id = 372819 },
                 { id = 372820 },
                 { id = 372858 },
-                { id = 372859 },
                 { id = 372860 },
                 { id = 372863 },
             },
@@ -3067,11 +2920,7 @@ R:RegisterDungeon({
             count = 7,
             spells = {
                 { id = 373972, magic = true },
-                { id = 373973 },
-                { id = 373977 },
                 { id = 385536 },
-                { id = 385567 },
-                { id = 1305865 },
             },
         },
         [190207] = {
@@ -3096,13 +2945,8 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 381525 },
-                { id = 381526 },
                 { id = 381602 },
-                { id = 381605 },
-                { id = 381862 },
-                { id = 381864 },
                 { id = 384773 },
-                { id = 1312669 },
             },
         },
         [190485] = {
@@ -3115,13 +2959,9 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 181089 },
-                { id = 381512 },
-                { id = 381513 },
-                { id = 381514 },
-                { id = 381515, magic = true },
+                { id = 381512, magic = true },
                 { id = 381516 },
                 { id = 381517 },
-                { id = 381518 },
             },
         },
         [194622] = {
@@ -3147,8 +2987,6 @@ R:RegisterDungeon({
                 { id = 385311 },
                 { id = 385312 },
                 { id = 385313 },
-                { id = 385314 },
-                { id = 385316 },
             },
         },
         [197509] = {
@@ -3173,11 +3011,8 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1306366 },
-                { id = 1307488 },
                 { id = 1307511 },
                 { id = 1310355 },
-                { id = 1310361 },
-                { id = 1310363 },
             },
         },
         [197697] = {
@@ -3192,8 +3027,6 @@ R:RegisterDungeon({
                 { id = 391723 },
                 { id = 392394 },
                 { id = 392569 },
-                { id = 392570 },
-                { id = 395292 },
             },
         },
         [197698] = {
@@ -3206,11 +3039,8 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 391726 },
-                { id = 391727 },
                 { id = 392395 },
-                { id = 392640 },
-                { id = 392641, magic = true },
-                { id = 395303 },
+                { id = 392640, magic = true },
                 { id = 1310599 },
             },
         },
@@ -3235,7 +3065,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 392576, interruptible = true },
                 { id = 1306366 },
-                { id = 1307488 },
                 { id = 1307502 },
             },
         },
@@ -3480,8 +3309,8 @@ R:RegisterDungeon({
                 { id = 1289602 },
                 { id = 1290031 },
                 { id = 1290797 },
-                { id = 1291734 },
                 { id = 1293048 },
+                { id = 1296912 },
             },
         },
         [133392] = {
@@ -3503,7 +3332,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 269896 },
                 { id = 1293307, interruptible = true, curse = true },
-                { id = 1314082, interruptible = true, curse = true },
             },
         },
         [134388] = {
@@ -3558,7 +3386,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 269116 },
                 { id = 1291262, interruptible = true },
-                { id = 1296045 },
                 { id = 1296052, magic = true },
                 { id = 1310739, magic = true },
             },
@@ -3572,9 +3399,7 @@ R:RegisterDungeon({
             count = 7,
             spells = {
                 { id = 1292585 },
-                { id = 1292623 },
                 { id = 1308113 },
-                { id = 1308116 },
             },
         },
         [134602] = {
@@ -3585,7 +3410,6 @@ R:RegisterDungeon({
             health = 3243255,
             count = 7,
             spells = {
-                { id = 1295610 },
                 { id = 1295635 },
                 { id = 1308100, interruptible = true, poison = true },
             },
@@ -3673,7 +3497,6 @@ R:RegisterDungeon({
                 { id = 1303443 },
                 { id = 1303452 },
                 { id = 1303486 },
-                { id = 1308546 },
             },
         },
         [135445] = {
@@ -3705,7 +3528,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 1293133 },
                 { id = 1310396 },
-                { id = 1310402 },
             },
         },
         [135971] = {
@@ -3727,8 +3549,6 @@ R:RegisterDungeon({
                 { id = 1293464, magic = true },
                 { id = 1293475 },
                 { id = 1293650 },
-                { id = 1293652 },
-                { id = 1310739, magic = true },
             },
         },
         [136250] = {
@@ -3742,9 +3562,7 @@ R:RegisterDungeon({
                 { id = 268013, interruptible = true },
                 { id = 1300666 },
                 { id = 1300684 },
-                { id = 1311964 },
                 { id = 1311980 },
-                { id = 1311981 },
             },
         },
         [139097] = {
@@ -3768,7 +3586,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 267483 },
                 { id = 273241 },
-                { id = 1225638 },
             },
         },
         [139110] = {
@@ -3835,12 +3652,8 @@ R:RegisterDungeon({
             spells = {
                 { id = 263425 },
                 { id = 1288087 },
-                { id = 1288092 },
-                { id = 1288235 },
                 { id = 1288428 },
-                { id = 1289229 },
-                { id = 1308738 },
-                { id = 1308740 },
+                { id = 1310311 },
             },
         },
         [262822] = {
@@ -3854,12 +3667,9 @@ R:RegisterDungeon({
             spells = {
                 { id = 1288457 },
                 { id = 1288864 },
-                { id = 1288885 },
                 { id = 1289062 },
-                { id = 1289229 },
                 { id = 1292035 },
                 { id = 1310311 },
-                { id = 1310712 },
             },
         },
         [263181] = {
@@ -3933,9 +3743,7 @@ R:RegisterDungeon({
             spells = {
                 { id = 1300803 },
                 { id = 1302616 },
-                { id = 1302618 },
                 { id = 1302761 },
-                { id = 1303446 },
             },
         },
         [268364] = {
@@ -3974,8 +3782,6 @@ R:RegisterDungeon({
                 { id = 1300684 },
                 { id = 1302153 },
                 { id = 1302158, interruptible = true },
-                { id = 1311964 },
-                { id = 1311979 },
             },
         },
         [268729] = {
@@ -4232,7 +4038,6 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1234753 },
-                { id = 1234773 },
                 { id = 1234802 },
                 { id = 1253028 },
                 { id = 1276586 },
@@ -4248,7 +4053,6 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1235564 },
-                { id = 1235574 },
                 { id = 1235616, interruptible = true },
                 { id = 1235828 },
                 { id = 1253028 },
@@ -4264,13 +4068,9 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1234850 },
-                { id = 1235546 },
-                { id = 1235640 },
-                { id = 1235642 },
-                { id = 1235865, bleed = true },
+                { id = 1235640, bleed = true },
                 { id = 1253028 },
                 { id = 1261011 },
-                { id = 1261013 },
             },
         },
         [244528] = {
@@ -4294,13 +4094,13 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1236709 },
-                { id = 1236731 },
                 { id = 1236746 },
-                { id = 1236747 },
                 { id = 1237073 },
                 { id = 1237093 },
-                { id = 1237166 },
-                { id = 1237267, bleed = true },
+                { id = 1237166, bleed = true },
+                { id = 1237330 },
+                { id = 1253410 },
+                { id = 1272290 },
             },
         },
         [245336] = {
@@ -4325,9 +4125,7 @@ R:RegisterDungeon({
             health = 3243254,
             count = 6,
             spells = {
-                { id = 1238066 },
-                { id = 1238071 },
-                { id = 1238076, bleed = true },
+                { id = 1238066, bleed = true },
             },
         },
         [245345] = {
@@ -4375,7 +4173,6 @@ R:RegisterDungeon({
             count = 7,
             spells = {
                 { id = 1238232, interruptible = true },
-                { id = 1242180 },
                 { id = 1242200 },
             },
         },
@@ -4387,14 +4184,8 @@ R:RegisterDungeon({
             health = 3243254,
             count = 5,
             spells = {
-                { id = 269230 },
-                { id = 269231 },
-                { id = 269232 },
-                { id = 1242180 },
                 { id = 1242200 },
-                { id = 1303039 },
                 { id = 1314883 },
-                { id = 1314884 },
             },
         },
         [245484] = {
@@ -4406,7 +4197,6 @@ R:RegisterDungeon({
             count = 7,
             spells = {
                 { id = 1238294, interruptible = true },
-                { id = 1242180 },
                 { id = 1242200 },
             },
         },
@@ -4419,8 +4209,6 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1238368 },
-                { id = 1238463 },
-                { id = 1238638 },
                 { id = 1238642 },
             },
         },
@@ -4433,8 +4221,6 @@ R:RegisterDungeon({
             count = 1,
             spells = {
                 { id = 1238581, magic = true },
-                { id = 1238588 },
-                { id = 1242180 },
                 { id = 1242200 },
             },
         },
@@ -4449,12 +4235,12 @@ R:RegisterDungeon({
             spells = {
                 { id = 1239821, interruptible = true },
                 { id = 1239824 },
-                { id = 1239825 },
                 { id = 1239882 },
                 { id = 1239883 },
                 { id = 1239885 },
                 { id = 1239919 },
                 { id = 1240100 },
+                { id = 1240210 },
             },
         },
         [246367] = {
@@ -4466,7 +4252,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1240210 },
-                { id = 1240257 },
                 { id = 1241058, bleed = true },
                 { id = 1257094 },
             },
@@ -4480,9 +4265,7 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1239824 },
-                { id = 1239825 },
                 { id = 1240100 },
-                { id = 1240152 },
             },
         },
         [246871] = {
@@ -4495,7 +4278,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 1242135 },
                 { id = 1242138 },
-                { id = 1242180 },
                 { id = 1242200 },
             },
         },
@@ -4509,13 +4291,13 @@ R:RegisterDungeon({
             isBoss = true,
             spells = {
                 { id = 1246372 },
-                { id = 1246527 },
                 { id = 1246607 },
-                { id = 1246751 },
                 { id = 1246753 },
                 { id = 1246858 },
                 { id = 1247039 },
                 { id = 1247050 },
+                { id = 1247377 },
+                { id = 1247685, bleed = true },
             },
         },
         [247755] = {
@@ -4541,7 +4323,6 @@ R:RegisterDungeon({
             spells = {
                 { id = 1250100 },
                 { id = 1250199 },
-                { id = 1250200 },
                 { id = 1250813 },
                 { id = 1250937, poison = true },
             },
@@ -4566,7 +4347,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1250829 },
-                { id = 1250831 },
             },
         },
         [253571] = {
@@ -4588,11 +4368,8 @@ R:RegisterDungeon({
             health = 5837858,
             count = 25,
             spells = {
-                { id = 1242180 },
                 { id = 1242200 },
-                { id = 1263628 },
                 { id = 1263636 },
-                { id = 1263642 },
                 { id = 1271385 },
             },
         },
@@ -4995,7 +4772,6 @@ R:RegisterDungeon({
                 { id = 1296967 },
                 { id = 1297017 },
                 { id = 1300259 },
-                { id = 1300262 },
             },
         },
         [239008] = {
@@ -5011,10 +4787,9 @@ R:RegisterDungeon({
                 { id = 1222519 },
                 { id = 1222642 },
                 { id = 1222721 },
-                { id = 1222724 },
-                { id = 1226031, poison = true },
-                { id = 1226120 },
-                { id = 1247395 },
+                { id = 1226120, poison = true },
+                { id = 1262497 },
+                { id = 1263971, poison = true },
             },
         },
         [239070] = {
@@ -5026,7 +4801,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1222692 },
-                { id = 1222693 },
                 { id = 1282892 },
             },
         },
@@ -5039,12 +4813,9 @@ R:RegisterDungeon({
             count = 0,
             isBoss = true,
             spells = {
-                { id = 1222755 },
                 { id = 1227197 },
                 { id = 1227247 },
                 { id = 1248112 },
-                { id = 1248121 },
-                { id = 1300372 },
                 { id = 1310025 },
                 { id = 1311923 },
             },
@@ -5127,7 +4898,6 @@ R:RegisterDungeon({
             count = 4,
             spells = {
                 { id = 1249661, enrage = true },
-                { id = 1267754 },
                 { id = 1267894 },
             },
         },
@@ -5140,7 +4910,6 @@ R:RegisterDungeon({
             count = 4,
             spells = {
                 { id = 1250640 },
-                { id = 1268707 },
             },
         },
         [244260] = {
@@ -5154,8 +4923,6 @@ R:RegisterDungeon({
                 { id = 1234833 },
                 { id = 1234855 },
                 { id = 1249661, enrage = true },
-                { id = 1250079 },
-                { id = 1250695 },
             },
         },
         [244309] = {
@@ -5167,7 +4934,6 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1234890 },
-                { id = 1234917 },
                 { id = 1245186 },
                 { id = 1249661, enrage = true },
                 { id = 1269284 },
@@ -5194,11 +4960,9 @@ R:RegisterDungeon({
             health = 8756789,
             count = 65,
             spells = {
-                { id = 1239855, magic = true },
-                { id = 1239856 },
+                { id = 1239856, magic = true },
                 { id = 1300116 },
                 { id = 1300138 },
-                { id = 1300156 },
             },
         },
         [248666] = {
@@ -5209,7 +4973,6 @@ R:RegisterDungeon({
             health = 441313,
             count = 0,
             spells = {
-                { id = 1246821 },
                 { id = 1246825 },
             },
         },
@@ -5221,7 +4984,6 @@ R:RegisterDungeon({
             health = 3243255,
             count = 5,
             spells = {
-                { id = 1249236 },
                 { id = 1249238, magic = true },
                 { id = 1249661, enrage = true },
             },
@@ -5270,11 +5032,7 @@ R:RegisterDungeon({
             health = 5675696,
             count = 25,
             spells = {
-                { id = 1228126 },
-                { id = 1228127 },
-                { id = 1261645 },
                 { id = 1298900 },
-                { id = 1298901 },
                 { id = 1310309 },
             },
         },
@@ -5299,7 +5057,6 @@ R:RegisterDungeon({
             count = 1,
             spells = {
                 { id = 1269866 },
-                { id = 1269878 },
             },
         },
         [254677] = {
@@ -5311,8 +5068,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1222100 },
-                { id = 1222103 },
-                { id = 1222105 },
                 { id = 1296963 },
             },
         },
@@ -5325,7 +5080,6 @@ R:RegisterDungeon({
             count = 0,
             spells = {
                 { id = 1263984 },
-                { id = 1264188 },
             },
         },
         [255001] = {
@@ -5348,10 +5102,7 @@ R:RegisterDungeon({
             count = 25,
             spells = {
                 { id = 1233472 },
-                { id = 1233485 },
-                { id = 1289258, poison = true },
-                { id = 1289265 },
-                { id = 1311778 },
+                { id = 1289265, poison = true },
             },
         },
         [267545] = {
@@ -5364,12 +5115,10 @@ R:RegisterDungeon({
             spells = {
                 { id = 1298903 },
                 { id = 1298908 },
-                { id = 1298922 },
                 { id = 1298924 },
-                { id = 1298933 },
                 { id = 1299125 },
-                { id = 1299133 },
                 { id = 1299145 },
+                { id = 1299210 },
             },
         },
         [267546] = {
@@ -5382,12 +5131,11 @@ R:RegisterDungeon({
             spells = {
                 { id = 1298902 },
                 { id = 1299240 },
-                { id = 1299244 },
                 { id = 1299257 },
                 { id = 1299270 },
-                { id = 1299273 },
                 { id = 1311712 },
                 { id = 1311747 },
+                { id = 1311754 },
             },
         },
         [268184] = {
@@ -5401,8 +5149,6 @@ R:RegisterDungeon({
                 { id = 1252406 },
                 { id = 1282959 },
                 { id = 1300243 },
-                { id = 1300244 },
-                { id = 1300248 },
                 { id = 1300249 },
                 { id = 1300250 },
                 { id = 1310324, interruptible = true },
