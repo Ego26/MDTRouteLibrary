@@ -7,6 +7,10 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.10.30.1
+
+Dungeon data rebuilt against Mythic Dungeon Tools 6.3.27.
+
 ## 2026.10.29.1
 
 Maintenance release. No changes to routes or dungeon data.
