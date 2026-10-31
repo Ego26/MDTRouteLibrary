@@ -1308,7 +1308,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 321,
+    "rank": 348,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1724,7 +1724,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 332,
+    "rank": 360,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -2119,86 +2119,145 @@
     "enemyForces": 586
   },
   {
-    "id": "rio-22706710",
+    "id": "rio-15852740",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22706710-22-kings-rest",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/15852740-22-kings-rest",
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 966,
+    "rank": 1042,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
     "keyLevel": 22,
-    "clearSeconds": 1923,
-    "clearMs": 1922747,
-    "completedAt": "2026-10-24T17:01:21.000Z",
+    "clearSeconds": 1924,
+    "clearMs": 1923637,
+    "completedAt": "2026-09-26T13:23:11.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Debstép",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Subtlety",
+        "name": "Semage",
+        "realm": "isillien",
+        "realmRegion": "cn",
+        "class": "Mage",
+        "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Торальф",
-        "realm": "howling-fjord",
-        "realmRegion": "eu",
+        "name": "小软饱饱",
+        "realm": "scarlet-crusade",
+        "realmRegion": "cn",
         "class": "Shaman",
-        "spec": "Restoration",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "丶芝士啵啵球",
+        "realm": "ysera",
+        "realmRegion": "cn",
+        "class": "Paladin",
+        "spec": "Holy",
         "role": "healer"
       },
       {
-        "name": "Ньюгксс",
-        "realm": "howling-fjord",
-        "realmRegion": "eu",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Kelimdall",
-        "realm": "twisting-nether",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "name": "Блейзерша",
-        "realm": "howling-fjord",
-        "realmRegion": "eu",
+        "name": "戰临丶",
+        "realm": "scarlet-crusade",
+        "realmRegion": "cn",
         "class": "Death Knight",
         "spec": "Blood",
         "role": "tank"
+      },
+      {
+        "name": "生气大王子",
+        "realm": "silver-hand",
+        "realmRegion": "cn",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
       }
     ],
     "enemyForcesRequired": 608,
-    "routeKey": "qwUawJj",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/qwUawJj",
-    "wclReport": "nfWQTAaJ8cDNFrBw",
-    "wclFight": 1,
+    "routeKey": "u3ZUZvJ",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/u3ZUZvJ"
+  },
+  {
+    "id": "rio-19011493",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/19011493-22-kings-rest",
+    "challengeModeId": 249,
+    "dungeonEnglishName": "King's Rest",
+    "mdtDungeonIdx": 17,
+    "rank": 1055,
+    "region": "world",
+    "bracket": "high",
+    "tier": "slow",
+    "keyLevel": 22,
+    "clearSeconds": 1925,
+    "clearMs": 1924544,
+    "completedAt": "2026-10-07T16:58:58.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "丶吮指原味鸡",
+        "realm": "dreadmist-peak",
+        "realmRegion": "cn",
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "name": "Monosuper",
+        "realm": "silver-hand",
+        "realmRegion": "cn",
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
+      },
+      {
+        "name": "风摧雪",
+        "realm": "chillwind-point",
+        "realmRegion": "cn",
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "哎呀进度不够",
+        "realm": "rhonin",
+        "realmRegion": "cn",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "春与信",
+        "realm": "silver-hand",
+        "realmRegion": "cn",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      }
+    ],
+    "enemyForcesRequired": 608,
+    "routeKey": "EFkQVDB",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/EFkQVDB",
+    "wclReport": "v23LgaYQwP1Xdxfb",
+    "wclFight": 22,
     "pulls": [
       {
         "enemies": [
           {
             "enemy": 1,
             "clones": [
+              1,
               3,
               4
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 4,
             "clones": [
-              12,
-              10,
-              11,
-              9,
-              14
+              1
             ]
           },
           {
@@ -2207,30 +2266,18 @@
               7,
               8
             ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              1
-            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
             "enemy": 5,
             "clones": [
               6,
               1,
-              4,
-              5
+              5,
+              4
             ]
           },
           {
@@ -2259,7 +2306,6 @@
             "enemy": 38,
             "clones": [
               1,
-              3,
               2
             ]
           }
@@ -2270,25 +2316,9 @@
           {
             "enemy": 1,
             "clones": [
-              1
+              2
             ]
           },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
           {
             "enemy": 13,
             "clones": [
@@ -2303,6 +2333,22 @@
           },
           {
             "enemy": 11,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 14,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 15,
             "clones": [
               1
             ]
@@ -2349,21 +2395,19 @@
           {
             "enemy": 26,
             "clones": [
-              7,
               6,
+              7,
               2,
               4,
-              5,
-              3,
               1,
-              8,
-              11,
-              10,
               12,
-              13,
+              5,
               14,
-              17,
+              10,
+              3,
+              13,
               15,
+              17,
               16,
               9
             ]
@@ -2393,6 +2437,13 @@
             "clones": [
               1
             ]
+          },
+          {
+            "enemy": 26,
+            "clones": [
+              11,
+              8
+            ]
           }
         ]
       },
@@ -2413,16 +2464,10 @@
             ]
           },
           {
-            "enemy": 19,
-            "clones": [
-              3
-            ]
-          },
-          {
             "enemy": 23,
             "clones": [
-              6,
-              5
+              5,
+              6
             ]
           },
           {
@@ -2453,7 +2498,7 @@
       {
         "enemies": [
           {
-            "enemy": 27,
+            "enemy": 29,
             "clones": [
               1
             ]
@@ -2465,7 +2510,7 @@
             ]
           },
           {
-            "enemy": 29,
+            "enemy": 27,
             "clones": [
               1
             ]
@@ -2529,69 +2574,8 @@
         ]
       }
     ],
-    "enemyForces": 608
-  },
-  {
-    "id": "rio-15852740",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/15852740-22-kings-rest",
-    "challengeModeId": 249,
-    "dungeonEnglishName": "King's Rest",
-    "mdtDungeonIdx": 17,
-    "rank": 977,
-    "region": "world",
-    "bracket": "high",
-    "tier": "slow",
-    "keyLevel": 22,
-    "clearSeconds": 1924,
-    "clearMs": 1923637,
-    "completedAt": "2026-09-26T13:23:11.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Semage",
-        "realm": "isillien",
-        "realmRegion": "cn",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "小软饱饱",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "丶芝士啵啵球",
-        "realm": "ysera",
-        "realmRegion": "cn",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "戰临丶",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "生气大王子",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 608,
-    "routeKey": "u3ZUZvJ",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/u3ZUZvJ"
+    "enemyForces": 601,
+    "filled": 1
   },
   {
     "id": "rio-20081179",
@@ -2600,7 +2584,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 1636,
+    "rank": 1761,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -3024,7 +3008,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 1637,
+    "rank": 1762,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -3428,7 +3412,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 3721,
+    "rank": 3989,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3851,7 +3835,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 3726,
+    "rank": 3994,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -4253,79 +4237,69 @@
     "enemyForces": 608
   },
   {
-    "id": "rio-22126026",
+    "id": "rio-22495879",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22126026-20-kings-rest",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22495879-20-kings-rest",
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 5842,
+    "rank": 6246,
     "region": "world",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 20,
-    "clearSeconds": 1634,
-    "clearMs": 1633989,
-    "completedAt": "2026-10-22T04:39:13.000Z",
+    "clearSeconds": 1589,
+    "clearMs": 1588667,
+    "completedAt": "2026-10-23T20:33:37.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Onefityone",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
+        "name": "Chippydh",
+        "realm": "sylvanas",
+        "realmRegion": "eu",
+        "class": "Demon Hunter",
+        "spec": "Devourer",
         "role": "dps"
       },
       {
-        "name": "AnonD8F4CAD",
-        "realm": "anonymous",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Tomski",
-        "realm": "stormrage",
-        "realmRegion": "us",
+        "name": "Littlebee",
+        "realm": "sylvanas",
+        "realmRegion": "eu",
         "class": "Druid",
         "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Flexmagussy",
-        "realm": "area-52",
-        "realmRegion": "us",
-        "class": "Mage",
-        "spec": "Arcane",
+        "name": "Sâdface",
+        "realm": "sanguino",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Versa",
+        "realm": "ravencrest",
+        "realmRegion": "eu",
+        "class": "Rogue",
+        "spec": "Subtlety",
         "role": "dps"
       },
       {
-        "name": "Senxd",
-        "realm": "area-52",
-        "realmRegion": "us",
-        "class": "Rogue",
-        "spec": "Subtlety",
+        "name": "Dreass",
+        "realm": "blackmoore",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 608,
-    "routeKey": "F0IalIP",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/F0IalIP",
-    "wclReport": "mYnVkLN1wMZBb3dg",
-    "wclFight": 1,
+    "routeKey": "GCOf2qg",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/GCOf2qg",
+    "wclReport": "dqApTDWCQ3BGwYm2",
+    "wclFight": 14,
     "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              5
-            ]
-          }
-        ]
-      },
       {
         "enemies": [
           {
@@ -4338,11 +4312,11 @@
           {
             "enemy": 2,
             "clones": [
-              9,
-              12,
               11,
+              14,
+              9,
               10,
-              14
+              12
             ]
           },
           {
@@ -4355,17 +4329,9 @@
             "enemy": 5,
             "clones": [
               7,
-              8
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 1,
-            "clones": [
-              2
+              8,
+              6,
+              1
             ]
           },
           {
@@ -4373,12 +4339,14 @@
             "clones": [
               4
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 5,
             "clones": [
-              6,
-              1,
               4,
               5
             ]
@@ -4403,7 +4371,35 @@
             "enemy": 38,
             "clones": [
               3,
-              4,
+              2,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 12,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 13,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
               2
             ]
           }
@@ -4412,11 +4408,40 @@
       {
         "enemies": [
           {
-            "enemy": 1,
+            "enemy": 9,
             "clones": [
               1
             ]
           },
+          {
+            "enemy": 10,
+            "clones": [
+              2,
+              3,
+              4,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 14,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 8,
             "clones": [
@@ -4434,82 +4459,25 @@
       {
         "enemies": [
           {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              3,
-              4,
-              2,
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
             "enemy": 26,
             "clones": [
-              6,
               7,
+              6,
               3,
               2,
-              4,
               5,
-              1,
-              8,
               9,
+              1,
+              4,
+              8,
+              10,
               11,
+              16,
+              12,
               14,
               13,
-              10,
               15,
-              12,
-              17,
-              16
+              17
             ]
           },
           {
@@ -4524,8 +4492,8 @@
             "clones": [
               2,
               1,
-              4,
-              3
+              3,
+              4
             ]
           }
         ]
@@ -4545,8 +4513,8 @@
           {
             "enemy": 20,
             "clones": [
-              2,
-              4
+              4,
+              2
             ]
           },
           {
@@ -4556,17 +4524,17 @@
             ]
           },
           {
-            "enemy": 21,
-            "clones": [
-              2,
-              6
-            ]
-          },
-          {
             "enemy": 23,
             "clones": [
               6,
               5
+            ]
+          },
+          {
+            "enemy": 21,
+            "clones": [
+              2,
+              6
             ]
           },
           {
@@ -4597,7 +4565,7 @@
       {
         "enemies": [
           {
-            "enemy": 28,
+            "enemy": 29,
             "clones": [
               1
             ]
@@ -4609,7 +4577,7 @@
             ]
           },
           {
-            "enemy": 29,
+            "enemy": 28,
             "clones": [
               1
             ]
@@ -4673,69 +4641,69 @@
         ]
       }
     ],
-    "enemyForces": 608
+    "enemyForces": 586
   },
   {
-    "id": "rio-9263690",
+    "id": "rio-18197272",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/9263690-20-kings-rest",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18197272-20-kings-rest",
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 11427,
+    "rank": 12096,
     "region": "world",
     "bracket": "mid",
     "tier": "slow",
     "keyLevel": 20,
     "clearSeconds": 1897,
-    "clearMs": 1897472,
-    "completedAt": "2026-09-07T12:45:42.000Z",
+    "clearMs": 1896510,
+    "completedAt": "2026-10-04T14:09:11.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "双马尾张俊杰",
-        "realm": "deathwing",
-        "realmRegion": "cn",
-        "class": "Monk",
-        "spec": "Mistweaver",
-        "role": "healer"
-      },
-      {
-        "name": "Carol",
-        "realm": "alar",
-        "realmRegion": "cn",
+        "name": "天耀",
+        "realm": "shadowmoon",
+        "realmRegion": "tw",
         "class": "Mage",
         "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Pikazdk",
-        "realm": "rhonin",
-        "realmRegion": "cn",
-        "class": "Death Knight",
-        "spec": "Blood",
+        "name": "火藥",
+        "realm": "frostmane",
+        "realmRegion": "tw",
+        "class": "Monk",
+        "spec": "Brewmaster",
         "role": "tank"
       },
       {
-        "name": "小咕饱饱",
-        "realm": "echo-ridge",
-        "realmRegion": "cn",
-        "class": "Warrior",
-        "spec": "Arms",
+        "name": "小傳說死騎",
+        "realm": "shadowmoon",
+        "realmRegion": "tw",
+        "class": "Death Knight",
+        "spec": "Unholy",
         "role": "dps"
       },
       {
-        "name": "葵袋",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
+        "name": "AnonEE95687",
+        "realm": "anonymous",
+        "realmRegion": "tw",
         "class": "Shaman",
-        "spec": "Elemental",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "鯊魚先生",
+        "realm": "spirestone",
+        "realmRegion": "tw",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 608,
-    "routeKey": "OQBZwAI",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/OQBZwAI"
+    "routeKey": "jtBnhUC",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/jtBnhUC"
   },
   {
     "id": "rio-13516704",
@@ -4744,7 +4712,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 17012,
+    "rank": 17957,
     "region": "world",
     "bracket": "mid",
     "tier": "fast",
@@ -5145,70 +5113,444 @@
         ]
       }
     ],
-    "enemyForces": 604,
-    "filled": 2
+    "enemyForces": 604
   },
   {
-    "id": "rio-9631536",
+    "id": "rio-15380075",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/9631536-19-kings-rest",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/15380075-19-kings-rest",
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 17401,
+    "rank": 18357,
     "region": "world",
     "bracket": "mid",
     "tier": "slow",
     "keyLevel": 19,
-    "clearSeconds": 1687,
-    "clearMs": 1686862,
-    "completedAt": "2026-09-08T11:51:45.000Z",
+    "clearSeconds": 1686,
+    "clearMs": 1686214,
+    "completedAt": "2026-09-25T00:04:56.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Petkosham",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
+        "name": "Sense",
+        "realm": "tichondrius",
+        "realmRegion": "us",
+        "class": "Warrior",
+        "spec": "Protection",
+        "role": "tank"
       },
       {
-        "name": "Venkz",
-        "realm": "sylvanas",
-        "realmRegion": "eu",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "Onewog",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
+        "name": "Cynx",
+        "realm": "hyjal",
+        "realmRegion": "us",
         "class": "Paladin",
         "spec": "Holy",
         "role": "healer"
       },
       {
-        "name": "Casualaddict",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Assassination",
+        "name": "Brceus",
+        "realm": "tichondrius",
+        "realmRegion": "us",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
         "role": "dps"
       },
       {
-        "name": "Knowmedruid",
-        "realm": "blackhand",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
+        "name": "Dabnel",
+        "realm": "area-52",
+        "realmRegion": "us",
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "name": "Girthgate",
+        "realm": "tichondrius",
+        "realmRegion": "us",
+        "class": "Warlock",
+        "spec": "Demonology",
+        "role": "dps"
       }
     ],
     "enemyForcesRequired": 608,
-    "routeKey": "C8B8vEN",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/C8B8vEN"
+    "routeKey": "bJJMPww",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/bJJMPww",
+    "wclReport": "HbdjfkcrtV48GAXJ",
+    "wclFight": 4,
+    "pulls": [
+      {
+        "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              3,
+              4
+            ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              8,
+              7
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              12,
+              14,
+              9,
+              10,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 5,
+            "clones": [
+              1,
+              6,
+              4,
+              5
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 6,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 38,
+            "clones": [
+              2,
+              3,
+              5,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 38,
+            "clones": [
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 13,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 14,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 9,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              4,
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 8,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 26,
+            "clones": [
+              7,
+              6,
+              3,
+              9,
+              1,
+              2,
+              12,
+              4,
+              5,
+              15,
+              13,
+              10,
+              16,
+              14,
+              11,
+              17,
+              8
+            ]
+          },
+          {
+            "enemy": 17,
+            "clones": [
+              1,
+              2
+            ]
+          },
+          {
+            "enemy": 37,
+            "clones": [
+              2,
+              1,
+              4,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 18,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 21,
+            "clones": [
+              4,
+              5
+            ]
+          },
+          {
+            "enemy": 19,
+            "clones": [
+              2,
+              1
+            ]
+          },
+          {
+            "enemy": 20,
+            "clones": [
+              2,
+              4
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 19,
+            "clones": [
+              3
+            ]
+          },
+          {
+            "enemy": 23,
+            "clones": [
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 21,
+            "clones": [
+              2,
+              6
+            ]
+          },
+          {
+            "enemy": 22,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 20,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 23,
+            "clones": [
+              2,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 27,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 29,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 28,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 34,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 35,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 36,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 33,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 24,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 32,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 31,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 25,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "enemyForces": 614,
+    "filled": 1
   },
   {
     "id": "rio-14828433",
@@ -5217,7 +5559,7 @@
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 4684,
+    "rank": 4925,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
@@ -5273,48 +5615,40 @@
     "keystoneUrl": "https://keystone.guru/route/kings-rest/3ucwlmU"
   },
   {
-    "id": "rio-7808645",
+    "id": "rio-13245956",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7808645-18-kings-rest",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/13245956-18-kings-rest",
     "challengeModeId": 249,
     "dungeonEnglishName": "King's Rest",
     "mdtDungeonIdx": 17,
-    "rank": 7338,
+    "rank": 7638,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
     "keyLevel": 18,
-    "clearSeconds": 1867,
-    "clearMs": 1867048,
-    "completedAt": "2026-09-04T05:38:11.000Z",
+    "clearSeconds": 1866,
+    "clearMs": 1865787,
+    "completedAt": "2026-09-17T22:24:01.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Fineillgripu",
-        "realm": "malganis",
+        "name": "Zoomhunt",
+        "realm": "garrosh",
         "realmRegion": "us",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "Arkhens",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Retribution",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
         "role": "dps"
       },
       {
-        "name": "Courroucé",
-        "realm": "thrall",
+        "name": "Mool",
+        "realm": "area-52",
         "realmRegion": "us",
         "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
+        "spec": "Enhancement",
+        "role": "dps"
       },
       {
-        "name": "Galginoth",
+        "name": "Yeetîcus",
         "realm": "thrall",
         "realmRegion": "us",
         "class": "Warrior",
@@ -5322,16 +5656,24 @@
         "role": "dps"
       },
       {
-        "name": "Slusch",
+        "name": "Hopebringer",
         "realm": "tichondrius",
         "realmRegion": "us",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "Cleud",
+        "realm": "quelthalas",
+        "realmRegion": "us",
+        "class": "Paladin",
+        "spec": "Protection",
+        "role": "tank"
       }
     ],
     "enemyForcesRequired": 608,
-    "routeKey": "SMstM2r",
-    "keystoneUrl": "https://keystone.guru/route/kings-rest/SMstM2r"
+    "routeKey": "ChdkR97",
+    "keystoneUrl": "https://keystone.guru/route/kings-rest/ChdkR97"
   }
 ]
