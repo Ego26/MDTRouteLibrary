@@ -32,6 +32,8 @@ ns.RegisterLocale("enUS", {
     ["TAB_MINE"]            = "My routes",
     ["TAB_TOP"]             = "Top Routes",
     ["ROUTE_OWN"]           = "your own route in MDT",
+    ["ROUTE_COPY"]          = "your copy in MDT",
+    ["COPY_OF"]             = "copy of %s",
     ["COPY_LINK_LABEL"]     = "2. Open this address in your browser and paste the string there:",
     ["SUBMIT_WHEN"]         = "3. Accepted routes ship with the next data update - up to four a day, so reckon with a few hours.",
     ["DETAIL_DUNGEON"]      = "Dungeon",

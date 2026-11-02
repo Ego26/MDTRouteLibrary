@@ -90,9 +90,10 @@ selbst gibt dafür keine Schnittstelle heraus; nachgebaut sind die Regeln von
 MDTs eigenem Löschen: „Default“ bleibt, und zeigte MDT gerade eine der
 gelöschten Routen, zeigt es danach die nächste darüber.
 
-Eine übernommene Community-Route erscheint in der Liste weiterhin nur einmal,
-dann aber mit dem Vermerk, dass sie in MDT liegt. Wird sie dort gelöscht, fällt
-der Vermerk weg.
+Eine übernommene Route ist eine Kopie und steht unter „Meine Routen“, als
+„deine Kopie in MDT“ mit Verweis auf ihr Original. Die Community-Route oder der
+Top-Lauf selbst bleibt unverändert in seinem Reiter – er gehört nicht dem Nutzer,
+nur die Kopie.
 
 ## Aufbau
 

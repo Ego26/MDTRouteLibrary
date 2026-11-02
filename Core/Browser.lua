@@ -850,7 +850,7 @@ local function deleteTargets()
 
     local route = selectedId and displayById[selectedId]
     local _, presetIdx = savedPreset(route or {})
-    if route and (route.own or route.saved) and presetIdx and presetIdx > 1 then ids[1] = route.id end
+    if route and route.own and presetIdx and presetIdx > 1 then ids[1] = route.id end
     return ids
 end
 
@@ -1049,12 +1049,12 @@ end
 -- Eigene Routen und Favoriten
 --------------------------------------------------------------------------
 
----Wo liegt diese Route in MDT - egal ob eigene oder gespeicherte Kopie?
+---Wo liegt diese Route in MDT? Nur fuer eigene Routen, Kopien
+---eingeschlossen - eine Route aus dem Paket liegt nie selbst in MDT.
 ---@param route table
 ---@return number|nil dungeonIdx, number|nil presetIdx, string|nil title
 function savedPreset(route)
     if route.own then return route.mdtDungeonIdx, route.mdtPresetIdx, route.title end
-    if route.saved then return route.saved.mdtDungeonIdx, route.saved.mdtPresetIdx, route.saved.title end
     return nil
 end
 
@@ -1278,33 +1278,23 @@ local function rebuildEntries()
     wipe(entries)
     wipe(displayById)
 
-    -- Eigene Presets immer einlesen: auch im Community-Modus muss die Liste
-    -- wissen, welche Route bereits in MDT liegt.
+    -- Eigene Presets immer einlesen, auch fuer die Reiter, die sie nicht
+    -- zeigen: Favoriten und Auswahl muessen sie finden.
     local ownRoutes = collectOwnRoutes()
-    local byOrigin = {}
-    for _, route in ipairs(ownRoutes) do
-        -- Eine Kopie ist nur, was sein Original noch im Paket hat. Ein
-        -- Top-Lauf, der inzwischen unter 100 % faellt, oder eine
-        -- zurueckgezogene Community-Route nimmt ihre Kopie sonst mit ins
-        -- Nichts - sie stuende dann nirgends mehr.
-        if route.originId and not ns.routeById[route.originId] then route.originId = nil end
-        if route.originId then byOrigin[route.originId] = route end
-    end
 
-    -- Eine gespeicherte Community-Route erscheint nur einmal - als die
-    -- Community-Route, die sie ist, aber mit dem Vermerk, dass sie in MDT
-    -- liegt. Loescht der Nutzer sie dort, faellt der Vermerk weg.
+    -- Eine Route aus dem Paket bleibt, was sie ist - auch wenn der Nutzer sie
+    -- nach MDT uebernommen hat. Die Kopie dort ist eine eigene Route: sie
+    -- laesst sich umbenennen, aendern und loeschen, das Original nicht. Frueher
+    -- wurden beide zu einem Eintrag verschmolzen, und dann stand bei einem
+    -- Top-Lauf "deine eigene Route in MDT" samt Loeschkaestchen. Beides war
+    -- falsch: der Lauf gehoert einem anderen, nur die Kopie dem Nutzer.
     local source = {}
     for _, route in ipairs(ns.routes) do
-        route.saved = byOrigin[route.id]
-
         -- Welcher Reiter zeigt welche Herkunft. "Community" meint eingereichte
         -- Routen, "Top Routes" die nachgebauten Laeufe von Raider.IO - beides
         -- kommt aus demselben Datenpaket und muss hier getrennt werden.
         local wanted
         if filterMode == "mine" then
-            -- Unter "Meine Routen" steht die eigene Kopie selbst, mit dem
-            -- Namen, den der Nutzer ihr gegeben hat - siehe unten.
             wanted = false
         elseif filterMode == "top" then
             wanted = isTopRun(route)
@@ -1318,16 +1308,9 @@ local function rebuildEntries()
     end
 
     -- Eigene Routen aus MDT gehoeren weder zu "Community" noch zu den
-    -- Top-Laeufen.
-    --
-    -- Unter "Alle" stehen Kopien nicht doppelt: die stecken schon im Original.
-    -- Unter "Meine Routen" dagegen alles, was in MDT liegt - auch eine Kopie,
-    -- die der Nutzer umbenannt und zu seiner gemacht hat. Vorher landete sie
-    -- dort im Topf der Top-Laeufe, den dieser Reiter gar nicht zeigt.
+    -- Top-Laeufen - Kopien eingeschlossen.
     if filterMode == "all" or filterMode == "mine" then
-        for _, route in ipairs(ownRoutes) do
-            if filterMode == "mine" or not route.originId then source[#source + 1] = route end
-        end
+        for _, route in ipairs(ownRoutes) do source[#source + 1] = route end
     end
 
     local needle = filterText:lower()
@@ -2788,7 +2771,7 @@ function B.Refresh()
             for _, id in ipairs((not entry.section) and entry.ids or {}) do
                 local candidate = displayById[id]
                 local _, presetIdx = savedPreset(candidate or {})
-                if candidate and (candidate.own or candidate.saved) and presetIdx and presetIdx > 1 then
+                if candidate and candidate.own and presetIdx and presetIdx > 1 then
                     groupIds[#groupIds + 1] = id
                 end
             end
@@ -2840,7 +2823,7 @@ function B.Refresh()
             -- MDTs "Default" auf Platz 1 laesst sich nicht loeschen, also gibt
             -- es dafuer auch kein Kaestchen.
             local _, presetIdx = savedPreset(route)
-            local canDelete = (route.own or route.saved) and presetIdx ~= nil and presetIdx > 1
+            local canDelete = route.own and presetIdx ~= nil and presetIdx > 1
             row.check:SetShown(canDelete)
             if canDelete then
                 row.check:SetChecked(checked[route.id] and true or false)
@@ -2860,14 +2843,18 @@ function B.Refresh()
             row.title:SetText(route.title or route.id)
 
             local meta
-            if route.own or route.saved then
-                meta = T:Hex("success") .. ns.L["ROUTE_OWN"] .. "|r"
-                local by = route.own and route.author or route.author
-                if by then
-                    meta = meta .. T:Hex("textMuted") .. " · " .. ns.L["BY_AUTHOR"]:format(by) .. "|r"
+            if route.own then
+                -- Eine Kopie aus dem Paket sagt, dass sie eine ist, und woher.
+                -- "Eigene Route" waere bei einem uebernommenen Top-Lauf falsch.
+                local origin = route.originId and ns.routeById[route.originId]
+                meta = T:Hex("success") .. ns.L[origin and "ROUTE_COPY" or "ROUTE_OWN"] .. "|r"
+                if route.author then
+                    meta = meta .. T:Hex("textMuted") .. " · " .. ns.L["BY_AUTHOR"]:format(route.author) .. "|r"
                 end
-                if route.saved and route.source then
-                    meta = meta .. T:Hex("textMuted") .. " · " .. route.source .. "|r"
+                if origin then
+                    meta = meta .. T:Hex("textMuted") .. " · "
+                        .. ns.L["COPY_OF"]:format(origin.title or origin.id)
+                        .. (origin.source and (" · " .. origin.source) or "") .. "|r"
                 end
             else
                 local author = authorText(route)

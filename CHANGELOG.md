@@ -22,9 +22,10 @@
   brings them back until the next `/reload`.
 - Fixed: a route imported from a copied string could disappear again after
   the next `/reload`.
-- Fixed: *My routes* left out routes you had taken from the library, even
-  after renaming them. It now lists every route you have in MDT, under the
-  name you gave it.
+- A route you took from the library is now listed as what it is: *your copy
+  in MDT*, under *My routes* and under the name you gave it. Before, the
+  Community or Top Routes entry itself claimed to be your own route, and
+  *My routes* could leave the copy out entirely.
 - New look to match MDT's redesign: the same flat dark surfaces, MDT's font
   (including one you picked in MDT's settings), white instead of gold
   highlights, and slim scroll bars. The browser no longer lets the map show
