@@ -7,6 +7,39 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+- The route browser is back for MDT 6.3.10 and newer. MDT no longer lets
+  other addons add a section to its window, so the browser now opens on top of
+  MDT's window instead: the button with our logo in MDT's toolbar switches
+  between the map and the routes. `/routes` works as before.
+- *Open in MDT* now goes through MDT's own import list: confirm there and the
+  route is on the map, as an ordinary route of yours. Opening the same route
+  again offers to replace it instead of adding a copy. With MDT older than
+  6.3.15 you get the import string to paste instead.
+- *Save to MDT* is gone — opening a route now keeps it. *Copy string* gives
+  you the import string for sharing outside the game.
+- *Delete* works with MDT's new version: it deletes the selected route of
+  yours, or every one you ticked, and MDT's own list updates at once. *Undo*
+  brings them back until the next `/reload`.
+- Fixed: a route imported from a copied string could disappear again after
+  the next `/reload`.
+- Fixed: *My routes* left out routes you had taken from the library, even
+  after renaming them. It now lists every route you have in MDT, under the
+  name you gave it.
+- New look to match MDT's redesign: the same flat dark surfaces, MDT's font
+  (including one you picked in MDT's settings), white instead of gold
+  highlights, and slim scroll bars. The browser no longer lets the map show
+  through.
+- *Community*, *Top Routes* and *My routes* now fill the window instead of
+  stopping after ten routes per page.
+- Top Routes: fixed missing enemies in reconstructed routes. All Temple of
+  Sethraliss routes lacked the six Static Anomalies (96% instead of 100%),
+  and enemies that Warcraftlogs had placed in the neighbouring area were
+  dropped.
+- Top Routes that no longer reach 100% enemy forces are no longer listed.
+  They were cleared with full forces, but Blizzard has changed enemy values
+  since; followed today, they end short. They come back on their own if the
+  values change again.
+
 ## 2026.11.02.1
 
 Maintenance release. No changes to routes or dungeon data.

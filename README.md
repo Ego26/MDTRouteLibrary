@@ -6,9 +6,11 @@
 Mythic+-Routen direkt in **Mythic Dungeon Tools** durchsuchbar – ohne
 Alt-Tab, ohne Copy-Paste.
 
-Das Addon hängt sich als eigene Sektion in MDTs Fenster: Routen nach Dungeon
-gruppiert, mit Gegnerkräften, Pull-Liste, Gegnervorschau und Zauber-Infos. Ein
-Klick zeigt eine Route auf der Karte, ein weiterer übernimmt sie dauerhaft.
+Das Addon legt sich über MDTs Fenster, ein Knopf in MDTs Symbolleiste schaltet
+zwischen Karte und Routen um: Routen nach Dungeon gruppiert, mit
+Gegnerkräften, Pull-Liste, Gegnervorschau und Zauber-Infos. Ein Klick übergibt
+eine Route an MDTs eigene Importliste, nach der Bestätigung steht sie auf der
+Karte.
 
 ## Top Routes: was die besten Gruppen wirklich laufen
 
@@ -67,7 +69,9 @@ vier bleibt er draußen.
 
 ## Status
 
-Gebaut gegen **MDT 6.3.7** (Client 12.1.5). Addon,
+Gebaut gegen **MDT 6.3.29** (Client 12.1.5). Übernehmen über MDTs Importliste
+braucht MDT 6.3.15 oder neuer; mit älterem MDT gibt es den Importstring zum
+Einfügen. Addon,
 MDT-Anbindung, Einreich-Pfad, Generator und tägliche Pipeline stehen.
 
 ## Wie es sich in MDT verhält
@@ -76,11 +80,17 @@ Wichtigster Grundsatz: **MDT bekommt nur, was der Nutzer will.**
 
 | Aktion | Wirkung in MDT |
 |---|---|
-| Addon laden | Nichts wird eingetragen. Reste früherer Sitzungen werden aufgeräumt. |
-| „Auf Karte zeigen" | Ein einziger Vorschauplatz je Dungeon, der beim nächsten Mal überschrieben wird. |
-| „In MDT speichern" | Dauerhafte Kopie **ohne** unsere Markierung – ab da ein ganz normales Preset des Nutzers. |
+| Addon laden | Nichts wird eingetragen. Vorschauplätze älterer Versionen werden aufgeräumt. |
+| „In MDT öffnen" | MDTs eigene Importliste geht auf. Erst nach der Bestätigung dort liegt die Route in MDT – als ganz normale Route des Nutzers. |
+| „String kopieren" | Nur der Importstring, zum Weitergeben außerhalb des Spiels. MDT bleibt unberührt. |
+| „Löschen" | Nur auf ausdrücklichen Klick und nach Rückfrage: die ausgewählte eigene Route, oder alle angehakten. „Rückgängig" holt sie bis zum nächsten `/reload` zurück. |
 
-Eine gespeicherte Community-Route erscheint in der Liste weiterhin nur einmal,
+Löschen ist der einzige Weg, auf dem das Addon in MDTs Datenbank schreibt. MDT
+selbst gibt dafür keine Schnittstelle heraus; nachgebaut sind die Regeln von
+MDTs eigenem Löschen: „Default“ bleibt, und zeigte MDT gerade eine der
+gelöschten Routen, zeigt es danach die nächste darüber.
+
+Eine übernommene Community-Route erscheint in der Liste weiterhin nur einmal,
 dann aber mit dem Vermerk, dass sie in MDT liegt. Wird sie dort gelöscht, fällt
 der Vermerk weg.
 
@@ -109,7 +119,7 @@ Drumherum:
 /routes             Browser öffnen (auch /mdtrl)
 /routes list        installierte Routen im Chat
 /routes status      Datenalter und MDT-Anbindung
-/routes cleanup     Vorschau-Presets aus MDT entfernen
+/routes cleanup     Vorschau-Presets älterer Versionen aus MDT entfernen
 /routes submit      die in MDT geöffnete Route zum Einreichen verpacken
 /routes copy <n>    MDT-Importstring einer Route zum Kopieren
 ```

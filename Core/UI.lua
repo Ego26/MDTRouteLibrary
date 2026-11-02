@@ -8,6 +8,8 @@ local _, ns = ...
 local UI = {}
 ns.UI = UI
 
+local T = ns.Theme
+
 local frame
 
 local WIDTH, HEIGHT = 560, 220
@@ -17,38 +19,43 @@ local WIDTH, HEIGHT = 560, 220
 local function ensureFrame()
     if frame then return frame end
 
-    frame = CreateFrame("Frame", "MDTRouteLibraryCopyFrame", UIParent, "BackdropTemplate")
+    frame = CreateFrame("Frame", "MDTRouteLibraryCopyFrame", UIParent)
     frame:SetSize(WIDTH, HEIGHT)
     frame:SetPoint("CENTER")
-    frame:SetFrameStrata("DIALOG")
+    -- Ueber dem Browser, der selbst auf "DIALOG" liegt.
+    frame:SetFrameStrata("FULLSCREEN_DIALOG")
     frame:EnableMouse(true)
     frame:SetMovable(true)
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-    frame:SetBackdrop({
-        bgFile   = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
-        edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-        tile = true, tileSize = 32, edgeSize = 24,
-        insets = { left = 6, right = 6, top = 6, bottom = 6 },
-    })
+    -- Wie MDTs eigene Dialoge (Kit/Dialogs.lua): flache Flaeche, Pixelrand.
+    T:Fill(frame, "bgBase", 1)
+    T:Border(frame, "borderStrong")
 
-    frame.title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    frame.title = frame:CreateFontString(nil, "OVERLAY", T:FontName("heading"))
     frame.title:SetPoint("TOPLEFT", 18, -16)
 
-    frame.help = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    frame.help = frame:CreateFontString(nil, "OVERLAY", T:FontName("body", "textSecondary"))
     frame.help:SetPoint("TOPLEFT", 18, -36)
     frame.help:SetPoint("TOPRIGHT", -18, -36)
     frame.help:SetJustifyH("LEFT")
-    frame.help:SetTextColor(0.8, 0.8, 0.8)
 
-    local scroll = CreateFrame("ScrollFrame", "MDTRouteLibraryCopyScroll", frame, "UIPanelScrollFrameTemplate")
-    scroll:SetPoint("TOPLEFT", 18, -74)
-    scroll:SetPoint("BOTTOMRIGHT", -36, 76)
+    -- Das Feld hinter dem Text, wie MDTs mehrzeilige Eingabe.
+    local field = CreateFrame("Frame", nil, frame)
+    T:Fill(field, "bgInset", 1)
+    T:Border(field, "borderStrong")
+    frame.field = field
+
+    local scroll = T:Scroll(frame)
+    scroll:SetPoint("TOPLEFT", 24, -80)
+    scroll:SetPoint("BOTTOMRIGHT", -36, 82)
+    field:SetPoint("TOPLEFT", scroll, "TOPLEFT", -6, 6)
+    field:SetPoint("BOTTOMRIGHT", scroll, "BOTTOMRIGHT", 22, -6)
 
     local edit = CreateFrame("EditBox", nil, scroll)
     edit:SetMultiLine(true)
-    edit:SetFontObject(ChatFontNormal)
+    edit:SetFontObject(T:Font("body"))
     edit:SetWidth(WIDTH - 70)
     edit:SetAutoFocus(false)
     edit:SetScript("OnEscapePressed", function() frame:Hide() end)
@@ -65,15 +72,15 @@ local function ensureFrame()
 
     -- Zweite Zeile fuer eine Adresse. WoW kann keine Links oeffnen, also muss
     -- auch die URL kopierbar sein.
-    frame.linkLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    frame.linkLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 100)
-    frame.linkLabel:SetTextColor(0.8, 0.8, 0.8)
+    frame.linkLabel = frame:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
+    frame.linkLabel:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 102)
 
-    frame.linkBox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
-    frame.linkBox:SetHeight(20)
-    frame.linkBox:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 24, 76)
-    frame.linkBox:SetPoint("RIGHT", frame, "RIGHT", -24, 0)
+    frame.linkBox = CreateFrame("EditBox", nil, frame)
+    frame.linkBox:SetHeight(22)
+    frame.linkBox:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 76)
+    frame.linkBox:SetPoint("RIGHT", frame, "RIGHT", -18, 0)
     frame.linkBox:SetAutoFocus(false)
+    T:SkinEditBox(frame.linkBox, 6)
     frame.linkBox:SetScript("OnEscapePressed", function() frame:Hide() end)
     frame.linkBox:SetScript("OnTextChanged", function(self, userInput)
         if userInput then
@@ -86,14 +93,12 @@ local function ensureFrame()
     -- Dritte Zeile: wann die Route im Spiel ankommt. Wer gerade eingereicht
     -- hat, fragt genau das als Naechstes - und ohne Antwort sieht ein Tag
     -- Wartezeit nach einem Fehler aus.
-    frame.note = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    frame.note:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 46)
-    frame.note:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 46)
+    frame.note = frame:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
+    frame.note:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 18, 50)
+    frame.note:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 50)
     frame.note:SetJustifyH("LEFT")
-    frame.note:SetTextColor(0.65, 0.65, 0.65)
 
-    local close = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    close:SetSize(120, 24)
+    local close = T:Button(frame, "", 120)
     close:SetPoint("BOTTOM", 0, 16)
     close:SetScript("OnClick", function() frame:Hide() end)
     frame.close = close
@@ -125,7 +130,7 @@ function UI.ShowCopyDialog(title, help, text, link)
 
     -- Der Scrollbereich muss Platz lassen: erst die Adresse, dann der Knopf.
     f.scroll:ClearAllPoints()
-    f.scroll:SetPoint("TOPLEFT", 18, -74)
+    f.scroll:SetPoint("TOPLEFT", 24, -80)
 
     if link then
         f.linkLabel:SetText(ns.L["COPY_LINK_LABEL"])
@@ -135,13 +140,13 @@ function UI.ShowCopyDialog(title, help, text, link)
         f.linkBox:Show()
         f.note:Show()
         f:SetHeight(326)
-        f.scroll:SetPoint("BOTTOMRIGHT", -36, 124)
+        f.scroll:SetPoint("BOTTOMRIGHT", -36, 132)
     else
         f.linkLabel:Hide()
         f.linkBox:Hide()
         f.note:Hide()
         f:SetHeight(220)
-        f.scroll:SetPoint("BOTTOMRIGHT", -36, 48)
+        f.scroll:SetPoint("BOTTOMRIGHT", -36, 56)
     end
 
     f.edit:SetText(text)

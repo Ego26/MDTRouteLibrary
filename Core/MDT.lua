@@ -9,9 +9,16 @@
 --     haengen wir uns per RegisterUIInitializer ein. Der Callback laeuft genau
 --     dann, wenn MDT seine Oberflaeche ohnehin gerade anhaengt, und zwar nach
 --     dem Laden aller Dungeondaten (MythicDungeonTools/Core/Lifecycle.lua).
---   * ImportPreset ist nicht oeffentlich exportiert, GetDB ist es. Wir tragen
---     die Routen deshalb direkt in die Preset-Liste ein; MDT normalisiert sie
---     danach selbst und entfernt dabei Gegner, die es nicht mehr gibt.
+--   * Routen gehen ueber MythicDungeonToolsAPI:ImportRoutes nach MDT. Das
+--     oeffnet MDTs eigene Importliste, der Nutzer bestaetigt dort. Frueher
+--     haben wir direkt in MDTs Preset-Datenbank geschrieben und die Route
+--     ueber MDTs Preset-Dropdown ausgewaehlt; das Dropdown gibt es seit 6.3.10
+--     nicht mehr, und in eine fremde Datenbank zu schreiben, deren Aufbau sich
+--     jederzeit aendern kann, war ohnehin der heikelste Teil des Addons.
+--     Gelesen wird die Datenbank weiterhin (GetDB ist exportiert). Geschrieben
+--     wird nur noch auf zwei Wegen: beim Wegraeumen unserer eigenen Altlasten
+--     (CleanupPresets) und wenn der Nutzer im Browser ausdruecklich loescht
+--     oder das Loeschen rueckgaengig macht (Browser.lua, deleteRoutes).
 
 local _, ns = ...
 
@@ -189,14 +196,15 @@ function M.BuildPreset(route, dungeonIdx)
         -- Fall gueltig, nur eventuell vorsichtiger als noetig.
         difficulty = route.keyLevelMin or route.keyLevel or route.difficulty or DEFAULT_DIFFICULTY,
 
-        -- Eigene Markierung: daran erkennen wir beim naechsten Update, welche
-        -- Presets von uns stammen. Presets des Nutzers fassen wir nie an.
-        mdtrl = {
-            id     = route.id,
-            build  = ns.manifest and ns.manifest.build or "unknown",
-            source = route.source,
-            url    = route.url,
-        },
+        -- Herkunftsvermerk: daran erkennt die Liste, dass diese Community-
+        -- Route schon in MDT liegt, und zeigt sie nur einmal. MDT uebernimmt
+        -- beim Import die ganze Tabelle, also kommt er mit an.
+        --
+        -- Ausdruecklich NICHT die alte Markierung "mdtrl": an der erkennt
+        -- CleanupPresets unsere Vorschauplaetze und loescht sie beim naechsten
+        -- Laden. Eine Route, die der Nutzer selbst importiert hat, waere damit
+        -- nach dem naechsten /reload wieder weg gewesen.
+        mdtrlOrigin = route.id,
 
         value = {
             currentDungeonIdx = dungeonIdx,
@@ -248,9 +256,12 @@ end
 
 ---Entfernt alle Presets, die von uns stammen.
 ---
----Laeuft bei jedem Laden. Damit verschwinden sowohl Vorschauplaetze aus der
----letzten Sitzung als auch Altlasten aus der Zeit, in der wir noch alle Routen
----ungefragt eingetragen haben.
+---Laeuft bei jedem Laden. Neue Vorschauplaetze legt das Addon nicht mehr an;
+---weg muessen aber noch die aus Versionen vor dem Umstieg auf MDTs Import,
+---und die Altlasten aus der Zeit, in der wir alle Routen ungefragt
+---eingetragen haben. Ausser dem Loeschen auf ausdruecklichen Klick ist das
+---der einzige Schreibzugriff auf MDTs Datenbank, und er trifft nur Eintraege
+---mit unserer eigenen Markierung.
 ---@return table result Felder: removed, dungeons
 function M.CleanupPresets()
     local result = { removed = 0, dungeons = 0 }
@@ -278,67 +289,29 @@ function M.CleanupPresets()
     return result
 end
 
----Schreibt eine Route als Preset nach MDT.
+---Uebergibt eine Route an MDTs Importliste.
 ---
+---MDT oeffnet sich dabei selbst, zeigt die Route in seiner Liste, und nach
+---der Bestaetigung steht sie als normale Route des Nutzers auf der Karte. Die
+---UID ist je Route fest; wer dieselbe Route ein zweites Mal holt, bekommt von
+---MDT das Ersetzen angeboten statt einer zweiten Kopie.
 ---@param route table
----@param keep boolean|nil true = dauerhaft als normales Preset des Nutzers
----@return number|nil dungeonIdx, number|nil presetIdx, string|nil err
-function M.PutPreset(route, keep)
+---@param onDone function|nil bekommt MDTs Tabelle der importierten UIDs
+---@return boolean opened, string|nil err
+function M.Import(route, onDone)
     local api = _G.MythicDungeonToolsAPI
-    local db = M.GetDB()
-    if not api or not db then return nil, nil, ns.L["NO_MDT"] end
+    if not api then return false, ns.L["NO_MDT"] end
+    -- Vor 6.3.x gab es den Weg nicht. Dann bleibt der Importstring.
+    if type(api.ImportRoutes) ~= "function" then return false, ns.L["MDT_TOO_OLD"] end
 
-    local dungeonIdx = resolveDungeonIdx(api, route)
-    if not dungeonIdx then return nil, nil, ns.L["BROWSER_NO_DUNGEON"] end
-
-    local list = db.presets[dungeonIdx]
-    if type(list) ~= "table" or #list < 1 then return nil, nil, ns.L["NO_MDT"] end
-
-    local preset = M.BuildPreset(route, dungeonIdx)
-
-    if keep then
-        -- Dauerhaft: unsere Verwaltungsmarkierung weg, damit das Aufraeumen
-        -- beim naechsten Laden die Kopie in Ruhe laesst. Uebrig bleibt nur ein
-        -- Herkunftsvermerk - daran erkennt die Liste spaeter, dass diese
-        -- Community-Route bereits in MDT liegt, und zeigt sie nur einmal.
-        preset.mdtrl = nil
-        preset.mdtrlOrigin = route.id
-
-        -- Namen eindeutig machen, wie MDT es beim Anlegen auch tut.
-        local base, name, n = preset.text, preset.text, 2
-        local taken = true
-        while taken do
-            taken = false
-            for _, existing in ipairs(list) do
-                if type(existing) == "table" and existing.text == name then
-                    taken = true
-                    break
-                end
-            end
-            if taken then
-                name = base .. " " .. n
-                n = n + 1
-            end
-        end
-        preset.text = name
-
-        tinsert(list, #list, preset)
-        return dungeonIdx, #list - 1
+    if uiReady and not resolveDungeonIdx(api, route) then
+        return false, ns.L["BROWSER_NO_DUNGEON"]
     end
 
-    -- Vorschau: es gibt genau einen Platz je Dungeon, der wiederverwendet wird.
-    preset.mdtrl.preview = true
-    preset.text = ns.L["PREVIEW_PREFIX"] .. " " .. (route.title or route.id)
+    local str, err = M.BuildImportString(route)
+    if not str then return false, err end
 
-    for i, existing in ipairs(list) do
-        if type(existing) == "table" and existing.mdtrl and existing.mdtrl.preview then
-            list[i] = preset
-            return dungeonIdx, i
-        end
-    end
-
-    tinsert(list, #list, preset)
-    return dungeonIdx, #list - 1
+    return api:ImportRoutes(str, onDone)
 end
 
 --------------------------------------------------------------------------
@@ -356,16 +329,16 @@ function M.Hook()
         uiReady   = true
         nameToIdx = nil -- Dungeonliste kann sich zwischen Sessions geaendert haben
 
-        -- Zuerst die Sektion anmelden: MDT baut sein Hauptfenster erst danach,
-        -- und nur registrierte Sektionen bekommen einen Content-Frame.
+        -- MDT baut sein Hauptfenster erst danach. Der Browser wartet darauf
+        -- und haengt dann seinen Knopf an MDTs Leiste.
         ns.Browser.Register(pluginAPI)
 
         -- Erst jetzt die Routendaten nachladen: vorher braucht sie niemand.
         if not ns.EnsureData() then return end
 
         -- Nichts ungefragt eintragen. Nur wegraeumen, was von uns stammt:
-        -- Vorschauplaetze der letzten Sitzung und Altlasten aus der Zeit, als
-        -- wir noch alle Routen automatisch installiert haben.
+        -- Vorschauplaetze aus aelteren Versionen und Altlasten aus der Zeit,
+        -- als wir noch alle Routen automatisch installiert haben.
         local result = M.CleanupPresets()
         if result.removed > 0 then
             ns.Print(ns.L["CLEANED_UP"], result.removed)

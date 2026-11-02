@@ -40,7 +40,7 @@ read_globals = {
     "unpack", "select", "format", "date", "time", "CopyTable", "tContains",
 
     -- Kern-API
-    "CreateFrame", "GetTime", "GetLocale", "UIParent", "DEFAULT_CHAT_FRAME",
+    "CreateFrame", "CreateFont", "CreateFontFamily", "STANDARD_TEXT_FONT", "PixelUtil", "hooksecurefunc", "GetTime", "GetLocale", "UIParent", "DEFAULT_CHAT_FRAME",
     "ReloadUI", "GetBuildInfo", "IsControlKeyDown", "IsShiftKeyDown", "UnitFullName",
     "GameFontNormal", "GameFontHighlight", "ChatFontNormal",
     "SearchBoxTemplate_OnTextChanged", "YES", "NO",

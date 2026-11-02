@@ -9,10 +9,10 @@ selbst spricht Deutsch, Englisch und Russisch.*
 
 **Mythic+ routes inside Mythic Dungeon Tools. No alt-tab, no copy-paste.**
 
-MDT Route Library adds its own section to MDT's window. Browse routes grouped
-by dungeon, see the enemy forces, the pull list, every enemy and every ability
-— then put a route on the map with one click, or keep it as a preset of your
-own.
+MDT Route Library sits right on top of MDT's window, and a button in MDT's
+toolbar switches between the map and the routes. Browse routes grouped by
+dungeon, see the enemy forces, the pull list, every enemy and every ability —
+then hand a route to MDT's own import list with one click.
 
 ## Top Routes — what the best groups actually run
 
@@ -78,11 +78,12 @@ Nothing is written to your preset list when the addon loads.
 
 | Action | What happens in MDT |
 |---|---|
-| Loading the addon | Nothing is added. Leftovers from earlier sessions are cleaned up. |
-| *Show on map* | One preview slot per dungeon, overwritten next time. |
-| *Save to MDT* | A permanent copy that becomes an ordinary preset of yours — the addon never touches it again. |
+| Loading the addon | Nothing is added. Preview slots from older versions are cleaned up. |
+| *Open in MDT* | MDT's own import list opens. Only once you confirm there is the route in MDT — as an ordinary route of yours. |
+| *Copy string* | Just the import string, for sharing outside the game. MDT is left alone. |
+| *Delete* | Only when you click it and confirm: the selected route of yours, or every one you ticked. *Undo* brings them back until the next `/reload`. |
 
-Your own presets are never modified or deleted.
+Your own routes are never modified, and only deleted when you ask for it.
 
 ## Submitting your own routes
 
@@ -100,13 +101,15 @@ not use the command.
 /routes             open the browser (also /mdtrl)
 /routes status      data age and MDT connection
 /routes submit      pack the route currently open in MDT for submission
-/routes cleanup     remove preview presets from MDT
+/routes cleanup     remove preview presets left by older versions
 ```
 
 ## Requirements
 
 [Mythic Dungeon Tools](https://www.curseforge.com/wow/addons/mythic-dungeon-tools).
-Built against MDT 6.3.7 (World of Warcraft 12.1.5).
+Built against MDT 6.3.29 (World of Warcraft 12.1.5). Opening routes through
+MDT's import list needs MDT 6.3.15 or newer; older versions get the import
+string to paste instead.
 
 Not affiliated with Blizzard Entertainment, and not an official part of Mythic
 Dungeon Tools. Run data from [Raider.IO](https://raider.io), used under their

@@ -1,24 +1,27 @@
--- Routen-Browser als eigene Sektion in MDTs Fenster.
+-- Routen-Browser, deckungsgleich ueber MDTs Fenster.
 --
--- MDT erlaubt fremden Addons ueber pluginAPI:RegisterNavigationSection eine
--- eigene Sektion mit Icon in der Seitenleiste. MDT legt dafuer zwei Frames an
--- und blendet sie passend ein und aus:
---   * den Content-Frame  - deckt MDTs Kartenbereich ab (unsere Routenliste)
---   * den SidePanel-Frame - deckt MDTs rechte Spalte ab (unsere Details)
--- Nur mit beiden nutzen wir die volle Fensterbreite; deshalb steht
--- createSidePanelFrame hier bewusst auf true.
+-- Bis MDT 6.3.9 war das eine eigene Sektion in MDTs Seitenleiste, angemeldet
+-- ueber pluginAPI:RegisterNavigationSection. MDT 6.3.10 hat diese Funktion
+-- und GetNavigationSectionContentFrame aus dem Plugin-API genommen, und an
+-- MDTs Inneres kommt ein fremdes Addon bewusst nicht heran.
 --
--- Warum in MDT und nicht in einem eigenen Fenster: die Routen sind nur dann
--- etwas wert, wenn MDT sie gleich uebernehmen kann. Ein eigenes Fenster waere
--- ein zweiter Ort fuer dieselbe Sache - und der Weg dorthin waere wieder das
--- Alt-Tab-Hin-und-Her, das dieses Addon gerade abschaffen soll.
+-- Deshalb jetzt ein eigenes Fenster, das genau dort liegt, wo die Sektion lag:
+--   * die Routenliste ueber MDTs Kartenbereich (MDTFrame)
+--   * die Details ueber MDTs rechter Spalte (MDTSidePanel)
+-- MDTs Titelleiste und seine Symbolleiste links bleiben frei, und in diese
+-- Leiste haengen wir einen eigenen Knopf zum Umschalten. Von MDT brauchen wir
+-- dafuer nur die global benannten Rahmen - zum Ausrichten, nicht zum
+-- Hineinschreiben.
+--
+-- Warum nicht frei daneben: MDTs Fenster ist schon in Standardgroesse rund
+-- 1130 Einheiten breit, der Browser braucht gut 1000. Daneben ist auf einem
+-- ueblichen Bildschirm kein Platz, und ein Fenster, das MDT irgendwo halb
+-- verdeckt, waere schlechter als eines, das sauber darueber liegt.
 
 local _, ns = ...
 
 local B = {}
 ns.Browser = B
-
-local SECTION_KEY = "mdtRouteLibrary"
 
 local T = ns.Theme
 
@@ -28,10 +31,10 @@ local T = ns.Theme
 local ICON        = "Interface\\AddOns\\MDTRouteLibrary\\Media\\Textures\\logo-small"
 local ICON_COORDS = { 0, 1, 0, 1 }
 
-local ROW_HEIGHT     = 34
-local HEADER_HEIGHT  = 24
-local PULLROW_HEIGHT = 16
-local SPELLROW_HEIGHT = 34
+local ROW_HEIGHT     = 40
+local HEADER_HEIGHT  = 26
+local PULLROW_HEIGHT = 19
+local SPELLROW_HEIGHT = 38
 -- Rundes Gegnerbild. Dieselbe Maske nimmt MDT fuer seine Kartenblips, also
 -- sehen Liste und Karte gleich aus.
 local PORTRAIT_MASK = "Interface\\CHARACTERFRAME\\TempPortraitAlphaMask"
@@ -41,15 +44,17 @@ local PORTRAIT_SIZE = 18
 -- dort feste 251 Pixel vor; darin bekommt man Kennzahlen, Pull-Liste und
 -- Zauber nicht geordnet unter.
 local DETAIL_EXTRA = 130
-local TILE_HEIGHT  = 40
+local TILE_HEIGHT  = 46
 local TILE_GAP     = 6
 local SPELL_ICON     = 16
 -- Hoehe einer Gruppenzeile und Breite der Spalte fuer die Spezialisierung.
--- 84 traegt auch "Assassination" und "Beast Mastery", die laengsten.
-local GROUP_ROW = 13
-local GROUP_SPEC_WIDTH = 84
+-- 96 traegt auch "Assassination" und "Beast Mastery", die laengsten,
+-- in der Schriftgroesse aus Theme.lua.
+local GROUP_ROW = 16
+local GROUP_SPEC_WIDTH = 96
 local PADDING        = 14
-local DUNGEON_BUTTON = 42
+local DUNGEON_BUTTON = 40 -- wie MDTs Dungeonleiste (DungeonSelect.lua, BUTTON_SIZE)
+local DUNGEON_CROP = (1 - 1 / 1.2) / 2 -- MDTs ICON_CROP
 
 -- Spaltenbreiten der Routenliste. Kopfzeile und Zeilen richten sich beide
 -- danach, sonst stehen die Ueberschriften irgendwo.
@@ -184,6 +189,46 @@ local collapsed = {}
 local PAGE_SIZE = 10
 local PAGER_HEIGHT = 28
 
+---Wo jede Seite eines Abschnitts beginnt.
+---
+---Unter "Alle" stehen mehrere Bereiche untereinander, jeder mit zehn. Zeigt
+---der Reiter nur einen, blieb mit zehn die halbe Flaeche leer - dann fuellt
+---jede Seite die Hoehe.
+---
+---Gefuellt wird mit den echten Hoehen, Route fuer Route: eine Zeile, und wo
+---ein neuer Dungeon anfaengt, seine Ueberschrift dazu. Eine feste Anzahl je
+---Seite ging nicht auf - eine Seite mit einem Dungeon war sichtbar kuerzer
+---als eine mit zweien, weil fuer beide dieselbe Zahl Ueberschriften
+---abgezogen war.
+---@param list table nach Dungeon sortiert
+---@return table starts erster Index jeder Seite
+local function pageStarts(list)
+    local starts = { 1 }
+    local budget = filterMode ~= "all" and ui and ui.scroll and ui.scroll:GetHeight() or 0
+    local fixed = (HEADER_HEIGHT + 6) + PAGER_HEIGHT
+
+    -- Zu wenig Hoehe, um mehr als zehn zu zeigen: dann wie unter "Alle".
+    if budget < fixed + PAGE_SIZE * ROW_HEIGHT then
+        for index = PAGE_SIZE + 1, #list, PAGE_SIZE do starts[#starts + 1] = index end
+        return starts
+    end
+
+    local used, dungeon = fixed, nil
+    for index, route in ipairs(list) do
+        local name = route.dungeonEnglishName or "?"
+        local need = ROW_HEIGHT + (name ~= dungeon and HEADER_HEIGHT or 0)
+        if used + need > budget and index > starts[#starts] then
+            starts[#starts + 1] = index
+            used = fixed
+            -- Die neue Seite beginnt immer mit der Ueberschrift ihres Dungeons.
+            need = ROW_HEIGHT + HEADER_HEIGHT
+        end
+        used = used + need
+        dungeon = name
+    end
+    return starts
+end
+
 -- Aktuelle Seite je Abschnitt.
 local pages = {}
 
@@ -191,16 +236,16 @@ local pages = {}
 -- Datenpaket; die Routen aus MDT stehen dort nie drin.
 local displayById = {}
 
--- Angehakte eigene Routen (Routen-ID -> true). Nur im Modus "mine" benutzt.
+-- Angehakte eigene Routen (Routen-ID -> true), zum Loeschen mehrerer.
 local checked = {}
-
--- Vorwaertsdeklaration: wird schon beim Loeschen und Anzeigen gebraucht,
--- steht aber erst weiter unten.
-local savedPreset
 
 -- Zuletzt geloeschte Presets, fuer "Rueckgaengig". Bewusst nur im Speicher:
 -- ein Neuladen der Oberflaeche gilt als "Entscheidung steht".
 local trash = {}
+
+-- Vorwaertsdeklaration: wird schon beim Anzeigen gebraucht, steht aber erst
+-- weiter unten.
+local savedPreset
 
 -- Letzter bekannter Stand von MDTs Presets, siehe presetFingerprint().
 local lastFingerprint
@@ -511,7 +556,10 @@ local preview
 local function ensurePreview()
     if preview then return preview end
 
-    local frame = CreateFrame("Frame", "MDTRouteLibraryEnemyPreview", UIParent, "TooltipBorderedFrameTemplate")
+    -- Wie MDTs eigener Tooltip (Kit/Tooltip.lua): flach, mit Pixelrand.
+    local frame = CreateFrame("Frame", "MDTRouteLibraryEnemyPreview", UIParent)
+    T:Fill(frame, "bgOverlay", 0.97)
+    T:Border(frame, "borderStrong")
     frame:SetSize(250, 168)
     -- Eine Stufe unter TOOLTIP, damit Blizzards Zaubertooltip darueber liegt.
     frame:SetFrameStrata("FULLSCREEN_DIALOG")
@@ -527,7 +575,7 @@ local function ensurePreview()
     frame.model:SetPoint("TOPLEFT", frame, "TOPLEFT", 10, -10)
     frame.model:SetSize(96, 128)
 
-    frame.name = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    frame.name = frame:CreateFontString(nil, "OVERLAY", T:FontName("body"))
     frame.name:SetPoint("TOPLEFT", frame.model, "TOPRIGHT", 10, -2)
     frame.name:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
     frame.name:SetJustifyH("LEFT")
@@ -536,7 +584,7 @@ local function ensurePreview()
     frame.lines = {}
     local anchor = frame.name
     for i = 1, 5 do
-        local line = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        local line = frame:CreateFontString(nil, "OVERLAY", T:FontName("small"))
         line:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -4)
         line:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
         line:SetJustifyH("LEFT")
@@ -616,74 +664,278 @@ end
 -- Aktionen
 --------------------------------------------------------------------------
 
----Wechselt MDT auf den Dungeon einer Route und waehlt sie aus.
+---Wechselt MDT auf einen Dungeon.
 ---
 ---MDT haengt den Dungeonindex als Feld an seine global benannten
 ---Dungeon-Buttons (DungeonSelect.lua: `button.dungeonIdx = dungeonIdx`).
 ---Damit kommen wir ohne Zugriff auf MDTs private Tabellen aus: passenden
 ---Button suchen und klicken, wie es der Nutzer auch taete.
----@param route table
-function B.ShowOnMap(route)
-    local api = _G.MythicDungeonToolsAPI
-    local db  = ns.MDT.GetDB()
-    if not api or not db then return end
+---@param dungeonIdx number
+local function switchDungeon(dungeonIdx)
+    local db = ns.MDT.GetDB()
+    if not db or db.currentDungeonIdx == dungeonIdx then return end
 
-    local dungeonIdx = ns.MDT.ResolveDungeonIdx(api, route)
-    if not dungeonIdx then
-        ns.Warn(ns.L["BROWSER_NO_DUNGEON"])
-        return
-    end
-
-    -- Eigene Routen liegen bereits in MDT. Community-Routen kommen erst jetzt
-    -- hinein - in einen Vorschauplatz, der beim naechsten Mal ueberschrieben
-    -- wird. So bleibt die Preset-Auswahl des Nutzers sauber.
-    local presetIdx
-    local savedDungeon, savedIdx = savedPreset(route)
-    if savedIdx then
-        dungeonIdx, presetIdx = savedDungeon, savedIdx
-    else
-        local idx, slot, err = ns.MDT.PutPreset(route, false)
-        if not idx then
-            ns.Warn(err or ns.L["BROWSER_NO_DUNGEON"])
+    for i = 1, 30 do
+        local button = _G["MDTDungeonButton" .. i]
+        if button and button.dungeonIdx == dungeonIdx then
+            button:Click()
             return
         end
-        dungeonIdx, presetIdx = idx, slot
     end
+    -- Der Dungeon gehoert zu einer anderen Saison-Auswahl.
+    ns.Warn(ns.L["BROWSER_WRONG_SEASON"])
+end
 
-    if not presetIdx then
-        ns.Warn(ns.L["BROWSER_NOT_INSTALLED"])
-        return
-    end
+--------------------------------------------------------------------------
+-- Loeschen
+--------------------------------------------------------------------------
+--
+-- MDT loescht intern mit MDT:DeletePresets (Presets.lua), gibt die Funktion
+-- aber nicht heraus. Nachgebaut wird sie hier auf MDTs Datenbank, die
+-- MythicDungeonToolsAPI:GetDB() offen liefert - mit denselben Regeln:
+-- "Default" auf Platz 1 und MDTs "<New Preset>" bleiben, und zeigte MDT
+-- gerade eine der geloeschten Routen, zeigt es danach die naechste darueber.
 
-    -- Erst in die Kartenansicht: dort blendet MDT die Dungeon-Buttons ein.
-    if pluginAPI then pluginAPI:SetCurrentSection("maps") end
+---Zaehlt die angehakten Routen.
+---@return number
+local function countChecked()
+    local n = 0
+    for _ in pairs(checked) do n = n + 1 end
+    return n
+end
 
-    -- Auswahl vorab setzen. Wechselt MDT gleich den Dungeon, liest es sie
-    -- beim Aufbau des Dropdowns selbst aus - dann brauchen wir kein zweites
-    -- Anstossen, das mit MDTs asynchronem Kartenaufbau kollidieren koennte.
-    if db.currentPreset then db.currentPreset[dungeonIdx] = presetIdx end
+---Laesst MDT einen Dungeon neu aus seiner Datenbank aufbauen.
+---
+---MDTs Neuzeichnen (UpdateMap, RefreshSidebar) ist privat. Sein Dungeonwechsel
+---ruft beides auf - steigt aber aus, wenn der Dungeon schon aktiv ist
+---(MapView.lua, UpdateToDungeon). Also kurz auf einen anderen Dungeon der
+---Leiste und zurueck. Der Browser liegt darueber, zu sehen ist davon nichts;
+---nur der Kartenzoom steht danach wieder auf Anfang.
+---
+---Fuer andere Dungeons ist nichts zu tun: dort liest MDT die Liste ohnehin
+---neu, sobald der Nutzer hinwechselt.
+---@param dungeonIdx number
+---@return boolean refreshed
+local function refreshMDT(dungeonIdx)
+    local db = ns.MDT.GetDB()
+    if not db or db.currentDungeonIdx ~= dungeonIdx then return false end
 
-    if db.currentDungeonIdx ~= dungeonIdx then
-        for i = 1, 30 do
-            local button = _G["MDTDungeonButton" .. i]
-            if button and button.dungeonIdx == dungeonIdx then
-                button:Click()
-                return
+    local here, other
+    for i = 1, 30 do
+        local button = _G["MDTDungeonButton" .. i]
+        if button and button:IsShown() and button.dungeonIdx then
+            if button.dungeonIdx == dungeonIdx then
+                here = button
+            elseif not other then
+                other = button
             end
         end
-        -- Der Dungeon gehoert zu einer anderen Saison-Auswahl.
-        ns.Warn(ns.L["BROWSER_WRONG_SEASON"])
+    end
+    if not here or not other then return false end
+
+    other:Click()
+    here:Click()
+    return true
+end
+
+---Ob ein Eintrag in MDTs Liste geloescht werden darf.
+---@param list table MDTs Presets eines Dungeons
+---@param index number
+---@return boolean
+local function deletable(list, index)
+    local preset = list[index]
+    return index > 1 and type(preset) == "table" and preset.value ~= 0
+end
+
+---Loescht Routen aus MDTs Datenbank.
+---
+---Je Dungeon von hinten nach vorn, sonst verschieben sich die folgenden
+---Eintraege waehrend des Durchlaufs. Geloescht wird nur, wenn an der Stelle
+---noch steht, was gemeint war - sonst hat sich die Liste inzwischen
+---verschoben, und es traefe die falsche.
+---@param ids table Liste von Routen-IDs
+---@return number deleted, number requested
+local function deleteRoutes(ids)
+    local db = ns.MDT.GetDB()
+    if not db or type(db.presets) ~= "table" then return 0, 0 end
+
+    local byDungeon, requested = {}, 0
+    for _, id in ipairs(ids) do
+        local dungeonIdx, presetIdx = savedPreset(displayById[id] or {})
+        local list = dungeonIdx and db.presets[dungeonIdx]
+        if presetIdx and type(list) == "table" and deletable(list, presetIdx) then
+            byDungeon[dungeonIdx] = byDungeon[dungeonIdx] or {}
+            byDungeon[dungeonIdx][list[presetIdx]] = presetIdx
+            requested = requested + 1
+        end
+    end
+
+    -- Nur die letzte Loeschung laesst sich zurueckholen. Mehr Stufen waeren
+    -- Speicher fuer einen Fall, den es in der Praxis nicht gibt.
+    wipe(trash)
+
+    local deleted = 0
+    for dungeonIdx, doomed in pairs(byDungeon) do
+        local list = db.presets[dungeonIdx]
+        db.currentPreset = db.currentPreset or {}
+
+        -- Welche Route MDT danach zeigt: die bisherige, oder - war sie unter
+        -- den geloeschten - die naechste darueber. So macht es MDT selbst.
+        local shown = db.currentPreset[dungeonIdx] or 1
+        while shown > 1 and doomed[list[shown]] do shown = shown - 1 end
+        local shownPreset = list[shown]
+
+        for index = #list, 2, -1 do
+            local preset = list[index]
+            if doomed[preset] and doomed[preset] == index and deletable(list, index) then
+                tremove(list, index)
+                -- Aufheben statt verwerfen: ein Fehlklick kostet sonst Arbeit
+                -- von Stunden.
+                trash[#trash + 1] = { dungeonIdx = dungeonIdx, index = index, preset = preset }
+                deleted = deleted + 1
+            end
+        end
+
+        for index, preset in ipairs(list) do
+            if preset == shownPreset then db.currentPreset[dungeonIdx] = index end
+        end
+
+        refreshMDT(dungeonIdx)
+    end
+
+    for _, id in ipairs(ids) do checked[id] = nil end
+    -- Eigene Aenderung: Fingerabdruck nachziehen, sonst loest die Ueberwachung
+    -- gleich darauf ein zweites Neuzeichnen aus.
+    lastFingerprint = nil
+    return deleted, requested
+end
+
+---Holt die zuletzt geloeschten Routen zurueck.
+---
+---Eingefuegt wird aufsteigend nach dem alten Index, damit die Reihenfolge
+---wieder stimmt - aber nie hinter MDTs "<New Preset>", das am Ende steht.
+---@return number restored
+local function restoreDeleted()
+    local db = ns.MDT.GetDB()
+    if not db or type(db.presets) ~= "table" or #trash == 0 then return 0 end
+
+    table.sort(trash, function(a, b) return a.index < b.index end)
+
+    local restored, touched = 0, {}
+    for _, item in ipairs(trash) do
+        local list = db.presets[item.dungeonIdx]
+        if type(list) == "table" then
+            local last = #list
+            local limit = (type(list[last]) == "table" and list[last].value == 0) and last or last + 1
+            tinsert(list, math.max(2, math.min(item.index, limit)), item.preset)
+            restored = restored + 1
+            touched[item.dungeonIdx] = true
+        end
+    end
+
+    wipe(trash)
+    for dungeonIdx in pairs(touched) do refreshMDT(dungeonIdx) end
+
+    lastFingerprint = nil
+    return restored
+end
+
+---Was der Loeschknopf gerade loeschen wuerde: die angehakten Routen, sonst
+---die ausgewaehlte, wenn sie dem Nutzer gehoert.
+---@return table ids
+local function deleteTargets()
+    local ids = {}
+    for id in pairs(checked) do ids[#ids + 1] = id end
+    if #ids > 0 then return ids end
+
+    local route = selectedId and displayById[selectedId]
+    local _, presetIdx = savedPreset(route or {})
+    if route and (route.own or route.saved) and presetIdx and presetIdx > 1 then ids[1] = route.id end
+    return ids
+end
+
+-- Einen eigenen Dialog in StaticPopupDialogs einzutragen ist der
+-- vorgesehene Weg in WoW. luacheck haelt die Felder eines Globals
+-- trotzdem fuer schreibgeschuetzt (W122) - hier ist das Eintragen aber
+-- genau der Zweck. Eng begrenzt statt in der Konfiguration abgeschaltet,
+-- damit ein echter Fall woanders weiter auffaellt.
+-- luacheck: push ignore 122
+StaticPopupDialogs["MDTRL_DELETE"] = {
+    text = "%s",
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function(_, ids)
+        local deleted, requested = deleteRoutes(ids or {})
+        ns.Print(ns.L["DELETE_DONE"], deleted)
+        if deleted > 0 then ns.Print(ns.L["DELETE_UNDO_HINT"]) end
+        -- Wenn weniger verschwunden ist als angefordert, nicht so tun, als
+        -- waere alles gut gegangen.
+        if deleted < requested then
+            ns.Warn(ns.L["DELETE_PARTIAL"], requested - deleted)
+        end
+        -- Die Detailspalte soll keine Route zeigen, die es nicht mehr gibt.
+        for _, id in ipairs(ids or {}) do
+            if id == selectedId then selectedId = nil end
+        end
+        B.Refresh()
+    end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+-- luacheck: pop
+
+---Fragt nach und loescht dann.
+local function confirmDelete()
+    local ids = deleteTargets()
+    if #ids == 0 then return end
+    local dialog = StaticPopup_Show("MDTRL_DELETE", ns.L["DELETE_CONFIRM"]:format(#ids), nil, ids)
+    -- Der Browser liegt auf "DIALOG", und dort auch Blizzards Rueckfragen.
+    -- Ohne Anheben laege die Frage unter dem Fenster, das sie gestellt hat.
+    if dialog then dialog:SetFrameStrata("FULLSCREEN_DIALOG") end
+end
+
+---Bringt eine Route in MDT.
+---
+---Was schon in MDT liegt - eigene Routen und uebernommene Kopien -, muss
+---nicht noch einmal hinein: der Browser geht zur Seite, MDT wechselt auf den
+---Dungeon, und die Route steht in MDTs Liste rechts. Waehlen kann sie der
+---Nutzer dort mit einem Klick; das fuer ihn zu tun, ginge nur ueber MDTs
+---Inneres.
+---
+---Alles andere geht ueber MDTs Importliste. Die erscheint in MDTs Fenster,
+---also muss der Browser auch hier aus dem Weg.
+---@param route table
+function B.ShowOnMap(route)
+    if isReference(route) then return end
+
+    local savedDungeon = savedPreset(route)
+    if savedDungeon then
+        B.Hide()
+        if pluginAPI then pluginAPI:SetCurrentSection("maps") end
+        switchDungeon(savedDungeon)
         return
     end
 
-    -- Schon im richtigen Dungeon: MDTs Dropdown selbst ausloesen.
-    local frame = _G.MDTFrame
-    local group = frame and frame.sidePanel and frame.sidePanel.WidgetGroup
-    local dropdown = group and group.PresetDropDown
-    if dropdown and dropdown.Fire then
-        dropdown:SetValue(presetIdx)
-        dropdown:Fire("OnValueChanged", presetIdx)
+    -- MDTs Importliste gibt es seit 6.3.15. Davor bleibt der Weg, den MDT
+    -- immer hatte: String kopieren, in MDT einfuegen.
+    local api = _G.MythicDungeonToolsAPI
+    if api and type(api.ImportRoutes) ~= "function" then
+        B.CopyString(route)
+        return
     end
+
+    local opened, err = ns.MDT.Import(route, function()
+        -- Was der Nutzer uebernommen hat, steht ab jetzt unter "Meine Routen".
+        lastFingerprint = nil
+        B.Refresh()
+    end)
+    if not opened then
+        ns.Warn(err or ns.L["COPY_FAILED"])
+        return
+    end
+    B.Hide()
 end
 
 ---Zeigt den MDT-Importstring einer Route zum Kopieren.
@@ -707,6 +959,21 @@ end
 ---MDTs eigene Platzhalter ("Default" ohne Pulls, "<New Preset>" mit value == 0)
 ---fallen ebenfalls raus.
 ---@return table Routen im selben Format wie unsere eigenen
+-- UID -> Routen-ID unserer Routen. Die UID haengt nur an der Routen-ID, also
+-- traegt jede uebernommene Kopie die ihrer Herkunft - auch eine, die per
+-- kopiertem String kam oder deren Herkunftsvermerk unterwegs verloren ging.
+local idByUid
+
+local function originOf(preset)
+    if type(preset.mdtrlOrigin) == "string" then return ns.CanonicalId(preset.mdtrlOrigin) end
+    if type(preset.uid) ~= "string" then return nil end
+    if not idByUid then
+        idByUid = {}
+        for _, route in ipairs(ns.routes) do idByUid[ns.MDT.MakeUID(route.id)] = route.id end
+    end
+    return idByUid[preset.uid]
+end
+
 local function collectOwnRoutes()
     local api = _G.MythicDungeonToolsAPI
     local db  = ns.MDT.GetDB()
@@ -754,8 +1021,7 @@ local function collectOwnRoutes()
                         -- Ueber die Aliasse: ein Preset, das vor einer
                         -- Umbenennung gespeichert wurde, traegt noch die alte
                         -- Kennung seiner Herkunft.
-                        originId = type(preset.mdtrlOrigin) == "string"
-                            and ns.CanonicalId(preset.mdtrlOrigin) or nil,
+                        originId = originOf(preset),
                         title = preset.text or "?",
                         -- MDT merkt sich, wer ein Preset angelegt hat, und zeigt
                         -- den Namen im Dropdown davor. Uebernehmen wir.
@@ -780,7 +1046,7 @@ local function collectOwnRoutes()
 end
 
 --------------------------------------------------------------------------
--- Eigene Routen loeschen
+-- Eigene Routen und Favoriten
 --------------------------------------------------------------------------
 
 ---Wo liegt diese Route in MDT - egal ob eigene oder gespeicherte Kopie?
@@ -806,209 +1072,6 @@ local function toggleFavourite(id)
     MDTRouteLibraryDB.favourites = MDTRouteLibraryDB.favourites or {}
     MDTRouteLibraryDB.favourites[id] = (not MDTRouteLibraryDB.favourites[id]) or nil
 end
-
----Zaehlt die angehakten Routen.
----@return number
-local function countChecked()
-    local n = 0
-    for _ in pairs(checked) do n = n + 1 end
-    return n
-end
-
----Beschriftung eines Presets in MDTs Dropdown.
----
----Nachgebaut aus MDT:GetPresetDropdownText: Ersteller in Klassenfarbe, dann
----der Name. Die Funktion selbst ist nicht exportiert, das Format aber simpel.
----@param preset table
----@return string
-local function presetDropdownText(preset)
-    local text = preset.text or ""
-    local createdBy = preset.createdBy
-
-    if type(createdBy) == "table" and type(createdBy.name) == "string" and createdBy.classIdx then
-        local _, classFile = GetClassInfo(createdBy.classIdx)
-        if classFile then
-            local _, _, _, hex = GetClassColor(classFile)
-            if hex then
-                return WrapTextInColorCode(createdBy.name, hex) .. " - " .. text
-            end
-        end
-        return createdBy.name .. " - " .. text
-    end
-
-    return text
-end
-
----Baut MDTs Preset-Dropdown neu auf.
----
----Der naheliegende Weg - Klick auf den Dungeon-Button - hilft hier nicht:
----MDT:UpdateToDungeon steigt sofort aus, wenn der Dungeon schon aktiv ist
----(MapView.lua: "if dungeonIdx == db.currentDungeonIdx then return end").
----Genau das ist beim Loeschen und Wiederherstellen der Normalfall, und deshalb
----blieb die Liste in MDT unveraendert stehen.
----
----Fuer andere Dungeons ist nichts zu tun: dort baut MDT das Dropdown ohnehin
----neu, sobald der Nutzer hinwechselt.
----@param dungeonIdx number
----@return boolean refreshed
-local function refreshMDT(dungeonIdx)
-    local db = ns.MDT.GetDB()
-    if not db or db.currentDungeonIdx ~= dungeonIdx then return false end
-
-    local frame = _G.MDTFrame
-    local group = frame and frame.sidePanel and frame.sidePanel.WidgetGroup
-    local dropdown = group and group.PresetDropDown
-    if not dropdown or not dropdown.SetList then return false end
-
-    local list = db.presets and db.presets[dungeonIdx]
-    if type(list) ~= "table" then return false end
-
-    local labels = {}
-    for index, preset in pairs(list) do
-        if type(preset) == "table" then
-            labels[index] = presetDropdownText(preset)
-        end
-    end
-
-    dropdown:SetList(labels)
-    dropdown:SetValue((db.currentPreset and db.currentPreset[dungeonIdx]) or 1)
-    if dropdown.ClearFocus then dropdown:ClearFocus() end
-
-    return true
-end
-
----Loescht die angehakten Routen aus MDTs Datenbank.
----
----Absteigend nach Index loeschen, sonst verschieben sich die folgenden
----Eintraege waehrend des Durchlaufs. Index 1 bleibt unangetastet - das ist
----MDTs "Default", das auch MDT selbst nicht loescht.
----@return number deleted, number requested
-local function deleteChecked()
-    local db = ns.MDT.GetDB()
-    if not db or type(db.presets) ~= "table" then return 0, 0 end
-
-    -- Nach Dungeon buendeln und dabei merken, was wir loeschen wollten.
-    local byDungeon, requested = {}, 0
-    for id in pairs(checked) do
-        local route = displayById[id]
-        local dungeonIdx, presetIdx, title = savedPreset(route or {})
-        if dungeonIdx and presetIdx and presetIdx > 1 then
-            local bucket = byDungeon[dungeonIdx]
-            if not bucket then
-                bucket = {}
-                byDungeon[dungeonIdx] = bucket
-            end
-            -- Namen mitnehmen: damit laesst sich hinterher pruefen, ob der
-            -- richtige Eintrag verschwunden ist.
-            bucket[#bucket + 1] = { index = presetIdx, text = title }
-            requested = requested + 1
-        end
-    end
-
-    -- Nur die letzte Loeschung laesst sich zurueckholen. Mehr Stufen waeren
-    -- Speicher fuer einen Fall, den es in der Praxis nicht gibt.
-    wipe(trash)
-
-    local deleted = 0
-    for dungeonIdx, items in pairs(byDungeon) do
-        local list = db.presets[dungeonIdx]
-        if type(list) == "table" then
-            local before = #list
-
-            table.sort(items, function(a, b) return a.index > b.index end)
-            for _, item in ipairs(items) do
-                local preset = list[item.index]
-                -- Nur loeschen, wenn an der Stelle wirklich das steht, was wir
-                -- meinen. Sonst hat sich die Liste zwischendurch verschoben.
-                if type(preset) == "table" and preset.text == item.text then
-                    tremove(list, item.index)
-                    -- Aufheben statt verwerfen: Loeschen ist sonst endgueltig,
-                    -- und ein Fehlklick kostet Arbeit von Stunden.
-                    trash[#trash + 1] = {
-                        dungeonIdx = dungeonIdx,
-                        index = item.index,
-                        preset = preset,
-                    }
-                end
-            end
-
-            deleted = deleted + (before - #list)
-
-            -- Auswahl des Nutzers kann jetzt ins Leere zeigen.
-            local current = db.currentPreset and db.currentPreset[dungeonIdx]
-            if current and current > #list - 1 then
-                db.currentPreset[dungeonIdx] = 1
-            end
-
-            refreshMDT(dungeonIdx)
-        end
-    end
-
-    wipe(checked)
-    -- Eigene Aenderung: Fingerabdruck nachziehen, sonst loest die Ueberwachung
-    -- gleich darauf ein zweites Neuzeichnen aus.
-    lastFingerprint = nil
-    return deleted, requested
-end
-
----Holt die zuletzt geloeschten Routen zurueck.
----
----Eingefuegt wird aufsteigend nach dem alten Index, damit die Reihenfolge
----wieder stimmt. Hat sich die Liste zwischenzeitlich verkuerzt, landet der
----Eintrag vor MDTs "<New Preset>"-Platzhalter statt daneben.
----@return number restored
-local function restoreDeleted()
-    local db = ns.MDT.GetDB()
-    if not db or type(db.presets) ~= "table" or #trash == 0 then return 0 end
-
-    table.sort(trash, function(a, b) return a.index < b.index end)
-
-    local restored = 0
-    local touched = {}
-    for _, item in ipairs(trash) do
-        local list = db.presets[item.dungeonIdx]
-        if type(list) == "table" then
-            local index = math.max(2, math.min(item.index, #list))
-            tinsert(list, index, item.preset)
-            restored = restored + 1
-            touched[item.dungeonIdx] = true
-        end
-    end
-
-    wipe(trash)
-    for dungeonIdx in pairs(touched) do refreshMDT(dungeonIdx) end
-
-    lastFingerprint = nil
-    return restored
-end
-
--- Einen eigenen Dialog in StaticPopupDialogs einzutragen ist der
--- vorgesehene Weg in WoW. luacheck haelt die Felder eines Globals
--- trotzdem fuer schreibgeschuetzt (W122) - hier ist das Eintragen aber
--- genau der Zweck. Eng begrenzt statt in der Konfiguration abgeschaltet,
--- damit ein echter Fall woanders weiter auffaellt.
--- luacheck: push ignore 122
-StaticPopupDialogs["MDTRL_DELETE"] = {
-    text = "%d Route(n) aus MDT loeschen? Das laesst sich nicht rueckgaengig machen.",
-    button1 = YES,
-    button2 = NO,
-    OnAccept = function()
-        local deleted, requested = deleteChecked()
-        ns.Print(ns.L["DELETE_DONE"], deleted)
-        if deleted > 0 then ns.Print(ns.L["DELETE_UNDO_HINT"]) end
-        -- Wenn weniger verschwunden ist als angefordert, nicht so tun, als
-        -- waere alles gut gegangen.
-        if deleted < requested then
-            ns.Warn(ns.L["DELETE_PARTIAL"], requested - deleted)
-        end
-        B.Refresh()
-    end,
-    timeout = 0,
-    whileDead = true,
-    hideOnEscape = true,
-    preferredIndex = 3,
-}
--- luacheck: pop
 
 --------------------------------------------------------------------------
 -- Abgleich mit MDT
@@ -1220,6 +1283,11 @@ local function rebuildEntries()
     local ownRoutes = collectOwnRoutes()
     local byOrigin = {}
     for _, route in ipairs(ownRoutes) do
+        -- Eine Kopie ist nur, was sein Original noch im Paket hat. Ein
+        -- Top-Lauf, der inzwischen unter 100 % faellt, oder eine
+        -- zurueckgezogene Community-Route nimmt ihre Kopie sonst mit ins
+        -- Nichts - sie stuende dann nirgends mehr.
+        if route.originId and not ns.routeById[route.originId] then route.originId = nil end
         if route.originId then byOrigin[route.originId] = route end
     end
 
@@ -1235,7 +1303,9 @@ local function rebuildEntries()
         -- kommt aus demselben Datenpaket und muss hier getrennt werden.
         local wanted
         if filterMode == "mine" then
-            wanted = route.saved ~= nil
+            -- Unter "Meine Routen" steht die eigene Kopie selbst, mit dem
+            -- Namen, den der Nutzer ihr gegeben hat - siehe unten.
+            wanted = false
         elseif filterMode == "top" then
             wanted = isTopRun(route)
         elseif filterMode == "community" then
@@ -1249,10 +1319,14 @@ local function rebuildEntries()
 
     -- Eigene Routen aus MDT gehoeren weder zu "Community" noch zu den
     -- Top-Laeufen.
+    --
+    -- Unter "Alle" stehen Kopien nicht doppelt: die stecken schon im Original.
+    -- Unter "Meine Routen" dagegen alles, was in MDT liegt - auch eine Kopie,
+    -- die der Nutzer umbenannt und zu seiner gemacht hat. Vorher landete sie
+    -- dort im Topf der Top-Laeufe, den dieser Reiter gar nicht zeigt.
     if filterMode == "all" or filterMode == "mine" then
         for _, route in ipairs(ownRoutes) do
-            -- Kopien nicht doppelt: die stecken schon im Original.
-            if not route.originId then source[#source + 1] = route end
+            if filterMode == "mine" or not route.originId then source[#source + 1] = route end
         end
     end
 
@@ -1306,7 +1380,8 @@ local function rebuildEntries()
         end)
 
         local sectionKey = "section:" .. key
-        local pageCount = math.max(1, math.ceil(#list / PAGE_SIZE))
+        local starts = pageStarts(list)
+        local pageCount = #starts
 
         -- Seite festhalten, aber nie ins Leere zeigen lassen: Filter koennen
         -- die Liste jederzeit verkuerzen.
@@ -1322,8 +1397,8 @@ local function rebuildEntries()
         }
         if collapsed[sectionKey] then return end
 
-        local first = (page - 1) * PAGE_SIZE + 1
-        local last = math.min(#list, page * PAGE_SIZE)
+        local first = starts[page]
+        local last = (starts[page + 1] or (#list + 1)) - 1
 
         local byDungeon, order = {}, {}
         for index = first, last do
@@ -1413,18 +1488,24 @@ local function acquireRow(index)
     row.bandAccent = row:CreateTexture(nil, "BACKGROUND", nil, -1)
     row.bandAccent:SetPoint("TOPLEFT")
     row.bandAccent:SetPoint("BOTTOMLEFT")
-    row.bandAccent:SetWidth(3)
-    row.bandAccent:SetColorTexture(T:Color("accent", 0.9))
+    row.bandAccent:SetWidth(2)
+    row.bandAccent:SetColorTexture(T:Color("accent", 0.6))
     row.bandAccent:Hide()
 
-    row.highlight = row:CreateTexture(nil, "BACKGROUND")
-    row.highlight:SetAllPoints()
-    row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
+    -- Hover und Auswahl wie in MDTs Routenliste: Weiss mit wenig Deckkraft,
+    -- die Auswahl dazu mit einer hellen Kante links.
+    row.highlight = T:Tint(row, "hover")
     row.highlight:Hide()
 
-    row.selected = row:CreateTexture(nil, "BACKGROUND")
-    row.selected:SetAllPoints()
-    row.selected:SetColorTexture(T:Color("accent", 0.20))
+    row.selected = T:Tint(row, "selected")
+    row.selected.edge = row:CreateTexture(nil, "ARTWORK")
+    row.selected.edge:SetPoint("TOPLEFT")
+    row.selected.edge:SetPoint("BOTTOMLEFT")
+    row.selected.edge:SetWidth(2)
+    row.selected.edge:SetColorTexture(T:Color("accent", 0.9))
+    hooksecurefunc(row.selected, "Show", function(self) self.edge:Show() end)
+    hooksecurefunc(row.selected, "Hide", function(self) self.edge:Hide() end)
+    hooksecurefunc(row.selected, "SetShown", function(self, shown) self.edge:SetShown(shown) end)
     row.selected:Hide()
 
     row:SetScript("OnEnter", function(self)
@@ -1443,16 +1524,16 @@ local function acquireRow(index)
         ns.MapView.Cancel()
     end)
 
-    -- Auswahlkaestchen: nur bei eigenen Routen sichtbar.
-    row.check = CreateFrame("CheckButton", nil, row, "UICheckButtonTemplate")
-    row.check:SetSize(20, 20)
-    row.check:SetPoint("LEFT", row, "LEFT", 4, 0)
+    -- Kaestchen zum Loeschen mehrerer. Nur bei eigenen Routen sichtbar, und
+    -- in der Dungeonzeile fuer die ganze Gruppe.
+    row.check = T:Checkbox(row, "")
+    row.check:SetSize(16, 16)
+    row.check:SetPoint("LEFT", row, "LEFT", 6, 0)
     row.check:SetScript("OnClick", function(self)
         local parent = self:GetParent()
         local on = self:GetChecked() and true or nil
 
         if parent.isHeader then
-            -- Kopfzeile: die ganze Dungeon-Gruppe umschalten.
             for _, id in ipairs(parent.groupIds or {}) do checked[id] = on end
         elseif parent.routeId then
             checked[parent.routeId] = on
@@ -1465,7 +1546,7 @@ local function acquireRow(index)
     -- Seitenwechsel. Sitzt in der Abschnittskopfzeile, weil dort auch die
     -- Anzahl steht - eine eigene Leiste waere ein zweiter Ort fuer dieselbe
     -- Information.
-    row.pageLabel = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.pageLabel = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     row.pageLabel:SetPoint("RIGHT", row, "RIGHT", -64, 0)
     row.pageLabel:SetJustifyH("RIGHT")
 
@@ -1513,39 +1594,39 @@ local function acquireRow(index)
     row.warn:SetAtlas("services-icon-warning")
     row.warn:Hide()
 
-    row.title = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    row.title:SetPoint("TOPLEFT", row, "TOPLEFT", 12, -4)
+    row.title = row:CreateFontString(nil, "OVERLAY", T:FontName("body"))
+    row.title:SetPoint("TOPLEFT", row, "TOPLEFT", 12, -5)
     row.title:SetJustifyH("LEFT")
 
-    row.meta = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-    row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", 12, 5)
+    row.meta = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
+    row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", 12, 6)
     row.meta:SetJustifyH("LEFT")
 
     -- Von rechts nach links aufgebaut, damit die Spalten fest stehen und zur
     -- Ueberschrift passen.
-    row.percent = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    row.percent = row:CreateFontString(nil, "OVERLAY", T:FontName("body"))
     row.percent:SetPoint("RIGHT", row, "RIGHT", -(COL_FAV + 6), 0)
     row.percent:SetJustifyH("RIGHT")
     row.percent:SetWidth(COL_PERCENT)
 
-    row.forces = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.forces = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     row.forces:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
     row.forces:SetJustifyH("RIGHT")
     row.forces:SetWidth(COL_FORCES)
 
-    row.pulls = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.pulls = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     row.pulls:SetPoint("RIGHT", row.forces, "LEFT", -6, 0)
     row.pulls:SetJustifyH("RIGHT")
     row.pulls:SetWidth(COL_PULLS)
 
-    row.level = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.level = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     row.level:SetPoint("RIGHT", row.pulls, "LEFT", -6, 0)
     row.level:SetJustifyH("RIGHT")
     row.level:SetWidth(COL_LEVEL)
 
     -- Deine beste Zeit auf dieser Route. Leer, solange du sie nicht gelaufen
     -- bist - und genau das ist die Aussage.
-    row.time = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.time = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     row.time:SetPoint("RIGHT", row.level, "LEFT", -6, 0)
     row.time:SetJustifyH("RIGHT")
     row.time:SetWidth(COL_TIME)
@@ -1599,7 +1680,7 @@ local function acquirePullRow(index)
 
     row.highlight = row:CreateTexture(nil, "BACKGROUND")
     row.highlight:SetAllPoints()
-    row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
+    row.highlight:SetColorTexture(1, 1, 1, T.tint.hover)
     row.highlight:Hide()
 
     -- Band hinter den Ueberschriftszeilen, wie bei den Bereichen der
@@ -1655,21 +1736,21 @@ local function acquirePullRow(index)
         hidePreview()
     end)
 
-    row.index = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.index = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     row.index:SetPoint("TOPLEFT", row, "TOPLEFT", 2, -1)
     row.index:SetWidth(34)
     row.index:SetJustifyH("LEFT")
 
     -- Prozente zuerst: der Name haengt sich rechts daran und wird dadurch
     -- abgeschnitten statt darueber zu laufen.
-    row.percent = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    row.percent = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     row.percent:SetPoint("TOPRIGHT", row, "TOPRIGHT", -4, -1)
     row.percent:SetJustifyH("RIGHT")
     row.percent:SetWidth(46)
 
     -- Mehrzeilig: ein Pull kann etliche verschiedene Gegner enthalten, und
     -- abgeschnitten waere die Liste wertlos.
-    row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    row.text = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     row.text:SetPoint("TOPLEFT", row, "TOPLEFT", 38, -2)
     row.text:SetPoint("RIGHT", row.percent, "LEFT", -6, 0)
     row.text:SetJustifyH("LEFT")
@@ -1844,7 +1925,7 @@ local function acquireSpellRow(index)
 
     row.highlight = row:CreateTexture(nil, "BACKGROUND")
     row.highlight:SetAllPoints()
-    row.highlight:SetColorTexture(T:Color("bgHover", 0.9))
+    row.highlight:SetColorTexture(1, 1, 1, T.tint.hover)
     row.highlight:Hide()
 
     -- Weisser Rand hinter dem Symbol: dieselbe Markierung fuer unterbrechbar
@@ -1860,13 +1941,13 @@ local function acquireSpellRow(index)
     row.icon:SetSize(26, 26)
     row.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
-    row.name = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    row.name = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     row.name:SetPoint("TOPLEFT", row.icon, "TOPRIGHT", 8, 0)
     row.name:SetPoint("RIGHT", row, "RIGHT", -4, 0)
     row.name:SetJustifyH("LEFT")
     row.name:SetWordWrap(false)
 
-    row.flags = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.flags = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     row.flags:SetPoint("TOPLEFT", row.name, "BOTTOMLEFT", 0, -2)
     row.flags:SetPoint("RIGHT", row, "RIGHT", -4, 0)
     row.flags:SetJustifyH("LEFT")
@@ -1874,7 +1955,7 @@ local function acquireSpellRow(index)
 
     -- Wer etwas dagegen tun kann. Steht in der Pull-Liste nur im Tooltip;
     -- hier ist Platz, also steht es fest da.
-    row.hints = row:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    row.hints = row:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     row.hints:SetPoint("TOPLEFT", row.flags, "BOTTOMLEFT", 0, -2)
     row.hints:SetPoint("RIGHT", row, "RIGHT", -4, 0)
     row.hints:SetJustifyH("LEFT")
@@ -2547,7 +2628,7 @@ local function refreshDungeonBar()
     -- "Alle" bleibt immer der erste Knopf.
     bar.allButton:SetPoint("TOPLEFT", bar, "TOPLEFT", 0, 0)
     bar.allButton.selected:SetShown(filterDungeon == nil)
-    x = x + DUNGEON_BUTTON + 2
+    x = x + DUNGEON_BUTTON - 1
 
     for i, dungeon in ipairs(ns.dungeons) do
         local button = bar.buttons[i]
@@ -2555,21 +2636,23 @@ local function refreshDungeonBar()
             button = CreateFrame("Button", nil, bar)
             button:SetSize(DUNGEON_BUTTON, DUNGEON_BUTTON)
 
+            -- Genau wie MDTs Dungeonleiste: randloses Bild, derselbe
+            -- Zuschnitt, dieselben Atlanten fuer Hover und Auswahl.
             button.icon = button:CreateTexture(nil, "ARTWORK")
-            button.icon:SetPoint("TOPLEFT", 2, -2)
-            button.icon:SetPoint("BOTTOMRIGHT", -2, 2)
-            button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+            button.icon:SetAllPoints()
+            button.icon:SetTexCoord(DUNGEON_CROP, 1 - DUNGEON_CROP, DUNGEON_CROP, 1 - DUNGEON_CROP)
 
             button.selected = button:CreateTexture(nil, "OVERLAY")
             button.selected:SetAllPoints()
             button.selected:SetAtlas("bags-glow-artifact")
             button.selected:Hide()
 
-            button:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+            local hover = button:CreateTexture()
+            hover:SetAtlas("bags-innerglow")
+            button:SetHighlightTexture(hover)
 
-            button.label = button:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            button.label:SetPoint("BOTTOM", button, "BOTTOM", 0, 1)
-            button.label:SetFont(button.label:GetFont(), 9, "OUTLINE")
+            button.label = button:CreateFontString(nil, "OVERLAY", T:FontName("small", "accent", true))
+            button.label:SetPoint("BOTTOM", button, "BOTTOM", 0, 2)
 
             button:SetScript("OnClick", function(self)
                 filterDungeon = (filterDungeon == self.challengeModeId) and nil or self.challengeModeId
@@ -2601,7 +2684,7 @@ local function refreshDungeonBar()
         button:ClearAllPoints()
         button:SetPoint("TOPLEFT", bar, "TOPLEFT", x, 0)
         button:Show()
-        x = x + DUNGEON_BUTTON + 2
+        x = x + DUNGEON_BUTTON - 1
     end
 
     for i = #ns.dungeons + 1, #bar.buttons do
@@ -2643,7 +2726,6 @@ function B.Refresh()
 
             row.band:Hide()
             row.bandAccent:Hide()
-            row.check:Hide()
             row.warn:Hide()
             row.fav:Hide()
             row.highlight:Hide()
@@ -2669,6 +2751,7 @@ function B.Refresh()
             row.next:ClearAllPoints()
             row.next:SetPoint("LEFT", row.pageLabel, "RIGHT", 10, 0)
 
+            row.check:Hide()
             row.pageLabel:Show()
             row.prev:Show()
             row.next:Show()
@@ -2696,33 +2779,37 @@ function B.Refresh()
 
             local arrow = T:Text("accent", entry.collapsed and "+" or "-")
 
-            -- Alles-auswaehlen gehoert zur Dungeon-Gruppe, nicht zum Bereich.
-            local groupIds = (not entry.section) and entry.ids or nil
-            local deletableIds = {}
-            for _, id in ipairs(groupIds or {}) do
+            -- Ein Kaestchen fuer die ganze Dungeongruppe, wenn darin eigene
+            -- Routen stehen. Angehakt und geloescht wird nur, was in MDT
+            -- liegt: eigene Routen und uebernommene Kopien. Eine Community-
+            -- Route oder ein Top-Lauf selbst gehoert nicht dem Nutzer; bei
+            -- einer Kopie trifft das Loeschen die Kopie in MDT.
+            local groupIds = {}
+            for _, id in ipairs((not entry.section) and entry.ids or {}) do
                 local candidate = displayById[id]
                 local _, presetIdx = savedPreset(candidate or {})
-                if presetIdx and presetIdx > 1 then deletableIds[#deletableIds + 1] = id end
+                if candidate and (candidate.own or candidate.saved) and presetIdx and presetIdx > 1 then
+                    groupIds[#groupIds + 1] = id
+                end
             end
-
-            -- Angehakt und geloescht wird nur, was in MDT liegt. Weder
-            -- Community-Routen noch Top-Laeufe gehoeren dem Nutzer.
-            local showCheck = (filterMode == "all" or filterMode == "mine") and #deletableIds > 0
+            row.groupIds = groupIds
+            local showCheck = #groupIds > 0
             row.check:SetShown(showCheck)
-            row.groupIds = deletableIds
             if showCheck then
                 local all = true
-                for _, id in ipairs(deletableIds) do
+                for _, id in ipairs(groupIds) do
                     if not checked[id] then
                         all = false
                         break
                     end
                 end
                 row.check:SetChecked(all)
+                row.check:ClearAllPoints()
+                row.check:SetPoint("LEFT", row, "LEFT", 6, 0)
             end
 
             row.title:SetPoint("TOPLEFT", row, "TOPLEFT",
-                showCheck and 28 or (entry.section and 12 or 16), -5)
+                showCheck and 20 or (entry.section and 12 or 16), -5)
             if entry.section then
                 row.title:SetText(("%s %s%s|r  %s(%d)|r"):format(
                     arrow, T:Hex("accent"), entry.text, T:Hex("textMuted"), entry.count))
@@ -2750,24 +2837,26 @@ function B.Refresh()
             row:SetHeight(ROW_HEIGHT)
             row:EnableMouse(true)
 
-            -- MDTs "Default" auf Index 1 laesst sich nicht loeschen, also gibt
+            -- MDTs "Default" auf Platz 1 laesst sich nicht loeschen, also gibt
             -- es dafuer auch kein Kaestchen.
             local _, presetIdx = savedPreset(route)
-            local deletable = presetIdx ~= nil and presetIdx > 1
-            row.check:SetShown(deletable)
-            if deletable then
+            local canDelete = (route.own or route.saved) and presetIdx ~= nil and presetIdx > 1
+            row.check:SetShown(canDelete)
+            if canDelete then
                 row.check:SetChecked(checked[route.id] and true or false)
+                row.check:ClearAllPoints()
+                row.check:SetPoint("LEFT", row, "LEFT", 22, 0)
             end
 
-            local indent = deletable and 28 or 20
+            local indent = canDelete and 44 or 20
             row.band:Hide()
             row.bandAccent:Hide()
             row.pageLabel:Hide()
             row.prev:Hide()
             row.next:Hide()
             row.warn:SetShown(incomplete)
-            row.warn:SetPoint("LEFT", row, "LEFT", indent - 2, 6)
-            row.title:SetPoint("TOPLEFT", row, "TOPLEFT", indent + (incomplete and 16 or 0), -4)
+            row.warn:SetPoint("LEFT", row, "LEFT", indent - 2, 8)
+            row.title:SetPoint("TOPLEFT", row, "TOPLEFT", indent + (incomplete and 16 or 0), -5)
             row.title:SetText(route.title or route.id)
 
             local meta
@@ -2797,7 +2886,7 @@ function B.Refresh()
 
                 meta = author .. src .. pace
             end
-            row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", indent, 5)
+            row.meta:SetPoint("BOTTOMLEFT", row, "BOTTOMLEFT", indent, 6)
             row.meta:SetText(meta)
 
             row.level:SetText(levelText(route))
@@ -2820,10 +2909,13 @@ function B.Refresh()
             -- Nicht markiert war fast unsichtbar. Gedaempftes Grau statt
             -- verblasstem Rot: als Schaltflaeche erkennbar, ohne den
             -- markierten die Aufmerksamkeit zu nehmen.
+            -- Die Textur ist selbst rot; ohne Entsaettigung blieb das Grau
+            -- ein dunkles Rot, und jede Zeile sah wie ein Favorit aus.
+            row.fav.texture:SetDesaturated(not fav)
             if fav then
                 row.fav.texture:SetVertexColor(1, 0.25, 0.35, 1)
             else
-                row.fav.texture:SetVertexColor(0.65, 0.65, 0.65, 0.55)
+                row.fav.texture:SetVertexColor(T:Color("textMuted", 0.55))
             end
             row.percent:SetText(isReference(route) and "" or percentText(route))
 
@@ -2871,6 +2963,10 @@ function B.Refresh()
     ui.filterButton:SetText(active > 0
         and ("%s (%d)"):format(ns.L["FILTER"], active)
         or ns.L["FILTER"])
+    -- Wirkt ein Filter, steht der Knopf hervorgehoben da - auch bei
+    -- geschlossenem Panel sieht man, warum die Liste kuerzer ist.
+    ui.filterButton.selected = active > 0 or nil
+    ui.filterButton:Apply()
 
     -- Die Spalte ganz rechts wechselt mit dem Reiter, siehe acquireRow().
     if ui.timeHead then
@@ -2895,29 +2991,36 @@ function B.Refresh()
     end
     updateDetail(route)
 
-    ui.mapButton:SetEnabled(route ~= nil)
-    ui.copyButton:SetEnabled(route ~= nil and not route.own and not (route and route.saved))
+    ui.mapButton:SetEnabled(route ~= nil and not isReference(route))
+    -- Den Importstring gibt es nur fuer Routen aus dem Datenpaket. Eine
+    -- eigene Route teilt MDT selbst, und besser als wir.
+    ui.copyButton:SetEnabled(route ~= nil and not route.own and not isReference(route))
 
-    -- Loeschen gibt es nur, wo eigene Routen stehen koennen.
+    -- Loeschen: angehakte Routen, sonst die ausgewaehlte, wenn sie dem Nutzer
+    -- gehoert. Der Knopf sagt, wie viele es trifft, sobald es mehr als die
+    -- eine ausgewaehlte sind.
     local n = countChecked()
-
-
-    ui.deleteButton:SetShown(filterMode == "all" or filterMode == "mine")
-    ui.deleteButton:SetEnabled(n > 0)
     ui.deleteButton:SetText(n > 0 and ns.L["DELETE_N"]:format(n) or ns.L["DELETE"])
+    ui.deleteButton:SetEnabled(#deleteTargets() > 0)
 
     -- Rueckgaengig taucht nur auf, wenn es etwas zurueckzuholen gibt.
     ui.undoButton:SetShown(#trash > 0)
     ui.undoButton:SetText(ns.L["UNDO_N"]:format(#trash))
+
+    -- Mit der Zahl dahinter wurde "Rueckgaengig (1)" abgeschnitten. Beide
+    -- wachsen mit ihrem Text, nie unter ihre Grundbreite.
+    for _, button in ipairs({ ui.deleteButton, ui.undoButton }) do
+        local width = math.ceil(button:GetFontString():GetUnboundedStringWidth()) + 24
+        button:SetWidth(math.max(120, width))
+    end
 end
 
 --------------------------------------------------------------------------
 -- Aufbau
 --------------------------------------------------------------------------
 
----Deckender Wurzel-Frame ueber einem von MDT gestellten Sektions-Frame.
----MDT blendet seine Kartenelemente zwar aus, der Frame liegt aber tief und ist
----durchsichtig - ohne das hier scheint die Karte durch.
+---Deckender Wurzel-Frame ueber einer der beiden Flaechen des Fensters.
+---Darunter liegt MDTs Karte - ohne Fuellung schiene sie durch.
 ---@param parent table
 ---@return table
 local function makeRoot(parent)
@@ -2925,24 +3028,11 @@ local function makeRoot(parent)
     root:SetAllPoints(parent)
     root:SetFrameLevel(parent:GetFrameLevel() + 60)
 
-    T:Fill(root, "bgBase", 0.96)
+    -- Deckend wie MDTs Seitenspalte: halb durchsichtig schimmerten Packs und
+    -- Pull-Umrisse der Karte durch die Liste.
+    T:Fill(root, "bgBase", 1)
 
     return root
-end
-
----Hebt MDTs Fensterknoepfe ueber unsere Sektion.
----
----Unsere Flaechen liegen bewusst hoch, damit die Karte nicht durchscheint.
----Damit verdecken sie aber auch das Schliessen- und das Vollbildsymbol oben
----rechts. Die sind global benannt, also heben wir sie einfach darueber.
----@param level number
-local function liftMDTControls(level)
-    for _, name in ipairs({ "MDTCloseButton", "MDTMaximizeButton", "MDTLiveReturnButton" }) do
-        local button = _G[name]
-        if button and button.SetFrameLevel then
-            button:SetFrameLevel(level)
-        end
-    end
 end
 
 ---Baut die Detailspalte rechts.
@@ -2962,25 +3052,26 @@ local function buildDetail(parent)
     -- Scrollrahmen und laegen sonst ueber dem ueberstehenden Stueck.
     root:SetFrameLevel(parent:GetFrameLevel() + 200)
     root:EnableMouse(true)
-    T:Fill(root, "bgBase", 0.98)
+    T:Fill(root, "bgBase", 1)
+    T:Border(root, "borderDivider")
 
     local d = { pullRows = {}, spellRows = {}, statRows = {} }
     d.frame = root
 
     --------------------------------------------------------------- Kopf
-    d.dungeon = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.dungeon = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     d.dungeon:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -PADDING)
     d.dungeon:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.dungeon:SetJustifyH("LEFT")
     d.dungeon:SetTextColor(T:Color("accent"))
 
-    d.title = root:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    d.title = root:CreateFontString(nil, "OVERLAY", T:FontName("title"))
     d.title:SetPoint("TOPLEFT", d.dungeon, "BOTTOMLEFT", 0, -3)
     d.title:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.title:SetJustifyH("LEFT")
     d.title:SetWordWrap(true)
 
-    d.author = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    d.author = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     d.author:SetPoint("TOPLEFT", d.title, "BOTTOMLEFT", 0, -5)
     d.author:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.author:SetJustifyH("LEFT")
@@ -3016,16 +3107,17 @@ local function buildDetail(parent)
     for i = 1, 4 do
         local tile = CreateFrame("Frame", nil, root)
         tile:SetHeight(TILE_HEIGHT)
-        T:Fill(tile, "bgOverlay", 0.9)
+        T:Fill(tile, "bgRaised", 1)
+        T:Border(tile, "borderSubtle")
 
-        tile.value = tile:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        tile.value = tile:CreateFontString(nil, "OVERLAY", T:FontName("body"))
         tile.value:SetPoint("TOP", tile, "TOP", 0, -6)
         tile.value:SetPoint("LEFT", tile, "LEFT", 3, 0)
         tile.value:SetPoint("RIGHT", tile, "RIGHT", -3, 0)
         tile.value:SetJustifyH("CENTER")
         tile.value:SetWordWrap(false)
 
-        tile.caption = tile:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        tile.caption = tile:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
         tile.caption:SetPoint("BOTTOM", tile, "BOTTOM", 0, 5)
         tile.caption:SetJustifyH("CENTER")
         tile.caption:SetWordWrap(false)
@@ -3050,7 +3142,7 @@ local function buildDetail(parent)
     -- Anlegen schon seine endgueltige Groesse hat.
     root:GetScript("OnSizeChanged")(root)
 
-    d.affixes = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    d.affixes = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     d.affixes:SetPoint("TOPLEFT", d.tiles[1], "BOTTOMLEFT", 2, -8)
     d.affixes:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.affixes:SetJustifyH("LEFT")
@@ -3082,7 +3174,7 @@ local function buildDetail(parent)
     -- Linie wie "ROUTE" weiter unten. Ohne sie lief der ganze Bereich als
     -- eine Textwand durch: Kacheln, Marke, Gruppe und Hinweis sahen gleich
     -- aus und gingen ineinander ueber.
-    d.groupSection = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.groupSection = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     d.groupSection:SetPoint("TOPLEFT", d.affixes, "BOTTOMLEFT", -2, -10)
     d.groupSection:SetTextColor(T:Color("textMuted"))
     d.groupSection:SetText(ns.L["DETAIL_SECTION_GROUP"]:upper())
@@ -3103,13 +3195,13 @@ local function buildDetail(parent)
     for i = 1, 5 do
         local row = {}
 
-        row.spec = d.group:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.spec = d.group:CreateFontString(nil, "OVERLAY", T:FontName("small"))
         row.spec:SetPoint("TOPLEFT", d.group, "TOPLEFT", 0, -(i - 1) * GROUP_ROW)
         row.spec:SetWidth(GROUP_SPEC_WIDTH)
         row.spec:SetJustifyH("LEFT")
         row.spec:SetWordWrap(false)
 
-        row.name = d.group:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        row.name = d.group:CreateFontString(nil, "OVERLAY", T:FontName("small"))
         row.name:SetPoint("LEFT", row.spec, "RIGHT", 6, 0)
         row.name:SetPoint("RIGHT", d.group, "RIGHT", 0, 0)
         row.name:SetJustifyH("LEFT")
@@ -3122,7 +3214,7 @@ local function buildDetail(parent)
     -- Deine eigenen Zeiten, mit derselben Marke wie GRUPPE und ROUTE.
     -- Ohne sie war dies der einzige Block ohne Ueberschrift, und er sah
     -- aus, als gehoere er mal zum Abschnitt darueber, mal zu dem darunter.
-    d.runsSection = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.runsSection = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     d.runsSection:SetPoint("TOPLEFT", d.group, "BOTTOMLEFT", -4, -12)
     d.runsSection:SetTextColor(T:Color("textMuted"))
     d.runsSection:SetText(ns.L["DETAIL_SECTION_TIMES"]:upper())
@@ -3131,7 +3223,7 @@ local function buildDetail(parent)
     d.runsDivider:SetPoint("TOPLEFT", d.runsSection, "BOTTOMLEFT", 0, -4)
     d.runsDivider:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
 
-    d.runs = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    d.runs = root:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     d.runs:SetPoint("TOPLEFT", d.runsDivider, "BOTTOMLEFT", 2, -6)
     d.runs:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.runs:SetJustifyH("LEFT")
@@ -3158,14 +3250,14 @@ local function buildDetail(parent)
     d.issueButton:Hide()
 
     -- Steht anstelle der Pull-Liste, wenn ein Eintrag nur ein Verweis ist.
-    d.note = root:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    d.note = root:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     d.note:SetPoint("RIGHT", root, "RIGHT", -PADDING, 0)
     d.note:SetJustifyH("LEFT")
     d.note:SetWordWrap(true)
     d.note:SetTextColor(T:Color("textSecondary"))
     d.note:Hide()
 
-    d.section = root:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    d.section = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     d.section:SetPoint("TOPLEFT", d.runs, "BOTTOMLEFT", -2, -10)
     d.section:SetTextColor(T:Color("textMuted"))
 
@@ -3203,7 +3295,7 @@ local function buildDetail(parent)
         B.Refresh()
     end)
 
-    local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
+    local scroll = T:Scroll(root)
     scroll:SetPoint("TOPLEFT", divider, "BOTTOMLEFT", 0, -6)
     -- Unten bleibt eine Reihe frei: dort steht der Knopf zur Einreichung,
     -- auf einer Linie mit den Knoepfen im Listenbereich.
@@ -3218,7 +3310,7 @@ local function buildDetail(parent)
     scroll:SetScript("OnSizeChanged", function(self, width) content:SetWidth(width) end)
     content:SetWidth(scroll:GetWidth())
 
-    d.hint = root:CreateFontString(nil, "OVERLAY", "GameFontDisable")
+    d.hint = root:CreateFontString(nil, "OVERLAY", T:FontName("body", "textMuted"))
     d.hint:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -90)
     d.hint:SetPoint("TOPRIGHT", root, "TOPRIGHT", -PADDING, -90)
     d.hint:SetJustifyH("CENTER")
@@ -3246,13 +3338,13 @@ local function buildDetail(parent)
     sheet.model:SetSize(96, 122)
     sheet.model:SetPoint("TOPLEFT", sheet.back, "BOTTOMLEFT", 0, -8)
 
-    sheet.name = sheet:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    sheet.name = sheet:CreateFontString(nil, "OVERLAY", T:FontName("title"))
     sheet.name:SetPoint("TOPLEFT", sheet.model, "TOPRIGHT", 12, -2)
     sheet.name:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
     sheet.name:SetJustifyH("LEFT")
     sheet.name:SetWordWrap(true)
 
-    sheet.kind = sheet:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    sheet.kind = sheet:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     sheet.kind:SetPoint("TOPLEFT", sheet.name, "BOTTOMLEFT", 0, -4)
     sheet.kind:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
     sheet.kind:SetJustifyH("LEFT")
@@ -3272,12 +3364,12 @@ local function buildDetail(parent)
             line:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
         end
 
-        line.label = line:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        line.label = line:CreateFontString(nil, "OVERLAY", T:FontName("small"))
         line.label:SetPoint("LEFT", line, "LEFT", 0, 0)
         line.label:SetJustifyH("LEFT")
         line.label:SetTextColor(T:Color("textMuted"))
 
-        line.value = line:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        line.value = line:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
         line.value:SetPoint("RIGHT", line, "RIGHT", 0, 0)
         line.value:SetJustifyH("RIGHT")
 
@@ -3285,7 +3377,7 @@ local function buildDetail(parent)
         previous = line
     end
 
-    sheet.spellLabel = sheet:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    sheet.spellLabel = sheet:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
     sheet.spellLabel:SetPoint("TOPLEFT", d.statRows[5], "BOTTOMLEFT", 0, -12)
     sheet.spellLabel:SetTextColor(T:Color("textMuted"))
     sheet.spellLabel:SetText(ns.L["SHEET_SPELLS"])
@@ -3294,7 +3386,7 @@ local function buildDetail(parent)
     sheetDivider:SetPoint("TOPLEFT", sheet.spellLabel, "BOTTOMLEFT", 0, -4)
     sheetDivider:SetPoint("RIGHT", sheet, "RIGHT", -PADDING, 0)
 
-    local sheetScroll = CreateFrame("ScrollFrame", nil, sheet, "UIPanelScrollFrameTemplate")
+    local sheetScroll = T:Scroll(sheet)
     sheetScroll:SetPoint("TOPLEFT", sheetDivider, "BOTTOMLEFT", 0, -6)
     sheetScroll:SetPoint("BOTTOMRIGHT", sheet, "BOTTOMRIGHT", -(PADDING + 22), PADDING)
     sheet.scroll = sheetScroll
@@ -3320,10 +3412,9 @@ local function buildList(parent)
     local root = makeRoot(parent)
     ui.frame = root
 
-    -- Geht MDT zu oder wechselt jemand die Sektion, verschwindet dieser
-    -- Rahmen - und mit ihm muss die Kartenvorschau verschwinden. Sie haengt
-    -- an UIParent, nicht an MDT, und bliebe sonst allein auf dem Bildschirm
-    -- stehen.
+    -- Geht MDT zu oder schaltet jemand auf die Karte zurueck, verschwindet
+    -- dieser Rahmen - und mit ihm muss die Kartenvorschau verschwinden. Sie
+    -- haengt an UIParent und bliebe sonst allein auf dem Bildschirm stehen.
     root:HookScript("OnHide", function() ns.MapView.Hide() end)
 
     -- Einmal pro Sekunde nachsehen, ob MDT etwas an seinen Presets geaendert
@@ -3337,7 +3428,7 @@ local function buildList(parent)
         if syncWithMDT() then B.Refresh() end
     end)
 
-    ui.title = root:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    ui.title = root:CreateFontString(nil, "OVERLAY", T:FontName("title"))
     ui.title:SetPoint("TOPLEFT", root, "TOPLEFT", PADDING, -PADDING)
     -- "dev" setzt Init.lua, wenn der Versionsplatzhalter nicht ersetzt wurde -
     -- also bei jeder Kopie aus dem Repo und nie bei einer aus CurseForge. Der
@@ -3348,13 +3439,30 @@ local function buildList(parent)
         or "MDT Route Library")
     ui.title:SetTextColor(T:Color("textPrimary"))
 
-    ui.subtitle = root:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    ui.subtitle = root:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     ui.subtitle:SetPoint("LEFT", ui.title, "RIGHT", 12, -1)
 
     local search = CreateFrame("EditBox", nil, root, "SearchBoxTemplate")
-    search:SetSize(200, 22)
+    search:SetSize(200, 24)
     search:SetPoint("TOPRIGHT", root, "TOPRIGHT", -(PADDING + DETAIL_EXTRA), -PADDING)
     search:SetAutoFocus(false)
+    T:SkinEditBox(search)
+    -- Die Vorlage setzt Lupe und Text fuer ihren eigenen, abgerundeten Rahmen
+    -- an den linken Rand. In MDTs flachem Feld brauchen beide Luft.
+    if search.searchIcon then
+        search.searchIcon:ClearAllPoints()
+        search.searchIcon:SetPoint("LEFT", search, "LEFT", 7, 0)
+    end
+    search:SetTextInsets(24, 22, 0, 0)
+    if search.Instructions then
+        search.Instructions:ClearAllPoints()
+        search.Instructions:SetPoint("LEFT", search, "LEFT", 24, 0)
+        search.Instructions:SetPoint("RIGHT", search, "RIGHT", -22, 0)
+    end
+    if search.clearButton then
+        search.clearButton:ClearAllPoints()
+        search.clearButton:SetPoint("RIGHT", search, "RIGHT", -4, 0)
+    end
     search:SetScript("OnTextChanged", function(self, _userInput)
         -- Ohne diesen Aufruf blendet die SearchBoxTemplate ihren Platzhalter
         -- nicht aus und "Suchen" liegt ueber dem eingegebenen Text.
@@ -3383,8 +3491,11 @@ local function buildList(parent)
     for _, mode in ipairs(modes) do
         -- Schmaler als frueher: zu dritt passten 110 Pixel, zu viert nicht
         -- mehr - die Leiste lief sonst unter dem Suchfeld hindurch.
-        local tab = T:Tab(root, mode.label, 92)
-        tab:SetHeight(22)
+        -- So breit wie der Text, nicht fest: "Meine Routen" wurde in MDTs
+        -- Schrift bei 92 Pixeln abgeschnitten, und Russisch ist noch laenger.
+        local tab = T:Tab(root, mode.label)
+        tab:SetHeight(24)
+        tab:SetWidth(math.max(72, math.ceil(tab:GetFontString():GetUnboundedStringWidth()) + 24))
         if previous then
             tab:SetPoint("LEFT", previous, "RIGHT", 4, 0)
         else
@@ -3394,7 +3505,6 @@ local function buildList(parent)
         tab:SetScript("OnClick", function(self)
             filterMode = self.mode
             selectedId = nil
-            wipe(checked)
             wipe(pages)
             B.Refresh()
         end)
@@ -3411,7 +3521,7 @@ local function buildList(parent)
 
     local panel = T:Panel(root, "bgOverlay")
     -- Gewachsen um den zweiten Stufenregler und die beiden Auswahllisten.
-    panel:SetSize(250, 466)
+    panel:SetSize(250, 496)
     panel:SetPoint("TOPRIGHT", filterButton, "BOTTOMRIGHT", 0, -4)
     panel:SetFrameLevel(root:GetFrameLevel() + 20)
     panel:EnableMouse(true)
@@ -3426,7 +3536,7 @@ local function buildList(parent)
     ---@param set function
     ---@param anyText string Text fuer den Wert 0
     local function makeSlider(label, anchor, maxValue, get, set, anyText)
-        local caption = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        local caption = panel:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
         -- Senkrecht unter dem REGLER des vorigen Blocks (nicht unter dessen
         -- Beschriftung, sonst stapeln sie sich ineinander), waagerecht fest
         -- am linken Panelrand.
@@ -3435,14 +3545,23 @@ local function buildList(parent)
         caption:SetJustifyH("LEFT")
         caption:SetText(label)
 
-        local slider = CreateFrame("Slider", nil, panel, "MinimalSliderTemplate")
-        slider:SetPoint("TOPLEFT", caption, "BOTTOMLEFT", 2, -6)
-        slider:SetSize(150, 16)
+        -- MDTs Regler (Kit/Controls/Slider.lua): umrandete Spur, schmaler
+        -- weisser Daumen, keine Fuellung.
+        local slider = CreateFrame("Slider", nil, panel)
+        slider:SetOrientation("HORIZONTAL")
+        slider:SetPoint("TOPLEFT", caption, "BOTTOMLEFT", 2, -8)
+        slider:SetSize(150, 10)
+        T:Fill(slider, "bgInset", 1)
+        T:Border(slider, "borderStrong")
+        local thumb = slider:CreateTexture(nil, "OVERLAY")
+        thumb:SetSize(6, 14)
+        thumb:SetColorTexture(T:Color("accent"))
+        slider:SetThumbTexture(thumb)
         slider:SetMinMaxValues(0, maxValue)
         slider:SetValueStep(1)
         slider:SetObeyStepOnDrag(true)
 
-        slider.value = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        slider.value = panel:CreateFontString(nil, "OVERLAY", T:FontName("small", "textSecondary"))
         slider.value:SetPoint("LEFT", slider, "RIGHT", 10, 0)
 
         local function render(v)
@@ -3503,7 +3622,7 @@ local function buildList(parent)
     -- vierzig Spezialisierungen reichte die Liste sonst weit unter MDTs
     -- Fenster hinaus; der Rest kommt ueber das Mausrad.
     local CHOICE_ROWS = 12
-    local CHOICE_HEIGHT = 18
+    local CHOICE_HEIGHT = 21
 
     ---Auswahlliste mit Beschriftung. Zeigt den gewaehlten Wert, klappt bei
     ---Klick eine Liste auf.
@@ -3517,15 +3636,27 @@ local function buildList(parent)
     ---@param get function
     ---@param set function
     local function makeChoice(label, anchor, gather, get, set)
-        local caption = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+        local caption = panel:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
         caption:SetPoint("TOP", anchor, "BOTTOM", 0, -16)
         caption:SetPoint("LEFT", panel, "LEFT", 14, 0)
         caption:SetJustifyH("LEFT")
         caption:SetText(label)
 
+        -- Wie MDTs Dropdown: ein Feld, Text links, Pfeil rechts.
         local button = T:Button(panel, ns.L["FILTER_ALL"], 200)
-        button:SetHeight(20)
+        button:SetVariant("field")
+        button:SetHeight(22)
         button:SetPoint("TOPLEFT", caption, "BOTTOMLEFT", 2, -6)
+        button:GetFontString():SetJustifyH("LEFT")
+        button:GetFontString():SetPoint("RIGHT", button, "RIGHT", -20, 0)
+        local chevron = button:CreateTexture(nil, "OVERLAY")
+        if not chevron:SetAtlas("common-dropdown-a-button-open") then
+            chevron:SetTexture("Interface\\Buttons\\Arrow-Down-Up")
+        end
+        chevron:SetSize(14, 14)
+        chevron:SetPoint("RIGHT", button, "RIGHT", -4, 0)
+        chevron:SetDesaturated(true)
+        chevron:SetVertexColor(T:Color("textMuted"))
 
         local list = T:Panel(panel, "bgOverlay")
         list:SetFrameLevel(panel:GetFrameLevel() + 10)
@@ -3559,12 +3690,12 @@ local function buildList(parent)
                     row:SetPoint("RIGHT", list, "RIGHT", -5, 0)
                     row:SetPoint("TOP", list, "TOP", 0, -5 - (index - 1) * CHOICE_HEIGHT)
 
-                    row.hover = T:Fill(row, "accent", 0.18)
+                    row.hover = T:Tint(row, "hover")
                     row.hover:Hide()
                     row:SetScript("OnEnter", function(self) self.hover:Show() end)
                     row:SetScript("OnLeave", function(self) self.hover:Hide() end)
 
-                    row.text = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+                    row.text = row:CreateFontString(nil, "OVERLAY", T:FontName("small"))
                     row.text:SetPoint("LEFT", row, "LEFT", 6, 0)
                     row.text:SetJustifyH("LEFT")
 
@@ -3678,7 +3809,14 @@ local function buildList(parent)
     -- einzige, die man sonst nur durch Oeffnen jeder einzelnen Route
     -- herausfaende.
     panel.tierChoice = makeChoice(ns.L["FILTER_PACE_LABEL"], panel.pullsSlider,
-        function() return { ns.L["BADGE_FAST"], ns.L["BADGE_SAFE"] } end,
+        -- Eintraege wie bei Klasse und Spezialisierung, nicht blosse Texte:
+        -- die Liste liest value und label, und aus Texten wurden leere Zeilen.
+        function()
+            return {
+                { value = ns.L["BADGE_FAST"], label = ns.L["BADGE_FAST"], colour = { r = T.tokens.success.r, g = T.tokens.success.g, b = T.tokens.success.b } },
+                { value = ns.L["BADGE_SAFE"], label = ns.L["BADGE_SAFE"], colour = { r = T.tokens.warning.r, g = T.tokens.warning.g, b = T.tokens.warning.b } },
+            }
+        end,
         function()
             if filters.tier == "fast" then return ns.L["BADGE_FAST"] end
             if filters.tier == "slow" then return ns.L["BADGE_SAFE"] end
@@ -3792,8 +3930,12 @@ local function buildList(parent)
     allButton.selected = allButton:CreateTexture(nil, "OVERLAY")
     allButton.selected:SetAllPoints()
     allButton.selected:SetAtlas("bags-glow-artifact")
-    allButton:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
-    allButton.label = allButton:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    T:Fill(allButton, "bgRaised2", 1)
+    T:Border(allButton, "borderSubtle")
+    local allHover = allButton:CreateTexture()
+    allHover:SetAtlas("bags-innerglow")
+    allButton:SetHighlightTexture(allHover)
+    allButton.label = allButton:CreateFontString(nil, "OVERLAY", T:FontName("body"))
     allButton.label:SetPoint("CENTER")
     allButton.label:SetText(ns.L["BROWSER_ALL"])
     allButton:SetScript("OnClick", function()
@@ -3837,7 +3979,7 @@ local function buildList(parent)
             box:SetPoint("RIGHT", head, "RIGHT", -(COL_FAV + 6), 0)
         end
 
-        box.text = box:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+        box.text = box:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
         box.text:SetAllPoints()
         box.text:SetJustifyH("RIGHT")
         box.text:SetText(text)
@@ -3861,7 +4003,7 @@ local function buildList(parent)
     local routeBox = CreateFrame("Frame", nil, head)
     routeBox:SetPoint("LEFT", head, "LEFT", 12, 0)
     routeBox:SetSize(140, 16)
-    routeBox.text = routeBox:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    routeBox.text = routeBox:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     routeBox.text:SetAllPoints()
     routeBox.text:SetJustifyH("LEFT")
     routeBox.text:SetText(ns.L["COL_ROUTE"])
@@ -3873,7 +4015,7 @@ local function buildList(parent)
 
     ui.head = head
 
-    local scroll = CreateFrame("ScrollFrame", nil, root, "UIPanelScrollFrameTemplate")
+    local scroll = T:Scroll(root)
     scroll:SetPoint("TOPLEFT", head, "BOTTOMLEFT", 0, -6)
     scroll:SetPoint("BOTTOMRIGHT", root, "BOTTOMRIGHT", -(PADDING + 22 + DETAIL_EXTRA), PADDING + 34)
     ui.scroll = scroll
@@ -3883,10 +4025,18 @@ local function buildList(parent)
     scroll:SetScrollChild(content)
     ui.content = content
 
-    scroll:SetScript("OnSizeChanged", function(self, width) content:SetWidth(width) end)
+    scroll:SetScript("OnSizeChanged", function(self, width, height)
+        content:SetWidth(width)
+        -- Die Seitenlaenge haengt an der Hoehe (pageStarts). Ohne neuen Aufbau
+        -- bliebe nach dem Maximieren die alte, kurze Seite stehen.
+        if self.lastHeight and math.abs(self.lastHeight - height) >= ROW_HEIGHT and self:IsVisible() then
+            B.Refresh()
+        end
+        self.lastHeight = height
+    end)
     content:SetWidth(scroll:GetWidth())
 
-    ui.empty = root:CreateFontString(nil, "OVERLAY", "GameFontDisable")
+    ui.empty = root:CreateFontString(nil, "OVERLAY", T:FontName("body", "textMuted"))
     ui.empty:SetPoint("CENTER", scroll, "CENTER", 0, 0)
     ui.empty:Hide()
 
@@ -3919,50 +4069,33 @@ local function buildList(parent)
         local route = selectedId and displayById[selectedId]
         if route and not isReference(route) then B.ShowOnMap(route) end
     end)
+    mapButton.tooltipText = ns.L["BROWSER_OPEN_TIP"]
     ui.mapButton = mapButton
 
-    -- Dauerhaft uebernehmen. Danach ist es ein ganz normales Preset des
-    -- Nutzers, das wir nie wieder anfassen - loeschbar unter "Meine Routen".
-    -- Mit gedrueckter Umschalttaste stattdessen den Importstring kopieren,
-    -- fuer alle, die ihn ausserhalb des Spiels weitergeben wollen.
-    local copyButton = T:Button(root, ns.L["BROWSER_SAVE"], 132)
+    -- Fuer alle, die eine Route ausserhalb des Spiels weitergeben wollen.
+    local copyButton = T:Button(root, ns.L["BROWSER_COPY"], 132)
     copyButton:SetPoint("LEFT", mapButton, "RIGHT", 8, 0)
     copyButton:SetScript("OnClick", function()
         local route = selectedId and displayById[selectedId]
-        if not route or isReference(route) then return end
-
-        if IsShiftKeyDown() then
-            B.CopyString(route)
-            return
-        end
-
-        local idx, _, err = ns.MDT.PutPreset(route, true)
-        if not idx then
-            ns.Warn(err or "unbekannter Fehler")
-            return
-        end
-        ns.Print(ns.L["SAVED_TO_MDT"], route.title or route.id)
-        B.Refresh()
+        if route and not isReference(route) then B.CopyString(route) end
     end)
-    copyButton.tooltipText = ns.L["BROWSER_SAVE_TIP"]
+    copyButton.tooltipText = ns.L["BROWSER_COPY_TIP"]
     ui.copyButton = copyButton
 
-    local deleteButton = T:Button(root, ns.L["DELETE"], 132)
+    -- Loescht die ausgewaehlte eigene Route, oder alle angehakten. Rot wie
+    -- MDTs eigene Loeschbefehle.
+    local deleteButton = T:Button(root, ns.L["DELETE"], 120)
+    deleteButton:SetVariant("danger")
     deleteButton:SetPoint("LEFT", copyButton, "RIGHT", 8, 0)
-    deleteButton:SetScript("OnClick", function()
-        local n = countChecked()
-        if n == 0 then return end
-        StaticPopup_Show("MDTRL_DELETE", n)
-    end)
+    deleteButton:SetScript("OnClick", confirmDelete)
+    deleteButton.tooltipText = ns.L["DELETE_TIP"]
     ui.deleteButton = deleteButton
 
-    local undoButton = T:Button(root, ns.L["UNDO"], 112)
+    local undoButton = T:Button(root, ns.L["UNDO"], 120)
     undoButton:SetPoint("LEFT", deleteButton, "RIGHT", 8, 0)
     undoButton:SetScript("OnClick", function()
         local restored = restoreDeleted()
-        if restored > 0 then
-            ns.Print(ns.L["UNDO_DONE"], restored)
-        end
+        if restored > 0 then ns.Print(ns.L["UNDO_DONE"], restored) end
         B.Refresh()
     end)
     ui.undoButton = undoButton
@@ -4023,16 +4156,227 @@ end
 -- Einklinken
 --------------------------------------------------------------------------
 
----Oeffnet MDT und wechselt auf unsere Sektion.
+-- Das Fenster und seine beiden Flaechen. Sie entstehen erst beim ersten
+-- Oeffnen: vorher gibt es MDTs Rahmen nicht, an denen sie sich ausrichten.
+local host, listArea, sideArea
+
+-- Unser Knopf in MDTs Symbolleiste.
+local railButton
+
+-- MDTs Spalte ist fest so breit (MainFrame.lua: sidePanelWidth). Gebraucht
+-- nur, falls MDT seine Spalte einmal nicht mehr unter diesem Namen fuehrt.
+local SIDE_PANEL_WIDTH = 251
+
+---@return boolean
+local function mdtShown()
+    local map = _G.MDTFrame
+    return map ~= nil and map:IsShown()
+end
+
+---Legt die beiden Flaechen auf MDTs Karte und MDTs rechte Spalte.
+---
+---MDTs Spalte ragt oben 30 Einheiten in die Titelleiste hinein, und genau
+---dort sitzen Schliessen und Vollbild. Die Detailflaeche beginnt deshalb an
+---der Oberkante der Karte, nicht an der der Spalte - sonst laege sie ueber
+---den beiden Knoepfen, und die kaemen aus einer niedrigeren Ebene nicht
+---mehr darueber.
+---@return boolean
+local function anchorAreas()
+    local map = _G.MDTFrame
+    if not map then return false end
+
+    -- Mit MDTs Skalierung, sonst passte der Inhalt bei kleinerem MDT nicht
+    -- mehr in seine Flaeche. Frueher erbten die Sektionsrahmen sie einfach.
+    host:SetScale(map:GetEffectiveScale() / UIParent:GetEffectiveScale())
+
+    listArea:ClearAllPoints()
+    listArea:SetAllPoints(map)
+
+    local side = _G.MDTSidePanel
+    sideArea:ClearAllPoints()
+    sideArea:SetPoint("TOPLEFT", map, "TOPRIGHT", 0, 0)
+    if side then
+        sideArea:SetPoint("BOTTOMRIGHT", side, "BOTTOMRIGHT", 0, 0)
+    else
+        sideArea:SetPoint("BOTTOMLEFT", map, "BOTTOMRIGHT", 0, 0)
+        sideArea:SetWidth(SIDE_PANEL_WIDTH)
+    end
+    return true
+end
+
+---Baut das Fenster beim ersten Oeffnen.
+local function buildHost()
+    host = CreateFrame("Frame", "MDTRouteLibraryBrowser", UIParent)
+    host:SetAllPoints(UIParent)
+    -- Eine Ebene ueber MDT, das auf "HIGH" liegt.
+    host:SetFrameStrata("DIALOG")
+    host:Hide()
+
+    -- Beide nehmen die Maus, damit kein Klick durch auf MDTs Karte faellt.
+    listArea = CreateFrame("Frame", nil, host)
+    listArea:EnableMouse(true)
+    sideArea = CreateFrame("Frame", nil, host)
+    sideArea:EnableMouse(true)
+
+    anchorAreas()
+
+    ui = { rows = {} }
+    buildList(listArea)
+    buildDetail(sideArea)
+
+    -- Solange der Browser offen ist, ist er der aktive Bereich - nicht MDTs
+    -- Karte, deren Knopf sonst weiter markiert waere. Beim Schliessen kommt
+    -- die Markierung (activeTexture, NavigationSidebar.lua) an den Knopf
+    -- des Bereichs, den MDT gerade zeigt: wer auf "Settings" geklickt hat,
+    -- schliesst den Browser erst, nachdem MDT schon umgeschaltet hat.
+    local function markMDT(show)
+        local current = show and pluginAPI and type(pluginAPI.GetCurrentSection) == "function"
+            and pluginAPI:GetCurrentSection()
+        -- Ohne Antwort von MDT lieber nichts anfassen als falsch markieren.
+        if show and not current then return end
+        for i = 1, 20 do
+            local own = _G["MDTNavigationSidebarButton" .. i]
+            if not own then break end
+            if own.activeTexture then
+                own.activeTexture:SetShown(current ~= nil and own.sectionKey == current)
+            end
+        end
+    end
+    host:SetScript("OnShow", function()
+        if railButton then railButton.active:Show() end
+        markMDT(false)
+    end)
+    host:SetScript("OnHide", function()
+        if railButton then railButton.active:Hide() end
+        markMDT(true)
+    end)
+
+    -- Escape schliesst den Browser wie jedes andere Fenster.
+    tinsert(UISpecialFrames, "MDTRouteLibraryBrowser")
+end
+
+---Blendet den Browser ueber MDT ein. MDT muss dafuer offen sein.
+function B.Show()
+    if not mdtShown() then return false end
+    if not ns.EnsureData() then return false end
+
+    if not host then buildHost() end
+    anchorAreas()
+
+    -- MDT laesst offene Dialoge (etwa das Gegner-Panel) stehen. Sie laegen
+    -- unter dem Browser und waeren beim Zurueckschalten ploetzlich wieder da.
+    if pluginAPI and type(pluginAPI.HideAllDialogs) == "function" then pluginAPI:HideAllDialogs() end
+
+    -- Klappfenster nicht ueber ein Schliessen hinweg offen lassen.
+    if ui.filterPanel then ui.filterPanel:Hide() end
+
+    host:Show()
+    syncWithMDT()
+    updateSubtitle()
+    B.Refresh()
+    return true
+end
+
+---Gibt MDTs Karte wieder frei.
+function B.Hide()
+    if host then host:Hide() end
+end
+
+---Fuer den Knopf in MDTs Leiste.
+function B.Toggle()
+    if host and host:IsShown() then
+        B.Hide()
+    else
+        B.Show()
+    end
+end
+
+---Setzt unseren Knopf in MDTs Symbolleiste, unter MDTs eigene.
+---
+---Die Leiste und ihre Knoepfe sind global benannt
+---(NavigationSidebar.lua: "MDTNavigationSidebar", "...Button" .. idx). Fehlen
+---sie in einer kuenftigen MDT-Version, haengt der Knopf links neben der Karte,
+---statt ganz zu fehlen.
+---@return boolean attached
+local function attachRailButton()
+    if railButton then return true end
+    local map = _G.MDTFrame
+    if not map then return false end
+
+    local rail = _G.MDTNavigationSidebar
+    local parent = rail or map
+
+    local button = CreateFrame("Button", "MDTRouteLibraryRailButton", parent)
+    button:SetSize(36, 36)
+    button:SetFrameLevel(parent:GetFrameLevel() + 5)
+
+    local last
+    for i = 1, 20 do
+        local own = _G["MDTNavigationSidebarButton" .. i]
+        if not own then break end
+        last = own
+        -- Wer auf MDTs Karte oder Einstellungen schaltet, will den Browser
+        -- nicht mehr davor haben.
+        own:HookScript("OnClick", function() B.Hide() end)
+    end
+
+    if last then
+        button:SetPoint("TOP", last, "BOTTOM", 0, -6)
+    elseif rail then
+        button:SetPoint("BOTTOM", rail, "BOTTOM", 0, 8)
+    else
+        button:SetPoint("TOPRIGHT", map, "TOPLEFT", -4, -40)
+    end
+
+    -- Gleiche Machart wie MDTs eigene Knoepfe: Flaeche fuer "aktiv", darueber
+    -- das Symbol in 31 Pixeln.
+    -- Die Werte aus NavigationSidebar.lua: aktiv Weiss mit 14 %, Hover 8 %.
+    button.active = T:Tint(button, "selected")
+    button.active:Hide()
+
+    local icon = button:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(31, 31)
+    icon:SetPoint("CENTER")
+    icon:SetTexture(ICON)
+    icon:SetTexCoord(unpack(ICON_COORDS))
+
+    local hover = button:CreateTexture(nil, "HIGHLIGHT")
+    hover:SetAllPoints()
+    hover:SetColorTexture(1, 1, 1, T.tint.hover)
+
+    button:SetScript("OnClick", function() B.Toggle() end)
+    button:SetScript("OnEnter", function(self)
+        -- MDTs Tooltip, so wie neben MDTs eigenen Knoepfen: rechts daneben.
+        local tip = _G.MDTTooltip or GameTooltip
+        tip:SetOwner(self, "ANCHOR_NONE")
+        tip:ClearAllPoints()
+        tip:SetPoint("LEFT", self, "RIGHT", 4, 0)
+        tip:SetText(ns.version == "dev" and "MDT Route Library (DEV)" or "MDT Route Library", 1, 1, 1)
+        tip:AddLine(ns.L["RAIL_BUTTON_TIP"], 0.81, 0.79, 0.76, true)
+        tip:Show()
+    end)
+    button:SetScript("OnLeave", function()
+        local tip = _G.MDTTooltip or GameTooltip
+        tip:Hide()
+    end)
+
+    -- Geht MDT zu, geht der Browser mit.
+    map:HookScript("OnHide", function() B.Hide() end)
+
+    railButton = button
+    if host and host:IsShown() then button.active:Show() end
+    return true
+end
+
+---Oeffnet MDT und darueber den Browser.
 ---
 ---ShowInterface schaltet um: ist MDT offen, wuerde der Aufruf es schliessen.
 ---Deshalb erst pruefen. Beim ersten Mal laedt MDT seine Oberflaeche nach und
----baut das Fenster asynchron auf - darum der kurze Wiederholversuch.
+---baut das Fenster asynchron auf - darum der Wiederholversuch.
 function B.Open()
-    local frame = _G.MDTFrame
-    if frame and frame:IsShown() then
-        if pluginAPI then pluginAPI:SetCurrentSection(SECTION_KEY) end
-        return true
+    if mdtShown() then
+        attachRailButton()
+        return B.Show()
     end
 
     local api = _G.MythicDungeonToolsAPI
@@ -4044,70 +4388,37 @@ function B.Open()
     api:ShowInterface()
 
     local tries = 0
-    local function switch()
+    local function wait()
         tries = tries + 1
-        if pluginAPI and _G.MDTFrame and _G.MDTFrame:IsShown() then
-            pluginAPI:SetCurrentSection(SECTION_KEY)
+        if mdtShown() then
+            attachRailButton()
+            B.Show()
             return
         end
-        if tries < 20 then C_Timer.After(0.1, switch) end
+        -- Fuenf Sekunden: beim ersten Oeffnen laedt MDT seine Dungeondaten.
+        if tries < 50 then C_Timer.After(0.1, wait) end
     end
-    C_Timer.After(0.1, switch)
+    C_Timer.After(0.1, wait)
 
     return true
 end
 
----Meldet die Sektion bei MDT an. Muss laufen, bevor MDT sein Hauptfenster
----baut - der RegisterUIInitializer-Callback ist genau dieser Zeitpunkt.
+---Merkt sich MDTs Plugin-API und wartet auf MDTs Fenster.
+---
+---Der Callback laeuft, sobald MDT seine Oberflaeche laedt - und das tut es
+---nicht erst beim Oeffnen, sondern schon, wenn irgendein Addon
+---GetEnemyForces fragt, oft gleich nach dem Login. Das Hauptfenster baut MDT
+---dagegen erst beim ersten Oeffnen, und das kann Stunden spaeter sein. Ein
+---Ereignis dafuer gibt es nicht, also wird ohne Zeitlimit nachgesehen, bis
+---der Rahmen da ist; danach ist der Ticker weg.
 ---@param api table MDTs pluginAPI
 function B.Register(api)
     pluginAPI = api
-    if not api or type(api.RegisterNavigationSection) ~= "function" then return false end
 
-    api:RegisterNavigationSection({
-        key       = SECTION_KEY,
-        tooltip   = ns.version == "dev" and "MDT Route Library (DEV)" or "MDT Route Library",
-        texture   = ICON,
-        texCoords = ICON_COORDS,
-        -- Beide Frames: erst zusammen decken sie die volle Fensterbreite ab.
-        createContentFrame   = true,
-        createSidePanelFrame = true,
-
-        onShow = function()
-            if not ui then
-                local content = api:GetNavigationSectionContentFrame(SECTION_KEY)
-                if not content then return end
-
-                -- Den SidePanel-Frame stellt MDT unter dem gleichen Schluessel
-                -- am Hauptfenster bereit; eine eigene API dafuer gibt es nicht.
-                local frame = _G.MDTFrame
-                local side = frame and frame.sectionSidePanelFrames
-                    and frame.sectionSidePanelFrames[SECTION_KEY]
-                if not side then return end
-
-                ui = { rows = {} }
-                buildList(content)
-                buildDetail(side)
-            end
-
-            -- MDT laesst offene Dialoge (z. B. das Gegner-Panel) beim
-            -- Sektionswechsel stehen. pluginAPI raeumt sie fuer uns weg.
-            if type(api.HideAllDialogs) == "function" then api:HideAllDialogs() end
-
-            -- Klappfenster nicht ueber einen Sektionswechsel hinweg offen lassen.
-            if ui and ui.filterPanel then ui.filterPanel:Hide() end
-
-            -- Fensterknoepfe wieder nach oben holen: unsere Flaechen liegen
-            -- darueber, sobald die Sektion sichtbar ist.
-            if ui and ui.frame then
-                liftMDTControls((ui.detail and ui.detail.frame:GetFrameLevel() or ui.frame:GetFrameLevel()) + 20)
-            end
-
-            syncWithMDT()
-            updateSubtitle()
-            B.Refresh()
-        end,
-    })
-
+    if attachRailButton() then return true end
+    local ticker
+    ticker = C_Timer.NewTicker(0.1, function()
+        if attachRailButton() then ticker:Cancel() end
+    end)
     return true
 end

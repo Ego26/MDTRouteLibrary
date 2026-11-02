@@ -2,8 +2,7 @@
 -- Man kann mit der Maus hinein, zoomen, schieben und Gegner anfassen.
 --
 -- Warum nachgebaut und nicht MDTs eigene benutzt: MDTs Plugin-Schnittstelle
--- kennt sechs Methoden (RegisterNavigationSection, GetCurrentSection,
--- SetCurrentSection, GetNavigationSectionContentFrame, HideAllDialogs,
+-- kennt vier Methoden (GetCurrentSection, SetCurrentSection, HideAllDialogs,
 -- RegisterDungeonData). Keine davon zeichnet eine Karte, und MDTs Karte gibt
 -- es nur einmal - fest an MDT.main_frame gebunden. Sie hierher zu holen ginge
 -- nur ueber MDTs Interna, und davon haelt sich dieses Addon fern.
@@ -310,7 +309,7 @@ local function acquireLabel(index)
     -- Auf der Beschriftungsebene, nicht auf der Karte: Blips sind Rahmen und
     -- liegen ueber jeder Textur - eine Ziffer auf der Karte selbst waere
     -- ausgerechnet in der Pullmitte verdeckt.
-    label = panel.overlay:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    label = panel.overlay:CreateFontString(nil, "OVERLAY", T:FontName("body", "textPrimary", true))
     label:SetShadowColor(0, 0, 0, 1)
     label:SetShadowOffset(1, -1)
     panel.labels[index] = label
@@ -640,7 +639,10 @@ end
 local function ensurePanel()
     if panel then return panel end
 
-    local p = CreateFrame("Frame", "MDTRouteLibraryMapView", UIParent, "TooltipBorderedFrameTemplate")
+    -- Flach mit Pixelrand, wie MDTs eigene Einblendungen (Kit/Popover.lua).
+    local p = CreateFrame("Frame", "MDTRouteLibraryMapView", UIParent)
+    T:Fill(p, "bgOverlay", 0.97)
+    T:Border(p, "borderStrong")
     p:SetSize(VIEW_W + PADDING * 2, VIEW_H + PADDING * 2 + HEAD_H + FOOT_H)
     -- Eine Stufe unter TOOLTIP: Blizzards Zaubertooltips sollen darueber
     -- liegen, unsere Gegnervorschau ebenso.
@@ -659,7 +661,7 @@ local function ensurePanel()
     -- Frueh setzen: die Anordnungsfunktionen greifen darauf zu.
     panel = p
 
-    p.title = p:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    p.title = p:CreateFontString(nil, "OVERLAY", T:FontName("heading"))
     p.title:SetPoint("TOPLEFT", p, "TOPLEFT", PADDING, -PADDING)
     p.title:SetPoint("TOPRIGHT", p, "TOPRIGHT", -PADDING, -PADDING)
     p.title:SetJustifyH("LEFT")
@@ -721,12 +723,12 @@ local function ensurePanel()
         self.dragX, self.dragY = x, y
     end)
 
-    p.footer = p:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    p.footer = p:CreateFontString(nil, "OVERLAY", T:FontName("small"))
     p.footer:SetPoint("TOPLEFT", viewport, "BOTTOMLEFT", 0, -6)
     p.footer:SetJustifyH("LEFT")
     p.footer:SetWordWrap(false)
 
-    p.zoomLabel = p:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+    p.zoomLabel = p:CreateFontString(nil, "OVERLAY", T:FontName("small", "textMuted"))
     p.zoomLabel:SetPoint("TOPRIGHT", viewport, "BOTTOMRIGHT", 0, -6)
     p.zoomLabel:SetText("100 %")
 
