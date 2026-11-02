@@ -347,6 +347,7 @@ async function main() {
     (rioSkipped > 0 ? `, ${rioSkipped} ohne (uebersprungen)` : ''))
   console.log('4) Routen gegen MDT pruefen und anreichern')
   const accepted = []
+  const rioShort = []
   const usedDungeons = new Map()
 
   /** Legt den Eintrag fuer einen Dungeon an, falls es ihn noch nicht gibt. */
@@ -382,6 +383,23 @@ async function main() {
 
     if (dungeon && !route.reference) {
       enrichRoute(route, dungeon, ensureDungeon(dungeon)._npcs)
+
+      // Ein Top-Lauf, der nach MDTs heutigen Werten keine 100 % erreicht,
+      // bleibt draussen. Gelaufen wurde er mit vollen Kraeften - sonst stuende
+      // er nicht in der Rangliste -, aber seitdem hat Blizzard Gegnerwerte
+      // geaendert, und wer ihm heute folgt, steht am Ende ohne 100 % da.
+      // keystone.guru zeigt dieselben Laeufe mit derselben Luecke.
+      //
+      // Gerechnet wird mit der Summe, die enrichRoute gerade aus MDT gezogen
+      // hat, nicht mit der gespeicherten. Hebt MDT die Werte wieder an, ist
+      // der Lauf beim naechsten Bauen von selbst zurueck.
+      const pulls = route.pulls ?? []
+      const total = pulls.length > 0 ? pulls[pulls.length - 1].cumulative : 0
+      if (route.source === 'raider.io' && dungeon.totalCount && total < dungeon.totalCount) {
+        rioShort.push(`${route.id} ${dungeon.englishName} ${route.title} ` +
+          `${(total / dungeon.totalCount * 100).toFixed(1)}%`)
+        continue
+      }
     } else if (dungeon) {
       // Der Dungeon muss trotzdem ins Paket, sonst fehlen Kurzname und
       // Gegnertabelle fuer seine Verweise.
@@ -391,6 +409,10 @@ async function main() {
     accepted.push(route)
   }
   console.log(`   ${accepted.length} von ${routes.length} akzeptiert`)
+  if (rioShort.length > 0) {
+    console.log(`   ${rioShort.length} Top-Laeufe unter 100 % (nicht im Paket)`)
+    for (const line of rioShort) console.log(`      ${line}`)
+  }
 
 
   // Alle Gegner des Dungeons ausliefern, nicht nur die in unseren Routen:

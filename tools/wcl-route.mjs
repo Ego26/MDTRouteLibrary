@@ -564,6 +564,45 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
     }
   }
 
+  // ---- Gegner mit der Kartenkennung des Nachbarabschnitts
+  //
+  // Warcraftlogs nennt zu jedem Treffer die Karte, auf der er gemessen wurde -
+  // und an einer Abschnittsgrenze ist das manchmal die falsche. In Altar der
+  // Reisszaehne trugen drei Blutlasser die Kennung des Eingangs, obwohl sie
+  // nach ihren Weltkoordinaten mitten zwischen ihren Geschwistern im zweiten
+  // Abschnitt standen. Mit der Abbildung des Eingangs landeten sie 350 Punkte
+  // neben jeder Vorlage und fielen aus der Route: fuenfzehn Kraefte, 98,4
+  // statt 100,2 Prozent, und auf keystone.guru stand derselbe Lauf vollstaendig.
+  //
+  // Wer auf seiner eigenen Karte nichts findet, darf es deshalb mit den
+  // Abbildungen der anderen versuchen - eng gemessen und nur auf Klone, die
+  // noch frei sind. Was schon sitzt, wird nicht angefasst.
+  if (abbildungen.size > 1) {
+    const frei = new Map()
+    const belegt = new Set([...zugeteilt.values()].map((k) => k.enemy + ':' + k.clone))
+    for (const [npc, liste] of kloneJeNpc) {
+      frei.set(npc, liste.filter((k) => !belegt.has(k.enemy + ':' + k.clone)))
+    }
+    const heimatlos = [...ort.values()].filter((x) => abbildungen.has(x.mapID) &&
+      gestorben.has(x.npcId + ':' + x.instanz) && !zugeteilt.has(x.npcId + ':' + x.instanz))
+
+    const kandidaten = []
+    for (const [mapID, abb] of abbildungen) {
+      const fremde = heimatlos.filter((x) => x.mapID !== mapID)
+      for (const t of vergeben(abb, fremde, frei, e.eng ?? 25, erlaubt)) kandidaten.push(t)
+    }
+    // Wie in vergeben: die sichersten zuerst, jeder Klon und jede Instanz
+    // nur einmal - auch ueber die Karten hinweg.
+    kandidaten.sort((a, b) => a.abstand - b.abstand)
+    for (const t of kandidaten) {
+      const iSchluessel = t.e.npcId + ':' + t.e.instanz
+      const kSchluessel = t.k.enemy + ':' + t.k.clone
+      if (zugeteilt.has(iSchluessel) || belegt.has(kSchluessel)) continue
+      zugeteilt.set(iSchluessel, t.k)
+      belegt.add(kSchluessel)
+    }
+  }
+
   // ---- Pulls, zunaechst als blosse Klonlisten
   const rohPulls = []
 
@@ -673,6 +712,7 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
   // gerade im Kampf ist, wird nicht mittendrin getrennt. Es kann nur zerfallen,
   // wenn zwischendurch etwas anderes den Pull beendet hat.
   const reihe = alleMitglieder.slice().sort((a, b) => a.t - b.t)
+  const inRoute = new Map(alleMitglieder.map((m) => [m.schluessel, m.klon]))
 
   const anteilLeben = (m, zeit) => {
     const tod = m.tod
@@ -751,7 +791,12 @@ export function routeBauen({ kampf, schaden, tode, zauber, leben, dungeon, klone
       for (const regel of regeln) {
         if (regel.amEnde || !regel.ausloeser.includes(tod.npc)) continue
         if (regel.erst && !regel.erst.every(belegt)) continue
-        const klon = zugeteilt.get(tod.schluessel)
+        // Aus der Route, nicht aus der geometrischen Zuordnung: ein Boss mit
+        // nur einer Vorlage kommt ohne Geometrie hinein. Galvazzt stand so in
+        // acht von zehn Routen von Tempel von Sethraliss - und weil die Regel
+        // ihn nur in zugeteilt suchte, fehlten dort alle sechs Anomalien:
+        // 660 statt 690 Kraefte, jedesmal.
+        const klon = zugeteilt.get(tod.schluessel) ?? inRoute.get(tod.schluessel)
         const ziel = klon ? wo.get(klon.enemy + ':' + klon.clone) : undefined
         if (ziel === undefined) continue
         eintragen(regel.verleiht, ziel)
