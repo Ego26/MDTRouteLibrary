@@ -7,6 +7,8 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.11.02.2
+
 - The route browser is back for MDT 6.3.10 and newer. MDT no longer lets
   other addons add a section to its window, so the browser now opens on top of
   MDT's window instead: the button with our logo in MDT's toolbar switches

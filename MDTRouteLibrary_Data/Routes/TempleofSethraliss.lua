@@ -107,9 +107,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 540,
+            forces = 30,
+            cumulative = 570,
             boss = true,
         },
         {
@@ -117,7 +118,7 @@ R:RegisterRoute({
                 { enemy = 41, clones = { 1 } },
             },
             forces = 5,
-            cumulative = 545,
+            cumulative = 575,
         },
         {
             enemies = {
@@ -125,7 +126,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 2, 1, 3, 4 } },
             },
             forces = 70,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -134,7 +135,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 2, 3, 4 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -142,14 +143,14 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 4, 1, 2 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -157,7 +158,7 @@ R:RegisterRoute({
                 { enemy = 38, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -165,11 +166,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "24BPVghWmHJ8CzvD",
     wclFight = 19,
     title = "+22 · 31:01",
@@ -296,9 +297,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 540,
+            forces = 30,
+            cumulative = 570,
             boss = true,
         },
         {
@@ -308,7 +310,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 1, 2 } },
             },
             forces = 40,
-            cumulative = 580,
+            cumulative = 610,
         },
         {
             enemies = {
@@ -319,7 +321,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 3, 2, 1, 4 } },
             },
             forces = 80,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -327,14 +329,14 @@ R:RegisterRoute({
                 { enemy = 38, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 4, 2, 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -342,7 +344,7 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -350,11 +352,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "tPW9TVaRzMG8kY1D",
     wclFight = 10,
     title = "+20 · 25:49",
@@ -486,9 +488,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 540,
+            forces = 30,
+            cumulative = 570,
             boss = true,
         },
         {
@@ -496,7 +499,7 @@ R:RegisterRoute({
                 { enemy = 41, clones = { 1 } },
             },
             forces = 5,
-            cumulative = 545,
+            cumulative = 575,
         },
         {
             enemies = {
@@ -504,7 +507,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 1, 2 } },
             },
             forces = 35,
-            cumulative = 580,
+            cumulative = 610,
         },
         {
             enemies = {
@@ -512,7 +515,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 4, 3 } },
             },
             forces = 35,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -521,7 +524,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 2, 3, 4 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -529,14 +532,14 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 4, 1, 3 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -544,7 +547,7 @@ R:RegisterRoute({
                 { enemy = 38, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -552,11 +555,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "PvVjg97dyrq2Fnb6",
     wclFight = 39,
     title = "+21 · 27:01",
@@ -677,9 +680,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 545,
+            forces = 30,
+            cumulative = 575,
             boss = true,
         },
         {
@@ -688,7 +692,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 2, 1, 3, 4 } },
             },
             forces = 70,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -697,7 +701,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 2, 4, 3 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -706,7 +710,7 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -714,13 +718,14 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "WKxZTjCvp6nH47Nm",
     wclFight = 31,
+    filled = 2,
     title = "+23 · 28:54",
     author = "Blood Death Knight",
     url = "https://raider.io/mythic-plus-runs/season-mn-2/21646965-23-temple-of-sethraliss",
@@ -846,9 +851,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 545,
+            forces = 30,
+            cumulative = 575,
             boss = true,
         },
         {
@@ -857,7 +863,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 2, 1, 3, 4 } },
             },
             forces = 70,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -866,7 +872,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 2, 3, 4 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -874,14 +880,14 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 4, 1, 2 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -889,7 +895,7 @@ R:RegisterRoute({
                 { enemy = 38, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -897,11 +903,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "MHyRdtXYAJ38hxgK",
     wclFight = 20,
     title = "+23 · 28:12",
@@ -1033,9 +1039,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 540,
+            forces = 30,
+            cumulative = 570,
             boss = true,
         },
         {
@@ -1045,7 +1052,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 1, 2 } },
             },
             forces = 40,
-            cumulative = 580,
+            cumulative = 610,
         },
         {
             enemies = {
@@ -1053,7 +1060,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 4, 3 } },
             },
             forces = 35,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -1062,7 +1069,7 @@ R:RegisterRoute({
                 { enemy = 17, clones = { 6 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1071,14 +1078,14 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 1, 2, 4, 3 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1086,11 +1093,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "7F3wRKmqdvPHnA24",
     wclFight = 9,
     title = "+22 · 27:40",
@@ -1218,9 +1225,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 545,
+            forces = 30,
+            cumulative = 575,
             boss = true,
         },
         {
@@ -1229,7 +1237,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 1, 2, 3, 4 } },
             },
             forces = 70,
-            cumulative = 615,
+            cumulative = 645,
         },
         {
             enemies = {
@@ -1238,7 +1246,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 4, 3, 2 } },
             },
             forces = 45,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1247,7 +1255,7 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1255,13 +1263,14 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "JR9FpGthrn3CmcAk",
     wclFight = 1,
+    filled = 1,
     title = "+24 · 31:01",
     author = "Blood Death Knight",
     url = "https://raider.io/mythic-plus-runs/season-mn-2/22735910-24-temple-of-sethraliss",
@@ -1586,9 +1595,10 @@ R:RegisterRoute({
         {
             enemies = {
                 { enemy = 33, clones = { 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 5, 10 } },
             },
-            forces = 0,
-            cumulative = 540,
+            forces = 30,
+            cumulative = 570,
             boss = true,
         },
         {
@@ -1598,7 +1608,7 @@ R:RegisterRoute({
                 { enemy = 45, clones = { 1, 2 } },
             },
             forces = 40,
-            cumulative = 580,
+            cumulative = 610,
         },
         {
             enemies = {
@@ -1609,7 +1619,7 @@ R:RegisterRoute({
                 { enemy = 35, clones = { 1, 3, 4, 2 } },
             },
             forces = 80,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1617,14 +1627,14 @@ R:RegisterRoute({
                 { enemy = 39, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
                 { enemy = 40, clones = { 1, 2, 3, 4 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
         },
         {
             enemies = {
@@ -1633,11 +1643,11 @@ R:RegisterRoute({
                 { enemy = 18, clones = { 1 } },
             },
             forces = 0,
-            cumulative = 660,
+            cumulative = 690,
             boss = true,
         },
     },
-    enemyForces = 660,
+    enemyForces = 690,
     wclReport = "j3MFadWfPbhK1cvG",
     wclFight = 6,
     title = "+22 · 27:43",

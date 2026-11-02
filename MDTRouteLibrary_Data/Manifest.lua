@@ -6,7 +6,7 @@ R:SetManifest({
     build = "2026-11-02",
     season = "Midnight Season 2",
     mdtVersion = "6.3.29",
-    routeCount = 98,
+    routeCount = 64,
     dungeonCount = 8,
     sources = {
         "community",
