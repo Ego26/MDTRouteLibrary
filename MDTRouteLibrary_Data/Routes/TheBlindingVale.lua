@@ -3,168 +3,6 @@
 local R = MDTRouteLibrary
 
 R:RegisterRoute({
-    id = "rio-22296182",
-    source = "raider.io",
-    pulls = {
-        {
-            enemies = {
-                { enemy = 6, clones = { 4 } },
-                { enemy = 2, clones = { 29, 28, 27, 86, 88, 89, 87, 85, 34, 30, 31, 33, 32 } },
-                { enemy = 1, clones = { 11, 13, 12 } },
-                { enemy = 3, clones = { 4, 3, 10, 9 } },
-                { enemy = 4, clones = { 2 } },
-                { enemy = 5, clones = { 9 } },
-            },
-            forces = 110,
-            cumulative = 110,
-        },
-        {
-            enemies = {
-                { enemy = 6, clones = { 7, 15, 10 } },
-                { enemy = 2, clones = { 51, 50, 65, 69, 66, 63, 68, 64, 67, 72, 70, 71 } },
-                { enemy = 1, clones = { 19, 18, 21, 20 } },
-                { enemy = 5, clones = { 7 } },
-                { enemy = 3, clones = { 7 } },
-            },
-            forces = 92,
-            cumulative = 202,
-        },
-        {
-            enemies = {
-                { enemy = 6, clones = { 9, 5 } },
-                { enemy = 2, clones = { 56, 55, 45, 44, 46, 42, 41, 43, 47, 37, 40, 39, 38, 49, 35, 36, 48, 52 } },
-                { enemy = 3, clones = { 6, 5 } },
-                { enemy = 1, clones = { 16, 15, 17 } },
-                { enemy = 4, clones = { 3 } },
-            },
-            forces = 85,
-            cumulative = 287,
-        },
-        {
-            enemies = {
-                { enemy = 14, clones = { 1 } },
-                { enemy = 13, clones = { 1 } },
-                { enemy = 15, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 287,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 5, clones = { 10 } },
-                { enemy = 1, clones = { 25 } },
-                { enemy = 3, clones = { 12, 11 } },
-                { enemy = 2, clones = { 93, 91, 90, 92, 94 } },
-                { enemy = 7, clones = { 16 } },
-                { enemy = 4, clones = { 5 } },
-                { enemy = 8, clones = { 9 } },
-            },
-            forces = 81,
-            cumulative = 368,
-        },
-        {
-            enemies = {
-                { enemy = 18, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 368,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 10, clones = { 9 } },
-                { enemy = 8, clones = { 10, 12 } },
-                { enemy = 7, clones = { 17 } },
-                { enemy = 12, clones = { 4, 5 } },
-                { enemy = 5, clones = { 11 } },
-            },
-            forces = 93,
-            cumulative = 461,
-        },
-        {
-            enemies = {
-                { enemy = 9, clones = { 32, 31, 39, 33, 37, 38, 35, 36, 34, 30 } },
-                { enemy = 8, clones = { 11, 13 } },
-                { enemy = 10, clones = { 10, 11 } },
-            },
-            forces = 34,
-            cumulative = 495,
-        },
-        {
-            enemies = {
-                { enemy = 16, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 495,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 23, clones = { 1 } },
-                { enemy = 2, clones = { 12, 11, 8, 9, 14, 10, 13 } },
-                { enemy = 1, clones = { 9, 8 } },
-                { enemy = 7, clones = { 4, 3, 2 } },
-            },
-            forces = 102,
-            cumulative = 597,
-        },
-        {
-            enemies = {
-                { enemy = 5, clones = { 3 } },
-            },
-            forces = 25,
-            cumulative = 622,
-        },
-        {
-            enemies = {
-                { enemy = 12, clones = { 2 } },
-                { enemy = 3, clones = { 16, 15 } },
-                { enemy = 6, clones = { 14, 13 } },
-                { enemy = 4, clones = { 7 } },
-            },
-            forces = 68,
-            cumulative = 690,
-        },
-        {
-            enemies = {
-                { enemy = 17, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 690,
-            boss = true,
-        },
-    },
-    enemyForces = 690,
-    wclReport = "Z3v1W8Jd6g4wN2Mk",
-    wclFight = 1,
-    filled = 2,
-    title = "+17 · 22:17",
-    author = "Protection Paladin",
-    url = "https://raider.io/mythic-plus-runs/season-mn-2/22296182-17-the-blinding-vale",
-    keystoneUrl = "https://keystone.guru/route/the-blinding-vale/lasG0sA",
-    challengeModeId = 584,
-    dungeonEnglishName = "The Blinding Vale",
-    mdtDungeonIdx = 162,
-    keyLevelMin = 17,
-    keyLevel = 17,
-    clearSeconds = 1337,
-    onTime = true,
-    rank = 10702,
-    region = "us",
-    bracket = "mid",
-    tier = "fast",
-    roster = {
-        { name = "Elpendejaso", class = "Paladin", spec = "Protection", role = "tank" },
-        { name = "Necorgí", class = "Shaman", spec = "Restoration", role = "healer" },
-        { name = "Chromian", class = "Druid", spec = "Feral", role = "dps" },
-        { name = "Leecer", class = "Rogue", spec = "Subtlety", role = "dps" },
-        { name = "Klte-309732943", class = "Hunter", spec = "Beast Mastery", role = "dps" },
-    },
-    enemyForcesRequired = 686,
-})
-
-R:RegisterRoute({
     id = "rio-22686231",
     source = "raider.io",
     pulls = {
@@ -316,7 +154,7 @@ R:RegisterRoute({
     keyLevel = 18,
     clearSeconds = 1380,
     onTime = true,
-    rank = 11718,
+    rank = 12050,
     region = "eu",
     bracket = "mid",
     tier = "fast",
@@ -479,7 +317,6 @@ R:RegisterRoute({
     enemyForces = 709,
     wclReport = "JKtkHWQPC8r3NBD9",
     wclFight = 28,
-    filled = 2,
     title = "+18 · 25:08",
     author = "Guardian Druid",
     url = "https://raider.io/mythic-plus-runs/season-mn-2/22768443-18-the-blinding-vale",
@@ -491,7 +328,7 @@ R:RegisterRoute({
     keyLevel = 18,
     clearSeconds = 1508,
     onTime = true,
-    rank = 12104,
+    rank = 12447,
     region = "eu",
     bracket = "mid",
     tier = "slow",
@@ -501,6 +338,196 @@ R:RegisterRoute({
         { name = "Katze", class = "Druid", spec = "Guardian", role = "tank" },
         { name = "Cyelená", class = "Shaman", spec = "Elemental", role = "dps" },
         { name = "Sneakylang", class = "Rogue", spec = "Subtlety", role = "dps" },
+    },
+    enemyForcesRequired = 686,
+})
+
+R:RegisterRoute({
+    id = "rio-7301278",
+    source = "raider.io",
+    pulls = {
+        {
+            enemies = {
+                { enemy = 6, clones = { 4, 11 } },
+                { enemy = 2, clones = { 29, 28, 27, 31, 88, 32, 30, 33, 74, 79, 75, 80, 76, 78, 73, 77, 81, 34 } },
+                { enemy = 1, clones = { 11, 13, 12, 22, 23 } },
+                { enemy = 3, clones = { 3, 4, 9, 10, 8 } },
+                { enemy = 4, clones = { 2 } },
+            },
+            forces = 117,
+            cumulative = 117,
+        },
+        {
+            enemies = {
+                { enemy = 1, clones = { 24 } },
+                { enemy = 2, clones = { 84, 83, 82 } },
+            },
+            forces = 10,
+            cumulative = 127,
+        },
+        {
+            enemies = {
+                { enemy = 5, clones = { 9 } },
+                { enemy = 2, clones = { 85, 86, 51, 87, 50 } },
+                { enemy = 1, clones = { 18, 19 } },
+                { enemy = 6, clones = { 7 } },
+            },
+            forces = 51,
+            cumulative = 178,
+        },
+        {
+            enemies = {
+                { enemy = 5, clones = { 7 } },
+                { enemy = 6, clones = { 15, 9 } },
+                { enemy = 3, clones = { 6, 7, 5 } },
+                { enemy = 2, clones = { 52, 72, 70, 69, 53, 71 } },
+            },
+            forces = 63,
+            cumulative = 241,
+        },
+        {
+            enemies = {
+                { enemy = 2, clones = { 42, 43, 41 } },
+                { enemy = 1, clones = { 16 } },
+                { enemy = 6, clones = { 5 } },
+                { enemy = 4, clones = { 3 } },
+            },
+            forces = 37,
+            cumulative = 278,
+        },
+        {
+            enemies = {
+                { enemy = 2, clones = { 38, 37, 39, 40 } },
+                { enemy = 1, clones = { 15 } },
+            },
+            forces = 11,
+            cumulative = 289,
+        },
+        {
+            enemies = {
+                { enemy = 2, clones = { 36, 35 } },
+                { enemy = 1, clones = { 14 } },
+                { enemy = 14, clones = { 1 } },
+                { enemy = 13, clones = { 1 } },
+                { enemy = 15, clones = { 1 } },
+            },
+            forces = 9,
+            cumulative = 298,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 5, clones = { 10 } },
+                { enemy = 3, clones = { 12, 11 } },
+                { enemy = 1, clones = { 25 } },
+                { enemy = 2, clones = { 90, 92, 93, 91, 94 } },
+                { enemy = 7, clones = { 16 } },
+                { enemy = 4, clones = { 5 } },
+                { enemy = 8, clones = { 9 } },
+            },
+            forces = 81,
+            cumulative = 379,
+        },
+        {
+            enemies = {
+                { enemy = 18, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 379,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 10, clones = { 9 } },
+                { enemy = 9, clones = { 22, 19, 21, 20, 18 } },
+                { enemy = 8, clones = { 10 } },
+                { enemy = 7, clones = { 17 } },
+                { enemy = 12, clones = { 4, 3 } },
+            },
+            forces = 68,
+            cumulative = 447,
+        },
+        {
+            enemies = {
+                { enemy = 8, clones = { 12 } },
+                { enemy = 5, clones = { 11 } },
+                { enemy = 12, clones = { 5 } },
+                { enemy = 10, clones = { 11, 10 } },
+            },
+            forces = 66,
+            cumulative = 513,
+        },
+        {
+            enemies = {
+                { enemy = 8, clones = { 11, 13 } },
+                { enemy = 9, clones = { 34, 35, 36, 37, 38 } },
+                { enemy = 16, clones = { 1 } },
+            },
+            forces = 15,
+            cumulative = 528,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 9, clones = { 30, 33, 32, 39, 31 } },
+            },
+            forces = 5,
+            cumulative = 533,
+        },
+        {
+            enemies = {
+                { enemy = 23, clones = { 1 } },
+                { enemy = 2, clones = { 13, 12, 14, 8, 9, 10, 11 } },
+                { enemy = 1, clones = { 8, 9 } },
+                { enemy = 7, clones = { 3, 2, 4 } },
+            },
+            forces = 102,
+            cumulative = 635,
+        },
+        {
+            enemies = {
+                { enemy = 5, clones = { 3 } },
+                { enemy = 11, clones = { 3 } },
+                { enemy = 12, clones = { 2 } },
+                { enemy = 3, clones = { 1 } },
+            },
+            forces = 78,
+            cumulative = 713,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 713,
+            boss = true,
+        },
+    },
+    enemyForces = 713,
+    wclReport = "KXpxNCJgLkWYbAqj",
+    wclFight = 530,
+    filled = 1,
+    title = "+16 · 24:08",
+    author = "Blood Death Knight",
+    url = "https://raider.io/mythic-plus-runs/season-mn-2/7301278-16-the-blinding-vale",
+    keystoneUrl = "https://keystone.guru/route/the-blinding-vale/Skg5WGs",
+    challengeModeId = 584,
+    dungeonEnglishName = "The Blinding Vale",
+    mdtDungeonIdx = 162,
+    keyLevelMin = 16,
+    keyLevel = 16,
+    clearSeconds = 1448,
+    onTime = true,
+    rank = 19770,
+    region = "us",
+    bracket = "mid",
+    tier = "slow",
+    roster = {
+        { name = "Swaggythecat", class = "Mage", spec = "Arcane", role = "dps" },
+        { name = "Kekw", class = "Rogue", spec = "Assassination", role = "dps" },
+        { name = "Escanorre", class = "Paladin", spec = "Holy", role = "healer" },
+        { name = "Brownwizard", class = "Death Knight", spec = "Blood", role = "tank" },
+        { name = "Bèrserker", class = "Warrior", spec = "Arms", role = "dps" },
     },
     enemyForcesRequired = 686,
 })
