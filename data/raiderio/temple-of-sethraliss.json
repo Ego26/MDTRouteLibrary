@@ -531,7 +531,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 20,
+    "rank": 22,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1004,77 +1004,76 @@
     "enemyForces": 690
   },
   {
-    "id": "rio-21646965",
+    "id": "rio-24785086",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21646965-23-temple-of-sethraliss",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/24785086-23-temple-of-sethraliss",
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 26,
+    "rank": 27,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 23,
-    "clearSeconds": 1734,
-    "clearMs": 1733526,
-    "completedAt": "2026-10-19T17:34:16.000Z",
+    "clearSeconds": 1733,
+    "clearMs": 1733159,
+    "completedAt": "2026-11-05T09:22:34.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "神奇的阿诺",
-        "realm": "shadowmourne",
+        "name": "Timeovo-308292438",
+        "realm": "alar",
         "realmRegion": "cn",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "孤独咩",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
-        "class": "Shaman",
-        "spec": "Elemental",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "快乐阳阳",
-        "realm": "frostmourne",
-        "realmRegion": "cn",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "叶落初冬",
-        "realm": "world-tree",
+        "name": "霸天横刀",
+        "realm": "silver-hand",
         "realmRegion": "cn",
         "class": "Rogue",
         "spec": "Subtlety",
         "role": "dps"
       },
       {
-        "name": "黑按摩捣师",
-        "realm": "chillwind-point",
+        "name": "牛油扭扭果",
+        "realm": "kaleidoscope-star",
         "realmRegion": "cn",
-        "class": "Warrior",
-        "spec": "Arms",
+        "class": "Shaman",
+        "spec": "Elemental",
         "role": "dps"
+      },
+      {
+        "name": "干锅鱼杂",
+        "realm": "draktharon",
+        "realmRegion": "cn",
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
+      },
+      {
+        "name": "香蕉橘子梨丶",
+        "realm": "kaleidoscope-star",
+        "realmRegion": "cn",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
       }
     ],
     "enemyForcesRequired": 687,
-    "routeKey": "u1E1Fus",
-    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/u1E1Fus",
-    "wclReport": "WKxZTjCvp6nH47Nm",
-    "wclFight": 31,
+    "routeKey": "V5sGPh1",
+    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/V5sGPh1",
+    "wclReport": "ajWJwxDYcPdtV2pz",
+    "wclFight": 8,
     "pulls": [
       {
         "enemies": [
           {
-            "enemy": 1,
+            "enemy": 3,
             "clones": [
-              8,
-              23,
-              24
+              2,
+              7
             ]
           },
           {
@@ -1082,6 +1081,14 @@
             "clones": [
               8,
               17
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              8,
+              23,
+              24
             ]
           },
           {
@@ -1099,28 +1106,15 @@
               8,
               3
             ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              7
-            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 3,
+            "enemy": 1,
             "clones": [
-              9,
-              6
-            ]
-          },
-          {
-            "enemy": 30,
-            "clones": [
-              1
+              21
             ]
           },
           {
@@ -1130,9 +1124,15 @@
             ]
           },
           {
-            "enemy": 1,
+            "enemy": 30,
             "clones": [
-              21
+              1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              6
             ]
           },
           {
@@ -1158,6 +1158,12 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              5
+            ]
+          },
+          {
             "enemy": 8,
             "clones": [
               1
@@ -1173,12 +1179,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
             ]
           },
           {
@@ -1212,15 +1212,16 @@
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 7,
             "clones": [
               3
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 8,
             "clones": [
-              3
+              3,
+              6
             ]
           },
           {
@@ -1249,34 +1250,33 @@
           {
             "enemy": 6,
             "clones": [
-              7,
-              6
+              6,
+              7
             ]
           },
           {
             "enemy": 7,
             "clones": [
-              7,
               4,
               5,
-              6
+              6,
+              7
             ]
           },
           {
             "enemy": 8,
             "clones": [
-              6,
               4,
               5,
-              8,
-              7
+              7,
+              8
             ]
           },
           {
             "enemy": 12,
             "clones": [
-              6,
-              5
+              5,
+              6
             ]
           }
         ]
@@ -1287,6 +1287,12 @@
             "enemy": 13,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 21,
+            "clones": [
+              2
             ]
           },
           {
@@ -1332,8 +1338,8 @@
           {
             "enemy": 15,
             "clones": [
-              5,
-              6
+              6,
+              5
             ]
           }
         ]
@@ -1364,17 +1370,31 @@
           {
             "enemy": 24,
             "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 45,
+            "clones": [
               1,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 24,
+            "clones": [
               2
             ]
           },
           {
             "enemy": 45,
             "clones": [
-              2,
-              1,
-              3,
-              4
+              4,
+              3
             ]
           }
         ]
@@ -1384,13 +1404,13 @@
           {
             "enemy": 42,
             "clones": [
-              5,
               6,
-              7,
+              5,
               8,
+              7,
+              12,
               10,
               9,
-              12,
               11
             ]
           },
@@ -1404,21 +1424,15 @@
             "enemy": 35,
             "clones": [
               1,
-              2,
+              3,
               4,
-              3
+              2
             ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
           {
             "enemy": 38,
             "clones": [
@@ -1441,8 +1455,27 @@
             "clones": [
               4,
               2,
-              1,
               3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              1
             ]
           },
           {
@@ -1454,74 +1487,83 @@
         ]
       }
     ],
-    "enemyForces": 690
+    "enemyForces": 690,
+    "filled": 1
   },
   {
-    "id": "rio-23732949",
+    "id": "rio-23643434",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23732949-22-temple-of-sethraliss",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23643434-22-temple-of-sethraliss",
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 461,
+    "rank": 502,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 22,
-    "clearSeconds": 1651,
-    "clearMs": 1651482,
-    "completedAt": "2026-10-29T22:26:14.000Z",
+    "clearSeconds": 1675,
+    "clearMs": 1675359,
+    "completedAt": "2026-10-29T10:13:01.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Zerøcool",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Assassination",
+        "name": "Padflash",
+        "realm": "frostmourne",
+        "realmRegion": "us",
+        "class": "Mage",
+        "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Bizentein",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
+        "name": "Eroka",
+        "realm": "frostmourne",
+        "realmRegion": "us",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Onewog",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
+        "name": "Vegevi",
+        "realm": "frostmourne",
+        "realmRegion": "us",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Noxpunk",
+        "realm": "frostmourne",
+        "realmRegion": "us",
         "class": "Paladin",
         "spec": "Holy",
         "role": "healer"
       },
       {
-        "name": "Poznasmesham",
-        "realm": "draenor",
-        "realmRegion": "eu",
+        "name": "Zorthar",
+        "realm": "frostmourne",
+        "realmRegion": "us",
         "class": "Shaman",
         "spec": "Enhancement",
         "role": "dps"
-      },
-      {
-        "name": "Wazocutie",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
       }
     ],
     "enemyForcesRequired": 687,
-    "routeKey": "MCaKPYB",
-    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/MCaKPYB",
-    "wclReport": "ZJWjbBY3tTDLmKGa",
-    "wclFight": 21,
+    "routeKey": "MoBHjsV",
+    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/MoBHjsV",
+    "wclReport": "6QhKbXFnZjrYMfpR",
+    "wclFight": 1,
     "pulls": [
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              8,
+              23,
+              24
+            ]
+          },
           {
             "enemy": 2,
             "clones": [
@@ -1530,10 +1572,17 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              2,
+              7
+            ]
+          },
+          {
             "enemy": 5,
             "clones": [
-              3,
               2,
+              3,
               12,
               10
             ]
@@ -1544,25 +1593,11 @@
               8,
               3
             ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              23,
-              24
-            ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 1,
-            "clones": [
-              21,
-              20
-            ]
-          },
           {
             "enemy": 30,
             "clones": [
@@ -1576,9 +1611,20 @@
             ]
           },
           {
+            "enemy": 1,
+            "clones": [
+              21
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 3,
             "clones": [
-              7,
               6
             ]
           },
@@ -1586,12 +1632,6 @@
             "enemy": 2,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              4
             ]
           }
         ]
@@ -1602,6 +1642,12 @@
             "enemy": 6,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -1620,18 +1666,6 @@
             "enemy": 1,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
             ]
           },
           {
@@ -1646,19 +1680,25 @@
             "clones": [
               1
             ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              1
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 7,
+            "enemy": 8,
             "clones": [
               3
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 7,
             "clones": [
               3
             ]
@@ -1676,13 +1716,13 @@
             ]
           },
           {
-            "enemy": 11,
+            "enemy": 12,
             "clones": [
               1
             ]
           },
           {
-            "enemy": 12,
+            "enemy": 11,
             "clones": [
               1
             ]
@@ -1692,9 +1732,22 @@
       {
         "enemies": [
           {
+            "enemy": 7,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              4,
+              5,
+              8
+            ]
+          },
+          {
             "enemy": 6,
             "clones": [
-              7,
               6
             ]
           },
@@ -1702,20 +1755,6 @@
             "enemy": 12,
             "clones": [
               5
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              8,
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4
             ]
           },
           {
@@ -1735,23 +1774,29 @@
       {
         "enemies": [
           {
-            "enemy": 7,
+            "enemy": 6,
             "clones": [
-              6,
-              5,
               7
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              7,
-              6
             ]
           },
           {
             "enemy": 12,
             "clones": [
+              6
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              6,
+              7
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              7,
+              5,
               6
             ]
           }
@@ -1761,6 +1806,12 @@
         "enemies": [
           {
             "enemy": 13,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 43,
             "clones": [
               1
             ]
@@ -1785,8 +1836,8 @@
           {
             "enemy": 15,
             "clones": [
-              4,
-              1
+              1,
+              4
             ]
           }
         ]
@@ -1834,15 +1885,29 @@
           {
             "enemy": 24,
             "clones": [
-              1,
-              2
+              1
             ]
           },
           {
             "enemy": 45,
             "clones": [
               1,
-              2,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 24,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 45,
+            "clones": [
               3,
               4
             ]
@@ -1854,14 +1919,14 @@
           {
             "enemy": 42,
             "clones": [
-              7,
               6,
-              8,
               5,
+              7,
+              8,
               10,
-              12,
+              9,
               11,
-              9
+              12
             ]
           },
           {
@@ -1874,41 +1939,25 @@
             "enemy": 35,
             "clones": [
               2,
-              4,
+              3,
               1,
-              3
+              4
             ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 36,
+            "clones": [
+              1
+            ]
+          },
           {
             "enemy": 38,
             "clones": [
               1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 40,
-            "clones": [
-              4,
-              1,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 38,
-            "clones": [
-              2
             ]
           },
           {
@@ -1924,7 +1973,9 @@
           {
             "enemy": 40,
             "clones": [
-              3
+              4,
+              1,
+              2
             ]
           }
         ]
@@ -1932,9 +1983,19 @@
       {
         "enemies": [
           {
-            "enemy": 36,
+            "enemy": 38,
             "clones": [
-              1
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 40,
+            "clones": [
+              3
             ]
           },
           {
@@ -1946,27 +2007,43 @@
         ]
       }
     ],
-    "enemyForces": 683
+    "enemyForces": 690
   },
   {
-    "id": "rio-22560738",
+    "id": "rio-23058593",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22560738-22-temple-of-sethraliss",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23058593-22-temple-of-sethraliss",
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 466,
+    "rank": 515,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 22,
-    "clearSeconds": 1660,
-    "clearMs": 1660227,
-    "completedAt": "2026-10-24T04:48:41.000Z",
+    "clearSeconds": 1693,
+    "clearMs": 1692735,
+    "completedAt": "2026-10-26T01:24:55.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Pookiexo",
+        "name": "Rockystorm",
+        "realm": "stormrage",
+        "realmRegion": "us",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "name": "Cosini",
+        "realm": "illidan",
+        "realmRegion": "us",
+        "class": "Druid",
+        "spec": "Feral",
+        "role": "dps"
+      },
+      {
+        "name": "Shamxi",
         "realm": "illidan",
         "realmRegion": "us",
         "class": "Shaman",
@@ -1974,46 +2051,45 @@
         "role": "healer"
       },
       {
-        "name": "Swordish",
-        "realm": "aerie-peak",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Tracer",
-        "realm": "sargeras",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "name": "Vaesarir",
-        "realm": "bleeding-hollow",
-        "realmRegion": "us",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Charrend",
-        "realm": "malganis",
+        "name": "Scoreboard",
+        "realm": "grizzly-hills",
         "realmRegion": "us",
         "class": "Rogue",
         "spec": "Subtlety",
         "role": "dps"
+      },
+      {
+        "name": "Fizzmonk",
+        "realm": "illidan",
+        "realmRegion": "us",
+        "class": "Monk",
+        "spec": "Brewmaster",
+        "role": "tank"
       }
     ],
     "enemyForcesRequired": 687,
-    "routeKey": "HC0OVSR",
-    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/HC0OVSR",
-    "wclReport": "7F3wRKmqdvPHnA24",
-    "wclFight": 9,
+    "routeKey": "RB2utg9",
+    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/RB2utg9",
+    "wclReport": "MAdwL8Czrt7kBbZX",
+    "wclFight": 1,
     "pulls": [
       {
         "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              8,
+              17
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              8,
+              24,
+              23
+            ]
+          },
           {
             "enemy": 5,
             "clones": [
@@ -2031,22 +2107,10 @@
             ]
           },
           {
-            "enemy": 2,
-            "clones": [
-              17
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              24,
-              23
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
-              7
+              7,
+              2
             ]
           }
         ]
@@ -2054,27 +2118,9 @@
       {
         "enemies": [
           {
-            "enemy": 30,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 31,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 2,
             "clones": [
               13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              6
             ]
           },
           {
@@ -2088,6 +2134,24 @@
             "clones": [
               5
             ]
+          },
+          {
+            "enemy": 30,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 31,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              6
+            ]
           }
         ]
       },
@@ -2106,12 +2170,6 @@
             ]
           },
           {
-            "enemy": 3,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 7,
             "clones": [
               1
@@ -2121,6 +2179,12 @@
             "enemy": 1,
             "clones": [
               13
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              5
             ]
           },
           {
@@ -2147,12 +2211,6 @@
       {
         "enemies": [
           {
-            "enemy": 1,
-            "clones": [
-              18
-            ]
-          },
-          {
             "enemy": 8,
             "clones": [
               3
@@ -2162,6 +2220,12 @@
             "enemy": 7,
             "clones": [
               3
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              18
             ]
           },
           {
@@ -2171,10 +2235,15 @@
             ]
           },
           {
-            "enemy": 3,
+            "enemy": 12,
             "clones": [
-              4,
-              3
+              1
+            ]
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              1
             ]
           }
         ]
@@ -2182,37 +2251,11 @@
       {
         "enemies": [
           {
-            "enemy": 12,
-            "clones": [
-              1,
-              5
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              1,
-              6
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              6
-            ]
-          },
-          {
             "enemy": 8,
             "clones": [
-              4,
-              5,
-              8
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4
+              8,
+              6,
+              7
             ]
           },
           {
@@ -2220,11 +2263,13 @@
             "clones": [
               19
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              6
+            ]
+          },
           {
             "enemy": 6,
             "clones": [
@@ -2235,15 +2280,8 @@
             "enemy": 7,
             "clones": [
               7,
-              5,
-              6
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
               6,
-              7
+              5
             ]
           },
           {
@@ -2257,15 +2295,38 @@
       {
         "enemies": [
           {
-            "enemy": 13,
+            "enemy": 8,
             "clones": [
-              1
+              5,
+              4
             ]
           },
           {
-            "enemy": 21,
+            "enemy": 6,
             "clones": [
-              2
+              6
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 13,
+            "clones": [
+              1
             ]
           }
         ]
@@ -2297,16 +2358,16 @@
       {
         "enemies": [
           {
-            "enemy": 14,
+            "enemy": 15,
             "clones": [
-              2
+              5,
+              6
             ]
           },
           {
-            "enemy": 15,
+            "enemy": 14,
             "clones": [
-              6,
-              5
+              2
             ]
           }
         ]
@@ -2335,550 +2396,17 @@
       {
         "enemies": [
           {
-            "enemy": 41,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 24,
             "clones": [
-              1
+              1,
+              2
             ]
           },
           {
             "enemy": 45,
             "clones": [
               1,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 24,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 45,
-            "clones": [
-              4,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 42,
-            "clones": [
-              6,
-              5,
-              8,
-              7,
-              12,
-              11,
-              9,
-              10
-            ]
-          },
-          {
-            "enemy": 35,
-            "clones": [
               2,
-              1,
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              6
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 36,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 38,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 39,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 40,
-            "clones": [
-              1,
-              2,
-              4,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 38,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 18,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 690
-  },
-  {
-    "id": "rio-14385941",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/14385941-22-temple-of-sethraliss",
-    "challengeModeId": 250,
-    "dungeonEnglishName": "Temple of Sethraliss",
-    "mdtDungeonIdx": 20,
-    "rank": 1422,
-    "region": "world",
-    "bracket": "high",
-    "tier": "slow",
-    "keyLevel": 22,
-    "clearSeconds": 1862,
-    "clearMs": 1861734,
-    "completedAt": "2026-09-21T14:41:31.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Milkmager",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "小软饱饱",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "丶小月光",
-        "realm": "rhonin",
-        "realmRegion": "cn",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "戰临丶",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "生气大王子",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 687,
-    "routeKey": "nhs6IXC",
-    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/nhs6IXC",
-    "wclReport": "9wmB1R6qvCbHGYr8",
-    "wclFight": 11,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              8,
-              23,
-              24
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              8,
-              17
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              3,
-              2,
-              12
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              8
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 4,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              7,
-              6
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              10,
-              5
-            ]
-          },
-          {
-            "enemy": 30,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 31,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              20
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              13
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              9,
-              10
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 8,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              18
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              8,
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              19
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              5
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              6,
-              5,
-              7
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              7,
-              6
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 14,
-            "clones": [
-              4,
-              1
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              4,
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 14,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              5,
-              6
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 33,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 16,
-            "clones": [
-              1,
-              2,
-              3,
-              4,
-              5,
-              10
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 41,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 24,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 45,
-            "clones": [
-              1,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 24,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 45,
-            "clones": [
               3,
               4
             ]
@@ -2890,12 +2418,12 @@
           {
             "enemy": 42,
             "clones": [
-              5,
-              6,
               8,
               7,
-              10,
+              6,
+              5,
               12,
+              10,
               9,
               11
             ]
@@ -2909,10 +2437,10 @@
           {
             "enemy": 35,
             "clones": [
-              2,
               3,
-              1,
-              4
+              2,
+              4,
+              1
             ]
           }
         ]
@@ -2939,8 +2467,8 @@
             "enemy": 40,
             "clones": [
               4,
-              1,
-              2
+              2,
+              1
             ]
           }
         ]
@@ -2978,7 +2506,8 @@
         ]
       }
     ],
-    "enemyForces": 690
+    "enemyForces": 690,
+    "filled": 1
   },
   {
     "id": "rio-16732147",
@@ -2987,7 +2516,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 1448,
+    "rank": 1526,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3503,8 +3032,7 @@
         ]
       }
     ],
-    "enemyForces": 690,
-    "filled": 1
+    "enemyForces": 690
   },
   {
     "id": "rio-21394692",
@@ -3513,7 +3041,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 2413,
+    "rank": 2535,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -4030,66 +3558,66 @@
     "enemyForces": 690
   },
   {
-    "id": "rio-18539700",
+    "id": "rio-10928473",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18539700-21-temple-of-sethraliss",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/10928473-21-temple-of-sethraliss",
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 5408,
+    "rank": 5640,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
     "keyLevel": 21,
-    "clearSeconds": 1850,
-    "clearMs": 1850303,
-    "completedAt": "2026-10-05T18:21:15.000Z",
+    "clearSeconds": 1851,
+    "clearMs": 1851330,
+    "completedAt": "2026-09-11T16:28:40.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Bishm",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
+        "name": "神奇的阿诺",
+        "realm": "shadowmourne",
+        "realmRegion": "cn",
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
+      },
+      {
+        "name": "开心阳阳",
+        "realm": "alar",
+        "realmRegion": "cn",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "叶落初冬",
+        "realm": "isillien",
+        "realmRegion": "cn",
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "name": "Bigdmo",
+        "realm": "deathwing",
+        "realmRegion": "cn",
         "class": "Mage",
         "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Malmwist",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
+        "name": "Kitsunenoshu",
+        "realm": "grim-batol",
+        "realmRegion": "cn",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
-      },
-      {
-        "name": "Youdadruid",
-        "realm": "drakthul",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Sktchsmn",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "Pandapali",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
       }
     ],
     "enemyForcesRequired": 687,
-    "routeKey": "tcBjhXJ",
-    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/tcBjhXJ"
+    "routeKey": "UjLsMJZ",
+    "keystoneUrl": "https://keystone.guru/route/temple-of-sethraliss/UjLsMJZ"
   },
   {
     "id": "rio-21368230",
@@ -4098,7 +3626,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 8409,
+    "rank": 8703,
     "region": "world",
     "bracket": "mid",
     "tier": "fast",
@@ -4587,7 +4115,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 8817,
+    "rank": 9120,
     "region": "world",
     "bracket": "mid",
     "tier": "slow",
@@ -4649,7 +4177,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 6388,
+    "rank": 6511,
     "region": "eu",
     "bracket": "mid",
     "tier": "fast",
@@ -5163,7 +4691,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 10120,
+    "rank": 10283,
     "region": "eu",
     "bracket": "mid",
     "tier": "slow",
@@ -5687,7 +5215,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 6048,
+    "rank": 6133,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
@@ -5749,7 +5277,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 9226,
+    "rank": 9349,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
@@ -5811,7 +5339,7 @@
     "challengeModeId": 250,
     "dungeonEnglishName": "Temple of Sethraliss",
     "mdtDungeonIdx": 20,
-    "rank": 8663,
+    "rank": 8771,
     "region": "kr",
     "bracket": "low",
     "tier": "slow",

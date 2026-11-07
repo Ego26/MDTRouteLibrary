@@ -6,7 +6,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 10,
+    "rank": 12,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -68,7 +68,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 14,
+    "rank": 16,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -602,7 +602,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 77,
+    "rank": 84,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1093,7 +1093,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 81,
+    "rank": 88,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1577,7 +1577,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 441,
+    "rank": 466,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -2076,8 +2076,7 @@
         ]
       }
     ],
-    "enemyForces": 732,
-    "filled": 3
+    "enemyForces": 732
   },
   {
     "id": "rio-21928429",
@@ -2086,7 +2085,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 445,
+    "rank": 470,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -2148,7 +2147,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 818,
+    "rank": 872,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -2650,7 +2649,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 837,
+    "rank": 892,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -3159,7 +3158,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 2124,
+    "rank": 2234,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3221,7 +3220,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 2131,
+    "rank": 2241,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3725,83 +3724,84 @@
         ]
       }
     ],
-    "enemyForces": 731,
-    "filled": 3
+    "enemyForces": 731
   },
   {
-    "id": "rio-23893609",
+    "id": "rio-12795619",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23893609-21-den-of-nalorakk",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/12795619-21-den-of-nalorakk",
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 3407,
+    "rank": 7403,
     "region": "world",
     "bracket": "high",
-    "tier": "fast",
+    "tier": "slow",
     "keyLevel": 21,
-    "clearSeconds": 1500,
-    "clearMs": 1499883,
-    "completedAt": "2026-10-30T21:53:28.000Z",
+    "clearSeconds": 1825,
+    "clearMs": 1824815,
+    "completedAt": "2026-09-16T13:11:33.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Poyaa",
-        "realm": "draenor",
-        "realmRegion": "eu",
+        "name": "樣兒",
+        "realm": "burning-blade",
+        "realmRegion": "cn",
+        "class": "Druid",
+        "spec": "Feral",
+        "role": "dps"
+      },
+      {
+        "name": "Yyck",
+        "realm": "guldan",
+        "realmRegion": "cn",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Copeeydh",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Demon Hunter",
-        "spec": "Vengeance",
-        "role": "tank"
-      },
-      {
-        "name": "Backshotter",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Subtlety",
-        "role": "dps"
-      },
-      {
-        "name": "Rarosham",
-        "realm": "draenor",
-        "realmRegion": "eu",
+        "name": "烈焰之菜",
+        "realm": "chillwind-point",
+        "realmRegion": "cn",
         "class": "Shaman",
-        "spec": "Enhancement",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "苏格呢",
+        "realm": "alar",
+        "realmRegion": "cn",
+        "class": "Rogue",
+        "spec": "Outlaw",
         "role": "dps"
       },
       {
-        "name": "Dedolox",
-        "realm": "blackhand",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
+        "name": "胖空大师",
+        "realm": "deathwing",
+        "realmRegion": "cn",
+        "class": "Monk",
+        "spec": "Brewmaster",
+        "role": "tank"
       }
     ],
     "enemyForcesRequired": 729,
-    "routeKey": "8xQbglb",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/8xQbglb",
-    "wclReport": "gVrqG2tanzhWwJDK",
-    "wclFight": 7,
+    "routeKey": "Mt4geCq",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/Mt4geCq",
+    "wclReport": "Z2pvnj7RrXwNHb9y",
+    "wclFight": 5,
     "pulls": [
       {
         "enemies": [
           {
             "enemy": 3,
             "clones": [
-              3,
               4,
+              3,
               6,
               10,
-              9
+              9,
+              8,
+              7
             ]
           },
           {
@@ -3813,33 +3813,22 @@
             ]
           },
           {
+            "enemy": 15,
+            "clones": [
+              13,
+              12
+            ]
+          },
+          {
             "enemy": 4,
             "clones": [
               5
             ]
           },
           {
-            "enemy": 15,
-            "clones": [
-              12,
-              13
-            ]
-          },
-          {
             "enemy": 2,
             "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 24,
-            "clones": [
+              6,
               5
             ]
           }
@@ -3847,20 +3836,6 @@
       },
       {
         "enemies": [
-          {
-            "enemy": 17,
-            "clones": [
-              10,
-              8,
-              9
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              3
-            ]
-          },
           {
             "enemy": 15,
             "clones": [
@@ -3871,6 +3846,12 @@
             ]
           },
           {
+            "enemy": 4,
+            "clones": [
+              3
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               9
@@ -3879,8 +3860,7 @@
           {
             "enemy": 3,
             "clones": [
-              16,
-              2
+              16
             ]
           },
           {
@@ -3892,7 +3872,6 @@
           {
             "enemy": 24,
             "clones": [
-              6,
               7
             ]
           }
@@ -3903,14 +3882,7 @@
           {
             "enemy": 3,
             "clones": [
-              8,
-              7
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              5
+              2
             ]
           },
           {
@@ -3937,29 +3909,44 @@
       {
         "enemies": [
           {
+            "enemy": 15,
+            "clones": [
+              20,
+              21,
+              37,
+              36
+            ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              10
+            ]
+          },
+          {
             "enemy": 3,
             "clones": [
               21,
-              20,
+              17,
               22,
               19,
               18,
-              23
+              20
             ]
           },
           {
             "enemy": 2,
             "clones": [
+              11,
               10,
-              12,
-              11
+              12
             ]
           },
           {
             "enemy": 17,
             "clones": [
-              12,
-              11
+              11,
+              12
             ]
           }
         ]
@@ -3969,30 +3956,36 @@
           {
             "enemy": 4,
             "clones": [
-              16,
+              15,
               14
             ]
           },
           {
             "enemy": 6,
             "clones": [
+              17,
+              18,
               14,
-              16,
               15,
+              16,
               1,
-              2,
-              3,
-              5,
-              4
+              2
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              27,
+              26,
+              28,
+              29
             ]
           },
           {
             "enemy": 8,
             "clones": [
               1,
-              2,
-              4,
-              3
+              2
             ]
           },
           {
@@ -4006,11 +3999,40 @@
             "clones": [
               1
             ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 9,
+            "clones": [
+              5,
+              4
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              7,
+              6,
+              8,
+              5,
+              4,
+              3
+            ]
           },
           {
             "enemy": 10,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              4,
+              3
             ]
           }
         ]
@@ -4027,8 +4049,14 @@
           {
             "enemy": 6,
             "clones": [
-              13,
-              12
+              12,
+              13
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              5
             ]
           },
           {
@@ -4044,12 +4072,6 @@
             ]
           },
           {
-            "enemy": 7,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 5,
             "clones": [
               1
@@ -4060,18 +4082,18 @@
       {
         "enemies": [
           {
-            "enemy": 6,
+            "enemy": 8,
             "clones": [
-              9,
-              11,
-              10
+              7,
+              8
             ]
           },
           {
-            "enemy": 8,
+            "enemy": 6,
             "clones": [
-              8,
-              7
+              9,
+              10,
+              11
             ]
           },
           {
@@ -4128,16 +4150,8 @@
           {
             "enemy": 14,
             "clones": [
-              2,
               3,
-              4
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
               2,
-              3,
               4
             ]
           },
@@ -4149,16 +4163,30 @@
             ]
           },
           {
+            "enemy": 23,
+            "clones": [
+              3,
+              4,
+              2
+            ]
+          },
+          {
             "enemy": 11,
             "clones": [
-              4,
-              5
+              5,
+              4
             ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 12,
+            "clones": [
+              5
+            ]
+          },
           {
             "enemy": 13,
             "clones": [
@@ -4167,16 +4195,10 @@
             ]
           },
           {
-            "enemy": 12,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 22,
             "clones": [
-              2,
-              3
+              3,
+              2
             ]
           }
         ]
@@ -4192,149 +4214,199 @@
         ]
       }
     ],
-    "enemyForces": 729,
-    "filled": 3
+    "enemyForces": 730,
+    "filled": 2
   },
   {
-    "id": "rio-16791863",
+    "id": "rio-17594751",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/16791863-21-den-of-nalorakk",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/17594751-21-den-of-nalorakk",
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 7133,
+    "rank": 7405,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
     "keyLevel": 21,
-    "clearSeconds": 1824,
-    "clearMs": 1824449,
-    "completedAt": "2026-09-29T13:51:35.000Z",
+    "clearSeconds": 1825,
+    "clearMs": 1824869,
+    "completedAt": "2026-10-02T13:11:03.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Rain",
-        "realm": "kazzak",
+        "name": "Rataucigasa",
+        "realm": "silvermoon",
         "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Beaconsony",
-        "realm": "drakthul",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Agond",
-        "realm": "blackhand",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
+        "class": "Demon Hunter",
+        "spec": "Havoc",
         "role": "dps"
       },
       {
-        "name": "Slimak",
-        "realm": "lordaeron",
+        "name": "Simy",
+        "realm": "twisting-nether",
         "realmRegion": "eu",
         "class": "Rogue",
         "spec": "Assassination",
         "role": "dps"
       },
       {
-        "name": "Relosban",
-        "realm": "kazzak",
+        "name": "Pjdruid",
+        "realm": "blackmoore",
         "realmRegion": "eu",
-        "class": "Demon Hunter",
-        "spec": "Havoc",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Driptinus",
+        "realm": "argent-dawn",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Doxorsw",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 729,
-    "routeKey": "2SEpoJW",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/2SEpoJW"
+    "routeKey": "JY1Gb0e",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/JY1Gb0e"
   },
   {
-    "id": "rio-14075398",
+    "id": "rio-13120429",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/14075398-21-den-of-nalorakk",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/13120429-20-den-of-nalorakk",
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 7136,
+    "rank": 11241,
     "region": "world",
-    "bracket": "high",
-    "tier": "slow",
-    "keyLevel": 21,
-    "clearSeconds": 1825,
-    "clearMs": 1824537,
-    "completedAt": "2026-09-20T14:11:44.000Z",
+    "bracket": "mid",
+    "tier": "fast",
+    "keyLevel": 20,
+    "clearSeconds": 1482,
+    "clearMs": 1481968,
+    "completedAt": "2026-09-17T15:24:43.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "炸鸡宝宝",
-        "realm": "the-great-sea",
-        "realmRegion": "cn",
-        "class": "Mage",
-        "spec": "Arcane",
+        "name": "Zerøcool",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Rogue",
+        "spec": "Assassination",
         "role": "dps"
       },
       {
-        "name": "大不净者晚星-308547956",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "天才小火龍丷",
-        "realm": "silver-hand",
-        "realmRegion": "cn",
+        "name": "Bizentein",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Altalr",
-        "realm": "alar",
-        "realmRegion": "cn",
+        "name": "Deeprayaa",
+        "realm": "draenor",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "Wazocutie-239925129",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
         "class": "Death Knight",
         "spec": "Blood",
         "role": "tank"
       },
       {
-        "name": "风摧雪",
-        "realm": "chillwind-point",
-        "realmRegion": "cn",
+        "name": "Muleyoxo",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      }
+    ],
+    "enemyForcesRequired": 729,
+    "routeKey": "t3CGSj7",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/t3CGSj7"
+  },
+  {
+    "id": "rio-23563140",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23563140-20-den-of-nalorakk",
+    "challengeModeId": 586,
+    "dungeonEnglishName": "Den of Nalorakk",
+    "mdtDungeonIdx": 161,
+    "rank": 11679,
+    "region": "world",
+    "bracket": "mid",
+    "tier": "slow",
+    "keyLevel": 20,
+    "clearSeconds": 1611,
+    "clearMs": 1611114,
+    "completedAt": "2026-10-28T18:08:17.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "Philzhpoings",
+        "realm": "dalaran",
+        "realmRegion": "eu",
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "name": "Rocksolidxd",
+        "realm": "tarren-mill",
+        "realmRegion": "eu",
         "class": "Shaman",
-        "spec": "Elemental",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Crûnchêr",
+        "realm": "blackmoore",
+        "realmRegion": "eu",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
+        "role": "dps"
+      },
+      {
+        "name": "Erdthorn",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Бэнихимэ",
+        "realm": "soulflayer",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 729,
-    "routeKey": "OIn9RzM",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/OIn9RzM",
-    "wclReport": "YXxFvnDT7LWwQBtg",
-    "wclFight": 11,
+    "routeKey": "5aPajfY",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/5aPajfY",
+    "wclReport": "4LYZVdAJ93cHyrhX",
+    "wclFight": 3,
     "pulls": [
       {
         "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              3,
-              4,
-              6,
-              9,
-              10,
-              7,
-              8
-            ]
-          },
           {
             "enemy": 31,
             "clones": [
@@ -4342,11 +4414,26 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              3
+            ]
+          },
+          {
             "enemy": 17,
             "clones": [
               2,
               4,
-              5
+              3
             ]
           },
           {
@@ -4358,15 +4445,20 @@
           {
             "enemy": 15,
             "clones": [
-              12,
-              13
+              13,
+              12
             ]
           },
           {
-            "enemy": 2,
+            "enemy": 1,
             "clones": [
-              6,
-              5
+              2
+            ]
+          },
+          {
+            "enemy": 24,
+            "clones": [
+              4
             ]
           }
         ]
@@ -4374,12 +4466,40 @@
       {
         "enemies": [
           {
+            "enemy": 2,
+            "clones": [
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              9,
+              10,
+              7,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 17,
+            "clones": [
+              8,
+              9,
+              10
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
               7,
+              8,
               9,
-              6,
-              8
+              6
             ]
           },
           {
@@ -4418,28 +4538,16 @@
       {
         "enemies": [
           {
-            "enemy": 2,
+            "enemy": 4,
             "clones": [
               8
             ]
           },
           {
-            "enemy": 4,
-            "clones": [
-              7
-            ]
-          },
-          {
             "enemy": 15,
             "clones": [
-              16,
-              17
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
+              18,
+              19
             ]
           },
           {
@@ -4453,45 +4561,25 @@
       {
         "enemies": [
           {
-            "enemy": 15,
-            "clones": [
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              8
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
             "enemy": 3,
             "clones": [
-              22,
-              20,
-              18,
-              23,
               19,
+              22,
+              18,
+              20,
               17
             ]
           },
           {
             "enemy": 2,
             "clones": [
-              11,
-              12,
-              10
+              10,
+              12
             ]
           },
           {
             "enemy": 17,
             "clones": [
-              11,
               12
             ]
           }
@@ -4500,41 +4588,14 @@
       {
         "enemies": [
           {
-            "enemy": 4,
-            "clones": [
-              12,
-              15,
-              14
-            ]
-          },
-          {
             "enemy": 6,
             "clones": [
               18,
               17,
+              14,
               16,
               15,
-              14,
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
               2,
-              1
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
               1
             ]
           },
@@ -4544,13 +4605,50 @@
               26,
               27
             ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              15,
+              14
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              8
+            ]
+          },
+          {
+            "enemy": 17,
+            "clones": [
+              13
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              1
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
-            "enemy": 10,
+            "enemy": 8,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 9,
             "clones": [
               1
             ]
@@ -4559,22 +4657,34 @@
             "enemy": 6,
             "clones": [
               3,
-              5,
-              4
+              4,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 9,
+            "clones": [
+              3,
+              5
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              6,
+              7,
+              8
             ]
           },
           {
             "enemy": 8,
             "clones": [
-              4,
-              3
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              2,
-              3
+              5,
+              6
             ]
           }
         ]
@@ -4584,18 +4694,8 @@
           {
             "enemy": 6,
             "clones": [
-              8,
-              6,
-              7,
               13,
               12
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              5,
-              6
             ]
           },
           {
@@ -4629,16 +4729,8 @@
           {
             "enemy": 8,
             "clones": [
-              7,
-              8
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              11,
-              10,
-              9
+              8,
+              7
             ]
           },
           {
@@ -4646,350 +4738,18 @@
             "clones": [
               1
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
+          },
           {
             "enemy": 20,
             "clones": [
               1
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              1,
-              2
-            ]
           },
           {
-            "enemy": 11,
-            "clones": [
-              1,
-              3,
-              2
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 22,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 22,
-            "clones": [
-              2,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 21,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 742,
-    "filled": 5
-  },
-  {
-    "id": "rio-23578829",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23578829-20-den-of-nalorakk",
-    "challengeModeId": 586,
-    "dungeonEnglishName": "Den of Nalorakk",
-    "mdtDungeonIdx": 161,
-    "rank": 10845,
-    "region": "world",
-    "bracket": "mid",
-    "tier": "fast",
-    "keyLevel": 20,
-    "clearSeconds": 1461,
-    "clearMs": 1460547,
-    "completedAt": "2026-10-28T20:14:56.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Deåth",
-        "realm": "turalyon",
-        "realmRegion": "eu",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "Xgang",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Entelligans",
-        "realm": "blackhand",
-        "realmRegion": "eu",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "Aenia",
-        "realm": "draenor",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "Mìrage",
-        "realm": "draenor",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Subtlety",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 729,
-    "routeKey": "dpfcYsB",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/dpfcYsB",
-    "wclReport": "dbkjGQp3a7C91Wn2",
-    "wclFight": 9,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              4,
-              3,
-              5,
-              10,
-              7
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              2,
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              13,
-              12
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 24,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              5
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 17,
-            "clones": [
-              8,
-              10,
-              9
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 15,
+            "enemy": 6,
             "clones": [
               9,
-              8,
-              6,
-              7
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              16
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              9
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 24,
-            "clones": [
-              7,
-              6
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              6
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              9,
-              8
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              8
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 16,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              21,
-              22,
-              20,
-              18,
-              19,
-              23
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              11,
               10,
-              14
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              12,
               11
             ]
           }
@@ -4998,139 +4758,17 @@
       {
         "enemies": [
           {
-            "enemy": 6,
-            "clones": [
-              15,
-              16,
-              14,
-              2,
-              1,
-              3,
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              14
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              1,
-              2,
-              4,
-              3
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              8,
-              7,
-              6,
-              13,
-              12
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              5,
-              6
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              11,
-              9,
-              10
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              8,
-              7
-            ]
-          },
-          {
-            "enemy": 18,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 20,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
             "enemy": 13,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 14,
+            "clones": [
+              1,
+              2,
+              3
             ]
           },
           {
@@ -5143,13 +4781,15 @@
           {
             "enemy": 23,
             "clones": [
-              1
+              1,
+              3,
+              2
             ]
           },
           {
-            "enemy": 14,
+            "enemy": 12,
             "clones": [
-              1
+              3
             ]
           },
           {
@@ -5191,8 +4831,8 @@
           {
             "enemy": 13,
             "clones": [
-              2,
-              3
+              3,
+              2
             ]
           },
           {
@@ -5213,96 +4853,10 @@
             ]
           }
         ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              3,
-              2
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              3,
-              2
-            ]
-          }
-        ]
       }
     ],
     "enemyForces": 731,
-    "filled": 4
-  },
-  {
-    "id": "rio-15793558",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/15793558-20-den-of-nalorakk",
-    "challengeModeId": 586,
-    "dungeonEnglishName": "Den of Nalorakk",
-    "mdtDungeonIdx": 161,
-    "rank": 11243,
-    "region": "world",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 20,
-    "clearSeconds": 1607,
-    "clearMs": 1607073,
-    "completedAt": "2026-09-26T09:24:40.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "丶這個獣王",
-        "realm": "rhonin",
-        "realmRegion": "cn",
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
-      {
-        "name": "姜承錄",
-        "realm": "alar",
-        "realmRegion": "cn",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Xcmrogue",
-        "realm": "shadowmourne",
-        "realmRegion": "cn",
-        "class": "Rogue",
-        "spec": "Assassination",
-        "role": "dps"
-      },
-      {
-        "name": "Shundk",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      },
-      {
-        "name": "Rosebankk",
-        "realm": "scarlet-crusade",
-        "realmRegion": "cn",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 729,
-    "routeKey": "f3UrKiV",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/f3UrKiV"
+    "filled": 6
   },
   {
     "id": "rio-22245007",
@@ -5311,7 +4865,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 7581,
+    "rank": 7725,
     "region": "eu",
     "bracket": "mid",
     "tier": "fast",
@@ -5797,8 +5351,7 @@
         ]
       }
     ],
-    "enemyForces": 722,
-    "filled": 3
+    "enemyForces": 722
   },
   {
     "id": "rio-17723628",
@@ -5807,7 +5360,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 11651,
+    "rank": 11842,
     "region": "eu",
     "bracket": "mid",
     "tier": "slow",
@@ -5863,57 +5416,119 @@
     "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/SrlXhk6"
   },
   {
-    "id": "rio-21532298",
+    "id": "rio-7736529",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21532298-18-den-of-nalorakk",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/7736529-18-den-of-nalorakk",
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 7174,
+    "rank": 7272,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 18,
-    "clearSeconds": 1447,
-    "clearMs": 1446923,
-    "completedAt": "2026-10-19T04:58:13.000Z",
+    "clearSeconds": 1410,
+    "clearMs": 1410397,
+    "completedAt": "2026-09-03T21:06:14.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Tdawggpal",
-        "realm": "thrall",
+        "name": "Bondd",
+        "realm": "illidan",
         "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Retribution",
+        "class": "Shaman",
+        "spec": "Elemental",
         "role": "dps"
       },
       {
-        "name": "Willfur",
-        "realm": "thrall",
+        "name": "Squishvegan",
+        "realm": "area-52",
         "realmRegion": "us",
         "class": "Druid",
         "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Matthp",
-        "realm": "illidan",
+        "name": "Banshers",
+        "realm": "stormrage",
         "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Decidence",
-        "realm": "kiljaeden",
-        "realmRegion": "us",
-        "class": "Rogue",
-        "spec": "Subtlety",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
         "role": "dps"
       },
       {
-        "name": "Clorf",
+        "name": "Noxiv",
+        "realm": "zuljin",
+        "realmRegion": "us",
+        "class": "Warrior",
+        "spec": "Fury",
+        "role": "dps"
+      },
+      {
+        "name": "Ortemist",
+        "realm": "zuljin",
+        "realmRegion": "us",
+        "class": "Monk",
+        "spec": "Mistweaver",
+        "role": "healer"
+      }
+    ],
+    "enemyForcesRequired": 729,
+    "routeKey": "Yr63Smq",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/Yr63Smq"
+  },
+  {
+    "id": "rio-18294582",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18294582-18-den-of-nalorakk",
+    "challengeModeId": 586,
+    "dungeonEnglishName": "Den of Nalorakk",
+    "mdtDungeonIdx": 161,
+    "rank": 10621,
+    "region": "us",
+    "bracket": "mid",
+    "tier": "slow",
+    "keyLevel": 18,
+    "clearSeconds": 1783,
+    "clearMs": 1783451,
+    "completedAt": "2026-10-04T19:34:40.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "Pinkystarr",
+        "realm": "area-52",
+        "realmRegion": "us",
+        "class": "Death Knight",
+        "spec": "Blood",
+        "role": "tank"
+      },
+      {
+        "name": "Shadaddy",
+        "realm": "arathor",
+        "realmRegion": "us",
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "name": "Veborg",
         "realm": "illidan",
+        "realmRegion": "us",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "Punksham",
+        "realm": "ragnaros",
+        "realmRegion": "us",
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "Suhwoop",
+        "realm": "area-52",
         "realmRegion": "us",
         "class": "Warrior",
         "spec": "Arms",
@@ -5921,518 +5536,10 @@
       }
     ],
     "enemyForcesRequired": 729,
-    "routeKey": "GWd9k9o",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/GWd9k9o",
-    "wclReport": "rnXFmvapDNcY4tM7",
-    "wclFight": 1,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              3,
-              4,
-              6,
-              9,
-              10,
-              7,
-              8
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              2,
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              12,
-              13
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              6,
-              5
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              9,
-              6,
-              7,
-              8
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              10,
-              9,
-              8
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              9
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              16
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 24,
-            "clones": [
-              6,
-              7
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 4,
-            "clones": [
-              8
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              18,
-              19
-            ]
-          },
-          {
-            "enemy": 16,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              18,
-              23,
-              20,
-              19,
-              17,
-              22
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              11,
-              10
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              11
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              10
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              37,
-              35,
-              36,
-              21
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              12
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              12
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              26,
-              27,
-              29,
-              28
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              15,
-              14
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              18,
-              17,
-              15,
-              16,
-              14,
-              2,
-              1
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              8,
-              1
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              13
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              5,
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              4,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              7,
-              6,
-              8,
-              12,
-              13
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              5,
-              4,
-              7
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              6,
-              5
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 18,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 20,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 22,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              3,
-              2,
-              4
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              2,
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              4,
-              5
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 22,
-            "clones": [
-              2,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 21,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 748,
-    "filled": 3
-  },
-  {
-    "id": "rio-20401791",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/20401791-18-den-of-nalorakk",
-    "challengeModeId": 586,
-    "dungeonEnglishName": "Den of Nalorakk",
-    "mdtDungeonIdx": 161,
-    "rank": 16154,
-    "region": "eu",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 18,
-    "clearSeconds": 1559,
-    "clearMs": 1559253,
-    "completedAt": "2026-10-13T14:33:44.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Shinidk",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
-        "class": "Death Knight",
-        "spec": "Frost",
-        "role": "dps"
-      },
-      {
-        "name": "Keysham",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "Hrcomplaint",
-        "realm": "twisting-nether",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Arozax",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "Rasmusgodd",
-        "realm": "silvermoon",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      }
-    ],
-    "enemyForcesRequired": 729,
-    "routeKey": "f5gmRHk",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/f5gmRHk",
-    "wclReport": "mjx68rBynF2CAQbp",
-    "wclFight": 24,
+    "routeKey": "MAOlud8",
+    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/MAOlud8",
+    "wclReport": "wdVCx1K9JQ7Hr2Zy",
+    "wclFight": 7,
     "pulls": [
       {
         "enemies": [
@@ -6450,16 +5557,23 @@
               6,
               9,
               10,
-              7,
-              8
+              8,
+              7
             ]
           },
           {
             "enemy": 17,
             "clones": [
               2,
-              5,
-              4
+              4,
+              5
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              13,
+              12
             ]
           },
           {
@@ -6469,17 +5583,10 @@
             ]
           },
           {
-            "enemy": 15,
-            "clones": [
-              12,
-              13
-            ]
-          },
-          {
             "enemy": 2,
             "clones": [
-              5,
-              6
+              6,
+              5
             ]
           }
         ]
@@ -6495,18 +5602,24 @@
             ]
           },
           {
+            "enemy": 4,
+            "clones": [
+              3
+            ]
+          },
+          {
             "enemy": 15,
             "clones": [
+              6,
               8,
               9,
-              6,
               7
             ]
           },
           {
-            "enemy": 4,
+            "enemy": 1,
             "clones": [
-              3
+              5
             ]
           },
           {
@@ -6522,12 +5635,6 @@
             ]
           },
           {
-            "enemy": 1,
-            "clones": [
-              5
-            ]
-          },
-          {
             "enemy": 24,
             "clones": [
               6,
@@ -6539,16 +5646,22 @@
       {
         "enemies": [
           {
+            "enemy": 15,
+            "clones": [
+              19,
+              18
+            ]
+          },
+          {
             "enemy": 4,
             "clones": [
               8
             ]
           },
           {
-            "enemy": 15,
+            "enemy": 17,
             "clones": [
-              19,
-              18
+              3
             ]
           },
           {
@@ -6564,10 +5677,9 @@
           {
             "enemy": 3,
             "clones": [
-              21,
               22,
-              19,
               20,
+              19,
               18,
               17
             ]
@@ -6575,9 +5687,9 @@
           {
             "enemy": 2,
             "clones": [
-              10,
               12,
-              11
+              11,
+              10
             ]
           },
           {
@@ -6611,22 +5723,22 @@
           {
             "enemy": 15,
             "clones": [
-              27,
               26,
+              27,
               29,
               28
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              8
             ]
           },
           {
             "enemy": 17,
             "clones": [
               13
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              8
             ]
           }
         ]
@@ -6636,8 +5748,11 @@
           {
             "enemy": 6,
             "clones": [
+              2,
               1,
-              2
+              3,
+              5,
+              4
             ]
           },
           {
@@ -6648,21 +5763,15 @@
             ]
           },
           {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 9,
             "clones": [
               1,
-              3,
-              5
+              5,
+              3
             ]
           },
           {
-            "enemy": 10,
+            "enemy": 7,
             "clones": [
               1
             ]
@@ -6674,16 +5783,15 @@
           {
             "enemy": 6,
             "clones": [
-              8,
-              6,
               7,
-              12,
-              13,
-              10,
-              11,
-              9
+              8,
+              6
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 8,
             "clones": [
@@ -6694,15 +5802,25 @@
             ]
           },
           {
+            "enemy": 7,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 9,
             "clones": [
               6
             ]
           },
           {
-            "enemy": 7,
+            "enemy": 6,
             "clones": [
-              4
+              12,
+              11,
+              13,
+              10,
+              9
             ]
           }
         ]
@@ -6760,16 +5878,16 @@
             ]
           },
           {
-            "enemy": 23,
+            "enemy": 11,
             "clones": [
-              1
+              3,
+              2
             ]
           },
           {
-            "enemy": 11,
+            "enemy": 23,
             "clones": [
-              2,
-              3
+              1
             ]
           },
           {
@@ -6798,24 +5916,24 @@
           {
             "enemy": 23,
             "clones": [
-              3,
               2,
+              3,
               4
             ]
           },
           {
             "enemy": 14,
             "clones": [
-              2,
               3,
+              2,
               4
             ]
           },
           {
             "enemy": 11,
             "clones": [
-              5,
-              4
+              4,
+              5
             ]
           }
         ]
@@ -6831,8 +5949,8 @@
           {
             "enemy": 13,
             "clones": [
-              3,
-              2
+              2,
+              3
             ]
           },
           {
@@ -6855,7 +5973,7 @@
         ]
       }
     ],
-    "enemyForces": 740,
+    "enemyForces": 729,
     "filled": 3
   },
   {
@@ -6865,7 +5983,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 13806,
+    "rank": 13983,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
@@ -6927,7 +6045,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 14207,
+    "rank": 14387,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
@@ -7434,8 +6552,7 @@
         ]
       }
     ],
-    "enemyForces": 734,
-    "filled": 3
+    "enemyForces": 734
   },
   {
     "id": "rio-23675203",
@@ -7444,7 +6561,7 @@
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 2739,
+    "rank": 2787,
     "region": "tw",
     "bracket": "mid",
     "tier": "fast",
@@ -7500,137 +6617,13 @@
     "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/mNsoeCK"
   },
   {
-    "id": "rio-13325960",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/13325960-16-den-of-nalorakk",
-    "challengeModeId": 586,
-    "dungeonEnglishName": "Den of Nalorakk",
-    "mdtDungeonIdx": 161,
-    "rank": 3305,
-    "region": "tw",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 16,
-    "clearSeconds": 1742,
-    "clearMs": 1741719,
-    "completedAt": "2026-09-18T08:37:09.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "奶蓋長島冰茶",
-        "realm": "shadowmoon",
-        "realmRegion": "tw",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "森上",
-        "realm": "sundown-marsh",
-        "realmRegion": "tw",
-        "class": "Demon Hunter",
-        "spec": "Vengeance",
-        "role": "tank"
-      },
-      {
-        "name": "蘆葦彼岸",
-        "realm": "sundown-marsh",
-        "realmRegion": "tw",
-        "class": "Death Knight",
-        "spec": "Frost",
-        "role": "dps"
-      },
-      {
-        "name": "Fiyingbug",
-        "realm": "sundown-marsh",
-        "realmRegion": "tw",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "惡魔丁丁",
-        "realm": "icecrown",
-        "realmRegion": "tw",
-        "class": "Demon Hunter",
-        "spec": "Devourer",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 729,
-    "routeKey": "U2sjpAY",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/U2sjpAY"
-  },
-  {
-    "id": "rio-13272634",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/13272634-14-den-of-nalorakk",
-    "challengeModeId": 586,
-    "dungeonEnglishName": "Den of Nalorakk",
-    "mdtDungeonIdx": 161,
-    "rank": 6850,
-    "region": "kr",
-    "bracket": "low",
-    "tier": "slow",
-    "keyLevel": 14,
-    "clearSeconds": 1615,
-    "clearMs": 1615200,
-    "completedAt": "2026-09-18T02:15:30.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "주황찹쌀떡",
-        "realm": "azshara",
-        "realmRegion": "kr",
-        "class": "Druid",
-        "spec": "Balance",
-        "role": "dps"
-      },
-      {
-        "name": "군탄",
-        "realm": "azshara",
-        "realmRegion": "kr",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "샤방보",
-        "realm": "windrunner",
-        "realmRegion": "kr",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Currentdot",
-        "realm": "azshara",
-        "realmRegion": "kr",
-        "class": "Warlock",
-        "spec": "Demonology",
-        "role": "dps"
-      },
-      {
-        "name": "팟우유",
-        "realm": "azshara",
-        "realmRegion": "kr",
-        "class": "Death Knight",
-        "spec": "Blood",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 729,
-    "routeKey": "mkvHF0D",
-    "keystoneUrl": "https://keystone.guru/route/den-of-nalorakk/mkvHF0D"
-  },
-  {
     "id": "rio-3151812",
     "source": "raider.io",
     "url": "https://raider.io/mythic-plus-runs/season-mn-2/3151812-13-den-of-nalorakk",
     "challengeModeId": 586,
     "dungeonEnglishName": "Den of Nalorakk",
     "mdtDungeonIdx": 161,
-    "rank": 9042,
+    "rank": 9179,
     "region": "kr",
     "bracket": "low",
     "tier": "slow",

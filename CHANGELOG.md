@@ -7,6 +7,10 @@
      automatically at release time by tools/changelog.mjs - do not list them
      here. This section is emptied with every release. -->
 
+## 2026.11.07.1
+
+Maintenance release. No changes to routes or dungeon data.
+
 ## 2026.11.06.1
 
 Maintenance release. No changes to routes or dungeon data.
