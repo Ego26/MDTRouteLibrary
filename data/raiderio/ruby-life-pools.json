@@ -821,8 +821,7 @@
         ]
       }
     ],
-    "enemyForces": 525,
-    "filled": 1
+    "enemyForces": 525
   },
   {
     "id": "rio-24224290",
@@ -1359,7 +1358,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 301,
+    "rank": 311,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -1421,7 +1420,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 303,
+    "rank": 313,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -1477,78 +1476,85 @@
     "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/2tphZi1"
   },
   {
-    "id": "rio-21286160",
+    "id": "rio-24021396",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21286160-22-ruby-life-pools",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/24021396-22-ruby-life-pools",
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 541,
+    "rank": 591,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 22,
-    "clearSeconds": 1480,
-    "clearMs": 1479844,
-    "completedAt": "2026-10-18T03:41:18.000Z",
+    "clearSeconds": 1500,
+    "clearMs": 1500421,
+    "completedAt": "2026-10-31T15:45:05.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Pookiexo",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Tånya",
-        "realm": "sargeras",
-        "realmRegion": "us",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Exxibae",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Shadarek",
-        "realm": "bleeding-hollow",
-        "realmRegion": "us",
+        "name": "Mayder",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
         "class": "Demon Hunter",
         "spec": "Havoc",
         "role": "dps"
       },
       {
-        "name": "Yenvenger",
-        "realm": "illidan",
-        "realmRegion": "us",
+        "name": "Dinøbønes",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
         "class": "Paladin",
-        "spec": "Retribution",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "Murion",
+        "realm": "ragnaros",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "Opora",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Радинего",
+        "realm": "gordunni",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 551,
-    "routeKey": "nzrkvXi",
-    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/nzrkvXi",
-    "wclReport": "dWqBJzGjCZ9hpTvm",
-    "wclFight": 6,
+    "routeKey": "BS1I5C8",
+    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/BS1I5C8",
+    "wclReport": "ah1ycG8gmA7WBP2Q",
+    "wclFight": 19,
     "pulls": [
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              1
+            ]
+          },
           {
             "enemy": 2,
             "clones": [
               9,
               1,
               3,
-              2
+              2,
+              4
             ]
           },
           {
@@ -1556,14 +1562,8 @@
             "clones": [
               8,
               1,
+              4,
               5
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              1,
-              2
             ]
           },
           {
@@ -1578,18 +1578,33 @@
       {
         "enemies": [
           {
+            "enemy": 5,
+            "clones": [
+              51,
+              1,
+              3,
+              2,
+              52
+            ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              6,
+              8
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               10,
-              8,
-              7
+              6
             ]
           },
           {
             "enemy": 3,
             "clones": [
-              6,
-              9
+              6
             ]
           },
           {
@@ -1597,13 +1612,15 @@
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
-            "enemy": 5,
+            "enemy": 2,
             "clones": [
-              50,
-              21,
-              18
+              7
             ]
           },
           {
@@ -1611,17 +1628,23 @@
             "clones": [
               9
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              9
+            ]
+          },
           {
             "enemy": 7,
             "clones": [
               1
             ]
-          },
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 23,
             "clones": [
@@ -1639,21 +1662,23 @@
             ]
           },
           {
-            "enemy": 11,
+            "enemy": 12,
             "clones": [
-              4
+              6,
+              9
             ]
           },
           {
             "enemy": 10,
             "clones": [
+              7,
               10
             ]
           },
           {
-            "enemy": 12,
+            "enemy": 11,
             "clones": [
-              9
+              4
             ]
           }
         ]
@@ -1689,15 +1714,15 @@
       {
         "enemies": [
           {
-            "enemy": 10,
-            "clones": [
-              2
-            ]
-          },
-          {
             "enemy": 12,
             "clones": [
               8
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              2
             ]
           }
         ]
@@ -1771,20 +1796,7 @@
           {
             "enemy": 22,
             "clones": [
-              2,
-              1
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              6
+              2
             ]
           }
         ]
@@ -1792,17 +1804,34 @@
       {
         "enemies": [
           {
-            "enemy": 16,
+            "enemy": 22,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 17,
             "clones": [
               1,
-              2,
               4,
-              3,
-              9,
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 16,
+            "clones": [
+              2,
+              1,
+              4,
               10,
+              3,
               5,
-              7,
-              8
+              9
             ]
           },
           {
@@ -1810,23 +1839,6 @@
             "clones": [
               1,
               2
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              6,
-              4,
-              13,
-              12,
-              8,
-              19,
-              16,
-              20,
-              7,
-              1,
-              5,
-              10
             ]
           },
           {
@@ -1840,11 +1852,37 @@
             "clones": [
               9
             ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 17,
+            "clones": [
+              7,
+              13,
+              10,
+              20,
+              11,
+              12,
+              19,
+              8,
+              9,
+              21
+            ]
           },
           {
             "enemy": 19,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 16,
+            "clones": [
+              8,
+              7
             ]
           }
         ]
@@ -1854,17 +1892,14 @@
           {
             "enemy": 17,
             "clones": [
+              18,
               14,
+              16,
               22,
-              15,
               23,
-              18
+              15
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
+          },
           {
             "enemy": 20,
             "clones": [
@@ -1876,468 +1911,74 @@
             "clones": [
               1
             ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              9,
-              11,
-              21
-            ]
           }
         ]
       }
     ],
-    "enemyForces": 552,
-    "filled": 3
+    "enemyForces": 551,
+    "filled": 2
   },
   {
-    "id": "rio-23861223",
+    "id": "rio-20924443",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23861223-22-ruby-life-pools",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/20924443-22-ruby-life-pools",
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 543,
+    "rank": 599,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 22,
-    "clearSeconds": 1483,
-    "clearMs": 1483149,
-    "completedAt": "2026-10-30T17:50:17.000Z",
+    "clearSeconds": 1505,
+    "clearMs": 1505469,
+    "completedAt": "2026-10-16T14:46:49.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Starmanity",
-        "realm": "illidan",
-        "realmRegion": "us",
+        "name": "Tacokekw",
+        "realm": "hyjal",
+        "realmRegion": "eu",
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "name": "Âra",
+        "realm": "blackhand",
+        "realmRegion": "eu",
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
+      },
+      {
+        "name": "Pjdruid",
+        "realm": "blackmoore",
+        "realmRegion": "eu",
         "class": "Druid",
         "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Shadarek",
-        "realm": "bleeding-hollow",
-        "realmRegion": "us",
-        "class": "Demon Hunter",
-        "spec": "Havoc",
-        "role": "dps"
-      },
-      {
-        "name": "Azunazx",
-        "realm": "hyjal",
-        "realmRegion": "us",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
-      },
-      {
-        "name": "Jdotbop",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Holy",
+        "name": "Driptinus",
+        "realm": "argent-dawn",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
         "role": "healer"
       },
       {
-        "name": "Babybrain",
-        "realm": "area-52",
-        "realmRegion": "us",
-        "class": "Warlock",
-        "spec": "Demonology",
+        "name": "Doxorsw",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 551,
-    "routeKey": "7HhcBeo",
-    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/7HhcBeo",
-    "wclReport": "7KAFCN3VmwXjbcz9",
-    "wclFight": 3,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              9,
-              1,
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              8,
-              1,
-              5
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              1,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              51,
-              3,
-              52,
-              2,
-              24
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              10,
-              8,
-              7
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              6,
-              9
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              49,
-              50,
-              48
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              9
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 10,
-            "clones": [
-              7,
-              10
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              6,
-              9
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              22
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              8
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 10,
-            "clones": [
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              10,
-              3
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              3,
-              6
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 22,
-            "clones": [
-              3,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 22,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 16,
-            "clones": [
-              2,
-              1,
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              1,
-              6,
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 18,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              7
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 16,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 18,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              9
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              14
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 19,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              21,
-              7,
-              10,
-              20
-            ]
-          },
-          {
-            "enemy": 16,
-            "clones": [
-              7,
-              8
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 17,
-            "clones": [
-              23,
-              19,
-              16,
-              15,
-              18,
-              12,
-              22
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 20,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 21,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 17,
-            "clones": [
-              8,
-              11,
-              13,
-              9
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 542
+    "routeKey": "OOQqY0G",
+    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/OOQqY0G"
   },
   {
     "id": "rio-22174878",
@@ -2346,7 +1987,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 1640,
+    "rank": 1714,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -2778,8 +2419,7 @@
         ]
       }
     ],
-    "enemyForces": 556,
-    "filled": 1
+    "enemyForces": 556
   },
   {
     "id": "rio-23720888",
@@ -2788,7 +2428,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 9562,
+    "rank": 9830,
     "region": "world",
     "bracket": "mid",
     "tier": "slow",
@@ -3241,70 +2881,69 @@
         ]
       }
     ],
-    "enemyForces": 556,
-    "filled": 1
+    "enemyForces": 556
   },
   {
-    "id": "rio-16003044",
+    "id": "rio-21172658",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/16003044-19-ruby-life-pools",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21172658-19-ruby-life-pools",
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 6515,
-    "region": "eu",
+    "rank": 381,
+    "region": "tw",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 19,
-    "clearSeconds": 1353,
-    "clearMs": 1352525,
-    "completedAt": "2026-09-26T20:07:51.000Z",
+    "clearSeconds": 1351,
+    "clearMs": 1350938,
+    "completedAt": "2026-10-17T16:11:38.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Jonewrld",
-        "realm": "ravencrest",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Assassination",
-        "role": "dps"
-      },
-      {
-        "name": "Olssonx",
-        "realm": "ravencrest",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Flypside",
-        "realm": "zuljin",
-        "realmRegion": "eu",
+        "name": "我不吃牛肉",
+        "realm": "stormscale",
+        "realmRegion": "tw",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Ashkek",
-        "realm": "twisting-nether",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Feral",
+        "name": "你怎麼敢的呀",
+        "realm": "sundown-marsh",
+        "realmRegion": "tw",
+        "class": "Mage",
+        "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Qldurtms",
-        "realm": "kazzak",
-        "realmRegion": "eu",
+        "name": "Maru",
+        "realm": "zealot-blade",
+        "realmRegion": "tw",
+        "class": "Shaman",
+        "spec": "Elemental",
+        "role": "dps"
+      },
+      {
+        "name": "艾艾聖",
+        "realm": "demon-fall-canyon",
+        "realmRegion": "tw",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "Anon1267203E",
+        "realm": "anonymous",
+        "realmRegion": "tw",
         "class": "Death Knight",
         "spec": "Blood",
         "role": "tank"
       }
     ],
     "enemyForcesRequired": 551,
-    "routeKey": "u4d4kQX",
-    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/u4d4kQX"
+    "routeKey": "KHhK3gN",
+    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/KHhK3gN"
   },
   {
     "id": "rio-25174963",
@@ -3313,7 +2952,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 10175,
+    "rank": 10287,
     "region": "eu",
     "bracket": "mid",
     "tier": "slow",
@@ -3747,8 +3386,7 @@
         ]
       }
     ],
-    "enemyForces": 538,
-    "filled": 3
+    "enemyForces": 538
   },
   {
     "id": "rio-20930773",
@@ -3757,7 +3395,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 13848,
+    "rank": 13982,
     "region": "eu",
     "bracket": "mid",
     "tier": "fast",
@@ -4216,7 +3854,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 14249,
+    "rank": 14389,
     "region": "eu",
     "bracket": "mid",
     "tier": "slow",
@@ -4663,7 +4301,7 @@
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 13085,
+    "rank": 13221,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
@@ -5124,75 +4762,13 @@
     "enemyForces": 556
   },
   {
-    "id": "rio-20305538",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/20305538-16-ruby-life-pools",
-    "challengeModeId": 399,
-    "dungeonEnglishName": "Ruby Life Pools",
-    "mdtDungeonIdx": 42,
-    "rank": 3290,
-    "region": "tw",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 16,
-    "clearSeconds": 1561,
-    "clearMs": 1561422,
-    "completedAt": "2026-10-13T02:20:49.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "回春卡布奇諾",
-        "realm": "chillwind-point",
-        "realmRegion": "tw",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Vilcõva",
-        "realm": "wrathbringer",
-        "realmRegion": "tw",
-        "class": "Demon Hunter",
-        "spec": "Havoc",
-        "role": "dps"
-      },
-      {
-        "name": "零食桶",
-        "realm": "sundown-marsh",
-        "realmRegion": "tw",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "銀色戰龍獸",
-        "realm": "shadowmoon",
-        "realmRegion": "tw",
-        "class": "Warrior",
-        "spec": "Fury",
-        "role": "dps"
-      },
-      {
-        "name": "斯薩羅",
-        "realm": "menethil",
-        "realmRegion": "tw",
-        "class": "Priest",
-        "spec": "Discipline",
-        "role": "healer"
-      }
-    ],
-    "enemyForcesRequired": 551,
-    "routeKey": "eL0FtCB",
-    "keystoneUrl": "https://keystone.guru/route/ruby-life-pools/eL0FtCB"
-  },
-  {
     "id": "rio-21952999",
     "source": "raider.io",
     "url": "https://raider.io/mythic-plus-runs/season-mn-2/21952999-14-ruby-life-pools",
     "challengeModeId": 399,
     "dungeonEnglishName": "Ruby Life Pools",
     "mdtDungeonIdx": 42,
-    "rank": 5982,
+    "rank": 6067,
     "region": "kr",
     "bracket": "low",
     "tier": "fast",
