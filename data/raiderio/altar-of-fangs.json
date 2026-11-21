@@ -413,8 +413,7 @@
         ]
       }
     ],
-    "enemyForces": 828,
-    "filled": 2
+    "enemyForces": 828
   },
   {
     "id": "rio-22224807",
@@ -485,7 +484,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 24,
+    "rank": 26,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -906,7 +905,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 28,
+    "rank": 31,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -968,7 +967,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 404,
+    "rank": 421,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -1407,7 +1406,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 409,
+    "rank": 427,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -1843,13 +1842,439 @@
     "enemyForces": 835
   },
   {
+    "id": "rio-22551176",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22551176-22-altar-of-fangs",
+    "challengeModeId": 588,
+    "dungeonEnglishName": "Altar of Fangs",
+    "mdtDungeonIdx": 164,
+    "rank": 803,
+    "region": "world",
+    "bracket": "high",
+    "tier": "fast",
+    "keyLevel": 22,
+    "clearSeconds": 1562,
+    "clearMs": 1562110,
+    "completedAt": "2026-10-24T03:36:07.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "Pookiexo",
+        "realm": "illidan",
+        "realmRegion": "us",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Swordish",
+        "realm": "aerie-peak",
+        "realmRegion": "us",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "name": "Tracer",
+        "realm": "sargeras",
+        "realmRegion": "us",
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
+      },
+      {
+        "name": "Vaesarir",
+        "realm": "bleeding-hollow",
+        "realmRegion": "us",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Charrend",
+        "realm": "malganis",
+        "realmRegion": "us",
+        "class": "Rogue",
+        "spec": "Subtlety",
+        "role": "dps"
+      }
+    ],
+    "enemyForcesRequired": 817,
+    "routeKey": "dNwbuNq",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/dNwbuNq",
+    "wclReport": "7F3wRKmqdvPHnA24",
+    "wclFight": 2,
+    "pulls": [
+      {
+        "enemies": [
+          {
+            "enemy": 11,
+            "clones": [
+              13,
+              9,
+              6,
+              15,
+              11,
+              12,
+              14,
+              7,
+              10,
+              21,
+              20,
+              19,
+              8
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              9,
+              4,
+              3,
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              21,
+              7,
+              11,
+              6
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 7,
+            "clones": [
+              9,
+              8
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              1,
+              2,
+              8
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 7,
+            "clones": [
+              13,
+              12,
+              18,
+              17,
+              19,
+              20
+            ]
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              27,
+              25,
+              28,
+              26
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              13,
+              14
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              3,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 7,
+            "clones": [
+              15,
+              14
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              12,
+              11
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 11,
+            "clones": [
+              22,
+              23,
+              24,
+              17,
+              18,
+              16
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              1,
+              5,
+              4,
+              3,
+              2
+            ]
+          },
+          {
+            "enemy": 14,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              16,
+              14,
+              3,
+              9,
+              1,
+              6,
+              7,
+              4,
+              2,
+              5
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              1,
+              4
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              8,
+              12,
+              13,
+              11
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              3
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              10,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 15,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 3,
+            "clones": [
+              12,
+              15,
+              13
+            ]
+          },
+          {
+            "enemy": 13,
+            "clones": [
+              2,
+              3,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 13,
+            "clones": [
+              5,
+              4
+            ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              14
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 13,
+            "clones": [
+              11,
+              10,
+              14,
+              15,
+              19,
+              18
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              16,
+              18,
+              15,
+              13,
+              17,
+              14
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              16,
+              15
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 8,
+            "clones": [
+              4
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 13,
+            "clones": [
+              21,
+              20
+            ]
+          }
+        ]
+      }
+    ],
+    "enemyForces": 818,
+    "filled": 1
+  },
+  {
     "id": "rio-24940231",
     "source": "raider.io",
     "url": "https://raider.io/mythic-plus-runs/season-mn-2/24940231-22-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 782,
+    "rank": 809,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -2295,457 +2720,13 @@
     "enemyForces": 818
   },
   {
-    "id": "rio-22819199",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22819199-22-altar-of-fangs",
-    "challengeModeId": 588,
-    "dungeonEnglishName": "Altar of Fangs",
-    "mdtDungeonIdx": 164,
-    "rank": 786,
-    "region": "world",
-    "bracket": "high",
-    "tier": "fast",
-    "keyLevel": 22,
-    "clearSeconds": 1591,
-    "clearMs": 1591398,
-    "completedAt": "2026-10-25T03:57:20.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Immortallity",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Bondd",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      },
-      {
-        "name": "Cheeklord",
-        "realm": "area-52",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Owlgaze",
-        "realm": "tichondrius",
-        "realmRegion": "us",
-        "class": "Rogue",
-        "spec": "Subtlety",
-        "role": "dps"
-      },
-      {
-        "name": "Klydruid",
-        "realm": "zuljin",
-        "realmRegion": "us",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 817,
-    "routeKey": "vvTCrFA",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/vvTCrFA",
-    "wclReport": "bRcr4mhGkYfAK2zM",
-    "wclFight": 1,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              6,
-              9,
-              7,
-              8,
-              10,
-              13,
-              14,
-              12,
-              15,
-              11,
-              21,
-              19,
-              20
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              3,
-              4,
-              9,
-              6
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              21,
-              11,
-              6,
-              7
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              1,
-              2,
-              5,
-              8
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              8,
-              9
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              13,
-              5,
-              19,
-              17,
-              20,
-              18
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              28,
-              27,
-              25,
-              26
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              14,
-              13
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              3,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              22,
-              24,
-              23
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              12,
-              11
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              14,
-              15
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              18,
-              16,
-              17
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              2,
-              3,
-              4,
-              12,
-              1
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              15,
-              16,
-              14,
-              8,
-              9,
-              10,
-              7,
-              6,
-              3,
-              5,
-              1,
-              4,
-              2
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              8,
-              9
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13,
-              12,
-              11
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              10,
-              11
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              15,
-              12,
-              13
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              1,
-              2,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              14
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              9,
-              6,
-              7,
-              8,
-              11,
-              10
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              18,
-              16,
-              15,
-              17,
-              13,
-              14
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              14,
-              15,
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              15,
-              16
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 8,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              6,
-              5
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              21,
-              20
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 823
-  },
-  {
     "id": "rio-23656489",
     "source": "raider.io",
     "url": "https://raider.io/mythic-plus-runs/season-mn-2/23656489-22-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 2229,
+    "rank": 2308,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3165,7 +3146,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 2249,
+    "rank": 2328,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -3607,418 +3588,66 @@
     "enemyForces": 817
   },
   {
-    "id": "rio-23421046",
+    "id": "rio-25841186",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23421046-21-altar-of-fangs",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/25841186-21-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 3685,
+    "rank": 3804,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 21,
-    "clearSeconds": 1526,
-    "clearMs": 1526021,
-    "completedAt": "2026-10-27T22:01:08.000Z",
+    "clearSeconds": 1531,
+    "clearMs": 1530826,
+    "completedAt": "2026-11-16T13:07:04.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Qweekp",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Bmxtrix",
-        "realm": "kazzak",
-        "realmRegion": "eu",
+        "name": "Unstoppable",
+        "realm": "skettis",
+        "realmRegion": "cn",
         "class": "Druid",
         "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Zardx",
-        "realm": "twisting-nether",
-        "realmRegion": "eu",
+        "name": "上帝爱大雄",
+        "realm": "burning-blade",
+        "realmRegion": "cn",
         "class": "Rogue",
         "spec": "Subtlety",
         "role": "dps"
       },
       {
-        "name": "Rhenemental",
-        "realm": "ragnaros",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Elemental",
+        "name": "虎子吃烧烤",
+        "realm": "frostmourne",
+        "realmRegion": "cn",
+        "class": "Paladin",
+        "spec": "Retribution",
         "role": "dps"
       },
       {
-        "name": "Bróven",
-        "realm": "kazzak",
-        "realmRegion": "eu",
+        "name": "Yzmixzs",
+        "realm": "galakrond",
+        "realmRegion": "cn",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
+      },
+      {
+        "name": "小恬宝",
+        "realm": "burning-blade",
+        "realmRegion": "cn",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
       }
     ],
     "enemyForcesRequired": 817,
-    "routeKey": "KjtprIe",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/KjtprIe",
-    "wclReport": "MrcJvfkVwK1b2y9A",
-    "wclFight": 13,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              11,
-              13,
-              15,
-              12,
-              14,
-              21,
-              19,
-              20
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              11,
-              21,
-              7,
-              6
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              3,
-              9,
-              6,
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              9,
-              8
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              8,
-              2,
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              13,
-              12,
-              19,
-              20,
-              14,
-              18,
-              15,
-              17
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              27,
-              28,
-              26,
-              25
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              13,
-              14,
-              12,
-              11
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              4,
-              3
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              3,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              3,
-              5,
-              1,
-              4,
-              2
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              17,
-              18,
-              16,
-              22,
-              23,
-              24
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              14,
-              15,
-              16,
-              1,
-              8,
-              10,
-              7,
-              9,
-              2,
-              6
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              8,
-              9
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              10,
-              11
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13,
-              11,
-              12
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              15,
-              12,
-              13
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              1,
-              3,
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              14
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              10,
-              11,
-              7,
-              8,
-              9,
-              6
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              18,
-              14,
-              17,
-              16,
-              13,
-              15
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              14,
-              15,
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              16,
-              15
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              16,
-              17,
-              20,
-              21
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              6,
-              5
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 813
+    "routeKey": "dAnSwGx",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/dAnSwGx"
   },
   {
     "id": "rio-21869399",
@@ -4027,7 +3656,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 3697,
+    "rank": 3810,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -4457,7 +4086,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 7633,
+    "rank": 7816,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -4920,7 +4549,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 7635,
+    "rank": 7818,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -5359,95 +4988,71 @@
     "enemyForces": 825
   },
   {
-    "id": "rio-21373625",
+    "id": "rio-21491790",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21373625-20-altar-of-fangs",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21491790-20-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 11561,
+    "rank": 11824,
     "region": "world",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 20,
-    "clearSeconds": 1469,
-    "clearMs": 1468746,
-    "completedAt": "2026-10-18T13:12:35.000Z",
+    "clearSeconds": 1509,
+    "clearMs": 1508741,
+    "completedAt": "2026-10-18T21:54:58.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Shadovworrio",
-        "realm": "kazzak",
+        "name": "Shockeda",
+        "realm": "tarren-mill",
+        "realmRegion": "eu",
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
+      },
+      {
+        "name": "Virusdruid",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Anon125AEA93",
+        "realm": "anonymous",
         "realmRegion": "eu",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Baralan",
+        "name": "Yukibang",
         "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Vespionr",
-        "realm": "silvermoon",
         "realmRegion": "eu",
         "class": "Rogue",
         "spec": "Subtlety",
         "role": "dps"
       },
       {
-        "name": "Azortharion",
-        "realm": "kazzak",
+        "name": "Tabanhola",
+        "realm": "twisting-nether",
         "realmRegion": "eu",
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
-      {
-        "name": "Snakeshift",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
       }
     ],
     "enemyForcesRequired": 817,
-    "routeKey": "Gku5AzE",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/Gku5AzE",
-    "wclReport": "PvVjg97dyrq2Fnb6",
-    "wclFight": 35,
+    "routeKey": "FzscTnX",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/FzscTnX",
+    "wclReport": "3dpDRCFQJtqTVPBx",
+    "wclFight": 14,
     "pulls": [
       {
         "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              7,
-              6,
-              10,
-              9,
-              8,
-              12,
-              13,
-              11,
-              14,
-              15
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              6,
-              7,
-              11,
-              21
-            ]
-          },
           {
             "enemy": 10,
             "clones": [
@@ -5455,11 +5060,34 @@
             ]
           },
           {
+            "enemy": 7,
+            "clones": [
+              7,
+              6,
+              21,
+              11
+            ]
+          },
+          {
             "enemy": 6,
             "clones": [
               6,
-              5,
+              3,
+              4,
               9
+            ]
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              11,
+              14,
+              12,
+              13,
+              15,
+              20,
+              19,
+              21
             ]
           },
           {
@@ -5476,14 +5104,15 @@
             "enemy": 7,
             "clones": [
               13,
-              5,
-              9,
-              8
+              12,
+              8,
+              9
             ]
           },
           {
             "enemy": 6,
             "clones": [
+              5,
               1,
               2,
               8
@@ -5500,27 +5129,20 @@
       {
         "enemies": [
           {
-            "enemy": 6,
-            "clones": [
-              14,
-              13
-            ]
-          },
-          {
             "enemy": 7,
             "clones": [
-              19,
-              17,
+              14,
               18,
+              19,
               20
             ]
           },
           {
             "enemy": 11,
             "clones": [
-              25,
-              27,
               26,
+              27,
+              25,
               28
             ]
           },
@@ -5531,6 +5153,13 @@
             ]
           },
           {
+            "enemy": 6,
+            "clones": [
+              13,
+              14
+            ]
+          },
+          {
             "enemy": 10,
             "clones": [
               3,
@@ -5542,24 +5171,18 @@
       {
         "enemies": [
           {
-            "enemy": 1,
-            "clones": [
-              3
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
-              22,
               24,
-              23
+              23,
+              22
             ]
           },
           {
             "enemy": 7,
             "clones": [
-              14,
-              15
+              15,
+              17
             ]
           },
           {
@@ -5567,6 +5190,12 @@
             "clones": [
               11,
               12
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              3
             ]
           }
         ]
@@ -5576,19 +5205,19 @@
           {
             "enemy": 7,
             "clones": [
+              3,
               2,
               4,
               1,
-              3,
-              12
+              5
             ]
           },
           {
             "enemy": 11,
             "clones": [
-              16,
               17,
-              18
+              18,
+              16
             ]
           },
           {
@@ -5604,14 +5233,13 @@
           {
             "enemy": 2,
             "clones": [
-              15,
               14,
               16,
+              15,
               8,
-              6,
               10,
               9,
-              1,
+              6,
               7
             ]
           },
@@ -5648,9 +5276,9 @@
           {
             "enemy": 2,
             "clones": [
-              13,
               12,
-              11
+              11,
+              13
             ]
           }
         ]
@@ -5658,15 +5286,9 @@
       {
         "enemies": [
           {
-            "enemy": 3,
-            "clones": [
-              4
-            ]
-          },
-          {
             "enemy": 2,
             "clones": [
-              4,
+              1,
               2,
               5
             ]
@@ -5709,15 +5331,15 @@
             ]
           },
           {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               14
+            ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              1
             ]
           }
         ]
@@ -5727,12 +5349,10 @@
           {
             "enemy": 13,
             "clones": [
-              9,
-              7,
-              8,
               11,
-              6,
-              10
+              10,
+              15,
+              14
             ]
           },
           {
@@ -5744,12 +5364,12 @@
           {
             "enemy": 5,
             "clones": [
-              18,
-              13,
-              17,
               15,
+              14,
+              18,
               16,
-              14
+              17,
+              13
             ]
           }
         ]
@@ -5759,12 +5379,12 @@
           {
             "enemy": 13,
             "clones": [
-              14,
-              15,
+              7,
+              8,
+              9,
+              6,
               19,
-              18,
-              16,
-              17
+              18
             ]
           },
           {
@@ -5776,14 +5396,23 @@
           {
             "enemy": 6,
             "clones": [
-              16,
-              15
+              15,
+              16
             ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 13,
+            "clones": [
+              16,
+              17,
+              20,
+              21
+            ]
+          },
           {
             "enemy": 8,
             "clones": [
@@ -5796,13 +5425,6 @@
               6,
               5
             ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              20,
-              21
-            ]
           }
         ]
       }
@@ -5810,102 +5432,91 @@
     "enemyForces": 818
   },
   {
-    "id": "rio-23392044",
+    "id": "rio-22825005",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23392044-19-altar-of-fangs",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22825005-19-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 6955,
-    "region": "eu",
+    "rank": 3004,
+    "region": "us",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 19,
-    "clearSeconds": 1486,
-    "clearMs": 1486206,
-    "completedAt": "2026-10-27T18:20:09.000Z",
+    "clearSeconds": 1484,
+    "clearMs": 1484117,
+    "completedAt": "2026-10-25T04:37:51.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Chantelly",
-        "realm": "ravencrest",
-        "realmRegion": "eu",
-        "class": "Priest",
-        "spec": "Holy",
+        "name": "Skillshotz",
+        "realm": "sargeras",
+        "realmRegion": "us",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
+        "role": "dps"
+      },
+      {
+        "name": "Raekor",
+        "realm": "ragnaros",
+        "realmRegion": "us",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "name": "Astropheler",
+        "realm": "ragnaros",
+        "realmRegion": "us",
+        "class": "Rogue",
+        "spec": "Subtlety",
+        "role": "dps"
+      },
+      {
+        "name": "Nroodle",
+        "realm": "illidan",
+        "realmRegion": "us",
+        "class": "Monk",
+        "spec": "Mistweaver",
         "role": "healer"
       },
       {
-        "name": "Nekozy",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
+        "name": "Roscat",
+        "realm": "stormrage",
+        "realmRegion": "us",
         "class": "Druid",
-        "spec": "Balance",
-        "role": "dps"
-      },
-      {
-        "name": "Manatank",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
-        "class": "Death Knight",
-        "spec": "Blood",
+        "spec": "Guardian",
         "role": "tank"
-      },
-      {
-        "name": "Nerfdhlol",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
-        "class": "Demon Hunter",
-        "spec": "Devourer",
-        "role": "dps"
-      },
-      {
-        "name": "Ermsigma",
-        "realm": "draenor",
-        "realmRegion": "eu",
-        "class": "Mage",
-        "spec": "Arcane",
-        "role": "dps"
       }
     ],
     "enemyForcesRequired": 817,
-    "routeKey": "FvHYw6J",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/FvHYw6J",
-    "wclReport": "FAJGHaWDPVr79Cpq",
-    "wclFight": 4,
+    "routeKey": "R8ZwXjc",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/R8ZwXjc",
+    "wclReport": "AFtNDXdbMnKZrqWa",
+    "wclFight": 9,
     "pulls": [
       {
         "enemies": [
           {
             "enemy": 11,
             "clones": [
-              11,
-              12,
               14,
+              12,
+              13,
+              11,
               15,
-              13
+              20,
+              21,
+              19
             ]
           },
           {
             "enemy": 7,
             "clones": [
               11,
-              21,
-              7,
-              6
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              9,
               6,
-              5
+              7,
+              21
             ]
           },
           {
@@ -5913,19 +5524,26 @@
             "clones": [
               1
             ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              6,
+              9,
+              4,
+              3
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              2
+            ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              1,
-              2,
-              8
-            ]
-          },
           {
             "enemy": 7,
             "clones": [
@@ -5934,6 +5552,15 @@
             ]
           },
           {
+            "enemy": 6,
+            "clones": [
+              8,
+              1,
+              2,
+              5
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               1
@@ -5946,19 +5573,69 @@
           {
             "enemy": 7,
             "clones": [
-              12,
               13,
-              19,
-              20
+              12,
+              18,
+              17
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              3,
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              3
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              12,
+              11
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              14,
+              15
             ]
           },
           {
             "enemy": 11,
             "clones": [
+              23,
+              24,
+              22
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 11,
+            "clones": [
+              28,
               27,
-              26,
               25,
-              28
+              26
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              19,
+              20
             ]
           },
           {
@@ -5970,8 +5647,8 @@
           {
             "enemy": 6,
             "clones": [
-              13,
-              14
+              14,
+              13
             ]
           }
         ]
@@ -5980,69 +5657,19 @@
         "enemies": [
           {
             "enemy": 7,
-            "clones": [
-              18,
-              17
-            ]
-          },
-          {
-            "enemy": 10,
             "clones": [
               2,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              24,
-              23,
-              22
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              14,
-              15
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              11,
-              12
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
               1,
-              3,
-              4,
               5,
-              2
+              3,
+              4
             ]
           },
           {
             "enemy": 11,
             "clones": [
-              18,
               17,
+              18,
               16
             ]
           },
@@ -6065,8 +5692,16 @@
               8,
               10,
               9,
+              6,
               7,
-              6
+              1
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              8,
+              9
             ]
           },
           {
@@ -6086,11 +5721,18 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              10,
+              11
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
               12,
-              13,
-              11
+              11,
+              13
             ]
           }
         ]
@@ -6098,13 +5740,17 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 2,
             "clones": [
-              3,
-              2,
               4,
               5,
-              1
+              2
             ]
           },
           {
@@ -6118,11 +5764,20 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              12,
+              14,
+              15,
+              13
+            ]
+          },
+          {
             "enemy": 13,
             "clones": [
-              1,
+              3,
               2,
-              3
+              1
             ]
           }
         ]
@@ -6149,31 +5804,29 @@
           {
             "enemy": 13,
             "clones": [
-              8,
-              11,
               9,
-              10,
+              6,
               7,
-              13,
-              12,
-              6
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              18,
-              14,
-              16,
-              17,
-              15,
-              13
+              11,
+              8,
+              10
             ]
           },
           {
             "enemy": 8,
             "clones": [
               2
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              13,
+              16,
+              14,
+              15,
+              18,
+              17
             ]
           }
         ]
@@ -6183,8 +5836,8 @@
           {
             "enemy": 13,
             "clones": [
-              15,
               14,
+              15,
               19,
               18
             ]
@@ -6209,8 +5862,8 @@
           {
             "enemy": 13,
             "clones": [
-              16,
               17,
+              16,
               20,
               21
             ]
@@ -6224,14 +5877,14 @@
           {
             "enemy": 1,
             "clones": [
-              5,
-              6
+              6,
+              5
             ]
           }
         ]
       }
     ],
-    "enemyForces": 765
+    "enemyForces": 830
   },
   {
     "id": "rio-18108822",
@@ -6240,7 +5893,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 870,
+    "rank": 897,
     "region": "kr",
     "bracket": "mid",
     "tier": "slow",
@@ -6296,107 +5949,164 @@
     "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/es1v0Qt"
   },
   {
-    "id": "rio-21531249",
+    "id": "rio-19879696",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21531249-18-altar-of-fangs",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/19879696-18-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 6463,
-    "region": "us",
+    "rank": 14464,
+    "region": "eu",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 18,
-    "clearSeconds": 1419,
-    "clearMs": 1418581,
-    "completedAt": "2026-10-19T04:44:25.000Z",
+    "clearSeconds": 1429,
+    "clearMs": 1428618,
+    "completedAt": "2026-10-11T10:06:07.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Criticaldh",
-        "realm": "proudmoore",
-        "realmRegion": "us",
-        "class": "Demon Hunter",
-        "spec": "Vengeance",
+        "name": "Oweed",
+        "realm": "blackhand",
+        "realmRegion": "eu",
+        "class": "Paladin",
+        "spec": "Protection",
         "role": "tank"
       },
       {
-        "name": "Vonme",
-        "realm": "wyrmrest-accord",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "name": "Zyrhe",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Loveswarrior",
-        "realm": "stormrage",
-        "realmRegion": "us",
+        "name": "Alijunglerr",
+        "realm": "kazzak",
+        "realmRegion": "eu",
         "class": "Warrior",
         "spec": "Arms",
         "role": "dps"
       },
       {
-        "name": "Damass",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Rogue",
-        "spec": "Subtlety",
+        "name": "Avablood",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Death Knight",
+        "spec": "Unholy",
         "role": "dps"
+      },
+      {
+        "name": "AnonF08043D",
+        "realm": "anonymous",
+        "realmRegion": "eu",
+        "class": "Hunter",
+        "spec": "Beast Mastery",
+        "role": "dps"
+      },
+      {
+        "name": "Frfrfr",
+        "realm": "tarren-mill",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
       }
     ],
     "enemyForcesRequired": 817,
-    "routeKey": "qPQy5Yj",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/qPQy5Yj",
-    "wclReport": "yATrzHbpW186gfVM",
-    "wclFight": 1,
+    "routeKey": "N2wJk7q",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/N2wJk7q"
+  },
+  {
+    "id": "rio-21232427",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/21232427-18-altar-of-fangs",
+    "challengeModeId": 588,
+    "dungeonEnglishName": "Altar of Fangs",
+    "mdtDungeonIdx": 164,
+    "rank": 14878,
+    "region": "eu",
+    "bracket": "mid",
+    "tier": "slow",
+    "keyLevel": 18,
+    "clearSeconds": 1530,
+    "clearMs": 1529663,
+    "completedAt": "2026-10-17T20:24:34.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "Немягкий",
+        "realm": "howling-fjord",
+        "realmRegion": "eu",
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "name": "Nastyzz",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Paladin",
+        "spec": "Retribution",
+        "role": "dps"
+      },
+      {
+        "name": "Memkonin",
+        "realm": "blackrock",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Lokpik",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Rogue",
+        "spec": "Subtlety",
+        "role": "dps"
+      },
+      {
+        "name": "Värcolac",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      }
+    ],
+    "enemyForcesRequired": 817,
+    "routeKey": "gwmktZl",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/gwmktZl",
+    "wclReport": "cp7MvTLrhwbKgH3V",
+    "wclFight": 16,
     "pulls": [
       {
         "enemies": [
           {
-            "enemy": 10,
+            "enemy": 11,
             "clones": [
-              1
+              6,
+              10,
+              7,
+              17,
+              18,
+              16,
+              8,
+              9
             ]
           },
           {
             "enemy": 7,
             "clones": [
-              6,
-              7,
-              9,
               8,
-              2,
+              9,
               5,
-              4,
-              3,
               1,
-              13,
-              12
+              4,
+              2,
+              3
             ]
           },
           {
             "enemy": 6,
             "clones": [
-              5,
-              6,
+              2,
+              1,
               8
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              17,
-              18,
-              16
             ]
           },
           {
@@ -6410,16 +6120,40 @@
       {
         "enemies": [
           {
+            "enemy": 6,
+            "clones": [
+              5,
+              6
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              6,
+              7
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
             "enemy": 11,
             "clones": [
-              19,
-              21,
-              20,
               12,
-              13,
               11,
               14,
-              15
+              13,
+              15,
+              19,
+              21,
+              20
             ]
           },
           {
@@ -6433,8 +6167,8 @@
           {
             "enemy": 7,
             "clones": [
-              11,
-              21
+              21,
+              11
             ]
           },
           {
@@ -6450,6 +6184,8 @@
           {
             "enemy": 7,
             "clones": [
+              13,
+              12,
               17,
               18,
               15,
@@ -6463,20 +6199,24 @@
             ]
           },
           {
-            "enemy": 6,
-            "clones": [
-              11,
-              12
-            ]
-          },
-          {
             "enemy": 11,
             "clones": [
               24,
-              23,
-              22
+              22,
+              23
             ]
           },
+          {
+            "enemy": 6,
+            "clones": [
+              12,
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
           {
             "enemy": 10,
             "clones": [
@@ -6489,13 +6229,6 @@
       {
         "enemies": [
           {
-            "enemy": 7,
-            "clones": [
-              19,
-              20
-            ]
-          },
-          {
             "enemy": 1,
             "clones": [
               4
@@ -6504,23 +6237,30 @@
           {
             "enemy": 6,
             "clones": [
-              14,
-              13
+              13,
+              14
             ]
           },
           {
-            "enemy": 11,
+            "enemy": 7,
             "clones": [
-              25,
-              27,
-              28,
-              26
+              20,
+              19
             ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 11,
+            "clones": [
+              27,
+              28,
+              25,
+              26
+            ]
+          },
           {
             "enemy": 14,
             "clones": [
@@ -6535,37 +6275,9 @@
             "enemy": 2,
             "clones": [
               14,
-              16,
               15,
-              3
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
+              16,
               3,
-              1
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
               4,
               5,
               2,
@@ -6575,6 +6287,13 @@
             ]
           },
           {
+            "enemy": 3,
+            "clones": [
+              1,
+              4
+            ]
+          },
+          {
             "enemy": 12,
             "clones": [
               2
@@ -6585,6 +6304,13 @@
       {
         "enemies": [
           {
+            "enemy": 3,
+            "clones": [
+              10,
+              11
+            ]
+          },
+          {
             "enemy": 12,
             "clones": [
               3
@@ -6593,16 +6319,9 @@
           {
             "enemy": 2,
             "clones": [
-              13,
               11,
+              13,
               12
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              10,
-              11
             ]
           }
         ]
@@ -6631,486 +6350,8 @@
           {
             "enemy": 13,
             "clones": [
+              3,
               2,
-              3,
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              5,
-              4
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              9,
-              8,
-              6,
-              7,
-              11,
-              10
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              13,
-              16,
-              15,
-              14,
-              18,
-              17
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              14,
-              15,
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              16,
-              15
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 1,
-            "clones": [
-              5,
-              6
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              20,
-              21
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 821
-  },
-  {
-    "id": "rio-18575049",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18575049-18-altar-of-fangs",
-    "challengeModeId": 588,
-    "dungeonEnglishName": "Altar of Fangs",
-    "mdtDungeonIdx": 164,
-    "rank": 9703,
-    "region": "us",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 18,
-    "clearSeconds": 1708,
-    "clearMs": 1708232,
-    "completedAt": "2026-10-05T21:16:46.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Brookspupper",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Druid",
-        "spec": "Guardian",
-        "role": "tank"
-      },
-      {
-        "name": "Hansso",
-        "realm": "moon-guard",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Poprola",
-        "realm": "stormrage",
-        "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "Sttreetrat",
-        "realm": "area-52",
-        "realmRegion": "us",
-        "class": "Monk",
-        "spec": "Windwalker",
-        "role": "dps"
-      },
-      {
-        "name": "Koqezinho",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 817,
-    "routeKey": "JZGipUX",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/JZGipUX",
-    "wclReport": "tJf1gBy3zpxHQmd9",
-    "wclFight": 10,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              6,
-              2,
-              7,
-              10,
-              5,
-              9,
-              8,
-              18,
-              16,
-              17,
-              1,
-              3,
-              4
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              7,
-              6,
-              3,
-              1,
-              5,
-              2,
-              8,
-              4,
-              9
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              6,
-              5,
-              8
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              12,
-              11,
-              20,
-              21,
-              13,
-              14,
-              19,
-              15
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              4,
-              3,
-              9
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              11,
-              21
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 7,
-            "clones": [
-              13,
-              12,
-              18,
-              17,
-              14,
-              15
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              11,
-              12
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              24,
-              23,
-              22
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 10,
-            "clones": [
-              2,
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 6,
-            "clones": [
-              14,
-              13
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              4
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              19,
-              20
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 11,
-            "clones": [
-              27,
-              28,
-              26,
-              25
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              1,
-              2
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              8
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              8,
-              10,
-              9
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              10,
-              11
-            ]
-          },
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              13,
-              11,
-              12
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              3,
-              16,
-              15
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              12,
-              13,
-              14
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 3,
-            "clones": [
-              15
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
               1
             ]
           }
@@ -7128,7 +6369,6 @@
             "enemy": 13,
             "clones": [
               4,
-              3,
               5
             ]
           }
@@ -7139,22 +6379,24 @@
           {
             "enemy": 13,
             "clones": [
-              7,
-              6,
+              12,
               9,
               10,
+              8,
               11,
-              8
+              13,
+              6,
+              7
             ]
           },
           {
             "enemy": 5,
             "clones": [
               14,
-              16,
-              17,
               18,
+              16,
               13,
+              17,
               15
             ]
           },
@@ -7173,15 +6415,10 @@
             "clones": [
               14,
               15,
+              16,
+              17,
               19,
               18
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              16,
-              15
             ]
           },
           {
@@ -7189,16 +6426,29 @@
             "clones": [
               4
             ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              15,
+              16
+            ]
           }
         ]
       },
       {
         "enemies": [
           {
+            "enemy": 8,
+            "clones": [
+              4
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
-              5,
-              6
+              6,
+              5
             ]
           },
           {
@@ -7207,29 +6457,12 @@
               20,
               21
             ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              4
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 13,
-            "clones": [
-              17,
-              16
-            ]
           }
         ]
       }
     ],
-    "enemyForces": 824,
-    "filled": 4
+    "enemyForces": 828,
+    "filled": 2
   },
   {
     "id": "rio-19209951",
@@ -7238,7 +6471,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 2123,
+    "rank": 2172,
     "region": "kr",
     "bracket": "mid",
     "tier": "fast",
@@ -7300,7 +6533,7 @@
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 13376,
+    "rank": 13475,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
@@ -7756,13 +6989,75 @@
     "enemyForces": 836
   },
   {
+    "id": "rio-6729852",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/6729852-16-altar-of-fangs",
+    "challengeModeId": 588,
+    "dungeonEnglishName": "Altar of Fangs",
+    "mdtDungeonIdx": 164,
+    "rank": 4321,
+    "region": "kr",
+    "bracket": "mid",
+    "tier": "slow",
+    "keyLevel": 16,
+    "clearSeconds": 1650,
+    "clearMs": 1650435,
+    "completedAt": "2026-09-01T12:50:56.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "디펜드",
+        "realm": "durotan",
+        "realmRegion": "kr",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "마돗",
+        "realm": "azshara",
+        "realmRegion": "kr",
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "name": "Sungminn",
+        "realm": "azshara",
+        "realmRegion": "kr",
+        "class": "Rogue",
+        "spec": "Assassination",
+        "role": "dps"
+      },
+      {
+        "name": "나엘무전",
+        "realm": "azshara",
+        "realmRegion": "kr",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "name": "떼떼",
+        "realm": "azshara",
+        "realmRegion": "kr",
+        "class": "Paladin",
+        "spec": "Holy",
+        "role": "healer"
+      }
+    ],
+    "enemyForcesRequired": 817,
+    "routeKey": "JxUEnMo",
+    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/JxUEnMo"
+  },
+  {
     "id": "rio-24504150",
     "source": "raider.io",
     "url": "https://raider.io/mythic-plus-runs/season-mn-2/24504150-14-altar-of-fangs",
     "challengeModeId": 588,
     "dungeonEnglishName": "Altar of Fangs",
     "mdtDungeonIdx": 164,
-    "rank": 5753,
+    "rank": 5791,
     "region": "tw",
     "bracket": "low",
     "tier": "fast",
@@ -8209,67 +7504,5 @@
       }
     ],
     "enemyForces": 827
-  },
-  {
-    "id": "rio-19814187",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/19814187-14-altar-of-fangs",
-    "challengeModeId": 588,
-    "dungeonEnglishName": "Altar of Fangs",
-    "mdtDungeonIdx": 164,
-    "rank": 6718,
-    "region": "tw",
-    "bracket": "low",
-    "tier": "slow",
-    "keyLevel": 14,
-    "clearSeconds": 1601,
-    "clearMs": 1600505,
-    "completedAt": "2026-10-11T03:38:51.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "鬼叛官",
-        "realm": "dragonmaw",
-        "realmRegion": "tw",
-        "class": "Priest",
-        "spec": "Holy",
-        "role": "healer"
-      },
-      {
-        "name": "赤鬼伯伯",
-        "realm": "bleeding-hollow",
-        "realmRegion": "tw",
-        "class": "Hunter",
-        "spec": "Beast Mastery",
-        "role": "dps"
-      },
-      {
-        "name": "乂黑飆乂",
-        "realm": "arthas",
-        "realmRegion": "tw",
-        "class": "Paladin",
-        "spec": "Protection",
-        "role": "tank"
-      },
-      {
-        "name": "小黃瓜當玩具",
-        "realm": "stormscale",
-        "realmRegion": "tw",
-        "class": "Paladin",
-        "spec": "Retribution",
-        "role": "dps"
-      },
-      {
-        "name": "菈姬娜",
-        "realm": "spirestone",
-        "realmRegion": "tw",
-        "class": "Shaman",
-        "spec": "Elemental",
-        "role": "dps"
-      }
-    ],
-    "enemyForcesRequired": 817,
-    "routeKey": "sSXeGHo",
-    "keystoneUrl": "https://keystone.guru/route/altar-of-fangs/sSXeGHo"
   }
 ]

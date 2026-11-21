@@ -963,7 +963,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 60,
+    "rank": 61,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1413,7 +1413,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 63,
+    "rank": 64,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -1899,7 +1899,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 506,
+    "rank": 524,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -2384,7 +2384,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 511,
+    "rank": 529,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -2867,61 +2867,60 @@
         ]
       }
     ],
-    "enemyForces": 668,
-    "filled": 3
+    "enemyForces": 668
   },
   {
-    "id": "rio-23886174",
+    "id": "rio-22721336",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23886174-22-the-blinding-vale",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22721336-22-the-blinding-vale",
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 941,
+    "rank": 986,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
     "keyLevel": 22,
-    "clearSeconds": 1512,
-    "clearMs": 1511864,
-    "completedAt": "2026-10-30T20:55:21.000Z",
+    "clearSeconds": 1528,
+    "clearMs": 1528426,
+    "completedAt": "2026-10-24T17:42:12.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Yãto",
+        "name": "Darkllinè",
         "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Monk",
+        "spec": "Mistweaver",
+        "role": "healer"
+      },
+      {
+        "name": "Spammingg",
+        "realm": "silvermoon",
         "realmRegion": "eu",
         "class": "Rogue",
         "spec": "Subtlety",
         "role": "dps"
       },
       {
-        "name": "Søvka",
-        "realm": "twisting-nether",
+        "name": "Bearley",
+        "realm": "burning-legion",
         "realmRegion": "eu",
         "class": "Druid",
         "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Sandyone",
-        "realm": "twisting-nether",
+        "name": "Fnrsham",
+        "realm": "draenor",
         "realmRegion": "eu",
         "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Эльпочита",
-        "realm": "howling-fjord",
-        "realmRegion": "eu",
-        "class": "Monk",
-        "spec": "Windwalker",
+        "spec": "Elemental",
         "role": "dps"
       },
       {
-        "name": "Zitee",
-        "realm": "kazzak",
+        "name": "Egsotic",
+        "realm": "burning-legion",
         "realmRegion": "eu",
         "class": "Warrior",
         "spec": "Arms",
@@ -2929,10 +2928,10 @@
       }
     ],
     "enemyForcesRequired": 686,
-    "routeKey": "h8IAgIH",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/h8IAgIH",
-    "wclReport": "h2V7KDHwj9a43G6J",
-    "wclFight": 3,
+    "routeKey": "6xJOOou",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/6xJOOou",
+    "wclReport": "y8Rvt3qgd7kNVZfc",
+    "wclFight": 5,
     "pulls": [
       {
         "enemies": [
@@ -2951,8 +2950,8 @@
             "clones": [
               4,
               3,
-              10,
-              9
+              9,
+              10
             ]
           },
           {
@@ -2964,22 +2963,21 @@
           {
             "enemy": 2,
             "clones": [
-              30,
-              32,
-              34,
-              31,
               33,
+              32,
+              31,
+              34,
+              30,
+              87,
               89,
               88,
               86,
               85,
-              87,
               82,
               84,
               81,
               51,
-              50,
-              83
+              50
             ]
           },
           {
@@ -3014,15 +3012,16 @@
           {
             "enemy": 2,
             "clones": [
-              71,
-              66,
-              64,
-              69,
-              67,
               72,
-              65,
+              64,
+              68,
               63,
-              68
+              70,
+              69,
+              66,
+              67,
+              65,
+              71
             ]
           },
           {
@@ -3043,35 +3042,28 @@
       {
         "enemies": [
           {
-            "enemy": 2,
-            "clones": [
-              57,
-              62,
-              59,
-              70,
-              53,
-              52,
-              56,
-              55,
-              44,
-              54,
-              45,
-              41,
-              42,
-              43,
-              48,
-              47,
-              49,
-              46,
-              58,
-              60
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               5,
               6
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              44,
+              55,
+              54,
+              53,
+              56,
+              42,
+              43,
+              41,
+              47,
+              46,
+              48,
+              45,
+              49
             ]
           },
           {
@@ -3101,25 +3093,19 @@
           {
             "enemy": 2,
             "clones": [
-              38,
-              37,
-              40,
               39,
+              35,
               36,
-              35
+              40,
+              38,
+              37
             ]
           },
           {
             "enemy": 1,
             "clones": [
-              15,
-              14
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
+              14,
+              15
             ]
           },
           {
@@ -3130,6 +3116,12 @@
           },
           {
             "enemy": 13,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 14,
             "clones": [
               1
             ]
@@ -3153,30 +3145,29 @@
           {
             "enemy": 3,
             "clones": [
-              11,
-              12
+              11
             ]
           },
           {
             "enemy": 2,
             "clones": [
               94,
+              93,
               92,
               90,
-              91,
-              93
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              16
+              91
             ]
           },
           {
             "enemy": 4,
             "clones": [
               5
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              16
             ]
           },
           {
@@ -3216,18 +3207,8 @@
           {
             "enemy": 10,
             "clones": [
-              11,
-              10
-            ]
-          },
-          {
-            "enemy": 9,
-            "clones": [
-              39,
-              32,
-              31,
-              30,
-              33
+              10,
+              11
             ]
           }
         ]
@@ -3245,17 +3226,21 @@
             "clones": [
               13
             ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              39,
+              33,
+              31,
+              32,
+              30
+            ]
           }
         ]
       },
       {
         "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          },
           {
             "enemy": 23,
             "clones": [
@@ -3263,8 +3248,18 @@
             ]
           },
           {
+            "enemy": 7,
+            "clones": [
+              5,
+              2,
+              4,
+              3
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
+              10,
               9,
               8
             ]
@@ -3272,27 +3267,36 @@
           {
             "enemy": 2,
             "clones": [
-              12,
-              11,
+              16,
+              17,
               14,
-              8,
-              9,
+              12,
               10,
-              13
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              4,
-              3,
-              2
+              9,
+              11,
+              13,
+              8,
+              15,
+              18,
+              19
             ]
           }
         ]
       },
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              29,
+              2,
+              6,
+              4,
+              7,
+              3,
+              5
+            ]
+          },
           {
             "enemy": 12,
             "clones": [
@@ -3302,29 +3306,21 @@
           {
             "enemy": 2,
             "clones": [
+              116,
+              114,
+              115,
               4,
               2,
               3,
-              6,
               5,
+              6,
               7
             ]
           },
           {
             "enemy": 6,
             "clones": [
-              3,
-              2
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              6,
-              7,
-              4,
               2,
-              5,
               3
             ]
           },
@@ -3347,8 +3343,8 @@
         ]
       }
     ],
-    "enemyForces": 687,
-    "filled": 3
+    "enemyForces": 681,
+    "filled": 4
   },
   {
     "id": "rio-23801924",
@@ -3357,7 +3353,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 973,
+    "rank": 1013,
     "region": "world",
     "bracket": "high",
     "tier": "fast",
@@ -3825,7 +3821,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 2566,
+    "rank": 2652,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
@@ -4303,40 +4299,102 @@
     "enemyForces": 674
   },
   {
-    "id": "rio-18838325",
+    "id": "rio-16676588",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18838325-21-the-blinding-vale",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/16676588-21-the-blinding-vale",
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 8271,
+    "rank": 8427,
     "region": "world",
     "bracket": "high",
     "tier": "slow",
     "keyLevel": 21,
-    "clearSeconds": 1734,
-    "clearMs": 1733799,
-    "completedAt": "2026-10-06T22:21:02.000Z",
+    "clearSeconds": 1733,
+    "clearMs": 1733122,
+    "completedAt": "2026-09-28T23:56:26.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Daosh",
-        "realm": "nemesis",
+        "name": "Sotaxwar",
+        "realm": "tarren-mill",
+        "realmRegion": "eu",
+        "class": "Warrior",
+        "spec": "Arms",
+        "role": "dps"
+      },
+      {
+        "name": "Héléna",
+        "realm": "ravencrest",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Søvka",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
+        "role": "tank"
+      },
+      {
+        "name": "Эльпочита",
+        "realm": "howling-fjord",
+        "realmRegion": "eu",
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "name": "Nyatasha",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Rogue",
+        "spec": "Outlaw",
+        "role": "dps"
+      }
+    ],
+    "enemyForcesRequired": 686,
+    "routeKey": "hMAHVHD",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/hMAHVHD"
+  },
+  {
+    "id": "rio-19061126",
+    "source": "raider.io",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/19061126-20-the-blinding-vale",
+    "challengeModeId": 584,
+    "dungeonEnglishName": "The Blinding Vale",
+    "mdtDungeonIdx": 162,
+    "rank": 12608,
+    "region": "world",
+    "bracket": "mid",
+    "tier": "fast",
+    "keyLevel": 20,
+    "clearSeconds": 1430,
+    "clearMs": 1429818,
+    "completedAt": "2026-10-07T21:40:44.000Z",
+    "onTime": true,
+    "roster": [
+      {
+        "name": "Xhanon",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Shaman",
+        "spec": "Restoration",
+        "role": "healer"
+      },
+      {
+        "name": "Monksea",
+        "realm": "ravencrest",
         "realmRegion": "eu",
         "class": "Monk",
         "spec": "Brewmaster",
         "role": "tank"
       },
       {
-        "name": "Aleasamna",
-        "realm": "argent-dawn",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Feral",
-        "role": "dps"
-      },
-      {
-        "name": "Yükí",
+        "name": "Farover",
         "realm": "ravencrest",
         "realmRegion": "eu",
         "class": "Warrior",
@@ -4344,573 +4402,87 @@
         "role": "dps"
       },
       {
-        "name": "Sebás",
-        "realm": "grim-batol",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Buttermuffin",
-        "realm": "tarren-mill",
+        "name": "Tomelvis",
+        "realm": "draenor",
         "realmRegion": "eu",
         "class": "Rogue",
-        "spec": "Assassination",
+        "spec": "Outlaw",
+        "role": "dps"
+      },
+      {
+        "name": "Murtaz",
+        "realm": "kazzak",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Feral",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 686,
-    "routeKey": "j8DEYtn",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/j8DEYtn"
+    "routeKey": "Fl2S1Mb",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/Fl2S1Mb"
   },
   {
-    "id": "rio-20552687",
+    "id": "rio-19534645",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/20552687-20-the-blinding-vale",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/19534645-20-the-blinding-vale",
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 12373,
+    "rank": 13015,
     "region": "world",
     "bracket": "mid",
-    "tier": "fast",
+    "tier": "slow",
     "keyLevel": 20,
-    "clearSeconds": 1469,
-    "clearMs": 1468642,
-    "completedAt": "2026-10-14T08:36:58.000Z",
+    "clearSeconds": 1547,
+    "clearMs": 1547196,
+    "completedAt": "2026-10-10T01:37:08.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Rimwaztok",
-        "realm": "frostmourne",
-        "realmRegion": "us",
-        "class": "Death Knight",
-        "spec": "Blood",
+        "name": "Raretimber",
+        "realm": "silvermoon",
+        "realmRegion": "eu",
+        "class": "Druid",
+        "spec": "Guardian",
         "role": "tank"
       },
       {
-        "name": "Kyruke",
-        "realm": "frostmourne",
-        "realmRegion": "us",
+        "name": "Блинквпиво",
+        "realm": "howling-fjord",
+        "realmRegion": "eu",
         "class": "Mage",
         "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Garchomprock",
-        "realm": "frostmourne",
-        "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Elemental",
+        "name": "Discuvr",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Demon Hunter",
+        "spec": "Devourer",
         "role": "dps"
       },
       {
-        "name": "Twistyxd",
-        "realm": "frostmourne",
-        "realmRegion": "us",
+        "name": "Zashkwarloc",
+        "realm": "twisting-nether",
+        "realmRegion": "eu",
+        "class": "Warlock",
+        "spec": "Demonology",
+        "role": "dps"
+      },
+      {
+        "name": "Слоупал",
+        "realm": "gordunni",
+        "realmRegion": "eu",
         "class": "Paladin",
         "spec": "Holy",
         "role": "healer"
-      },
-      {
-        "name": "Shroompouch",
-        "realm": "frostmourne",
-        "realmRegion": "us",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
       }
     ],
     "enemyForcesRequired": 686,
-    "routeKey": "MhBN6lT",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/MhBN6lT",
-    "wclReport": "9rckxmD8qYMJWhyg",
-    "wclFight": 6,
-    "pulls": [
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              31,
-              33,
-              32,
-              34,
-              30,
-              89,
-              87,
-              88,
-              85,
-              86,
-              81,
-              83,
-              82,
-              51,
-              50,
-              84
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              12,
-              24,
-              19,
-              18
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              9,
-              10
-            ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              9
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              7
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 5,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              15
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              64,
-              65,
-              63,
-              67,
-              66,
-              68,
-              72,
-              69,
-              71,
-              70,
-              60,
-              59,
-              61,
-              58,
-              57,
-              62
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              21,
-              20
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              7
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              56,
-              55,
-              52,
-              44,
-              54,
-              43,
-              42,
-              41,
-              49,
-              46,
-              45,
-              47,
-              48,
-              53
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              5,
-              6
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              9,
-              5
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              16,
-              17
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              3
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 2,
-            "clones": [
-              35,
-              36,
-              40,
-              39,
-              37,
-              38
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              14,
-              15
-            ]
-          },
-          {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 15,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 13,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 5,
-            "clones": [
-              10
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              12,
-              11
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              25
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              91,
-              94,
-              90,
-              92,
-              93
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              9
-            ]
-          },
-          {
-            "enemy": 4,
-            "clones": [
-              5
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              16
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 18,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              4,
-              5
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              10,
-              11
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              13,
-              12,
-              11
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 9,
-            "clones": [
-              36,
-              38,
-              33,
-              35,
-              39,
-              37,
-              31,
-              34,
-              32,
-              30
-            ]
-          },
-          {
-            "enemy": 16,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 23,
-            "clones": [
-              1
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              11,
-              9,
-              10,
-              8,
-              13,
-              12,
-              14
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              9,
-              8
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              5,
-              2,
-              4
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 12,
-            "clones": [
-              2
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              29,
-              6,
-              7,
-              4,
-              2,
-              3,
-              5
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              116,
-              115,
-              114,
-              2,
-              7,
-              4,
-              6,
-              5,
-              3
-            ]
-          },
-          {
-            "enemy": 6,
-            "clones": [
-              2,
-              3
-            ]
-          },
-          {
-            "enemy": 11,
-            "clones": [
-              3
-            ]
-          },
-          {
-            "enemy": 3,
-            "clones": [
-              2
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 17,
-            "clones": [
-              1
-            ]
-          }
-        ]
-      }
-    ],
-    "enemyForces": 683
-  },
-  {
-    "id": "rio-18556067",
-    "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/18556067-20-the-blinding-vale",
-    "challengeModeId": 584,
-    "dungeonEnglishName": "The Blinding Vale",
-    "mdtDungeonIdx": 162,
-    "rank": 12782,
-    "region": "world",
-    "bracket": "mid",
-    "tier": "slow",
-    "keyLevel": 20,
-    "clearSeconds": 1550,
-    "clearMs": 1549576,
-    "completedAt": "2026-10-05T19:27:17.000Z",
-    "onTime": true,
-    "roster": [
-      {
-        "name": "Profoak",
-        "realm": "blackrock",
-        "realmRegion": "eu",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "Pinju",
-        "realm": "ravencrest",
-        "realmRegion": "eu",
-        "class": "Rogue",
-        "spec": "Assassination",
-        "role": "dps"
-      },
-      {
-        "name": "Alexbebishin",
-        "realm": "kazzak",
-        "realmRegion": "eu",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "Twistingcat",
-        "realm": "tarren-mill",
-        "realmRegion": "eu",
-        "class": "Druid",
-        "spec": "Feral",
-        "role": "dps"
-      },
-      {
-        "name": "Serotime",
-        "realm": "ravencrest",
-        "realmRegion": "eu",
-        "class": "Monk",
-        "spec": "Brewmaster",
-        "role": "tank"
-      }
-    ],
-    "enemyForcesRequired": 686,
-    "routeKey": "FoyMUd5",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/FoyMUd5"
+    "routeKey": "1KIXP8p",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/1KIXP8p"
   },
   {
     "id": "rio-24290124",
@@ -4919,7 +4491,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 3107,
+    "rank": 3148,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
@@ -5385,70 +4957,537 @@
         ]
       }
     ],
-    "enemyForces": 680,
-    "filled": 2
+    "enemyForces": 680
   },
   {
-    "id": "rio-23549292",
+    "id": "rio-23867795",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23549292-19-the-blinding-vale",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/23867795-19-the-blinding-vale",
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 705,
+    "rank": 723,
     "region": "tw",
     "bracket": "mid",
     "tier": "slow",
     "keyLevel": 19,
-    "clearSeconds": 1700,
-    "clearMs": 1699549,
-    "completedAt": "2026-10-28T17:03:18.000Z",
+    "clearSeconds": 1705,
+    "clearMs": 1704728,
+    "completedAt": "2026-10-30T18:37:19.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "地震才是王道",
-        "realm": "shadowmoon",
-        "realmRegion": "tw",
-        "class": "Shaman",
-        "spec": "Restoration",
-        "role": "healer"
-      },
-      {
-        "name": "琉璃之光",
-        "realm": "frostmane",
-        "realmRegion": "tw",
-        "class": "Rogue",
-        "spec": "Subtlety",
-        "role": "dps"
-      },
-      {
-        "name": "格溫雷娜",
-        "realm": "icecrown",
-        "realmRegion": "tw",
-        "class": "Warrior",
-        "spec": "Arms",
-        "role": "dps"
-      },
-      {
-        "name": "深深淺淺的想",
-        "realm": "shadowmoon",
+        "name": "超級亡靈牛",
+        "realm": "crystalpine-stinger",
         "realmRegion": "tw",
         "class": "Death Knight",
         "spec": "Blood",
         "role": "tank"
       },
       {
-        "name": "Swordname-305747058",
-        "realm": "dragonmaw",
+        "name": "吃老衲一棒",
+        "realm": "icecrown",
         "realmRegion": "tw",
-        "class": "Death Knight",
-        "spec": "Unholy",
+        "class": "Monk",
+        "spec": "Windwalker",
+        "role": "dps"
+      },
+      {
+        "name": "Lyrisc",
+        "realm": "shadowmoon",
+        "realmRegion": "tw",
+        "class": "Mage",
+        "spec": "Arcane",
+        "role": "dps"
+      },
+      {
+        "name": "Nenas",
+        "realm": "arygos",
+        "realmRegion": "tw",
+        "class": "Priest",
+        "spec": "Holy",
+        "role": "healer"
+      },
+      {
+        "name": "麥擱素啊啦",
+        "realm": "arthas",
+        "realmRegion": "tw",
+        "class": "Warrior",
+        "spec": "Arms",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 686,
-    "routeKey": "4qJxdg0",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/4qJxdg0"
+    "routeKey": "b5Hs5E4",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/b5Hs5E4",
+    "wclReport": "Z7aAfnbM8qzgyC1B",
+    "wclFight": 42,
+    "pulls": [
+      {
+        "enemies": [
+          {
+            "enemy": 4,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              13,
+              12
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              4,
+              3,
+              10,
+              9
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              31,
+              30,
+              32,
+              33,
+              34,
+              85,
+              86,
+              88,
+              89,
+              87
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 5,
+            "clones": [
+              9
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              82,
+              84,
+              83
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              24
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              74,
+              79,
+              81,
+              76,
+              75,
+              78,
+              77,
+              73,
+              80
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              22,
+              23
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              8
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              11
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              18,
+              19
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              50,
+              51
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              7,
+              15
+            ]
+          },
+          {
+            "enemy": 5,
+            "clones": [
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              64,
+              65,
+              66,
+              63,
+              69,
+              68,
+              70,
+              67,
+              71,
+              72
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              20,
+              21
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              7
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              10
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              54,
+              56,
+              44,
+              45,
+              55,
+              41,
+              42,
+              43,
+              40,
+              48,
+              49,
+              46,
+              47,
+              39
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              6,
+              5
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              9,
+              5
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              16,
+              17
+            ]
+          },
+          {
+            "enemy": 4,
+            "clones": [
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              14
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              35,
+              36
+            ]
+          },
+          {
+            "enemy": 14,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 13,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 15,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 5,
+            "clones": [
+              10
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              12,
+              11
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              25
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              91,
+              92,
+              94,
+              93,
+              90
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              9
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              16
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 18,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 12,
+            "clones": [
+              3,
+              4
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              10
+            ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              20,
+              19,
+              18,
+              21,
+              22
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              9
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              17
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 12,
+            "clones": [
+              5
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              11,
+              10
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              12,
+              11
+            ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              39,
+              31,
+              30,
+              32,
+              33
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 16,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 23,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              9,
+              8
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              8,
+              12,
+              13,
+              10,
+              9,
+              14,
+              11
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              2,
+              4,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 5,
+            "clones": [
+              3
+            ]
+          },
+          {
+            "enemy": 12,
+            "clones": [
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 5,
+            "clones": [
+              2
+            ]
+          },
+          {
+            "enemy": 17,
+            "clones": [
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "enemyForces": 668
   },
   {
     "id": "rio-22686231",
@@ -5457,7 +5496,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 14445,
+    "rank": 14547,
     "region": "eu",
     "bracket": "mid",
     "tier": "fast",
@@ -5974,7 +6013,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 14849,
+    "rank": 14954,
     "region": "eu",
     "bracket": "mid",
     "tier": "slow",
@@ -6515,71 +6554,102 @@
     "enemyForces": 747
   },
   {
-    "id": "rio-22296182",
+    "id": "rio-15392332",
     "source": "raider.io",
-    "url": "https://raider.io/mythic-plus-runs/season-mn-2/22296182-17-the-blinding-vale",
+    "url": "https://raider.io/mythic-plus-runs/season-mn-2/15392332-17-the-blinding-vale",
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 12927,
+    "rank": 13031,
     "region": "us",
     "bracket": "mid",
     "tier": "fast",
     "keyLevel": 17,
-    "clearSeconds": 1337,
-    "clearMs": 1337436,
-    "completedAt": "2026-10-22T23:28:38.000Z",
+    "clearSeconds": 1361,
+    "clearMs": 1361105,
+    "completedAt": "2026-09-25T01:32:37.000Z",
     "onTime": true,
     "roster": [
       {
-        "name": "Elpendejaso",
-        "realm": "stormrage",
+        "name": "Loydenton",
+        "realm": "thrall",
         "realmRegion": "us",
-        "class": "Paladin",
-        "spec": "Protection",
+        "class": "Death Knight",
+        "spec": "Blood",
         "role": "tank"
       },
       {
-        "name": "Necorgí",
+        "name": "Brownydk",
         "realm": "illidan",
         "realmRegion": "us",
-        "class": "Shaman",
-        "spec": "Restoration",
+        "class": "Death Knight",
+        "spec": "Unholy",
+        "role": "dps"
+      },
+      {
+        "name": "Slootley",
+        "realm": "area-52",
+        "realmRegion": "us",
+        "class": "Paladin",
+        "spec": "Holy",
         "role": "healer"
       },
       {
-        "name": "Chromian",
-        "realm": "illidan",
+        "name": "Jeffirey",
+        "realm": "thrall",
         "realmRegion": "us",
-        "class": "Druid",
-        "spec": "Feral",
+        "class": "Mage",
+        "spec": "Arcane",
         "role": "dps"
       },
       {
-        "name": "Leecer",
-        "realm": "illidan",
+        "name": "Shuttlle",
+        "realm": "malganis",
         "realmRegion": "us",
-        "class": "Rogue",
-        "spec": "Subtlety",
-        "role": "dps"
-      },
-      {
-        "name": "Klte-309732943",
-        "realm": "illidan",
-        "realmRegion": "us",
-        "class": "Hunter",
-        "spec": "Beast Mastery",
+        "class": "Shaman",
+        "spec": "Elemental",
         "role": "dps"
       }
     ],
     "enemyForcesRequired": 686,
-    "routeKey": "lasG0sA",
-    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/lasG0sA",
-    "wclReport": "Z3v1W8Jd6g4wN2Mk",
+    "routeKey": "oRBpIUp",
+    "keystoneUrl": "https://keystone.guru/route/the-blinding-vale/oRBpIUp",
+    "wclReport": "GPqFRVNW2Qtad6k7",
     "wclFight": 1,
     "pulls": [
       {
         "enemies": [
+          {
+            "enemy": 1,
+            "clones": [
+              11,
+              13,
+              12,
+              24
+            ]
+          },
+          {
+            "enemy": 2,
+            "clones": [
+              28,
+              29,
+              27,
+              33,
+              31,
+              32,
+              34,
+              30,
+              89,
+              88,
+              86,
+              87,
+              85,
+              81,
+              83,
+              82,
+              84
+            ]
+          },
           {
             "enemy": 6,
             "clones": [
@@ -6587,38 +6657,12 @@
             ]
           },
           {
-            "enemy": 2,
-            "clones": [
-              29,
-              28,
-              27,
-              86,
-              88,
-              89,
-              87,
-              85,
-              34,
-              30,
-              31,
-              33,
-              32
-            ]
-          },
-          {
-            "enemy": 1,
-            "clones": [
-              11,
-              13,
-              12
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               4,
               3,
-              10,
-              9
+              9,
+              10
             ]
           },
           {
@@ -6641,44 +6685,25 @@
             "enemy": 6,
             "clones": [
               7,
-              15,
-              10
+              15
             ]
           },
           {
             "enemy": 2,
             "clones": [
               51,
-              50,
-              65,
-              69,
-              66,
-              63,
-              68,
-              64,
-              67,
-              72,
-              70,
-              71
+              50
             ]
           },
           {
             "enemy": 1,
             "clones": [
-              19,
               18,
-              21,
-              20
+              19
             ]
           },
           {
             "enemy": 5,
-            "clones": [
-              7
-            ]
-          },
-          {
-            "enemy": 3,
             "clones": [
               7
             ]
@@ -6688,36 +6713,6 @@
       {
         "enemies": [
           {
-            "enemy": 6,
-            "clones": [
-              9,
-              5
-            ]
-          },
-          {
-            "enemy": 2,
-            "clones": [
-              56,
-              55,
-              45,
-              44,
-              46,
-              42,
-              41,
-              43,
-              47,
-              37,
-              40,
-              39,
-              38,
-              49,
-              35,
-              36,
-              48,
-              52
-            ]
-          },
-          {
             "enemy": 3,
             "clones": [
               6,
@@ -6725,11 +6720,42 @@
             ]
           },
           {
+            "enemy": 2,
+            "clones": [
+              56,
+              44,
+              52,
+              55,
+              45,
+              42,
+              43,
+              41,
+              47,
+              48,
+              46,
+              49,
+              39,
+              40,
+              38,
+              37,
+              35,
+              36
+            ]
+          },
+          {
+            "enemy": 6,
+            "clones": [
+              9,
+              5
+            ]
+          },
+          {
             "enemy": 1,
             "clones": [
               16,
+              17,
               15,
-              17
+              14
             ]
           },
           {
@@ -6743,12 +6769,6 @@
       {
         "enemies": [
           {
-            "enemy": 14,
-            "clones": [
-              1
-            ]
-          },
-          {
             "enemy": 13,
             "clones": [
               1
@@ -6756,6 +6776,12 @@
           },
           {
             "enemy": 15,
+            "clones": [
+              1
+            ]
+          },
+          {
+            "enemy": 14,
             "clones": [
               1
             ]
@@ -6779,24 +6805,18 @@
           {
             "enemy": 3,
             "clones": [
-              12,
-              11
+              11,
+              12
             ]
           },
           {
             "enemy": 2,
             "clones": [
-              93,
+              92,
               91,
               90,
-              92,
+              93,
               94
-            ]
-          },
-          {
-            "enemy": 7,
-            "clones": [
-              16
             ]
           },
           {
@@ -6809,6 +6829,12 @@
             "enemy": 8,
             "clones": [
               9
+            ]
+          },
+          {
+            "enemy": 7,
+            "clones": [
+              16
             ]
           }
         ]
@@ -6828,14 +6854,31 @@
           {
             "enemy": 10,
             "clones": [
-              9
+              9,
+              10
+            ]
+          },
+          {
+            "enemy": 9,
+            "clones": [
+              34,
+              20,
+              37,
+              30,
+              32,
+              31,
+              33,
+              39,
+              35,
+              36
             ]
           },
           {
             "enemy": 8,
             "clones": [
               10,
-              12
+              12,
+              11
             ]
           },
           {
@@ -6850,45 +6893,6 @@
               4,
               5
             ]
-          },
-          {
-            "enemy": 5,
-            "clones": [
-              11
-            ]
-          }
-        ]
-      },
-      {
-        "enemies": [
-          {
-            "enemy": 9,
-            "clones": [
-              32,
-              31,
-              39,
-              33,
-              37,
-              38,
-              35,
-              36,
-              34,
-              30
-            ]
-          },
-          {
-            "enemy": 8,
-            "clones": [
-              11,
-              13
-            ]
-          },
-          {
-            "enemy": 10,
-            "clones": [
-              10,
-              11
-            ]
           }
         ]
       },
@@ -6898,6 +6902,18 @@
             "enemy": 16,
             "clones": [
               1
+            ]
+          },
+          {
+            "enemy": 10,
+            "clones": [
+              11
+            ]
+          },
+          {
+            "enemy": 8,
+            "clones": [
+              13
             ]
           }
         ]
@@ -6914,12 +6930,12 @@
             "enemy": 2,
             "clones": [
               12,
-              11,
-              8,
-              9,
               14,
+              9,
+              13,
+              11,
               10,
-              13
+              8
             ]
           },
           {
@@ -6932,9 +6948,9 @@
           {
             "enemy": 7,
             "clones": [
-              4,
+              2,
               3,
-              2
+              4
             ]
           }
         ]
@@ -6946,11 +6962,13 @@
             "clones": [
               3
             ]
-          }
-        ]
-      },
-      {
-        "enemies": [
+          },
+          {
+            "enemy": 11,
+            "clones": [
+              3
+            ]
+          },
           {
             "enemy": 12,
             "clones": [
@@ -6960,21 +6978,45 @@
           {
             "enemy": 3,
             "clones": [
-              16,
-              15
+              2
+            ]
+          }
+        ]
+      },
+      {
+        "enemies": [
+          {
+            "enemy": 2,
+            "clones": [
+              115,
+              116,
+              114
+            ]
+          },
+          {
+            "enemy": 1,
+            "clones": [
+              29
             ]
           },
           {
             "enemy": 6,
             "clones": [
-              14,
-              13
+              13,
+              14
             ]
           },
           {
             "enemy": 4,
             "clones": [
               7
+            ]
+          },
+          {
+            "enemy": 3,
+            "clones": [
+              15,
+              16
             ]
           }
         ]
@@ -6990,7 +7032,8 @@
         ]
       }
     ],
-    "enemyForces": 690
+    "enemyForces": 687,
+    "filled": 3
   },
   {
     "id": "rio-22790841",
@@ -6999,7 +7042,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 13332,
+    "rank": 13425,
     "region": "us",
     "bracket": "mid",
     "tier": "slow",
@@ -7543,7 +7586,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 4111,
+    "rank": 4172,
     "region": "kr",
     "bracket": "mid",
     "tier": "slow",
@@ -7605,7 +7648,7 @@
     "challengeModeId": 584,
     "dungeonEnglishName": "The Blinding Vale",
     "mdtDungeonIdx": 162,
-    "rank": 5630,
+    "rank": 5670,
     "region": "tw",
     "bracket": "low",
     "tier": "fast",
