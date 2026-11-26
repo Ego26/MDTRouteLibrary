@@ -3,10 +3,10 @@
 local R = MDTRouteLibrary
 
 R:SetManifest({
-    build = "2026-11-25",
+    build = "2026-11-26",
     season = "Midnight Season 2",
-    mdtVersion = "6.3.34",
-    routeCount = 73,
+    mdtVersion = "6.3.35",
+    routeCount = 77,
     dungeonCount = 8,
     sources = {
         "community",
