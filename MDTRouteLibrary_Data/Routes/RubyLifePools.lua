@@ -3,6 +3,201 @@
 local R = MDTRouteLibrary
 
 R:RegisterRoute({
+    id = "rio-19207478",
+    source = "raider.io",
+    pulls = {
+        {
+            enemies = {
+                { enemy = 1, clones = { 1 } },
+                { enemy = 2, clones = { 9, 1, 2, 3 } },
+                { enemy = 3, clones = { 8, 1 } },
+                { enemy = 4, clones = { 1 } },
+            },
+            forces = 62,
+            cumulative = 62,
+        },
+        {
+            enemies = {
+                { enemy = 4, clones = { 3, 6 } },
+                { enemy = 3, clones = { 5, 6 } },
+                { enemy = 2, clones = { 10 } },
+                { enemy = 5, clones = { 52, 2, 51, 3, 29 } },
+                { enemy = 1, clones = { 2 } },
+            },
+            forces = 54,
+            cumulative = 116,
+        },
+        {
+            enemies = {
+                { enemy = 6, clones = { 1 } },
+                { enemy = 4, clones = { 9 } },
+                { enemy = 5, clones = { 50, 49, 48 } },
+                { enemy = 2, clones = { 8, 7 } },
+                { enemy = 3, clones = { 9 } },
+            },
+            forces = 52,
+            cumulative = 168,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 4, clones = { 8 } },
+                { enemy = 2, clones = { 6 } },
+            },
+            forces = 12,
+            cumulative = 180,
+        },
+        {
+            enemies = {
+                { enemy = 7, clones = { 1 } },
+                { enemy = 23, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 180,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 10, clones = { 7 } },
+                { enemy = 12, clones = { 6 } },
+                { enemy = 8, clones = { 22 } },
+                { enemy = 11, clones = { 4 } },
+            },
+            forces = 39,
+            cumulative = 219,
+        },
+        {
+            enemies = {
+                { enemy = 12, clones = { 9 } },
+                { enemy = 10, clones = { 10 } },
+            },
+            forces = 14,
+            cumulative = 233,
+        },
+        {
+            enemies = {
+                { enemy = 11, clones = { 3 } },
+                { enemy = 12, clones = { 4 } },
+                { enemy = 10, clones = { 1 } },
+                { enemy = 14, clones = { 1 } },
+            },
+            forces = 79,
+            cumulative = 312,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 10, clones = { 2 } },
+                { enemy = 12, clones = { 8 } },
+            },
+            forces = 14,
+            cumulative = 326,
+        },
+        {
+            enemies = {
+                { enemy = 11, clones = { 2 } },
+                { enemy = 10, clones = { 4 } },
+                { enemy = 12, clones = { 3 } },
+            },
+            forces = 39,
+            cumulative = 365,
+        },
+        {
+            enemies = {
+                { enemy = 10, clones = { 3, 6 } },
+                { enemy = 12, clones = { 2, 1 } },
+                { enemy = 11, clones = { 1 } },
+            },
+            forces = 53,
+            cumulative = 418,
+        },
+        {
+            enemies = {
+                { enemy = 15, clones = { 1 } },
+                { enemy = 22, clones = { 3, 2 } },
+            },
+            forces = 0,
+            cumulative = 418,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 22, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 418,
+        },
+        {
+            enemies = {
+                { enemy = 16, clones = { 1, 2, 3, 4, 9, 10 } },
+                { enemy = 17, clones = { 1, 6, 3, 5, 2, 4 } },
+                { enemy = 18, clones = { 1 } },
+                { enemy = 12, clones = { 7 } },
+            },
+            forces = 62,
+            cumulative = 480,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 14, 15 } },
+                { enemy = 16, clones = { 5 } },
+                { enemy = 10, clones = { 9 } },
+                { enemy = 18, clones = { 2 } },
+            },
+            forces = 37,
+            cumulative = 517,
+        },
+        {
+            enemies = {
+                { enemy = 19, clones = { 1 } },
+                { enemy = 16, clones = { 8, 7 } },
+                { enemy = 17, clones = { 8, 9, 7, 10 } },
+            },
+            forces = 40,
+            cumulative = 557,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 20, 21, 18, 16, 23, 22, 11, 12, 13, 19 } },
+                { enemy = 20, clones = { 1 } },
+                { enemy = 21, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 557,
+            boss = true,
+        },
+    },
+    enemyForces = 557,
+    wclReport = "Fb2YzW9dkfyrNZn1",
+    wclFight = 57,
+    filled = 1,
+    title = "+18 · 26:36",
+    author = "Protection Paladin",
+    url = "https://raider.io/mythic-plus-runs/season-mn-2/19207478-18-ruby-life-pools",
+    keystoneUrl = "https://keystone.guru/route/ruby-life-pools/rJqbB6J",
+    challengeModeId = 399,
+    dungeonEnglishName = "Ruby Life Pools",
+    mdtDungeonIdx = 42,
+    keyLevelMin = 18,
+    keyLevel = 18,
+    clearSeconds = 1596,
+    onTime = true,
+    rank = 1570,
+    region = "tw",
+    bracket = "mid",
+    tier = "slow",
+    roster = {
+        { name = "竹本犬良", class = "Druid", spec = "Restoration", role = "healer" },
+        { name = "星詠維多利亞", class = "Mage", spec = "Arcane", role = "dps" },
+        { name = "泰莉雅史卓莎", class = "Priest", spec = "Shadow", role = "dps" },
+        { name = "一波素質三連", class = "Paladin", spec = "Protection", role = "tank" },
+        { name = "鋼鐵維爾", class = "Warrior", spec = "Arms", role = "dps" },
+    },
+    enemyForcesRequired = 551,
+})
+
+R:RegisterRoute({
     id = "rio-19512163",
     source = "raider.io",
     pulls = {
@@ -150,7 +345,7 @@ R:RegisterRoute({
     keyLevel = 22,
     clearSeconds = 1633,
     onTime = true,
-    rank = 2840,
+    rank = 2908,
     region = "world",
     bracket = "high",
     tier = "slow",
@@ -315,7 +510,7 @@ R:RegisterRoute({
     keyLevel = 23,
     clearSeconds = 1644,
     onTime = true,
-    rank = 576,
+    rank = 590,
     region = "world",
     bracket = "high",
     tier = "slow",
@@ -497,7 +692,7 @@ R:RegisterRoute({
     keyLevel = 14,
     clearSeconds = 1103,
     onTime = true,
-    rank = 7319,
+    rank = 7378,
     region = "kr",
     bracket = "low",
     tier = "fast",
@@ -686,7 +881,7 @@ R:RegisterRoute({
     keyLevel = 19,
     clearSeconds = 1311,
     onTime = true,
-    rank = 7884,
+    rank = 7964,
     region = "eu",
     bracket = "mid",
     tier = "fast",
@@ -696,6 +891,190 @@ R:RegisterRoute({
         { name = "Celt", class = "Paladin", spec = "Holy", role = "healer" },
         { name = "Niffwarr", class = "Warrior", spec = "Arms", role = "dps" },
         { name = "Stepplo", class = "Rogue", spec = "Subtlety", role = "dps" },
+    },
+    enemyForcesRequired = 551,
+})
+
+R:RegisterRoute({
+    id = "rio-24064235",
+    source = "raider.io",
+    pulls = {
+        {
+            enemies = {
+                { enemy = 1, clones = { 1 } },
+                { enemy = 2, clones = { 9, 1, 3, 2 } },
+                { enemy = 3, clones = { 8, 1, 5 } },
+                { enemy = 4, clones = { 1, 3 } },
+            },
+            forces = 74,
+            cumulative = 74,
+        },
+        {
+            enemies = {
+                { enemy = 2, clones = { 4, 10, 7 } },
+                { enemy = 3, clones = { 4, 6, 9 } },
+                { enemy = 4, clones = { 6, 9 } },
+                { enemy = 6, clones = { 1 } },
+                { enemy = 5, clones = { 48, 50, 49 } },
+            },
+            forces = 74,
+            cumulative = 148,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 2, clones = { 6 } },
+                { enemy = 4, clones = { 8 } },
+                { enemy = 7, clones = { 1 } },
+            },
+            forces = 12,
+            cumulative = 160,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 23, clones = { 1 } },
+            },
+            forces = 0,
+            cumulative = 160,
+        },
+        {
+            enemies = {
+                { enemy = 11, clones = { 4 } },
+                { enemy = 12, clones = { 9 } },
+                { enemy = 10, clones = { 10 } },
+            },
+            forces = 39,
+            cumulative = 199,
+        },
+        {
+            enemies = {
+                { enemy = 11, clones = { 3 } },
+                { enemy = 12, clones = { 4 } },
+                { enemy = 10, clones = { 1 } },
+                { enemy = 14, clones = { 1 } },
+            },
+            forces = 79,
+            cumulative = 278,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 12, clones = { 8 } },
+                { enemy = 10, clones = { 2 } },
+            },
+            forces = 14,
+            cumulative = 292,
+        },
+        {
+            enemies = {
+                { enemy = 12, clones = { 10, 3 } },
+                { enemy = 10, clones = { 5, 4 } },
+                { enemy = 11, clones = { 2 } },
+            },
+            forces = 53,
+            cumulative = 345,
+        },
+        {
+            enemies = {
+                { enemy = 12, clones = { 2, 1 } },
+                { enemy = 10, clones = { 3, 6 } },
+                { enemy = 11, clones = { 1 } },
+            },
+            forces = 53,
+            cumulative = 398,
+        },
+        {
+            enemies = {
+                { enemy = 15, clones = { 1 } },
+                { enemy = 22, clones = { 3, 2 } },
+                { enemy = 8, clones = { 22 } },
+            },
+            forces = 0,
+            cumulative = 398,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 12, clones = { 6 } },
+                { enemy = 10, clones = { 7 } },
+                { enemy = 22, clones = { 1 } },
+            },
+            forces = 14,
+            cumulative = 412,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 5, 6, 3, 2, 4, 1 } },
+                { enemy = 16, clones = { 1, 2, 3, 4, 9 } },
+                { enemy = 18, clones = { 1 } },
+                { enemy = 12, clones = { 7 } },
+            },
+            forces = 57,
+            cumulative = 469,
+        },
+        {
+            enemies = {
+                { enemy = 10, clones = { 9 } },
+                { enemy = 16, clones = { 10, 8, 5, 7 } },
+                { enemy = 18, clones = { 2 } },
+                { enemy = 17, clones = { 11, 15, 13, 12, 21, 8, 7, 9, 10 } },
+                { enemy = 19, clones = { 1 } },
+            },
+            forces = 82,
+            cumulative = 551,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 16, 19 } },
+            },
+            forces = 0,
+            cumulative = 551,
+        },
+        {
+            enemies = {
+                { enemy = 20, clones = { 1 } },
+                { enemy = 21, clones = { 1 } },
+                { enemy = 17, clones = { 22, 18 } },
+            },
+            forces = 0,
+            cumulative = 551,
+            boss = true,
+        },
+        {
+            enemies = {
+                { enemy = 17, clones = { 20, 23, 14 } },
+            },
+            forces = 0,
+            cumulative = 551,
+        },
+    },
+    enemyForces = 551,
+    wclReport = "KxaBAWgJzMcCHPtp",
+    wclFight = 17,
+    filled = 5,
+    title = "+22 · 24:45",
+    author = "Blood Death Knight",
+    url = "https://raider.io/mythic-plus-runs/season-mn-2/24064235-22-ruby-life-pools",
+    keystoneUrl = "https://keystone.guru/route/ruby-life-pools/ZRD3W9K",
+    challengeModeId = 399,
+    dungeonEnglishName = "Ruby Life Pools",
+    mdtDungeonIdx = 42,
+    keyLevelMin = 22,
+    keyLevel = 22,
+    clearSeconds = 1485,
+    onTime = true,
+    rank = 1103,
+    region = "world",
+    bracket = "high",
+    tier = "fast",
+    roster = {
+        { name = "Defilé", class = "Paladin", spec = "Holy", role = "healer" },
+        { name = "Tomasoff", class = "Death Knight", spec = "Blood", role = "tank" },
+        { name = "Swagintosh", class = "Shaman", spec = "Elemental", role = "dps" },
+        { name = "Agaband", class = "Warrior", spec = "Arms", role = "dps" },
+        { name = "Stëvë", class = "Rogue", spec = "Assassination", role = "dps" },
     },
     enemyForcesRequired = 551,
 })
@@ -870,7 +1249,7 @@ R:RegisterRoute({
     keyLevel = 23,
     clearSeconds = 1498,
     onTime = true,
-    rank = 73,
+    rank = 77,
     region = "world",
     bracket = "high",
     tier = "fast",
@@ -1029,7 +1408,7 @@ R:RegisterRoute({
     keyLevel = 23,
     clearSeconds = 1480,
     onTime = true,
-    rank = 69,
+    rank = 73,
     region = "world",
     bracket = "high",
     tier = "fast",
@@ -1237,359 +1616,6 @@ R:RegisterRoute({
         { name = "Farover", class = "Warrior", spec = "Arms", role = "dps" },
         { name = "Tomelvis", class = "Rogue", spec = "Outlaw", role = "dps" },
         { name = "Murtaz", class = "Druid", spec = "Feral", role = "dps" },
-    },
-    enemyForcesRequired = 551,
-})
-
-R:RegisterRoute({
-    id = "rio-25563947",
-    source = "raider.io",
-    pulls = {
-        {
-            enemies = {
-                { enemy = 1, clones = { 1 } },
-                { enemy = 2, clones = { 9, 1, 3, 2, 4 } },
-                { enemy = 3, clones = { 8, 1, 4, 5 } },
-                { enemy = 4, clones = { 1, 3 } },
-            },
-            forces = 84,
-            cumulative = 84,
-        },
-        {
-            enemies = {
-                { enemy = 4, clones = { 6, 8 } },
-                { enemy = 3, clones = { 6 } },
-                { enemy = 2, clones = { 10, 6 } },
-                { enemy = 5, clones = { 22, 18, 50 } },
-                { enemy = 6, clones = { 1 } },
-            },
-            forces = 59,
-            cumulative = 143,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 2, clones = { 7 } },
-                { enemy = 3, clones = { 9 } },
-                { enemy = 4, clones = { 9 } },
-                { enemy = 7, clones = { 1 } },
-            },
-            forces = 17,
-            cumulative = 160,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 23, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 160,
-        },
-        {
-            enemies = {
-                { enemy = 11, clones = { 4 } },
-                { enemy = 10, clones = { 10 } },
-                { enemy = 12, clones = { 9 } },
-            },
-            forces = 39,
-            cumulative = 199,
-        },
-        {
-            enemies = {
-                { enemy = 11, clones = { 3 } },
-                { enemy = 10, clones = { 1 } },
-                { enemy = 12, clones = { 4 } },
-                { enemy = 14, clones = { 1 } },
-            },
-            forces = 79,
-            cumulative = 278,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 10, clones = { 2 } },
-                { enemy = 12, clones = { 8 } },
-            },
-            forces = 14,
-            cumulative = 292,
-        },
-        {
-            enemies = {
-                { enemy = 10, clones = { 5, 4 } },
-                { enemy = 12, clones = { 10, 3 } },
-                { enemy = 11, clones = { 2 } },
-            },
-            forces = 53,
-            cumulative = 345,
-        },
-        {
-            enemies = {
-                { enemy = 10, clones = { 3, 6 } },
-                { enemy = 12, clones = { 2, 1 } },
-                { enemy = 11, clones = { 1 } },
-            },
-            forces = 53,
-            cumulative = 398,
-        },
-        {
-            enemies = {
-                { enemy = 15, clones = { 1 } },
-                { enemy = 22, clones = { 3, 1 } },
-            },
-            forces = 0,
-            cumulative = 398,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 8, clones = { 22 } },
-                { enemy = 22, clones = { 2 } },
-            },
-            forces = 0,
-            cumulative = 398,
-        },
-        {
-            enemies = {
-                { enemy = 12, clones = { 6 } },
-                { enemy = 10, clones = { 7 } },
-            },
-            forces = 14,
-            cumulative = 412,
-        },
-        {
-            enemies = {
-                { enemy = 16, clones = { 1, 2, 3, 9, 4, 5, 10 } },
-                { enemy = 17, clones = { 4, 5, 6, 3, 15, 18, 23, 14, 22, 1, 2 } },
-                { enemy = 18, clones = { 1, 2 } },
-                { enemy = 12, clones = { 7 } },
-                { enemy = 10, clones = { 9 } },
-            },
-            forces = 99,
-            cumulative = 511,
-        },
-        {
-            enemies = {
-                { enemy = 19, clones = { 1 } },
-                { enemy = 16, clones = { 8, 7 } },
-                { enemy = 17, clones = { 11, 21 } },
-            },
-            forces = 40,
-            cumulative = 551,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 17, clones = { 20 } },
-            },
-            forces = 0,
-            cumulative = 551,
-        },
-        {
-            enemies = {
-                { enemy = 17, clones = { 10, 8, 19, 16, 9, 7, 12, 13 } },
-                { enemy = 20, clones = { 1 } },
-                { enemy = 21, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 551,
-            boss = true,
-        },
-    },
-    enemyForces = 551,
-    wclReport = "Q9Fb2rctpVqGLRDZ",
-    wclFight = 3,
-    filled = 4,
-    title = "+22 · 24:14",
-    author = "Guardian Druid",
-    url = "https://raider.io/mythic-plus-runs/season-mn-2/25563947-22-ruby-life-pools",
-    keystoneUrl = "https://keystone.guru/route/ruby-life-pools/fWWBOAs",
-    challengeModeId = 399,
-    dungeonEnglishName = "Ruby Life Pools",
-    mdtDungeonIdx = 42,
-    keyLevelMin = 22,
-    keyLevel = 22,
-    clearSeconds = 1454,
-    onTime = true,
-    rank = 1065,
-    region = "world",
-    bracket = "high",
-    tier = "fast",
-    roster = {
-        { name = "Elwhy", class = "Death Knight", spec = "Frost", role = "dps" },
-        { name = "Elmmerfud", class = "Shaman", spec = "Restoration", role = "healer" },
-        { name = "Zekes", class = "Warrior", spec = "Arms", role = "dps" },
-        { name = "Sooniis", class = "Druid", spec = "Guardian", role = "tank" },
-        { name = "Rbin", class = "Rogue", spec = "Assassination", role = "dps" },
-    },
-    enemyForcesRequired = 551,
-})
-
-R:RegisterRoute({
-    id = "rio-25725893",
-    source = "raider.io",
-    pulls = {
-        {
-            enemies = {
-                { enemy = 1, clones = { 1 } },
-                { enemy = 2, clones = { 9, 1, 3, 2 } },
-                { enemy = 3, clones = { 8, 1, 5 } },
-                { enemy = 4, clones = { 1, 3 } },
-            },
-            forces = 74,
-            cumulative = 74,
-        },
-        {
-            enemies = {
-                { enemy = 2, clones = { 4, 10, 7 } },
-                { enemy = 3, clones = { 4, 6, 9 } },
-                { enemy = 6, clones = { 1 } },
-                { enemy = 4, clones = { 6, 9 } },
-                { enemy = 5, clones = { 22, 18, 19 } },
-            },
-            forces = 74,
-            cumulative = 148,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 4, clones = { 8 } },
-                { enemy = 2, clones = { 6 } },
-                { enemy = 7, clones = { 1 } },
-            },
-            forces = 12,
-            cumulative = 160,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 23, clones = { 1 } },
-            },
-            forces = 0,
-            cumulative = 160,
-        },
-        {
-            enemies = {
-                { enemy = 11, clones = { 4 } },
-                { enemy = 10, clones = { 10 } },
-                { enemy = 12, clones = { 9 } },
-            },
-            forces = 39,
-            cumulative = 199,
-        },
-        {
-            enemies = {
-                { enemy = 11, clones = { 3 } },
-                { enemy = 12, clones = { 4 } },
-                { enemy = 10, clones = { 1 } },
-                { enemy = 14, clones = { 1 } },
-            },
-            forces = 79,
-            cumulative = 278,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 12, clones = { 8 } },
-                { enemy = 10, clones = { 2 } },
-            },
-            forces = 14,
-            cumulative = 292,
-        },
-        {
-            enemies = {
-                { enemy = 12, clones = { 10, 3 } },
-                { enemy = 10, clones = { 5, 4 } },
-                { enemy = 11, clones = { 2 } },
-            },
-            forces = 53,
-            cumulative = 345,
-        },
-        {
-            enemies = {
-                { enemy = 12, clones = { 2, 1 } },
-                { enemy = 10, clones = { 3, 6 } },
-                { enemy = 11, clones = { 1 } },
-            },
-            forces = 53,
-            cumulative = 398,
-        },
-        {
-            enemies = {
-                { enemy = 15, clones = { 1 } },
-                { enemy = 22, clones = { 1, 3 } },
-            },
-            forces = 0,
-            cumulative = 398,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 8, clones = { 22 } },
-                { enemy = 22, clones = { 2 } },
-                { enemy = 12, clones = { 6 } },
-                { enemy = 10, clones = { 7 } },
-            },
-            forces = 14,
-            cumulative = 412,
-        },
-        {
-            enemies = {
-                { enemy = 17, clones = { 1, 5, 4, 3, 6, 2, 15, 14 } },
-                { enemy = 16, clones = { 1, 2, 3, 10, 4, 9 } },
-                { enemy = 18, clones = { 1 } },
-                { enemy = 12, clones = { 7 } },
-            },
-            forces = 62,
-            cumulative = 474,
-        },
-        {
-            enemies = {
-                { enemy = 18, clones = { 2 } },
-                { enemy = 16, clones = { 5, 7, 8 } },
-                { enemy = 10, clones = { 9 } },
-                { enemy = 17, clones = { 18, 11, 22, 10, 8, 9, 12, 13, 7 } },
-                { enemy = 19, clones = { 1 } },
-            },
-            forces = 77,
-            cumulative = 551,
-            boss = true,
-        },
-        {
-            enemies = {
-                { enemy = 20, clones = { 1 } },
-                { enemy = 21, clones = { 1 } },
-                { enemy = 17, clones = { 20, 16, 23, 19, 21 } },
-            },
-            forces = 0,
-            cumulative = 551,
-            boss = true,
-        },
-    },
-    enemyForces = 551,
-    wclReport = "c8gBmnQPMdtzN6Zb",
-    wclFight = 17,
-    filled = 3,
-    title = "+22 · 23:32",
-    author = "Blood Death Knight",
-    url = "https://raider.io/mythic-plus-runs/season-mn-2/25725893-22-ruby-life-pools",
-    keystoneUrl = "https://keystone.guru/route/ruby-life-pools/NztMecY",
-    challengeModeId = 399,
-    dungeonEnglishName = "Ruby Life Pools",
-    mdtDungeonIdx = 42,
-    keyLevelMin = 22,
-    keyLevel = 22,
-    clearSeconds = 1412,
-    onTime = true,
-    rank = 1061,
-    region = "world",
-    bracket = "high",
-    tier = "fast",
-    roster = {
-        { name = "Chainbleed", class = "Rogue", spec = "Assassination", role = "dps" },
-        { name = "Corysham", class = "Shaman", spec = "Elemental", role = "dps" },
-        { name = "Frostydn", class = "Death Knight", spec = "Blood", role = "tank" },
-        { name = "Stomplee", class = "Paladin", spec = "Holy", role = "healer" },
-        { name = "Benwarr", class = "Warrior", spec = "Arms", role = "dps" },
     },
     enemyForcesRequired = 551,
 })
